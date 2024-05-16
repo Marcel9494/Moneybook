@@ -15,3 +15,4 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 - Immer wieder 1% besser
 - Keep it simple and stupid (KISS)
 - Funktionierender und sehr gut wartbarer, erweiterbarer Code ist das Wichtigste
+- Schnelle Release-Zyklen realisieren
