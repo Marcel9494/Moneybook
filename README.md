@@ -21,6 +21,7 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 
 Folgende Erweiterungen/Features die in späteren Meilensteinen hinzukommen werden müssen bei jedem Issue beachtet werden:
 
-- App wird mehrsprachig, beliebig viele Sprachen können hinzukommen
+- Die App wird mehrsprachig, beliebig viele Sprachen können hinzukommen
 - Unterschiedliche Währungen werden hinzukommen
 - Datenbanken / Datenquellen müssen austauschbar sein
+- Die App wird responsiv für Smartphones, Tablets und Desktop (Web)
