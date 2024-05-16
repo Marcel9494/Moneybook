@@ -16,3 +16,11 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 - Keep it simple and stupid (KISS)
 - Funktionierender und sehr gut wartbarer, erweiterbarer Code ist das Wichtigste
 - Schnelle Release-Zyklen realisieren
+
+# Erweiterungen
+
+Folgende Erweiterungen/Features die in späteren Meilensteinen hinzukommen werden müssen bei jedem Issue beachtet werden:
+
+- App wird mehrsprachig, beliebig viele Sprachen können hinzukommen
+- Unterschiedliche Währungen werden hinzukommen
+- Datenbanken / Datenquellen müssen austauschbar sein
