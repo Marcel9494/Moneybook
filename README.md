@@ -33,3 +33,11 @@ Es wurde sich für das Clean Architektur Pattern entschieden, weil diese Softwar
 Dies ist für diese Software wichtig, weil die App auch nach dem ersten Release stetig weiter entwickelt werden soll und es neue Funktionalitäten geben wird.
 
 ![clean_architecture](https://github.com/Marcel9494/Moneybook/assets/93829086/06136010-4228-4092-b341-37451b5d76a2)
+
+## Praktische Umsetzung der Clean Architektur
+
+Bei der Haushaltsbuch App gibt es aktuell folgende features die jeweils der oben gezeigten Software Architektur folgen:
+- Buchungen (bookings)
+- Konten (accounts)
+- Kategorien (categories)
+- Einstellungen (settings)
