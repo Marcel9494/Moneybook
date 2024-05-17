@@ -3,7 +3,8 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 
 # Ziele
 
-- Flutter, Dart, Clean Architektur, Design Pattern, Git/Github & UI/UX Design Fähigkeiten lernen und verbessern.
+- Flutter, Dart, Clean Architektur, Design Pattern, Git/Github(-Actions), CI/CD & UI/UX Design Fähigkeiten lernen und verbessern.
+- Agile Vorgehensweise verbessern und TDD (Test-Driven-Development) lernen.
 - Software Projekt für eigenes Portfolio zum Vorzeigen.
 - Eigenes kleines Projekt und Side Hustle aufbauen.
 - Weiteres Nebeneinkommen generieren.
@@ -25,3 +26,10 @@ Folgende Erweiterungen/Features die in späteren Meilensteinen hinzukommen werde
 - Unterschiedliche Währungen werden hinzukommen
 - Datenbanken / Datenquellen müssen austauschbar sein
 - Die App wird responsiv für Smartphones, Tablets und Desktop (Web)
+
+# Design Entscheidungen
+
+Es wurde sich für das Clean Architektur Pattern entschieden, weil diese Software Architektur wartbar, testbar, flexibel und erweiterbar ist.
+Dies ist für diese Software wichtig, weil die App auch nach dem ersten Release stetig weiter entwickelt werden soll und es neue Funktionalitäten geben wird.
+
+![clean_architecture](https://github.com/Marcel9494/Moneybook/assets/93829086/06136010-4228-4092-b341-37451b5d76a2)
