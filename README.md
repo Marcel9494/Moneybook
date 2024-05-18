@@ -27,6 +27,7 @@ Folgende Erweiterungen/Features die in späteren Meilensteinen hinzukommen werde
 - Unterschiedliche Währungen werden hinzukommen
 - Datenbanken / Datenquellen müssen austauschbar sein
 - Die App wird responsiv für Smartphones, Tablets und Desktop (Web)
+- In der App sollen Interaktionen zwischen Benutzern stattfinden können
 
 # Design Entscheidungen
 
