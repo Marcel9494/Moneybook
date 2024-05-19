@@ -30,7 +30,8 @@ void main() {
     'should create a booking',
     () async {
       when(() => mockBookingRepository.create(tBooking)).thenAnswer((_) async => Right(tBooking));
-      final result = await usecase.execute(booking: tBooking);
+      // usecase calls the call method in create.dart
+      final result = await usecase(Params(booking: tBooking));
       expect(result, Right(tBooking));
       verify(() => mockBookingRepository.create(tBooking));
       verifyNoMoreInteractions(mockBookingRepository);
