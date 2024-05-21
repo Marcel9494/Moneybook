@@ -10,5 +10,5 @@ class CreateBooking extends BookingEvent {
   const CreateBooking(this.booking);
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [booking];
 }

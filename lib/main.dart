@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 
+import 'core/consts/route_consts.dart';
 import 'injection_container.dart' as di;
 
 void main() {
@@ -12,7 +14,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const CreateBookingPage(),
+      routes: {
+        bookingListRoute: (context) => const BookingListPage(),
+      },
     );
   }
 }

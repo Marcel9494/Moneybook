@@ -9,18 +9,9 @@ final class Initial extends BookingState {
   List<Object> get props => [];
 }
 
-final class Loading extends BookingState {
+final class Finished extends BookingState {
   @override
   List<Object> get props => [];
-}
-
-final class Loaded extends BookingState {
-  final Booking booking;
-
-  const Loaded({required this.booking});
-
-  @override
-  List<Object> get props => [booking];
 }
 
 final class Error extends BookingState {
