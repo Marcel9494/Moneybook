@@ -16,7 +16,7 @@ class SquareButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
       ),
       child: Text(
