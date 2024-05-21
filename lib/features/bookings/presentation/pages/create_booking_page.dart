@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_input_field.dart';
 
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/date_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../domain/entities/booking.dart';
 import '../widgets/input_fields/amount_text_field.dart';
@@ -16,6 +18,7 @@ class CreateBookingPage extends StatefulWidget {
 }
 
 class _CreateBookingPageState extends State<CreateBookingPage> {
+  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
 
@@ -32,6 +35,12 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _dateController.text = dateFormatterDDMMYYYYEE.format(DateTime.now());
   }
 
   @override
@@ -53,6 +62,9 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
               if (state is Initial) {
                 return Column(
                   children: [
+                    DateInputField(
+                      dateController: _dateController,
+                    ),
                     TitleTextField(
                       titleController: _titleController,
                       errorText: '',
