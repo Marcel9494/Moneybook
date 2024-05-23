@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
 
 class MockBookingRepository extends Mock implements BookingRepository {}
 
@@ -19,6 +20,7 @@ void main() {
   final tId = 0;
   final tBooking = Booking(
     id: 0,
+    type: BookingType.expense,
     title: 'Edeka einkaufen',
     date: DateTime.now(),
     amount: 29.95,

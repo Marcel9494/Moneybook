@@ -1,7 +1,10 @@
 import 'package:equatable/equatable.dart';
 
+import '../value_objects/booking_type.dart';
+
 class Booking extends Equatable {
   final int id;
+  final BookingType type;
   final String title;
   final DateTime date;
   final double amount;
@@ -10,6 +13,7 @@ class Booking extends Equatable {
 
   const Booking({
     required this.id,
+    required this.type,
     required this.title,
     required this.date,
     required this.amount,
@@ -18,5 +22,5 @@ class Booking extends Equatable {
   });
 
   @override
-  List<Object> get props => [id, title, date, amount, account, categorie];
+  List<Object> get props => [id, type, title, date, amount, account, categorie];
 }

@@ -5,6 +5,7 @@ import 'package:moneybook/features/bookings/data/datasources/booking_local_data_
 import 'package:moneybook/features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'package:moneybook/features/bookings/data/models/booking_model.dart';
 import 'package:moneybook/features/bookings/data/repositories/booking_repository_impl.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
 
 class MockRemoteDataSource extends Mock implements BookingRemoteDataSource {}
 
@@ -32,6 +33,7 @@ void main() {
   group('create Booking', () {
     final BookingModel tBookingModel = BookingModel(
       id: 0,
+      type: BookingType.expense,
       title: 'Edeka einkaufen',
       date: DateTime.now(),
       amount: 20.0,

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/buttons/type_segmented_button.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_input_field.dart';
 
 import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
+import '../../../../core/utils/number_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/value_objects/booking_type.dart';
 import '../widgets/input_fields/amount_text_field.dart';
 import '../widgets/input_fields/categorie_input_field.dart';
 import '../widgets/input_fields/title_text_field.dart';
@@ -25,17 +28,21 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
+  final Set<BookingType> _bookingType = {BookingType.expense};
 
   void createBooking(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
       CreateBooking(
         Booking(
           id: 0,
+          type: _bookingType.first,
           title: _titleController.text,
-          date: DateTime.now(),
-          amount: double.parse(_amountController.text),
+          date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
+          // TODO hier weitermachen und allgemeines Theme anlegen und
+          // TODO Money Value Object implementieren
+          amount: formatMoneyAmountToDouble(_amountController.text),
           account: _accountController.text,
-          categorie: 'Lebensmittel',
+          categorie: _categorieController.text,
         ),
       ),
     );
@@ -64,33 +71,44 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           child: BlocBuilder<BookingBloc, BookingState>(
             builder: (context, state) {
               if (state is Initial) {
-                return Column(
-                  children: [
-                    DateInputField(
-                      dateController: _dateController,
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                    child: Card(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TypeSegmentedButton(
+                            bookingType: _bookingType,
+                          ),
+                          DateInputField(
+                            dateController: _dateController,
+                          ),
+                          TitleTextField(
+                            titleController: _titleController,
+                            errorText: '',
+                          ),
+                          AmountTextField(
+                            amountController: _amountController,
+                            errorText: '',
+                          ),
+                          AccountInputField(
+                            hintText: 'Abbuchungskonto...',
+                            accountController: _accountController,
+                            errorText: '',
+                          ),
+                          CategorieInputField(
+                            categorieController: _categorieController,
+                            errorText: '',
+                          ),
+                          ElevatedButton(
+                            onPressed: () => createBooking(context),
+                            child: const Text('Erstellen'),
+                          ),
+                        ],
+                      ),
                     ),
-                    TitleTextField(
-                      titleController: _titleController,
-                      errorText: '',
-                    ),
-                    AmountTextField(
-                      amountController: _amountController,
-                      errorText: '',
-                    ),
-                    AccountInputField(
-                      hintText: 'Abbuchungskonto...',
-                      accountController: _accountController,
-                      errorText: '',
-                    ),
-                    CategorieInputField(
-                      categorieController: _categorieController,
-                      errorText: '',
-                    ),
-                    ElevatedButton(
-                      onPressed: () => createBooking(context),
-                      child: const Text('Erstellen'),
-                    ),
-                  ],
+                  ),
                 );
               }
               return const SizedBox();

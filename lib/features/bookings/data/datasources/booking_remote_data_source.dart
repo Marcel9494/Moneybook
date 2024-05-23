@@ -16,20 +16,30 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
 
   @override
   Future<void> create(Booking booking) async {
-    print('Remote');
+    print("Booking: $booking");
     final String bookingDbName = 'booking';
-    final String title = 'Titel';
-    final String account = 'Account';
     databaseFactory.deleteDatabase('$bookingDbName.db');
     var db = await openDatabase('$bookingDbName.db');
     db.execute('''
           CREATE TABLE $bookingDbName (
             id INTEGER PRIMARY KEY,
+            type TEXT NOT NULL,
             title TEXT NOT NULL,
-            account TEXT NOT NULL
+            date TEXT NOT NULL,
+            amount DOUBLE NOT NULL,
+            account TEXT NOT NULL,
+            categorie TEXT NOT NULL
           )
           ''');
-    db.rawInsert('INSERT INTO $bookingDbName(title, account) VALUES(?, ?)', [title, account]);
+    db.rawInsert('INSERT INTO $bookingDbName(id, type, title, date, amount, account, categorie) VALUES(?, ?, ?, ?, ?, ?, ?)', [
+      booking.id,
+      booking.type.name,
+      booking.title,
+      booking.date.toString(),
+      booking.amount,
+      booking.account,
+      booking.categorie,
+    ]);
     //db.delete('bookings');
     print(db);
     print('Success');

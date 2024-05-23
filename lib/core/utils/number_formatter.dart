@@ -9,3 +9,10 @@ String formatToMoneyAmount(String moneyAmount) {
   moneyAmount = amountFormatter.format(double.parse(moneyAmount.replaceAll(',', '.')));
   return moneyAmount;
 }
+
+// Beispiel:
+// Input amount: 8,60 €
+// return 8.6
+double formatMoneyAmountToDouble(String amount) {
+  return double.parse(amount.substring(0, amount.length - 2).replaceAll('.', '').replaceAll(',', '.'));
+}
