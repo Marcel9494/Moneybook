@@ -16,25 +16,40 @@ class BottomSheetHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const BottomSheetLine(),
         Padding(
-          padding: const EdgeInsets.only(top: 16.0, left: 28.0, right: 16.0),
+          padding: const EdgeInsets.only(left: 24.0, right: 16.0, top: 12.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontSize: 20.0)),
+              const Expanded(child: SizedBox()),
+              const Expanded(child: BottomSheetLine()),
               showCloseButton
-                  ? IconButton(
-                      iconSize: 26.0,
-                      icon: const Icon(Icons.close_rounded),
-                      onPressed: () => {
-                        Navigator.pop(context),
-                      },
+                  ? Expanded(
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          iconSize: 26.0,
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () => {
+                            Navigator.pop(context),
+                          },
+                        ),
+                      ),
                     )
-                  : const SizedBox(),
+                  : const Expanded(child: SizedBox(height: 36.0)),
             ],
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 4.0, left: 28.0, bottom: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 20.0)),
+            ],
+          ),
+        ),
+        const Divider(),
       ],
     );
   }

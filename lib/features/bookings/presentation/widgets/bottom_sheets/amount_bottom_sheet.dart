@@ -9,7 +9,7 @@ import '../deco/bottom_sheet_header.dart';
 
 bool _clearAmountInputField = false;
 
-void openBottomSheetForAmountInput(BuildContext context, TextEditingController amountController) {
+void openBottomSheetForAmountInput({required BuildContext context, required TextEditingController amountController}) {
   if (amountController.text.isNotEmpty) {
     _clearAmountInputField = true;
   }

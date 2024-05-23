@@ -8,7 +8,7 @@ class BottomSheetLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 26.0),
+      padding: const EdgeInsets.only(top: 16.0),
       child: Center(
         child: Container(
           width: 54.0,

@@ -16,9 +16,12 @@ class AmountTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: amountController,
-      showCursor: true,
+      showCursor: false,
       readOnly: true,
-      onTap: () => openBottomSheetForAmountInput(context, amountController),
+      onTap: () => openBottomSheetForAmountInput(
+        context: context,
+        amountController: amountController,
+      ),
       decoration: InputDecoration(
         hintText: 'Betrag...',
         counterText: '',

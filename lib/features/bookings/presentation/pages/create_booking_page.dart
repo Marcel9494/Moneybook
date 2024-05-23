@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_input_field.dart';
 
 import '../../../../core/consts/route_consts.dart';
@@ -21,6 +22,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _accountController = TextEditingController();
 
   void createBooking(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -30,7 +32,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           title: _titleController.text,
           date: DateTime.now(),
           amount: double.parse(_amountController.text),
-          account: 'Geldbeutel',
+          account: _accountController.text,
           categorie: 'Lebensmittel',
         ),
       ),
@@ -73,6 +75,12 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                       amountController: _amountController,
                       errorText: '',
                     ),
+                    AccountInputField(
+                      hintText: 'Abbuchungskonto...',
+                      accountController: _accountController,
+                      errorText: '',
+                    ),
+                    // TODO hier weitermachen mit Kategorie Auswahl
                     ElevatedButton(
                       onPressed: () => createBooking(context),
                       child: const Text('Erstellen'),
