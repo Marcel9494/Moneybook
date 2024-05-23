@@ -9,6 +9,7 @@ import '../../../../core/utils/date_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../domain/entities/booking.dart';
 import '../widgets/input_fields/amount_text_field.dart';
+import '../widgets/input_fields/categorie_input_field.dart';
 import '../widgets/input_fields/title_text_field.dart';
 
 class CreateBookingPage extends StatefulWidget {
@@ -23,6 +24,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _categorieController = TextEditingController();
 
   void createBooking(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -80,7 +82,10 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                       accountController: _accountController,
                       errorText: '',
                     ),
-                    // TODO hier weitermachen mit Kategorie Auswahl
+                    CategorieInputField(
+                      categorieController: _categorieController,
+                      errorText: '',
+                    ),
                     ElevatedButton(
                       onPressed: () => createBooking(context),
                       child: const Text('Erstellen'),
