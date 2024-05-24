@@ -38,7 +38,6 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           type: _bookingType.first,
           title: _titleController.text,
           date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
-          // TODO hier weitermachen und allgemeines Theme anlegen und
           // TODO Money Value Object implementieren
           amount: formatMoneyAmountToDouble(_amountController.text),
           account: _accountController.text,

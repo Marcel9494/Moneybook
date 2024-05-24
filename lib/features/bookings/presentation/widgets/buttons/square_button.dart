@@ -21,10 +21,7 @@ class SquareButton extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.cyanAccent,
-          fontSize: 26.0,
-        ),
+        style: const TextStyle(fontSize: 26.0),
       ),
     );
   }

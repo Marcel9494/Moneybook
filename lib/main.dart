@@ -4,6 +4,7 @@ import 'package:moneybook/features/bookings/presentation/pages/booking_list_page
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 
 import 'core/consts/route_consts.dart';
+import 'core/theme/darkTheme.dart';
 import 'injection_container.dart' as di;
 
 void main() {
@@ -21,9 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Moneybook',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-      ),
+      darkTheme: darkTheme,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
