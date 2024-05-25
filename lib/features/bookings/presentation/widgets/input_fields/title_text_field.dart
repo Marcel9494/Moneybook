@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 
 class TitleTextField extends StatelessWidget {
   final TextEditingController titleController;
-  final String errorText;
 
   const TitleTextField({
     super.key,
     required this.titleController,
-    required this.errorText,
   });
+
+  String? _checkTextInput() {
+    if (titleController.text.isEmpty) {
+      return 'Bitte geben Sie einen Titel ein.';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +21,7 @@ class TitleTextField extends StatelessWidget {
       controller: titleController,
       maxLength: 80,
       textCapitalization: TextCapitalization.sentences,
+      validator: (input) => _checkTextInput(),
       decoration: InputDecoration(
         hintText: 'Titel...',
         counterText: '',
@@ -26,7 +32,6 @@ class TitleTextField extends StatelessWidget {
           },
           icon: const Icon(Icons.clear_rounded),
         ),
-        errorText: errorText.isEmpty ? null : errorText,
       ),
     );
   }

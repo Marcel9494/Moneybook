@@ -23,6 +23,7 @@ class CreateBookingPage extends StatefulWidget {
 }
 
 class _CreateBookingPageState extends State<CreateBookingPage> {
+  final GlobalKey<FormState> _bookingFormKey = GlobalKey<FormState>();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
@@ -31,20 +32,23 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final Set<BookingType> _bookingType = {BookingType.expense};
 
   void createBooking(BuildContext context) {
-    BlocProvider.of<BookingBloc>(context).add(
-      CreateBooking(
-        Booking(
-          id: 0,
-          type: _bookingType.first,
-          title: _titleController.text,
-          date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
-          // TODO Money Value Object implementieren
-          amount: formatMoneyAmountToDouble(_amountController.text),
-          account: _accountController.text,
-          categorie: _categorieController.text,
+    final FormState form = _bookingFormKey.currentState!;
+    if (form.validate()) {
+      BlocProvider.of<BookingBloc>(context).add(
+        CreateBooking(
+          Booking(
+            id: 0,
+            type: _bookingType.first,
+            title: _titleController.text,
+            date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
+            // TODO Money Value Object implementieren
+            amount: formatMoneyAmountToDouble(_amountController.text),
+            account: _accountController.text,
+            categorie: _categorieController.text,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -74,37 +78,20 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
                     child: Card(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TypeSegmentedButton(
-                            bookingType: _bookingType,
-                          ),
-                          DateInputField(
-                            dateController: _dateController,
-                          ),
-                          TitleTextField(
-                            titleController: _titleController,
-                            errorText: '',
-                          ),
-                          AmountTextField(
-                            amountController: _amountController,
-                            errorText: '',
-                          ),
-                          AccountInputField(
-                            hintText: 'Abbuchungskonto...',
-                            accountController: _accountController,
-                            errorText: '',
-                          ),
-                          CategorieInputField(
-                            categorieController: _categorieController,
-                            errorText: '',
-                          ),
-                          ElevatedButton(
-                            onPressed: () => createBooking(context),
-                            child: const Text('Erstellen'),
-                          ),
-                        ],
+                      child: Form(
+                        key: _bookingFormKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TypeSegmentedButton(bookingType: _bookingType),
+                            DateInputField(dateController: _dateController),
+                            TitleTextField(titleController: _titleController),
+                            AmountTextField(amountController: _amountController),
+                            AccountInputField(accountController: _accountController, hintText: 'Abbuchungskonto...'),
+                            CategorieInputField(categorieController: _categorieController),
+                            ElevatedButton(child: const Text('Erstellen'), onPressed: () => createBooking(context)),
+                          ],
+                        ),
                       ),
                     ),
                   ),

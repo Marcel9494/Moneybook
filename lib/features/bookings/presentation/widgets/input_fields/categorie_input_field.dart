@@ -4,13 +4,18 @@ import '../bottom_sheets/categorie_bottom_sheet.dart';
 
 class CategorieInputField extends StatelessWidget {
   final TextEditingController categorieController;
-  final String errorText;
 
   const CategorieInputField({
     super.key,
     required this.categorieController,
-    required this.errorText,
   });
+
+  String? _checkCategorieInput() {
+    if (categorieController.text.isEmpty) {
+      return 'Bitte wählen Sie eine Kategorie aus.';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +23,16 @@ class CategorieInputField extends StatelessWidget {
       controller: categorieController,
       showCursor: false,
       readOnly: true,
+      validator: (input) => _checkCategorieInput(),
       onTap: () => openCategorieBottomSheet(
         context: context,
         title: 'Kategorie auswählen:',
         controller: categorieController,
       ),
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'Kategorie...',
         counterText: '',
-        prefixIcon: const Icon(Icons.donut_small),
-        errorText: errorText.isEmpty ? null : errorText,
+        prefixIcon: Icon(Icons.donut_small),
       ),
     );
   }

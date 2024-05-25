@@ -4,13 +4,18 @@ import '../bottom_sheets/amount_bottom_sheet.dart';
 
 class AmountTextField extends StatelessWidget {
   final TextEditingController amountController;
-  final String errorText;
 
   const AmountTextField({
     super.key,
     required this.amountController,
-    required this.errorText,
   });
+
+  String? _checkAmountInput() {
+    if (amountController.text.isEmpty) {
+      return 'Bitte geben Sie einen Betrag ein.';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +23,15 @@ class AmountTextField extends StatelessWidget {
       controller: amountController,
       showCursor: false,
       readOnly: true,
+      validator: (input) => _checkAmountInput(),
       onTap: () => openBottomSheetForAmountInput(
         context: context,
         amountController: amountController,
       ),
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'Betrag...',
         counterText: '',
-        prefixIcon: const Icon(Icons.money_rounded),
-        errorText: errorText.isEmpty ? null : errorText,
+        prefixIcon: Icon(Icons.money_rounded),
       ),
     );
   }

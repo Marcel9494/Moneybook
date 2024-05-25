@@ -45,4 +45,9 @@ final darkTheme = ThemeData(
       },
     ),
   ),
+  inputDecorationTheme: const InputDecorationTheme(
+    focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.cyanAccent),
+    ),
+  ),
 );
