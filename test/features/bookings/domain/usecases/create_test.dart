@@ -5,6 +5,7 @@ import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
 class MockBookingRepository extends Mock implements BookingRepository {}
 
@@ -23,6 +24,7 @@ void main() {
     type: BookingType.expense,
     title: 'Edeka einkaufen',
     date: DateTime.now(),
+    repetition: RepetitionType.noRepetition,
     amount: 29.95,
     account: 'Geldbeutel',
     categorie: 'Lebensmittel',

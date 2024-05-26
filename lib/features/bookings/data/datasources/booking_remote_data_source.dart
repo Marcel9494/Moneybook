@@ -26,16 +26,18 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
             type TEXT NOT NULL,
             title TEXT NOT NULL,
             date TEXT NOT NULL,
+            repetition TEXT NOT NULL,
             amount DOUBLE NOT NULL,
             account TEXT NOT NULL,
             categorie TEXT NOT NULL
           )
           ''');
-    db.rawInsert('INSERT INTO $bookingDbName(id, type, title, date, amount, account, categorie) VALUES(?, ?, ?, ?, ?, ?, ?)', [
+    db.rawInsert('INSERT INTO $bookingDbName(id, type, title, date, repetition, amount, account, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [
       booking.id,
       booking.type.name,
       booking.title,
       booking.date.toString(),
+      booking.repetition.name,
       booking.amount,
       booking.account,
       booking.categorie,

@@ -6,6 +6,7 @@ class BookingModel extends Booking {
     required super.type,
     required super.title,
     required super.date,
+    required super.repetition,
     required super.amount,
     required super.account,
     required super.categorie,

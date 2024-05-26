@@ -6,6 +6,7 @@ import 'package:moneybook/features/bookings/data/datasources/booking_remote_data
 import 'package:moneybook/features/bookings/data/models/booking_model.dart';
 import 'package:moneybook/features/bookings/data/repositories/booking_repository_impl.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
 class MockRemoteDataSource extends Mock implements BookingRemoteDataSource {}
 
@@ -36,6 +37,7 @@ void main() {
       type: BookingType.expense,
       title: 'Edeka einkaufen',
       date: DateTime.now(),
+      repetition: RepetitionType.noRepetition,
       amount: 20.0,
       account: 'Geldbeutel',
       categorie: 'Lebensmittel',

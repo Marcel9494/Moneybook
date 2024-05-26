@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/buttons/save_button.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/buttons/type_segmented_button.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
-import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_input_field.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_and_repeat_input_field.dart';
+import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/number_formatter.dart';
@@ -29,32 +35,49 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
-  final Set<BookingType> _bookingType = {BookingType.expense};
-
-  void createBooking(BuildContext context) {
-    final FormState form = _bookingFormKey.currentState!;
-    if (form.validate()) {
-      BlocProvider.of<BookingBloc>(context).add(
-        CreateBooking(
-          Booking(
-            id: 0,
-            type: _bookingType.first,
-            title: _titleController.text,
-            date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
-            // TODO Money Value Object implementieren
-            amount: formatMoneyAmountToDouble(_amountController.text),
-            account: _accountController.text,
-            categorie: _categorieController.text,
-          ),
-        ),
-      );
-    }
-  }
+  final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
+  final RepetitionType _repetitionType = RepetitionType.noRepetition;
+  Set<BookingType> _bookingType = {BookingType.expense};
 
   @override
   void initState() {
     super.initState();
     _dateController.text = dateFormatterDDMMYYYYEE.format(DateTime.now());
+  }
+
+  void createBooking(BuildContext context) {
+    final FormState form = _bookingFormKey.currentState!;
+    if (form.validate() == false) {
+      _createBookingBtnController.error();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        _createBookingBtnController.reset();
+      });
+    } else {
+      _createBookingBtnController.success();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        BlocProvider.of<BookingBloc>(context).add(
+          CreateBooking(
+            Booking(
+              id: 0,
+              type: _bookingType.first,
+              title: _titleController.text,
+              date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
+              repetition: _repetitionType,
+              // TODO Money Value Object implementieren
+              amount: formatMoneyAmountToDouble(_amountController.text),
+              account: _accountController.text,
+              categorie: _categorieController.text,
+            ),
+          ),
+        );
+      });
+    }
+  }
+
+  void _changeBookingType(Set<BookingType> newBookingType) {
+    setState(() {
+      _bookingType = newBookingType;
+    });
   }
 
   @override
@@ -83,13 +106,22 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            TypeSegmentedButton(bookingType: _bookingType),
-                            DateInputField(dateController: _dateController),
+                            TypeSegmentedButton(
+                              bookingType: _bookingType,
+                              onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
+                            ),
+                            DateAndRepeatInputField(
+                              dateController: _dateController,
+                              repetitionType: _repetitionType.name,
+                            ),
                             TitleTextField(titleController: _titleController),
                             AmountTextField(amountController: _amountController),
-                            AccountInputField(accountController: _accountController, hintText: 'Abbuchungskonto...'),
+                            AccountInputField(
+                              accountController: _accountController,
+                              hintText: _bookingType.first.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
+                            ),
                             CategorieInputField(categorieController: _categorieController),
-                            ElevatedButton(child: const Text('Erstellen'), onPressed: () => createBooking(context)),
+                            SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => createBooking(context)),
                           ],
                         ),
                       ),
