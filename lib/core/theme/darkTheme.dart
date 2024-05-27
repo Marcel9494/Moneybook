@@ -44,6 +44,20 @@ final darkTheme = ThemeData(
         return Colors.transparent;
       },
     ),
+    confirmButtonStyle: ButtonStyle(
+      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        (Set<MaterialState> states) {
+          return Colors.cyanAccent;
+        },
+      ),
+    ),
+    cancelButtonStyle: ButtonStyle(
+      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        (Set<MaterialState> states) {
+          return Colors.cyanAccent;
+        },
+      ),
+    ),
   ),
   inputDecorationTheme: const InputDecorationTheme(
     focusedBorder: UnderlineInputBorder(

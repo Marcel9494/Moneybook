@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
+import '../value_objects/amount.dart';
 import '../value_objects/booking_type.dart';
 
 class Booking extends Equatable {
@@ -9,7 +10,7 @@ class Booking extends Equatable {
   final String title;
   final DateTime date;
   final RepetitionType repetition;
-  final double amount;
+  final Amount amount;
   final String account;
   final String categorie;
 

@@ -5,6 +5,7 @@ import 'package:moneybook/features/bookings/data/datasources/booking_local_data_
 import 'package:moneybook/features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'package:moneybook/features/bookings/data/models/booking_model.dart';
 import 'package:moneybook/features/bookings/data/repositories/booking_repository_impl.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/amount.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
@@ -38,7 +39,7 @@ void main() {
       title: 'Edeka einkaufen',
       date: DateTime.now(),
       repetition: RepetitionType.noRepetition,
-      amount: 20.0,
+      amount: Amount(value: 25.0, currency: '€'),
       account: 'Geldbeutel',
       categorie: 'Lebensmittel',
     );

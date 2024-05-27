@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/amount.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/buttons/save_button.dart';
@@ -13,7 +14,6 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
-import '../../../../core/utils/number_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
@@ -63,8 +63,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
               title: _titleController.text,
               date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
               repetition: _repetitionType,
-              // TODO Money Value Object implementieren
-              amount: formatMoneyAmountToDouble(_amountController.text),
+              amount: Amount(value: Amount.getValue(_amountController.text), currency: Amount.getCurrency(_amountController.text)),
               account: _accountController.text,
               categorie: _categorieController.text,
             ),

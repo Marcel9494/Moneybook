@@ -22,13 +22,13 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<Either<Failure, void>> create(Booking booking) async {
     //if (await networkInfo.isRemoteApproved) {
     try {
-      return Right(await bookingRemoteDataSource.create(booking));
+      return Right(await bookingLocalDataSource.create(booking));
     } on ServerException {
       return Left(ServerFailure());
     }
     //} else {
     try {
-      return Right(await bookingLocalDataSource.create(booking));
+      return Right(await bookingRemoteDataSource.create(booking));
     } on CacheException {
       return Left(CacheFailure());
     }
