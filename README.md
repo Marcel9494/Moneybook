@@ -3,12 +3,12 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 
 # Ziele
 
-- Flutter, Dart, Clean Architektur, Design Pattern, Git/Github(-Actions), CI/CD & UI/UX Design Fähigkeiten lernen und verbessern.
-- Agile Vorgehensweise verbessern und DDD (Domain Driven Design) und TDD (Test-Driven-Development) lernen.
-- Software Projekt für eigenes Portfolio zum Vorzeigen.
-- Eigenes kleines Projekt und Side Hustle aufbauen.
-- Weiteres Nebeneinkommen generieren.
-- Eigene Haushaltsbuch App benutzen die beliebig erweitert werden kann.
+- Flutter, Dart, SQL, Datenbanken, Clean Architektur, Design Pattern, Git/Github(-Actions), CI/CD & UI/UX Design Fähigkeiten lernen und verbessern => für späteren Job
+- Agile Vorgehensweise verbessern und DDD (Domain Driven Design) und TDD (Test-Driven-Development) lernen => für Job
+- Software Projekt für eigenes Portfolio zum Vorzeigen => für mich und späteren Job
+- Eigenes kleines Projekt und Side Hustle aufbauen => für mich
+- Weiteres Nebeneinkommen generieren => für mich
+- Eigene Haushaltsbuch App benutzen die beliebig erweitert werden kann => für andere
 
 # Werte / Prinzipien
 
@@ -48,5 +48,5 @@ Bei der Haushaltsbuch App gibt es aktuell folgende features die jeweils der oben
 
 # Datenbank Entscheidungen
 
-Für lokale Datenspeicherungen soll sqflite (https://pub.dev/packages/sqflite) verwendet werden, weil hier Relationen zwischen verschiedenen Datenbanktabellen realisiert werden können
+Für lokale Datenspeicherungen wird sqflite (https://pub.dev/packages/sqflite) verwendet werden, weil hier Relationen zwischen verschiedenen Datenbanktabellen realisiert werden können
 und diese gut wartbar ist. Durch SQL können die Daten verwaltet und manipuliert werden. Außerdem ist sqflite ein beliebtes Flutter Package mit vielen Likes, Pub Points und hoher Popularität.
