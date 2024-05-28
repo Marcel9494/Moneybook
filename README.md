@@ -9,6 +9,7 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 - Eigenes kleines Projekt und Side Hustle aufbauen => für mich
 - Weiteres Nebeneinkommen generieren => für mich
 - Eigene Haushaltsbuch App benutzen die beliebig erweitert werden kann => für andere
+- Erste eigene App entwickeln => für später folgende App Projekte
 
 # Werte / Prinzipien
 
