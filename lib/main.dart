@@ -34,9 +34,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('de', 'DE'),
       ],
-      home: const CreateBookingPage(),
+      home: const BookingListPage(),
       routes: {
         bookingListRoute: (context) => const BookingListPage(),
+        createBookingRoute: (context) => const CreateBookingPage(),
       },
     );
   }

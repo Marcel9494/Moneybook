@@ -1,4 +1,27 @@
-enum RepetitionType { noRepetition, weekly, twoWeeks, monthly, monthlyBeginning, monthlyEnding, threeMonths, sixMonths, yearly }
+enum RepetitionType {
+  noRepetition,
+  weekly,
+  twoWeeks,
+  monthly,
+  monthlyBeginning,
+  monthlyEnding,
+  threeMonths,
+  sixMonths,
+  yearly;
+
+  static RepetitionType fromString(String s) => switch (s) {
+        'Keine Wiederholung' => RepetitionType.noRepetition,
+        'Jede Woche' => RepetitionType.weekly,
+        'Alle zwei Wochen' => RepetitionType.twoWeeks,
+        'Jeden Monat' => RepetitionType.monthly,
+        'Am Monatsanfang' => RepetitionType.monthlyBeginning,
+        'Am Monatsende' => RepetitionType.monthlyEnding,
+        'Alle drei Monate' => RepetitionType.threeMonths,
+        'Alle sechs Monate' => RepetitionType.sixMonths,
+        'Jedes Jahr' => RepetitionType.yearly,
+        _ => RepetitionType.noRepetition
+      };
+}
 
 extension RepetitionTypeExtension on RepetitionType {
   String get name {
