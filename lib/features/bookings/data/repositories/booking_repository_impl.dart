@@ -36,25 +36,28 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<Either<Failure, void>> delete(int id) {
+  Future<Either<Failure, void>> delete(int id) async {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, Booking>> get(int id) {
+  Future<Either<Failure, Booking>> load(int id) async {
     // TODO: implement get
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, List<Booking>>> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
+  Future<Either<Failure, List<Booking>>> loadSortedMonthly(DateTime selectedDate) async {
+    try {
+      return Right(await bookingLocalDataSource.loadSortedMonthly(selectedDate));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
-  Future<Either<Failure, void>> update(Booking booking) {
+  Future<Either<Failure, void>> update(Booking booking) async {
     // TODO: implement update
     throw UnimplementedError();
   }

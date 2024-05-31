@@ -3,6 +3,7 @@ import 'package:moneybook/features/bookings/data/datasources/booking_local_data_
 import 'package:moneybook/features/bookings/data/repositories/booking_repository_impl.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
+import 'package:moneybook/features/bookings/domain/usecases/loadSortedMonthlyBookings.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
 
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
@@ -12,9 +13,10 @@ final sl = GetIt.instance;
 void init() {
   //! Features - Booking
   // Bloc
-  sl.registerFactory(() => BookingBloc(sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl()));
   // Use Cases
   sl.registerLazySingleton(() => Create(sl()));
+  sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
   // Repository
   sl.registerLazySingleton<BookingRepository>(
     () => BookingRepositoryImpl(

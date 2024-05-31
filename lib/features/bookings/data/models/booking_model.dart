@@ -8,6 +8,7 @@ class BookingModel extends Booking {
     required super.date,
     required super.repetition,
     required super.amount,
+    required super.currency,
     required super.account,
     required super.categorie,
   });

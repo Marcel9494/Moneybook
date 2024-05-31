@@ -12,3 +12,12 @@ class CreateBooking extends BookingEvent {
   @override
   List<Object?> get props => [booking];
 }
+
+class LoadSortedMonthlyBookings extends BookingEvent {
+  final DateTime selectedDate;
+
+  const LoadSortedMonthlyBookings(this.selectedDate);
+
+  @override
+  List<Object?> get props => [selectedDate];
+}

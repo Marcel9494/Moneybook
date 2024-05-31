@@ -1,4 +1,17 @@
-enum BookingType { expense, income, transfer, investment }
+enum BookingType {
+  expense,
+  income,
+  transfer,
+  investment;
+
+  static BookingType fromString(String s) => switch (s) {
+        'Ausgabe' => BookingType.expense,
+        'Einnahme' => BookingType.income,
+        'Übertrag' => BookingType.transfer,
+        'Investition' => BookingType.investment,
+        _ => BookingType.expense
+      };
+}
 
 extension BookingTypeExtension on BookingType {
   String get name {

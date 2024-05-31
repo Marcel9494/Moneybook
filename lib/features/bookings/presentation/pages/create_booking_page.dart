@@ -61,9 +61,10 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
               id: 0,
               type: _bookingType.first,
               title: _titleController.text,
-              date: dateFormatterDDMMYYYYEE.parse(_dateController.text),
+              date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
               repetition: _repetitionType,
-              amount: Amount(value: Amount.getValue(_amountController.text), currency: Amount.getCurrency(_amountController.text)),
+              amount: Amount.getValue(_amountController.text),
+              currency: Amount.getCurrency(_amountController.text),
               account: _accountController.text,
               categorie: _categorieController.text,
             ),
@@ -87,50 +88,49 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       ),
       body: BlocProvider(
         create: (_) => sl<BookingBloc>(),
-        child: BlocListener<BookingBloc, BookingState>(
-          listener: (context, state) {
+        child: BlocConsumer<BookingBloc, BookingState>(
+          listener: (BuildContext context, BookingState state) {
             if (state is Finished) {
+              Navigator.pop(context);
               Navigator.popAndPushNamed(context, bookingListRoute);
             }
           },
-          child: BlocBuilder<BookingBloc, BookingState>(
-            builder: (context, state) {
-              if (state is Initial) {
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                    child: Card(
-                      child: Form(
-                        key: _bookingFormKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TypeSegmentedButton(
-                              bookingType: _bookingType,
-                              onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
-                            ),
-                            DateAndRepeatInputField(
-                              dateController: _dateController,
-                              repetitionType: _repetitionType.name,
-                            ),
-                            TitleTextField(titleController: _titleController),
-                            AmountTextField(amountController: _amountController),
-                            AccountInputField(
-                              accountController: _accountController,
-                              hintText: _bookingType.first.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
-                            ),
-                            CategorieInputField(categorieController: _categorieController),
-                            SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => createBooking(context)),
-                          ],
-                        ),
+          builder: (BuildContext context, state) {
+            if (state is Initial) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                  child: Card(
+                    child: Form(
+                      key: _bookingFormKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TypeSegmentedButton(
+                            bookingType: _bookingType,
+                            onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
+                          ),
+                          DateAndRepeatInputField(
+                            dateController: _dateController,
+                            repetitionType: _repetitionType.name,
+                          ),
+                          TitleTextField(titleController: _titleController),
+                          AmountTextField(amountController: _amountController),
+                          AccountInputField(
+                            accountController: _accountController,
+                            hintText: _bookingType.first.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
+                          ),
+                          CategorieInputField(categorieController: _categorieController),
+                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => createBooking(context)),
+                        ],
                       ),
                     ),
                   ),
-                );
-              }
-              return const SizedBox();
-            },
-          ),
+                ),
+              );
+            }
+            return const SizedBox();
+          },
         ),
       ),
     );
