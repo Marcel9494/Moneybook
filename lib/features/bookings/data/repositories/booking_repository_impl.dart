@@ -48,9 +48,9 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<Either<Failure, List<Booking>>> loadMonthly(DateTime selectedDate) async {
+  Future<Either<Failure, List<Booking>>> loadSortedMonthly(DateTime selectedDate) async {
     try {
-      return Right(await bookingLocalDataSource.loadMonthly(selectedDate));
+      return Right(await bookingLocalDataSource.loadSortedMonthly(selectedDate));
     } on ServerException {
       return Left(ServerFailure());
     }

@@ -4,13 +4,13 @@ import 'package:moneybook/features/bookings/domain/repositories/booking_reposito
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 
-class LoadMonthly implements UseCase<void, DateTime> {
+class LoadSortedMonthly implements UseCase<void, DateTime> {
   final BookingRepository bookingRepository;
 
-  LoadMonthly(this.bookingRepository);
+  LoadSortedMonthly(this.bookingRepository);
 
   @override
   Future<Either<Failure, void>> call(DateTime selectedDate) async {
-    return await bookingRepository.loadMonthly(selectedDate);
+    return await bookingRepository.loadSortedMonthly(selectedDate);
   }
 }

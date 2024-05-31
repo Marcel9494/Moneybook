@@ -10,7 +10,7 @@ abstract class BookingLocalDataSource {
   Future<void> update(Booking booking);
   Future<void> delete(int id);
   Future<BookingModel> load(int id);
-  Future<List<Booking>> loadMonthly(DateTime selectedDate);
+  Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -66,7 +66,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<List<Booking>> loadMonthly(DateTime selectedDate) async {
+  Future<List<Booking>> loadSortedMonthly(DateTime selectedDate) async {
     await openBookingDatabase();
     List<Map> bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName');
     List<Booking> bookingList = bookingMap
@@ -84,6 +84,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
           ),
         )
         .toList();
+    bookingList.sort((first, second) => second.date.compareTo(first.date));
     print(bookingList);
     return bookingList;
   }
