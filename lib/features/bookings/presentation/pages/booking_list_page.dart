@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/deco/daily_report_summary.dart';
 
@@ -57,10 +56,6 @@ class _BookingListPageState extends State<BookingListPage> {
             }
             return const SizedBox();
           },
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add_rounded),
-          onPressed: () => Navigator.pushNamed(context, createBookingRoute),
         ),
       ),
     );
