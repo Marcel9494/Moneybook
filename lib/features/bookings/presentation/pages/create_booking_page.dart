@@ -92,7 +92,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           listener: (BuildContext context, BookingState state) {
             if (state is Finished) {
               Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bookingListRoute);
+              Navigator.popAndPushNamed(context, bottomNavBarRoute);
             }
           },
           builder: (BuildContext context, state) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
+import 'package:moneybook/shared/presentation/widgets/bottom_nav_bar/bottom_nav_bar.dart';
 
 import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
@@ -34,8 +35,9 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('de', 'DE'),
       ],
-      home: const BookingListPage(),
+      home: const BottomNavBar(),
       routes: {
+        bottomNavBarRoute: (context) => const BottomNavBar(),
         bookingListRoute: (context) => const BookingListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
       },
