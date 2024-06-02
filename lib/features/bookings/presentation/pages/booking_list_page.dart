@@ -21,7 +21,7 @@ class _BookingListPageState extends State<BookingListPage> {
     BlocProvider.of<BookingBloc>(context).add(
       LoadSortedMonthlyBookings(DateTime.now()),
     );
-    // TODO hier weitermachen und eigenes Event für tägliche Einnahmen und Ausgaben berechnen implementieren
+    // TODO eigenes Event für tägliche Einnahmen und Ausgaben berechnen implementieren
   }
 
   @override
@@ -29,7 +29,6 @@ class _BookingListPageState extends State<BookingListPage> {
     return BlocProvider(
       create: (_) => sl<BookingBloc>(),
       child: Scaffold(
-        appBar: AppBar(),
         body: BlocBuilder<BookingBloc, BookingState>(
           builder: (context, state) {
             loadBookings(context);
