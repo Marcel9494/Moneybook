@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/accounts/presentation/pages/account_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
-
-import '../../../../core/consts/route_consts.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -40,6 +39,17 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Moneybook'),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              icon: const Icon(Icons.menu_rounded),
+            );
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, createBookingRoute),
         shape: const CircleBorder(),
@@ -110,6 +120,45 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               ),
             ],
           ),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const DrawerHeader(
+              child: Text('Moneybook'),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.auto_stories_rounded,
+                color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Buchungen',
+                style: TextStyle(color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              selected: _tabIndex == 0,
+              onTap: () {
+                _onTabChange(0);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.account_balance_wallet_rounded,
+                color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Konten',
+                style: TextStyle(color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              selected: _tabIndex == 1,
+              onTap: () {
+                _onTabChange(1);
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
       ),
     );
