@@ -6,6 +6,7 @@ import 'package:moneybook/features/bookings/domain/usecases/create.dart';
 import 'package:moneybook/features/bookings/domain/usecases/loadSortedMonthlyBookings.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
 
+import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
 
 final sl = GetIt.instance;
@@ -14,6 +15,7 @@ void init() {
   //! Features - Booking
   // Bloc
   sl.registerFactory(() => BookingBloc(sl(), sl()));
+  sl.registerFactory(() => AccountBloc());
   // Use Cases
   sl.registerLazySingleton(() => Create(sl()));
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
