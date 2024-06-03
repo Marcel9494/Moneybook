@@ -114,7 +114,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             dateController: _dateController,
                             repetitionType: _repetitionType.name,
                           ),
-                          TitleTextField(titleController: _titleController),
+                          TitleTextField(hintText: 'Titel...', titleController: _titleController),
                           AmountTextField(amountController: _amountController),
                           AccountInputField(
                             accountController: _accountController,

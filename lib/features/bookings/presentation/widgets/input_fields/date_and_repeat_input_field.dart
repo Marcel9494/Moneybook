@@ -112,7 +112,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
-        hintText: 'Datum',
+        hintText: 'Datum...',
         counterText: '',
         prefixIcon: const IconTheme(
           data: IconThemeData(color: Colors.grey),

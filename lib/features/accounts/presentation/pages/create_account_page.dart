@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/features/accounts/presentation/widgets/account_type_input_field.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/route_consts.dart';
@@ -7,6 +8,7 @@ import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../../domain/value_objects/account_type.dart';
 import '../bloc/account_bloc.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -18,9 +20,11 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final GlobalKey<FormState> _accountFormKey = GlobalKey<FormState>();
+  final TextEditingController _accountTypeController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _createAccountBtnController = RoundedLoadingButtonController();
+  final AccountType _accountType = AccountType.none;
 
   // TODO hier weitermachen und Konto erstellen weiter implementieren in Bloc
   @override
@@ -49,7 +53,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          TitleTextField(titleController: _titleController),
+                          AccountTypeInputField(accountTypeController: _accountTypeController, accountType: _accountType.name),
+                          TitleTextField(hintText: 'Kontoname...', titleController: _titleController),
                           AmountTextField(amountController: _amountController),
                           SaveButton(saveBtnController: _createAccountBtnController, onPressed: () => {} /*createAccount(context)*/),
                         ],
