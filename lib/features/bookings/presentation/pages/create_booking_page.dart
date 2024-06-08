@@ -45,7 +45,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     _dateController.text = dateFormatterDDMMYYYYEE.format(DateTime.now());
   }
 
-  void createBooking(BuildContext context) {
+  void _createBooking(BuildContext context) {
     final FormState form = _bookingFormKey.currentState!;
     if (form.validate() == false) {
       _createBookingBtnController.error();
@@ -121,7 +121,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             hintText: _bookingType.first.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                           ),
                           CategorieInputField(categorieController: _categorieController),
-                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => createBooking(context)),
+                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
                         ],
                       ),
                     ),
