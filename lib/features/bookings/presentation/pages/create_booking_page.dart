@@ -5,21 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/amount.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
-import 'package:moneybook/features/bookings/presentation/widgets/buttons/save_button.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/buttons/type_segmented_button.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_and_repeat_input_field.dart';
+import 'package:moneybook/shared/presentation/widgets/buttons/save_button.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../injection_container.dart';
+import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
+import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
-import '../widgets/input_fields/amount_text_field.dart';
 import '../widgets/input_fields/categorie_input_field.dart';
-import '../widgets/input_fields/title_text_field.dart';
 
 class CreateBookingPage extends StatefulWidget {
   const CreateBookingPage({super.key});
@@ -45,7 +45,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     _dateController.text = dateFormatterDDMMYYYYEE.format(DateTime.now());
   }
 
-  void createBooking(BuildContext context) {
+  void _createBooking(BuildContext context) {
     final FormState form = _bookingFormKey.currentState!;
     if (form.validate() == false) {
       _createBookingBtnController.error();
@@ -114,14 +114,14 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             dateController: _dateController,
                             repetitionType: _repetitionType.name,
                           ),
-                          TitleTextField(titleController: _titleController),
+                          TitleTextField(hintText: 'Titel...', titleController: _titleController),
                           AmountTextField(amountController: _amountController),
                           AccountInputField(
                             accountController: _accountController,
                             hintText: _bookingType.first.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                           ),
                           CategorieInputField(categorieController: _categorieController),
-                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => createBooking(context)),
+                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
                         ],
                       ),
                     ),

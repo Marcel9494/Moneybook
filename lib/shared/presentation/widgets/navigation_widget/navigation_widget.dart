@@ -40,7 +40,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Moneybook'),
+        title: Text(_tabIndex == 0 ? 'Buchungen' : 'Konten'),
         leading: Builder(
           builder: (context) {
             return IconButton(
@@ -49,6 +49,14 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
             );
           },
         ),
+        actions: [
+          _tabIndex == 1
+              ? IconButton(
+                  onPressed: () => Navigator.pushNamed(context, createAccountRoute),
+                  icon: const Icon(Icons.add_rounded),
+                )
+              : const SizedBox(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, createBookingRoute),

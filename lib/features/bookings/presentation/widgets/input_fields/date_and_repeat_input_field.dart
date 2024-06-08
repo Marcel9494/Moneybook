@@ -3,8 +3,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
 import '../../../../../core/utils/date_formatter.dart';
+import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../buttons/list_view_button.dart';
-import '../deco/bottom_sheet_header.dart';
 
 class DateAndRepeatInputField extends StatefulWidget {
   final TextEditingController dateController;
@@ -112,7 +112,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
-        hintText: 'Datum',
+        hintText: 'Datum...',
         counterText: '',
         prefixIcon: const IconTheme(
           data: IconThemeData(color: Colors.grey),

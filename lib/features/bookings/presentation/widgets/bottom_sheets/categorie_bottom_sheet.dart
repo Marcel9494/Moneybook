@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/buttons/grid_view_button.dart';
 
-import '../deco/bottom_sheet_header.dart';
+import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 
 openCategorieBottomSheet({required BuildContext context, required String title, required TextEditingController controller}) {
   showCupertinoModalBottomSheet<void>(

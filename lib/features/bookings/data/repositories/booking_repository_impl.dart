@@ -10,12 +10,10 @@ import '../datasources/booking_local_data_source.dart';
 class BookingRepositoryImpl implements BookingRepository {
   final BookingRemoteDataSource bookingRemoteDataSource;
   final BookingLocalDataSource bookingLocalDataSource;
-  //final NetworkInfo networkInfo;
 
   BookingRepositoryImpl({
     required this.bookingRemoteDataSource,
     required this.bookingLocalDataSource,
-    //required this.networkInfo,
   });
 
   @override

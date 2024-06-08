@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:moneybook/features/accounts/presentation/pages/create_account_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widget/navigation_widget.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         bottomNavBarRoute: (context) => const BottomNavBar(),
         bookingListRoute: (context) => const BookingListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
+        createAccountRoute: (context) => const CreateAccountPage(),
       },
     );
   }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TitleTextField extends StatelessWidget {
+  final String hintText;
   final TextEditingController titleController;
 
   const TitleTextField({
     super.key,
+    required this.hintText,
     required this.titleController,
   });
 
@@ -23,7 +25,7 @@ class TitleTextField extends StatelessWidget {
       textCapitalization: TextCapitalization.sentences,
       validator: (input) => _checkTextInput(),
       decoration: InputDecoration(
-        hintText: 'Titel...',
+        hintText: hintText,
         counterText: '',
         prefixIcon: const Icon(Icons.title_rounded),
         suffixIcon: IconButton(
