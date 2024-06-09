@@ -1,34 +1,36 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moneybook/features/bookings/domain/value_objects/amount.dart';
-import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
-import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
-import 'package:moneybook/features/bookings/presentation/widgets/buttons/type_segmented_button.dart';
-import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
-import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_and_repeat_input_field.dart';
-import 'package:moneybook/shared/presentation/widgets/buttons/save_button.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
+import '../../../../core/utils/number_formatter.dart';
 import '../../../../injection_container.dart';
+import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
+import '../../domain/value_objects/repetition_type.dart';
+import '../bloc/booking_bloc.dart';
+import '../widgets/buttons/type_segmented_button.dart';
+import '../widgets/input_fields/account_input_field.dart';
 import '../widgets/input_fields/categorie_input_field.dart';
+import '../widgets/input_fields/date_and_repeat_input_field.dart';
 
-class CreateBookingPage extends StatefulWidget {
-  const CreateBookingPage({super.key});
+class EditBookingPage extends StatefulWidget {
+  final Booking booking;
+
+  const EditBookingPage({
+    super.key,
+    required this.booking,
+  });
 
   @override
-  State<CreateBookingPage> createState() => _CreateBookingPageState();
+  State<EditBookingPage> createState() => _EditBookingPageState();
 }
 
-class _CreateBookingPageState extends State<CreateBookingPage> {
+class _EditBookingPageState extends State<EditBookingPage> {
   final GlobalKey<FormState> _bookingFormKey = GlobalKey<FormState>();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
@@ -36,43 +38,26 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
-  final RepetitionType _repetitionType = RepetitionType.noRepetition;
-  BookingType _bookingType = BookingType.expense;
+  late RepetitionType _repetitionType;
+  late BookingType _bookingType;
 
   @override
   void initState() {
     super.initState();
-    _dateController.text = dateFormatterDDMMYYYYEE.format(DateTime.now());
+    _initializeBooking();
   }
 
-  void _createBooking(BuildContext context) {
-    final FormState form = _bookingFormKey.currentState!;
-    if (form.validate() == false) {
-      _createBookingBtnController.error();
-      Timer(const Duration(milliseconds: durationInMs), () {
-        _createBookingBtnController.reset();
-      });
-    } else {
-      _createBookingBtnController.success();
-      Timer(const Duration(milliseconds: durationInMs), () {
-        BlocProvider.of<BookingBloc>(context).add(
-          CreateBooking(
-            Booking(
-              id: 0,
-              type: _bookingType,
-              title: _titleController.text,
-              date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
-              repetition: _repetitionType,
-              amount: Amount.getValue(_amountController.text),
-              currency: Amount.getCurrency(_amountController.text),
-              account: _accountController.text,
-              categorie: _categorieController.text,
-            ),
-          ),
-        );
-      });
-    }
+  void _initializeBooking() {
+    _dateController.text = dateFormatterDDMMYYYYEE.format(widget.booking.date);
+    _titleController.text = widget.booking.title;
+    _amountController.text = formatToMoneyAmount(widget.booking.amount.toString());
+    _accountController.text = widget.booking.account;
+    _categorieController.text = widget.booking.categorie;
+    _repetitionType = widget.booking.repetition;
+    _bookingType = widget.booking.type;
   }
+
+  void _editBooking(BuildContext context) {}
 
   void _changeBookingType(Set<BookingType> newBookingType) {
     setState(() {
@@ -84,7 +69,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buchung erstellen'),
+        title: const Text('Buchung bearbeiten'),
+        actions: [
+          IconButton(
+            onPressed: () => {},
+            icon: const Icon(Icons.delete_forever_rounded),
+          ),
+        ],
       ),
       body: BlocProvider(
         create: (_) => sl<BookingBloc>(),
@@ -121,7 +112,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                           ),
                           CategorieInputField(categorieController: _categorieController),
-                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
+                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _editBooking(context)),
                         ],
                       ),
                     ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:moneybook/core/consts/route_consts.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
 
 import '../../../../../core/utils/number_formatter.dart';
 import '../../../domain/entities/booking.dart';
@@ -25,65 +27,68 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ClipPath(
-        clipper: ShapeBorderClipper(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(right: BorderSide(color: _getBookingTypeColor(), width: 3.5)),
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, editBookingRoute, arguments: EditBookingPageArguments(booking)),
+      child: Card(
+        child: ClipPath(
+          clipper: ShapeBorderClipper(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 12.0, 8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border(right: BorderSide(color: Colors.grey.shade700, width: 0.7)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            booking.categorie,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            booking.account,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: _getBookingTypeColor(), width: 3.5)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 12.0, 12.0, 8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(right: BorderSide(color: Colors.grey.shade700, width: 0.7)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              booking.categorie,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4.0),
+                            Text(
+                              booking.account,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 12.0, 12.0, 8.0),
-                  child: Text(booking.title),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 12.0, 16.0, 8.0),
-                  child: Text(
-                    formatToMoneyAmount(booking.amount.toString()),
-                    style: TextStyle(
-                      color: _getBookingTypeColor(),
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.end,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 12.0, 12.0, 8.0),
+                    child: Text(booking.title),
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 12.0, 16.0, 8.0),
+                    child: Text(
+                      formatToMoneyAmount(booking.amount.toString()),
+                      style: TextStyle(
+                        color: _getBookingTypeColor(),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
