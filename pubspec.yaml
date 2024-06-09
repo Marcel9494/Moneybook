@@ -27,6 +27,7 @@ dependencies:
   equatable: ^2.0.5
   dartz: ^0.10.1
   sqflite: ^2.3.3+1
+  sqflite_common_ffi: ^2.3.3
   modal_bottom_sheet: ^3.0.0
   rounded_loading_button_plus: ^3.0.1
 

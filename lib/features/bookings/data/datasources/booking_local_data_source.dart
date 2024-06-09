@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../domain/entities/booking.dart';
@@ -19,10 +20,10 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   static const String bookingDbName = 'bookings';
   var db;
 
-  Future<void> openBookingDatabase() async {
-    db = await openDatabase('$bookingDbName.db', version: 1, onCreate: (Database db, int version) async {
+  Future<dynamic> openBookingDatabase(String databaseName) async {
+    db = await openDatabase('$databaseName.db', version: 1, onCreate: (Database db, int version) async {
       await db.execute('''
-          CREATE TABLE IF NOT EXISTS $bookingDbName (
+          CREATE TABLE IF NOT EXISTS $databaseName (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             type TEXT NOT NULL,
             title TEXT NOT NULL,
@@ -35,16 +36,17 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
           )
           ''');
     });
+    return db;
   }
 
   @override
   Future<void> create(Booking booking) async {
-    await openBookingDatabase();
+    db = await openBookingDatabase(bookingDbName);
     await db
         .rawInsert('INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, account, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [
       booking.type.name,
       booking.title,
-      booking.date.toString(),
+      DateFormat('yyyy-MM-dd').format(booking.date),
       booking.repetition.name,
       booking.amount,
       booking.currency,
@@ -67,7 +69,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
 
   @override
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate) async {
-    await openBookingDatabase();
+    await openBookingDatabase(bookingDbName);
     List<Map> bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName');
     List<Booking> bookingList = bookingMap
         .map(

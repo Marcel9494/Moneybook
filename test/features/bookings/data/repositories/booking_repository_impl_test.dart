@@ -14,6 +14,7 @@ class MockLocalDataSource extends Mock implements BookingLocalDataSource {}
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
+// TODO hier weitermachen und erste sinnvolle Teste implementieren zuerst schauen wo anfangen
 void main() {
   late BookingRepositoryImpl repository;
   MockRemoteDataSource mockRemoteDataSource;
