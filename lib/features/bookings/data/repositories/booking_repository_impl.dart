@@ -35,8 +35,11 @@ class BookingRepositoryImpl implements BookingRepository {
 
   @override
   Future<Either<Failure, void>> delete(int id) async {
-    // TODO: implement delete
-    throw UnimplementedError();
+    try {
+      return Right(await bookingLocalDataSource.delete(id));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override

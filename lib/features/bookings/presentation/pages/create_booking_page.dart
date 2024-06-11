@@ -37,7 +37,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _categorieController = TextEditingController();
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
   final RepetitionType _repetitionType = RepetitionType.noRepetition;
-  Set<BookingType> _bookingType = {BookingType.expense};
+  BookingType _bookingType = BookingType.expense;
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           CreateBooking(
             Booking(
               id: 0,
-              type: _bookingType.first,
+              type: _bookingType,
               title: _titleController.text,
               date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
               repetition: _repetitionType,
@@ -76,7 +76,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
 
   void _changeBookingType(Set<BookingType> newBookingType) {
     setState(() {
-      _bookingType = newBookingType;
+      _bookingType = newBookingType.first;
     });
   }
 
@@ -118,7 +118,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                           AmountTextField(amountController: _amountController),
                           AccountInputField(
                             accountController: _accountController,
-                            hintText: _bookingType.first.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
+                            hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                           ),
                           CategorieInputField(categorieController: _categorieController),
                           SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),

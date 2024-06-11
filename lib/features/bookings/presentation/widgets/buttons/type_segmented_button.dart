@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/value_objects/booking_type.dart';
 
 class TypeSegmentedButton extends StatefulWidget {
-  Set<BookingType> bookingType;
+  BookingType bookingType;
   Function onSelectionChanged;
 
   TypeSegmentedButton({
@@ -52,7 +52,7 @@ class _TypeSegmentedButtonState extends State<TypeSegmentedButton> {
             ),
           ),
         ],
-        selected: widget.bookingType,
+        selected: {widget.bookingType},
         onSelectionChanged: (newSelectedValue) => widget.onSelectionChanged(newSelectedValue),
         showSelectedIcon: false,
         style: SegmentedButton.styleFrom(

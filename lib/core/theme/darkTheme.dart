@@ -64,6 +64,11 @@ final darkTheme = ThemeData(
       borderSide: BorderSide(color: Colors.cyanAccent),
     ),
   ),
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: MaterialStateProperty.all<Color>(Colors.cyanAccent),
+    ),
+  ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: Colors.cyanAccent,
     foregroundColor: Colors.black87,
