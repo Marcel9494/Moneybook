@@ -13,6 +13,16 @@ class CreateBooking extends BookingEvent {
   List<Object?> get props => [booking];
 }
 
+class EditBooking extends BookingEvent {
+  final Booking booking;
+  final BuildContext context;
+
+  const EditBooking(this.booking, this.context);
+
+  @override
+  List<Object?> get props => [booking, context];
+}
+
 class DeleteBooking extends BookingEvent {
   final int bookingId;
   final BuildContext context;

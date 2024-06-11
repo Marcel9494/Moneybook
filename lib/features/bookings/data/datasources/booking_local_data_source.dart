@@ -8,7 +8,7 @@ import '../models/booking_model.dart';
 
 abstract class BookingLocalDataSource {
   Future<void> create(Booking booking);
-  Future<void> update(Booking booking);
+  Future<void> edit(Booking booking);
   Future<void> delete(int id);
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
@@ -96,8 +96,26 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> update(Booking booking) async {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<void> edit(Booking booking) async {
+    db = await openBookingDatabase(bookingDbName);
+    try {
+      await db.rawUpdate(
+          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, account = ?, categorie = ? WHERE id = ?',
+          [
+            booking.id,
+            booking.type.name,
+            booking.title,
+            DateFormat('yyyy-MM-dd').format(booking.date),
+            booking.repetition.name,
+            booking.amount,
+            booking.currency,
+            booking.account,
+            booking.categorie,
+            booking.id
+          ]);
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
   }
 }

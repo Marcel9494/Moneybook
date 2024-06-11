@@ -16,6 +16,7 @@ Future<void> main() async {
   group('BookingBloc', () {
     late BookingBloc bookingBloc;
     late Create createUsecase;
+    late Create editUsecase;
     late Delete deleteUsecase;
     late LoadSortedMonthly loadSortedMonthlyUsecase;
     late MockBookingRepository mockBookingRepository;
@@ -23,9 +24,10 @@ Future<void> main() async {
     setUp(() {
       mockBookingRepository = MockBookingRepository();
       createUsecase = Create(mockBookingRepository);
+      editUsecase = Create(mockBookingRepository);
       deleteUsecase = Delete(mockBookingRepository);
       loadSortedMonthlyUsecase = LoadSortedMonthly(mockBookingRepository);
-      bookingBloc = BookingBloc(createUsecase, deleteUsecase, loadSortedMonthlyUsecase);
+      bookingBloc = BookingBloc(createUsecase, editUsecase, deleteUsecase, loadSortedMonthlyUsecase);
     });
 
     Booking tBooking = Booking(
