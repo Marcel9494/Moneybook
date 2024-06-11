@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:moneybook/features/accounts/presentation/pages/create_account_page.dart';
+import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
@@ -10,11 +12,16 @@ import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
 import 'injection_container.dart' as di;
+import 'injection_container.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   di.init();
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+      create: (context) => sl<BookingBloc>(),
+    ),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

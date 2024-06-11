@@ -1,11 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/number_formatter.dart';
-import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
@@ -57,7 +56,38 @@ class _EditBookingPageState extends State<EditBookingPage> {
     _bookingType = widget.booking.type;
   }
 
-  void _editBooking(BuildContext context) {}
+  void _editBooking(BuildContext context) {
+    // TODO
+  }
+
+  void _deleteBooking(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Buchung löschen?'),
+          content: const Text('Wollen Sie die Buchung wirklich löschen?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ja'),
+              onPressed: () {
+                BlocProvider.of<BookingBloc>(context).add(
+                  DeleteBooking(widget.booking.id, context),
+                );
+              },
+            ),
+            TextButton(
+              child: const Text('Nein'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _changeBookingType(Set<BookingType> newBookingType) {
     setState(() {
@@ -72,57 +102,48 @@ class _EditBookingPageState extends State<EditBookingPage> {
         title: const Text('Buchung bearbeiten'),
         actions: [
           IconButton(
-            onPressed: () => {},
+            onPressed: () => _deleteBooking(context),
             icon: const Icon(Icons.delete_forever_rounded),
           ),
         ],
       ),
-      body: BlocProvider(
-        create: (_) => sl<BookingBloc>(),
-        child: BlocConsumer<BookingBloc, BookingState>(
-          listener: (BuildContext context, BookingState state) {
-            if (state is Finished) {
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute);
-            }
-          },
-          builder: (BuildContext context, state) {
-            if (state is Initial) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                  child: Card(
-                    child: Form(
-                      key: _bookingFormKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TypeSegmentedButton(
-                            bookingType: _bookingType,
-                            onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
-                          ),
-                          DateAndRepeatInputField(
-                            dateController: _dateController,
-                            repetitionType: _repetitionType.name,
-                          ),
-                          TitleTextField(hintText: 'Titel...', titleController: _titleController),
-                          AmountTextField(amountController: _amountController),
-                          AccountInputField(
-                            accountController: _accountController,
-                            hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
-                          ),
-                          CategorieInputField(categorieController: _categorieController),
-                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _editBooking(context)),
-                        ],
-                      ),
+      body: BlocBuilder<BookingBloc, BookingState>(
+        builder: (BuildContext context, BookingState state) {
+          if (state is Initial) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                child: Card(
+                  child: Form(
+                    key: _bookingFormKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TypeSegmentedButton(
+                          bookingType: _bookingType,
+                          onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
+                        ),
+                        DateAndRepeatInputField(
+                          dateController: _dateController,
+                          repetitionType: _repetitionType.name,
+                        ),
+                        TitleTextField(hintText: 'Titel...', titleController: _titleController),
+                        AmountTextField(amountController: _amountController),
+                        AccountInputField(
+                          accountController: _accountController,
+                          hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
+                        ),
+                        CategorieInputField(categorieController: _categorieController),
+                        SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _editBooking(context)),
+                      ],
                     ),
                   ),
                 ),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
+              ),
+            );
+          }
+          return const SizedBox();
+        },
       ),
     );
   }
