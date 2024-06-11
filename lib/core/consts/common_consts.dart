@@ -1,1 +1,1 @@
-const durationInMs = 1000;
+const durationInMs = 800;

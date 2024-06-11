@@ -121,7 +121,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                           ),
                           CategorieInputField(categorieController: _categorieController),
-                          SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
+                          SaveButton(text: 'Erstellen', saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
                         ],
                       ),
                     ),

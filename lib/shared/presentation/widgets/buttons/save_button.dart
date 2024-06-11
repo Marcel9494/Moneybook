@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 class SaveButton extends StatelessWidget {
+  final String text;
   final RoundedLoadingButtonController saveBtnController;
   final VoidCallback onPressed;
 
   const SaveButton({
     super.key,
+    required this.text,
     required this.saveBtnController,
     required this.onPressed,
   });
@@ -22,9 +24,9 @@ class SaveButton extends StatelessWidget {
         height: 40.0,
         borderRadius: 12.0,
         onPressed: onPressed,
-        child: const Text(
-          'Erstellen',
-          style: TextStyle(color: Colors.black87),
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.black87),
         ),
       ),
     );

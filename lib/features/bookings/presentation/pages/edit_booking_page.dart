@@ -1,14 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/number_formatter.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/value_objects/amount.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../../domain/value_objects/repetition_type.dart';
 import '../bloc/booking_bloc.dart';
@@ -36,7 +40,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
-  final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _editBookingBtnController = RoundedLoadingButtonController();
   late RepetitionType _repetitionType;
   late BookingType _bookingType;
 
@@ -57,7 +61,33 @@ class _EditBookingPageState extends State<EditBookingPage> {
   }
 
   void _editBooking(BuildContext context) {
-    // TODO
+    final FormState form = _bookingFormKey.currentState!;
+    if (form.validate() == false) {
+      _editBookingBtnController.error();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        _editBookingBtnController.reset();
+      });
+    } else {
+      _editBookingBtnController.success();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        BlocProvider.of<BookingBloc>(context).add(
+          EditBooking(
+            Booking(
+              id: widget.booking.id,
+              type: _bookingType,
+              title: _titleController.text,
+              date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
+              repetition: _repetitionType,
+              amount: Amount.getValue(_amountController.text),
+              currency: Amount.getCurrency(_amountController.text),
+              account: _accountController.text,
+              categorie: _categorieController.text,
+            ),
+            context,
+          ),
+        );
+      });
+    }
   }
 
   void _deleteBooking(BuildContext context) {
@@ -134,7 +164,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                           hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                         ),
                         CategorieInputField(categorieController: _categorieController),
-                        SaveButton(saveBtnController: _createBookingBtnController, onPressed: () => _editBooking(context)),
+                        SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
                       ],
                     ),
                   ),
