@@ -34,7 +34,7 @@ class AccountInputField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         counterText: '',
-        prefixIcon: const Icon(Icons.account_balance_rounded),
+        prefixIcon: const Icon(Icons.account_balance_outlined),
       ),
     );
   }

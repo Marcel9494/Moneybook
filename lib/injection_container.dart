@@ -15,6 +15,7 @@ import 'features/accounts/data/repositories/account_repository_impl.dart';
 import 'features/accounts/domain/repositories/account_repository.dart';
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
+import 'features/categories/presentation/bloc/categorie_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -23,6 +24,7 @@ void init() {
   // Bloc
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl()));
+  sl.registerFactory(() => CategorieBloc());
   // Use Cases
   sl.registerLazySingleton(() => create_booking.Create(sl()));
   sl.registerLazySingleton(() => edit_booking.Edit(sl()));

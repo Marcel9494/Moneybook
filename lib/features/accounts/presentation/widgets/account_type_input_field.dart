@@ -94,7 +94,7 @@ class _AccountTypeInputFieldState extends State<AccountTypeInputField> {
   void _setAccountType(BuildContext context, String newAccountType) {
     setState(() {
       widget.accountType = newAccountType;
-      // TODO hier weitermachen und schauen warum es nicht nur erreicht widget.accountType zu setzen
+      // TODO hier weitermachen und schauen warum es nicht nur reicht widget.accountType zu setzen
       if (widget.accountType == AccountType.none.name) {
         widget.accountTypeController.text = '';
       } else {

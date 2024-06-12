@@ -6,11 +6,13 @@ import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart'
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
+import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widget/navigation_widget.dart';
 
 import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
+import 'features/categories/presentation/pages/create_categorie_page.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
@@ -49,8 +51,10 @@ class MyApp extends StatelessWidget {
       routes: {
         bottomNavBarRoute: (context) => const BottomNavBar(),
         bookingListRoute: (context) => const BookingListPage(),
+        categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
         createAccountRoute: (context) => const CreateAccountPage(),
+        createCategorieRoute: (context) => const CreateCategoriePage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
