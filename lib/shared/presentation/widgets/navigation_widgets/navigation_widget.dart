@@ -2,24 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/accounts/presentation/pages/account_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
-import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  final int tabIndex;
+
+  const BottomNavBar({
+    super.key,
+    required this.tabIndex,
+  });
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
+  late int _tabIndex;
   late TabController _tabController;
-  int _tabIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabIndex = widget.tabIndex;
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.animation!.addListener(_tabListener);
+    _tabController.index = widget.tabIndex;
   }
 
   void _tabListener() {
@@ -101,7 +107,6 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         children: const [
           BookingListPage(),
           AccountListPage(),
-          CategorieListPage(),
         ],
       ),
       bottomNavigationBar: _tabIndex == 0 || _tabIndex == 1
@@ -170,6 +175,10 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 'Buchungen',
                 style: TextStyle(color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white),
               ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
+              ),
               selected: _tabIndex == 0,
               onTap: () {
                 _onTabChange(0);
@@ -184,6 +193,10 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               title: Text(
                 'Konten',
                 style: TextStyle(color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
               ),
               selected: _tabIndex == 1,
               onTap: () {
@@ -200,10 +213,13 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 'Kategorien',
                 style: TextStyle(color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white),
               ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
+              ),
               selected: _tabIndex == 2,
               onTap: () {
-                _onTabChange(2);
-                Navigator.pop(context);
+                Navigator.pushNamed(context, categorieListRoute);
               },
             ),
           ],
