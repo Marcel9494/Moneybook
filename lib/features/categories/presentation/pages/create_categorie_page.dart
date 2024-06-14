@@ -9,8 +9,10 @@ import '../../../../core/consts/route_consts.dart';
 import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../../domain/entities/categorie.dart';
 import '../../domain/value_objects/categorie_type.dart';
 import '../bloc/categorie_bloc.dart';
+import '../widgets/buttons/categorie_type_segmented_button.dart';
 
 class CreateCategoriePage extends StatefulWidget {
   const CreateCategoriePage({super.key});
@@ -21,10 +23,9 @@ class CreateCategoriePage extends StatefulWidget {
 
 class _CreateCategoriePageState extends State<CreateCategoriePage> {
   final GlobalKey<FormState> _categorieFormKey = GlobalKey<FormState>();
-  final TextEditingController _categorieTypeController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final RoundedLoadingButtonController _createCategorieBtnController = RoundedLoadingButtonController();
-  final CategorieType _categorieType = CategorieType.outcome;
+  CategorieType _categorieType = CategorieType.expense;
 
   void _createAccount(BuildContext context) {
     final FormState form = _categorieFormKey.currentState!;
@@ -35,7 +36,7 @@ class _CreateCategoriePageState extends State<CreateCategoriePage> {
       });
     } else {
       _createCategorieBtnController.success();
-      /*Timer(const Duration(milliseconds: durationInMs), () {
+      Timer(const Duration(milliseconds: durationInMs), () {
         BlocProvider.of<CategorieBloc>(context).add(
           CreateCategorie(
             Categorie(
@@ -45,8 +46,14 @@ class _CreateCategoriePageState extends State<CreateCategoriePage> {
             ),
           ),
         );
-      });*/
+      });
     }
+  }
+
+  void _changeCategorieType(Set<CategorieType> newCategorieType) {
+    setState(() {
+      _categorieType = newCategorieType.first;
+    });
   }
 
   @override
@@ -75,7 +82,10 @@ class _CreateCategoriePageState extends State<CreateCategoriePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // TODO hier weitermachen und CategorieType auswählen implementieren
+                          CategorieTypeSegmentedButton(
+                            categorieType: _categorieType,
+                            onSelectionChanged: (categorieType) => _changeCategorieType(categorieType),
+                          ),
                           TitleTextField(hintText: 'Kategoriename...', titleController: _titleController),
                           SaveButton(text: 'Erstellen', saveBtnController: _createCategorieBtnController, onPressed: () => _createAccount(context)),
                         ],

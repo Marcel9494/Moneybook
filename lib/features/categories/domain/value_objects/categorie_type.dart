@@ -1,5 +1,5 @@
 enum CategorieType {
-  outcome,
+  expense,
   income,
   investment;
 }
@@ -7,7 +7,7 @@ enum CategorieType {
 extension CategorieTypeExtension on CategorieType {
   String get name {
     switch (this) {
-      case CategorieType.outcome:
+      case CategorieType.expense:
         return 'Ausgabe';
       case CategorieType.income:
         return 'Einnahme';

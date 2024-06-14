@@ -70,18 +70,12 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           },
         ),
         actions: [
-          if (_tabIndex == 1)
-            IconButton(
-              onPressed: () => Navigator.pushNamed(context, createAccountRoute),
-              icon: const Icon(Icons.add_rounded),
-            )
-          else if (_tabIndex == 2)
-            IconButton(
-              onPressed: () => Navigator.pushNamed(context, createCategorieRoute),
-              icon: const Icon(Icons.add_rounded),
-            )
-          else
-            const SizedBox(),
+          _tabIndex == 1
+              ? IconButton(
+                  onPressed: () => Navigator.pushNamed(context, createAccountRoute),
+                  icon: const Icon(Icons.add_rounded),
+                )
+              : const SizedBox(),
         ],
       ),
       floatingActionButton: _tabIndex == 0 || _tabIndex == 1

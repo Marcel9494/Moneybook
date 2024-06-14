@@ -13,3 +13,12 @@ final class Finished extends CategorieState {
   @override
   List<Object> get props => [];
 }
+
+final class Error extends CategorieState {
+  final String message;
+
+  const Error({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

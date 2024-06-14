@@ -11,7 +11,7 @@ class CategorieListPage extends StatefulWidget {
 }
 
 class _CategorieListPageState extends State<CategorieListPage> with TickerProviderStateMixin {
-  int _tabIndex = 2;
+  final int _tabIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,12 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             );
           },
         ),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(context, createCategorieRoute),
+            icon: const Icon(Icons.add_rounded),
+          ),
+        ],
       ),
       body: const Text('Kategorien'),
       drawer: Drawer(
