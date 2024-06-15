@@ -18,27 +18,26 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   static const String categorieDbName = 'categories';
   var db;
 
-  Future<void> openCategorieDatabase() async {
-    db = await openDatabase('$categorieDbName.db', version: 1, onCreate: (Database db, int version) async {
+  Future<dynamic> openCategorieDatabase(String databaseName) async {
+    db = await openDatabase('$databaseName.db', version: 1, onCreate: (Database db, int version) async {
       await db.execute('''
-          CREATE TABLE IF NOT EXISTS $categorieDbName (
+          CREATE TABLE IF NOT EXISTS $databaseName (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             type TEXT NOT NULL,
             name TEXT NOT NULL
           )
           ''');
     });
+    return db;
   }
 
   @override
   Future<void> create(Categorie categorie) async {
-    await openCategorieDatabase();
+    db = await openCategorieDatabase(categorieDbName);
     await db.rawInsert('INSERT INTO $categorieDbName(type, name) VALUES(?, ?)', [
       categorie.type.name,
       categorie.name,
     ]);
-    // TODO hier weitermachen und schauen warum id nicht automatisch hochgezählt wird und anschließend Kategorie Listen UI implementieren
-    print(categorie);
   }
 
   @override
@@ -54,8 +53,18 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   }
 
   @override
-  Future<List<Categorie>> loadAll(CategorieType categorieType) {
-    // TODO: implement loadAll
+  Future<List<Categorie>> loadAll(CategorieType categorieType) async {
+    // TODO
+    /*List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName');
+    List<Categorie> categorieList = categorieMap
+        .map(
+          (categorie) => Categorie(
+        id: categorie['id'],
+        type: CategorieType.fromString(categorie['type']),
+        name: categorie['name'],
+      ),
+    )
+        .toList();*/
     throw UnimplementedError();
   }
 

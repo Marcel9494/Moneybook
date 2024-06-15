@@ -8,6 +8,7 @@ import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart'
 import 'package:moneybook/features/bookings/presentation/widgets/buttons/type_segmented_button.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_and_repeat_input_field.dart';
+import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import 'package:moneybook/shared/presentation/widgets/buttons/save_button.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
@@ -92,7 +93,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           listener: (BuildContext context, BookingState state) {
             if (state is Finished) {
               Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute);
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
             }
           },
           builder: (BuildContext context, state) {

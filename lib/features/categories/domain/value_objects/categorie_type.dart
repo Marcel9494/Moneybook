@@ -2,6 +2,13 @@ enum CategorieType {
   expense,
   income,
   investment;
+
+  static CategorieType fromString(String s) => switch (s) {
+        'Ausgabe' => CategorieType.expense,
+        'Einnahme' => CategorieType.income,
+        'Investment' => CategorieType.investment,
+        _ => CategorieType.expense
+      };
 }
 
 extension CategorieTypeExtension on CategorieType {
