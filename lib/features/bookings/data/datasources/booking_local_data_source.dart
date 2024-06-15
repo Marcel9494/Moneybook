@@ -91,7 +91,6 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         )
         .toList();
     bookingList.sort((first, second) => second.date.compareTo(first.date));
-    print(bookingList);
     return bookingList;
   }
 
