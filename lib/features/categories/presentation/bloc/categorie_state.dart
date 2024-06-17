@@ -9,6 +9,20 @@ final class Initial extends CategorieState {
   List<Object> get props => [];
 }
 
+final class Loading extends CategorieState {
+  @override
+  List<Object> get props => [];
+}
+
+final class Loaded extends CategorieState {
+  final List<Categorie> categorie;
+
+  const Loaded({required this.categorie});
+
+  @override
+  List<Object> get props => [categorie];
+}
+
 final class Finished extends CategorieState {
   @override
   List<Object> get props => [];

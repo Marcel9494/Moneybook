@@ -5,8 +5,8 @@ import '../../domain/value_objects/categorie_type.dart';
 import '../models/categorie_model.dart';
 
 abstract class CategorieLocalDataSource {
-  Future<void> create(Categorie cateogrie);
-  Future<void> update(Categorie cateogrie);
+  Future<void> create(Categorie categorie);
+  Future<void> update(Categorie categorie);
   Future<void> delete(int id);
   Future<CategorieModel> load(int id);
   Future<List<Categorie>> loadAll(CategorieType categorieType);
@@ -54,18 +54,18 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
 
   @override
   Future<List<Categorie>> loadAll(CategorieType categorieType) async {
-    // TODO
-    /*List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName');
+    db = await openCategorieDatabase(categorieDbName);
+    List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName WHERE type = ?', [categorieType.name]);
     List<Categorie> categorieList = categorieMap
         .map(
           (categorie) => Categorie(
-        id: categorie['id'],
-        type: CategorieType.fromString(categorie['type']),
-        name: categorie['name'],
-      ),
-    )
-        .toList();*/
-    throw UnimplementedError();
+            id: categorie['id'],
+            type: CategorieType.fromString(categorie['type']),
+            name: categorie['name'],
+          ),
+        )
+        .toList();
+    return categorieList;
   }
 
   @override

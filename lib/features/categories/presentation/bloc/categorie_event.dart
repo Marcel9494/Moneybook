@@ -12,3 +12,12 @@ class CreateCategorie extends CategorieEvent {
   @override
   List<Object?> get props => [categorie];
 }
+
+class LoadCategories extends CategorieEvent {
+  final CategorieType categorieType;
+
+  const LoadCategories(this.categorieType);
+
+  @override
+  List<Object?> get props => [categorieType];
+}

@@ -73,4 +73,8 @@ final darkTheme = ThemeData(
     backgroundColor: Colors.cyanAccent,
     foregroundColor: Colors.black87,
   ),
+  tabBarTheme: const TabBarTheme(
+    labelColor: Colors.cyanAccent,
+    indicatorColor: Colors.cyanAccent,
+  ),
 );

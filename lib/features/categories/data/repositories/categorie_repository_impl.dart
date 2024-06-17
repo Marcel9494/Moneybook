@@ -39,9 +39,12 @@ class CategorieRepositoryImpl implements CategorieRepository {
   }
 
   @override
-  Future<Either<Failure, List<Categorie>>> loadAll(CategorieType categorieType) {
-    // TODO: implement loadSortedMonthly
-    throw UnimplementedError();
+  Future<Either<Failure, List<Categorie>>> loadAll(CategorieType categorieType) async {
+    try {
+      return Right(await categorieLocalDataSource.loadAll(categorieType));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
