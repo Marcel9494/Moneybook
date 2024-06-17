@@ -6,7 +6,7 @@ enum CategorieType {
   static CategorieType fromString(String s) => switch (s) {
         'Ausgabe' => CategorieType.expense,
         'Einnahme' => CategorieType.income,
-        'Investment' => CategorieType.investment,
+        'Investition' => CategorieType.investment,
         _ => CategorieType.expense
       };
 }
@@ -19,7 +19,7 @@ extension CategorieTypeExtension on CategorieType {
       case CategorieType.income:
         return 'Einnahme';
       case CategorieType.investment:
-        return 'Investment';
+        return 'Investition';
       default:
         throw Exception('$name is not a valid Categorie type.');
     }

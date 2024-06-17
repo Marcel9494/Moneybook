@@ -73,7 +73,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
 
   @override
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate) async {
-    await openBookingDatabase(bookingDbName);
+    db = await openBookingDatabase(bookingDbName);
     List<Map> bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName');
     List<Booking> bookingList = bookingMap
         .map(
