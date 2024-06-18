@@ -77,10 +77,11 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             ],
           ),
         ),
-        body: const Padding(
-          padding: EdgeInsets.only(top: 6.0),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 6.0),
           child: TabBarView(
-            children: [
+            controller: _tabController,
+            children: const [
               CategorieListView(),
               CategorieListView(),
               CategorieListView(),
