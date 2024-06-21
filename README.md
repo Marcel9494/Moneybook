@@ -6,7 +6,7 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 - Flutter, Dart, SQL, Datenbanken, Clean Architektur, Design Pattern, Git/Github(-Actions), CI/CD & UI/UX Design Fähigkeiten lernen und verbessern => für späteren Job
 - Agile Vorgehensweise verbessern und DDD (Domain Driven Design) und TDD (Test-Driven-Development) lernen => für Job
 - Software Projekt für eigenes Portfolio zum Vorzeigen => für mich und späteren Job
-- Eigenes kleines Projekt und Side Hustle aufbauen => für mich und späteren Job
+- Eigenes Projekt und Side Hustle aufbauen => für mich und späteren Job
 - Weiteres Nebeneinkommen generieren => für mich
 - Eigene Haushaltsbuch App benutzen die beliebig erweitert werden kann => für andere und mich
 - Erste eigene App entwickeln => für später folgende App Projekte
@@ -19,6 +19,7 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 - Funktionierender und sehr guter wartbarer, erweiterbarer Code ist das Wichtigste
 - Exzellente, moderne UI/UX ist ein Muss
 - Schnelle Release-Zyklen realisieren
+- Kunden- und eigener Nutzen stehen im Fokus
 
 # Erweiterungen
 
