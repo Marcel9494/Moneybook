@@ -4,7 +4,6 @@ import 'package:moneybook/core/error/failures.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/categorie.dart';
 import '../../domain/repositories/categorie_repository.dart';
-import '../../domain/value_objects/categorie_type.dart';
 import '../datasources/categorie_local_data_source.dart';
 import '../datasources/categorie_remote_data_source.dart';
 
@@ -27,9 +26,12 @@ class CategorieRepositoryImpl implements CategorieRepository {
   }
 
   @override
-  Future<Either<Failure, void>> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<Either<Failure, void>> delete(int id) async {
+    try {
+      return Right(await categorieLocalDataSource.delete(id));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
@@ -39,17 +41,20 @@ class CategorieRepositoryImpl implements CategorieRepository {
   }
 
   @override
-  Future<Either<Failure, List<Categorie>>> loadAll(CategorieType categorieType) async {
+  Future<Either<Failure, List<Categorie>>> loadAll() async {
     try {
-      return Right(await categorieLocalDataSource.loadAll(categorieType));
+      return Right(await categorieLocalDataSource.loadAll());
     } on ServerException {
       return Left(ServerFailure());
     }
   }
 
   @override
-  Future<Either<Failure, void>> update(Categorie categorie) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<Either<Failure, void>> edit(Categorie categorie) async {
+    try {
+      return Right(await categorieLocalDataSource.edit(categorie));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 }

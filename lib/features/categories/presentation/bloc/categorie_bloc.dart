@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:moneybook/features/categories/domain/usecases/delete.dart';
+import 'package:moneybook/features/categories/domain/usecases/edit.dart';
+import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
 import '../../../categories/domain/usecases/create.dart';
 import '../../domain/entities/categorie.dart';
 import '../../domain/usecases/loadAll.dart';
-import '../../domain/value_objects/categorie_type.dart';
 
 part 'categorie_event.dart';
 part 'categorie_state.dart';
@@ -16,9 +18,11 @@ const String LOAD_CATEGORIES_FAILURE = 'Kategorien konnten nicht geladen werden.
 
 class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
   final Create createUseCase;
+  final Edit editUseCase;
+  final Delete deleteUseCase;
   final LoadAll loadUseCase;
 
-  CategorieBloc(this.createUseCase, this.loadUseCase) : super(Initial()) {
+  CategorieBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadUseCase) : super(Initial()) {
     on<CategorieEvent>((event, emit) async {
       if (event is CreateCategorie) {
         final createCategorieEither = await createUseCase.categorieRepository.create(event.categorie);
@@ -27,12 +31,46 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
         }, (_) {
           emit(Finished());
         });
-      } else if (event is LoadCategories) {
-        final loadCategorieEither = await loadUseCase.categorieRepository.loadAll(event.categorieType);
+      } else if (event is EditCategorie) {
+        final editCategorieEither = await editUseCase.categorieRepository.edit(event.categorie);
+        editCategorieEither.fold((failure) {
+          emit(const Error(message: EDIT_CATEGORIE_FAILURE));
+        }, (_) {
+          //Navigator.pop(event.context);
+          //Navigator.popAndPushNamed(event.context, bottomNavBarRoute);
+        });
+      } else if (event is DeleteCategorie) {
+        final deleteCategorieEither = await deleteUseCase.categorieRepository.delete(event.categorieId);
+        deleteCategorieEither.fold((failure) {
+          emit(const Error(message: DELETE_CATEGORIE_FAILURE));
+        }, (_) {
+          emit(Deleted());
+          //Navigator.pop(event.context);
+          //Navigator.popAndPushNamed(event.context, bottomNavBarRoute);
+        });
+      } else if (event is LoadAllCategories) {
+        emit(Loading());
+        final loadCategorieEither = await loadUseCase.categorieRepository.loadAll();
         loadCategorieEither.fold((failure) {
           emit(const Error(message: LOAD_CATEGORIES_FAILURE));
-        }, (categories) {
-          emit(Loaded(categorie: categories));
+        }, (categories) async {
+          List<Categorie> expenseCategories = [];
+          List<Categorie> incomeCategories = [];
+          List<Categorie> investmentCategories = [];
+          for (int i = 0; i < categories.length; i++) {
+            if (categories[i].type == CategorieType.expense) {
+              expenseCategories.add(categories[i]);
+            } else if (categories[i].type == CategorieType.income) {
+              incomeCategories.add(categories[i]);
+            } else if (categories[i].type == CategorieType.investment) {
+              investmentCategories.add(categories[i]);
+            }
+          }
+          emit(Loaded(
+            expenseCategories: expenseCategories,
+            incomeCategories: incomeCategories,
+            investmentCategories: investmentCategories,
+          ));
         });
       }
     });

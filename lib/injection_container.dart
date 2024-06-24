@@ -9,6 +9,8 @@ import 'package:moneybook/features/bookings/domain/usecases/edit.dart' as edit_b
 import 'package:moneybook/features/bookings/domain/usecases/loadSortedMonthlyBookings.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:moneybook/features/categories/domain/usecases/create.dart' as create_categorie;
+import 'package:moneybook/features/categories/domain/usecases/delete.dart' as delete_categorie;
+import 'package:moneybook/features/categories/domain/usecases/edit.dart' as edit_categorie;
 
 import 'features/accounts/data/datasources/account_local_data_source.dart';
 import 'features/accounts/data/datasources/account_remote_data_source.dart';
@@ -30,7 +32,7 @@ void init() {
   // Bloc
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl()));
-  sl.registerFactory(() => CategorieBloc(sl(), sl()));
+  sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl()));
   // Use Cases
   sl.registerLazySingleton(() => create_booking.Create(sl()));
   sl.registerLazySingleton(() => edit_booking.Edit(sl()));
@@ -38,6 +40,8 @@ void init() {
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
   sl.registerLazySingleton(() => account.Create(sl()));
   sl.registerLazySingleton(() => create_categorie.Create(sl()));
+  sl.registerLazySingleton(() => edit_categorie.Edit(sl()));
+  sl.registerLazySingleton(() => delete_categorie.Delete(sl()));
   sl.registerLazySingleton(() => LoadAll(sl()));
   // Repository
   sl.registerLazySingleton<BookingRepository>(

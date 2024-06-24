@@ -1,6 +1,6 @@
 part of 'categorie_bloc.dart';
 
-sealed class CategorieState extends Equatable {
+sealed class CategorieState {
   const CategorieState();
 }
 
@@ -15,15 +15,30 @@ final class Loading extends CategorieState {
 }
 
 final class Loaded extends CategorieState {
-  final List<Categorie> categorie;
+  final List<Categorie> expenseCategories;
+  final List<Categorie> incomeCategories;
+  final List<Categorie> investmentCategories;
 
-  const Loaded({required this.categorie});
+  const Loaded({
+    required this.expenseCategories,
+    required this.incomeCategories,
+    required this.investmentCategories,
+  });
 
   @override
-  List<Object> get props => [categorie];
+  List<Object> get props => [
+        expenseCategories,
+        incomeCategories,
+        investmentCategories,
+      ];
 }
 
 final class Finished extends CategorieState {
+  @override
+  List<Object> get props => [];
+}
+
+final class Deleted extends CategorieState {
   @override
   List<Object> get props => [];
 }

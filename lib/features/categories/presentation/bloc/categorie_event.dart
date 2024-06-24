@@ -1,6 +1,6 @@
 part of 'categorie_bloc.dart';
 
-sealed class CategorieEvent extends Equatable {
+sealed class CategorieEvent {
   const CategorieEvent();
 }
 
@@ -13,11 +13,26 @@ class CreateCategorie extends CategorieEvent {
   List<Object?> get props => [categorie];
 }
 
-class LoadCategories extends CategorieEvent {
-  final CategorieType categorieType;
+class EditCategorie extends CategorieEvent {
+  final Categorie categorie;
+  final BuildContext context;
 
-  const LoadCategories(this.categorieType);
+  const EditCategorie(this.categorie, this.context);
 
   @override
-  List<Object?> get props => [categorieType];
+  List<Object?> get props => [categorie, context];
+}
+
+class DeleteCategorie extends CategorieEvent {
+  final int categorieId;
+  final BuildContext context;
+
+  const DeleteCategorie(this.categorieId, this.context);
+
+  @override
+  List<Object?> get props => [categorieId, context];
+}
+
+class LoadAllCategories extends CategorieEvent {
+  const LoadAllCategories();
 }

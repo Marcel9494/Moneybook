@@ -27,7 +27,7 @@ class _CreateCategoriePageState extends State<CreateCategoriePage> {
   final RoundedLoadingButtonController _createCategorieBtnController = RoundedLoadingButtonController();
   CategorieType _categorieType = CategorieType.expense;
 
-  void _createAccount(BuildContext context) {
+  void _createCategorie(BuildContext context) {
     final FormState form = _categorieFormKey.currentState!;
     if (form.validate() == false) {
       _createCategorieBtnController.error();
@@ -87,7 +87,7 @@ class _CreateCategoriePageState extends State<CreateCategoriePage> {
                             onSelectionChanged: (categorieType) => _changeCategorieType(categorieType),
                           ),
                           TitleTextField(hintText: 'Kategoriename...', titleController: _titleController),
-                          SaveButton(text: 'Erstellen', saveBtnController: _createCategorieBtnController, onPressed: () => _createAccount(context)),
+                          SaveButton(text: 'Erstellen', saveBtnController: _createCategorieBtnController, onPressed: () => _createCategorie(context)),
                         ],
                       ),
                     ),

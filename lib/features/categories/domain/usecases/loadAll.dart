@@ -3,15 +3,14 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repositories/categorie_repository.dart';
-import '../value_objects/categorie_type.dart';
 
-class LoadAll implements UseCase<void, CategorieType> {
+class LoadAll implements VoidUseCase<void, void> {
   final CategorieRepository categorieRepository;
 
   LoadAll(this.categorieRepository);
 
   @override
-  Future<Either<Failure, void>> call(CategorieType categorieType) async {
-    return await categorieRepository.loadAll(categorieType);
+  Future<Either<Failure, void>> call([void params]) async {
+    return await categorieRepository.loadAll();
   }
 }
