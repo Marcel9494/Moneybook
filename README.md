@@ -57,4 +57,5 @@ und diese gut wartbar ist. Durch SQL können die Daten verwaltet und manipuliert
 
 Bisherige Auswahlmöglichkeiten:
 
-1.) https://www.cockroachlabs.com/lp/start-free-database-mc/?utm_source=google&utm_medium=cpc&utm_campaign=g-search-emea-eu-bofu-dev-serv-lp&utm_term=p-free%20database-c&utm_content=lp698001815911&utm_network=g&_bt=698001815911&_bk=free%20database&_bm=p&_bn=g&gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxttBTbWCEOXgFfWjjxgmpx8aczigHLjJxulRiWyHWuIWqMACkqHa2pxoCJ8sQAvD_BwE
+1.) Cockroach: https://www.cockroachlabs.com/lp/start-free-database-mc/?utm_source=google&utm_medium=cpc&utm_campaign=g-search-emea-eu-bofu-dev-serv-lp&utm_term=p-free%20database-c&utm_content=lp698001815911&utm_network=g&_bt=698001815911&_bk=free%20database&_bm=p&_bn=g&gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxttBTbWCEOXgFfWjjxgmpx8aczigHLjJxulRiWyHWuIWqMACkqHa2pxoCJ8sQAvD_BwE
+2.) Supabase: https://pub.dev/packages/supabase_flutter
