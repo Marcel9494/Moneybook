@@ -6,10 +6,10 @@ import '../models/categorie_model.dart';
 
 abstract class CategorieLocalDataSource {
   Future<void> create(Categorie categorie);
-  Future<void> update(Categorie categorie);
+  Future<void> edit(Categorie categorie);
   Future<void> delete(int id);
   Future<CategorieModel> load(int id);
-  Future<List<Categorie>> loadAll(CategorieType categorieType);
+  Future<List<Categorie>> loadAll();
 }
 
 class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
@@ -41,9 +41,9 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   }
 
   @override
-  Future<void> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<void> delete(int id) async {
+    db = await openCategorieDatabase(categorieDbName);
+    await db.rawDelete('DELETE FROM $categorieDbName WHERE id = ?', [id]);
   }
 
   @override
@@ -53,9 +53,9 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   }
 
   @override
-  Future<List<Categorie>> loadAll(CategorieType categorieType) async {
+  Future<List<Categorie>> loadAll() async {
     db = await openCategorieDatabase(categorieDbName);
-    List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName WHERE type = ?', [categorieType.name]);
+    List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName');
     List<Categorie> categorieList = categorieMap
         .map(
           (categorie) => Categorie(
@@ -69,8 +69,18 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   }
 
   @override
-  Future<void> update(Categorie categorie) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<void> edit(Categorie categorie) async {
+    db = await openCategorieDatabase(categorieDbName);
+    try {
+      await db.rawUpdate('UPDATE $categorieDbName SET id = ?, type = ?, name = ? WHERE id = ?', [
+        categorie.id,
+        categorie.type.name,
+        categorie.name,
+        categorie.id,
+      ]);
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
   }
 }

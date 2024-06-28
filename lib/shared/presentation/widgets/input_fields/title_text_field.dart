@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class TitleTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController titleController;
+  final bool autofocus;
 
   const TitleTextField({
     super.key,
     required this.hintText,
     required this.titleController,
+    this.autofocus = false,
   });
 
   String? _checkTextInput() {
@@ -22,6 +24,7 @@ class TitleTextField extends StatelessWidget {
     return TextFormField(
       controller: titleController,
       maxLength: 80,
+      autofocus: autofocus,
       textCapitalization: TextCapitalization.sentences,
       validator: (input) => _checkTextInput(),
       decoration: InputDecoration(
