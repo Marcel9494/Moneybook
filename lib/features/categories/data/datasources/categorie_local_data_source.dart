@@ -74,12 +74,14 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
 
   @override
   Future<void> edit(Categorie categorie) async {
+    print(categorie.id);
     db = await openCategorieDatabase(categorieDbName);
     try {
       await db.rawUpdate('UPDATE $categorieDbName SET id = ?, type = ?, name = ? WHERE id = ?', [
         categorie.id,
         categorie.type.name,
         categorie.name,
+        categorie.id,
       ]);
     } catch (e) {
       // TODO Fehler richtig behandeln

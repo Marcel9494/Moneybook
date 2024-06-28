@@ -31,7 +31,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   final int _drawerTabIndex = 2;
   late final TabController _tabController;
   final TextEditingController _titleController = TextEditingController();
-  final RoundedLoadingButtonController _createCategorieBtnController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _categorieBtnController = RoundedLoadingButtonController();
   CategorieType _selectedCategorieType = CategorieType.expense;
   List<bool> _selectedCategorieValue = [true, false, false];
 
@@ -75,12 +75,11 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     children: [
                       const BottomSheetHeader(title: 'Kategorie erstellen'),
                       StatefulBuilder(builder: (BuildContext context, StateSetter setModalBottomState) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: Column(
-                            children: <Widget>[
-                              const SizedBox(height: 8.0),
-                              Wrap(
+                        return Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              child: Wrap(
                                 spacing: 6.0,
                                 children: List<Widget>.generate(
                                   CategorieType.values.length,
@@ -93,9 +92,8 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                   },
                                 ).toList(),
                               ),
-                              const SizedBox(height: 8.0),
-                            ],
-                          ),
+                            ),
+                          ],
                         );
                       }),
                       TitleTextField(
@@ -106,7 +104,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                       const SizedBox(height: 8.0),
                       SaveButton(
                         text: 'Erstellen',
-                        saveBtnController: _createCategorieBtnController,
+                        saveBtnController: _categorieBtnController,
                         onPressed: () {
                           _createCategorie();
                         },
@@ -125,17 +123,120 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   void _createCategorie() {
     final FormState form = _categorieFormKey.currentState!;
     if (form.validate() == false) {
-      _createCategorieBtnController.error();
+      _categorieBtnController.error();
       Timer(const Duration(milliseconds: durationInMs), () {
-        _createCategorieBtnController.reset();
+        _categorieBtnController.reset();
       });
     } else {
-      _createCategorieBtnController.success();
+      _categorieBtnController.success();
       Timer(const Duration(milliseconds: durationInMs), () {
         BlocProvider.of<CategorieBloc>(context).add(
           CreateCategorie(
             Categorie(
               id: 0,
+              type: _selectedCategorieType,
+              name: _titleController.text,
+            ),
+          ),
+        );
+      });
+      if (_selectedCategorieType == CategorieType.expense) {
+        _tabController.index = 0;
+      } else if (_selectedCategorieType == CategorieType.income) {
+        _tabController.index = 1;
+      } else if (_selectedCategorieType == CategorieType.investment) {
+        _tabController.index = 2;
+      }
+      Navigator.pop(context);
+    }
+  }
+
+  void _showEditCategorieBottomSheet(Categorie categorie) {
+    if (categorie.type == CategorieType.expense) {
+      _selectedCategorieType = CategorieType.expense;
+      _selectedCategorieValue = [true, false, false];
+    } else if (categorie.type == CategorieType.income) {
+      _selectedCategorieType = CategorieType.income;
+      _selectedCategorieValue = [false, true, false];
+    } else if (categorie.type == CategorieType.investment) {
+      _selectedCategorieType = CategorieType.investment;
+      _selectedCategorieValue = [false, false, true];
+    }
+    _titleController.text = categorie.name;
+    showCupertinoModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Material(
+            child: Wrap(
+              children: [
+                Form(
+                  key: _categorieFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const BottomSheetHeader(title: 'Kategorie bearbeiten'),
+                      StatefulBuilder(builder: (BuildContext context, StateSetter setModalBottomState) {
+                        return Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              child: Wrap(
+                                spacing: 6.0,
+                                children: List<Widget>.generate(
+                                  CategorieType.values.length,
+                                  (int index) {
+                                    return ChoiceChip(
+                                      label: Text(CategorieType.values[index].name),
+                                      selected: _selectedCategorieValue[index],
+                                      onSelected: (_) => _changeCategorieType(index, setModalBottomState),
+                                    );
+                                  },
+                                ).toList(),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                      TitleTextField(
+                        hintText: 'Kategoriename...',
+                        titleController: _titleController,
+                        autofocus: true,
+                      ),
+                      const SizedBox(height: 8.0),
+                      SaveButton(
+                        text: 'Speichern',
+                        saveBtnController: _categorieBtnController,
+                        onPressed: () {
+                          _editCategorie(categorie);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _editCategorie(Categorie categorie) {
+    final FormState form = _categorieFormKey.currentState!;
+    if (form.validate() == false) {
+      _categorieBtnController.error();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        _categorieBtnController.reset();
+      });
+    } else {
+      _categorieBtnController.success();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        BlocProvider.of<CategorieBloc>(context).add(
+          EditCategorie(
+            Categorie(
+              id: categorie.id,
               type: _selectedCategorieType,
               name: _titleController.text,
             ),
@@ -270,7 +371,8 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                       duration: const Duration(milliseconds: 500),
                     );
                     loadCategories(context);
-                  } else if (state is Deleted) {
+                  } else if (state is Deleted || state is Edited) {
+                    print(state);
                     loadCategories(context);
                   }
                 },
@@ -297,7 +399,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                     onPressed: () => _deleteCategorie(context, state.expenseCategories[index], index),
                                     icon: const Icon(Icons.remove_circle_outline_rounded),
                                   ),
-                                  onTap: () => {}, // TODO
+                                  onTap: () => _showEditCategorieBottomSheet(state.expenseCategories[index]), // TODO
                                 ),
                               );
                             } else {
@@ -319,10 +421,11 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                       duration: const Duration(milliseconds: 500),
                     );
                     loadCategories(context);
-                  } else if (state is Deleted) {
+                  } else if (state is Deleted || state is Edited) {
                     loadCategories(context);
                   }
                 },
+                // TODO hier weitermachen und editCategorie für income und investment implementieren
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {

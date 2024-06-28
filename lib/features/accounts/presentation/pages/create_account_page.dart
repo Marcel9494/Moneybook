@@ -9,6 +9,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../injection_container.dart';
+import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
@@ -68,7 +69,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           listener: (BuildContext context, AccountState state) {
             if (state is Finished) {
               Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute);
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
             }
           },
           builder: (BuildContext context, state) {

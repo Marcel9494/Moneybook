@@ -15,12 +15,11 @@ class CreateCategorie extends CategorieEvent {
 
 class EditCategorie extends CategorieEvent {
   final Categorie categorie;
-  final BuildContext context;
 
-  const EditCategorie(this.categorie, this.context);
+  const EditCategorie(this.categorie);
 
   @override
-  List<Object?> get props => [categorie, context];
+  List<Object?> get props => [categorie];
 }
 
 class DeleteCategorie extends CategorieEvent {

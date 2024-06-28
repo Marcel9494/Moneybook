@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 
 import '../../../../core/consts/route_consts.dart';
 import '../../domain/entities/booking.dart';
@@ -37,7 +38,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           emit(const Error(message: EDIT_BOOKING_FAILURE));
         }, (_) {
           Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute);
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is DeleteBooking) {
         final deleteBookingEither = await deleteUseCase.bookingRepository.delete(event.bookingId);
@@ -45,7 +46,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           emit(const Error(message: DELETE_BOOKING_FAILURE));
         }, (_) {
           Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute);
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is LoadSortedMonthlyBookings) {
         final loadBookingEither = await loadSortedMonthlyUseCase.bookingRepository.loadSortedMonthly(event.selectedDate);

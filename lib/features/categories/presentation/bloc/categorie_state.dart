@@ -38,6 +38,11 @@ final class Finished extends CategorieState {
   List<Object> get props => [];
 }
 
+final class Edited extends CategorieState {
+  @override
+  List<Object> get props => [];
+}
+
 final class Deleted extends CategorieState {
   @override
   List<Object> get props => [];

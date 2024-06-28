@@ -36,8 +36,7 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
         editCategorieEither.fold((failure) {
           emit(const Error(message: EDIT_CATEGORIE_FAILURE));
         }, (_) {
-          //Navigator.pop(event.context);
-          //Navigator.popAndPushNamed(event.context, bottomNavBarRoute);
+          emit(Edited());
         });
       } else if (event is DeleteCategorie) {
         final deleteCategorieEither = await deleteUseCase.categorieRepository.delete(event.categorieId);
@@ -45,8 +44,6 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
           emit(const Error(message: DELETE_CATEGORIE_FAILURE));
         }, (_) {
           emit(Deleted());
-          //Navigator.pop(event.context);
-          //Navigator.popAndPushNamed(event.context, bottomNavBarRoute);
         });
       } else if (event is LoadAllCategories) {
         emit(Loading());
