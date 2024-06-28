@@ -26,26 +26,35 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<Either<Failure, void>> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<Either<Failure, void>> delete(int id) async {
+    try {
+      return Right(await accountLocalDataSource.delete(id));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
   Future<Either<Failure, Account>> load(int id) {
-    // TODO: implement load
+    // TODO: implement loadAll
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, List<Account>>> loadSortedMonthly(DateTime selectedDate) {
-    // TODO: implement loadSortedMonthly
-    throw UnimplementedError();
+  Future<Either<Failure, void>> edit(Account account) async {
+    try {
+      return Right(await accountLocalDataSource.edit(account));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
-  Future<Either<Failure, void>> update(Account account) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<Either<Failure, List<Account>>> loadAll() async {
+    try {
+      return Right(await accountLocalDataSource.loadAll());
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 }

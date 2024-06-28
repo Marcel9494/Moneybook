@@ -13,6 +13,7 @@ import 'package:moneybook/shared/presentation/widgets/navigation_widgets/navigat
 
 import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
+import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'injection_container.dart' as di;
@@ -24,6 +25,9 @@ void main() {
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
       create: (context) => sl<BookingBloc>(),
+    ),
+    BlocProvider(
+      create: (context) => sl<AccountBloc>(),
     ),
     BlocProvider(
       create: (context) => sl<CategorieBloc>(),
