@@ -15,7 +15,6 @@ import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
-import 'features/categories/presentation/pages/create_categorie_page.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
@@ -60,7 +59,6 @@ class MyApp extends StatelessWidget {
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
         createAccountRoute: (context) => const CreateAccountPage(),
-        createCategorieRoute: (context) => const CreateCategoriePage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
