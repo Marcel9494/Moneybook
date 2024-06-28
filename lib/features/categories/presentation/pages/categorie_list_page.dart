@@ -49,16 +49,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   }
 
   void _addCategorie() {
-    if (_tabController.index == 0) {
-      _selectedCategorieType = CategorieType.expense;
-      _selectedCategorieValue = [true, false, false];
-    } else if (_tabController.index == 1) {
-      _selectedCategorieType = CategorieType.income;
-      _selectedCategorieValue = [false, true, false];
-    } else if (_tabController.index == 2) {
-      _selectedCategorieType = CategorieType.investment;
-      _selectedCategorieValue = [false, false, true];
-    }
+    _changeCategorieType(_tabController.index);
     _titleController.text = '';
     showCupertinoModalBottomSheet(
       context: context,
@@ -87,7 +78,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                     return ChoiceChip(
                                       label: Text(CategorieType.values[index].name),
                                       selected: _selectedCategorieValue[index],
-                                      onSelected: (_) => _changeCategorieType(index, setModalBottomState),
+                                      onSelected: (_) => setModalBottomState(() {
+                                        _changeCategorieType(index);
+                                      }),
                                     );
                                   },
                                 ).toList(),
@@ -140,28 +133,13 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
           ),
         );
       });
-      if (_selectedCategorieType == CategorieType.expense) {
-        _tabController.index = 0;
-      } else if (_selectedCategorieType == CategorieType.income) {
-        _tabController.index = 1;
-      } else if (_selectedCategorieType == CategorieType.investment) {
-        _tabController.index = 2;
-      }
+      _setTabControllerIndex(_selectedCategorieType);
       Navigator.pop(context);
     }
   }
 
   void _showEditCategorieBottomSheet(Categorie categorie) {
-    if (categorie.type == CategorieType.expense) {
-      _selectedCategorieType = CategorieType.expense;
-      _selectedCategorieValue = [true, false, false];
-    } else if (categorie.type == CategorieType.income) {
-      _selectedCategorieType = CategorieType.income;
-      _selectedCategorieValue = [false, true, false];
-    } else if (categorie.type == CategorieType.investment) {
-      _selectedCategorieType = CategorieType.investment;
-      _selectedCategorieValue = [false, false, true];
-    }
+    _setSelectedCategorie(categorie.type);
     _titleController.text = categorie.name;
     showCupertinoModalBottomSheet(
       context: context,
@@ -190,7 +168,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                     return ChoiceChip(
                                       label: Text(CategorieType.values[index].name),
                                       selected: _selectedCategorieValue[index],
-                                      onSelected: (_) => _changeCategorieType(index, setModalBottomState),
+                                      onSelected: (_) => setModalBottomState(() {
+                                        _changeCategorieType(index);
+                                      }),
                                     );
                                   },
                                 ).toList(),
@@ -243,13 +223,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
           ),
         );
       });
-      if (_selectedCategorieType == CategorieType.expense) {
-        _tabController.index = 0;
-      } else if (_selectedCategorieType == CategorieType.income) {
-        _tabController.index = 1;
-      } else if (_selectedCategorieType == CategorieType.investment) {
-        _tabController.index = 2;
-      }
+      _setTabControllerIndex(_selectedCategorieType);
       Navigator.pop(context);
     }
   }
@@ -310,19 +284,40 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
     );
   }
 
-  void _changeCategorieType(int index, StateSetter setModalBottomState) {
-    setModalBottomState(() {
-      if (index == 0) {
-        _selectedCategorieType = CategorieType.expense;
-        _selectedCategorieValue = [true, false, false];
-      } else if (index == 1) {
-        _selectedCategorieType = CategorieType.income;
-        _selectedCategorieValue = [false, true, false];
-      } else if (index == 2) {
-        _selectedCategorieType = CategorieType.investment;
-        _selectedCategorieValue = [false, false, true];
-      }
-    });
+  void _setSelectedCategorie(CategorieType categorieType) {
+    if (categorieType == CategorieType.expense) {
+      _selectedCategorieType = CategorieType.expense;
+      _selectedCategorieValue = [true, false, false];
+    } else if (categorieType == CategorieType.income) {
+      _selectedCategorieType = CategorieType.income;
+      _selectedCategorieValue = [false, true, false];
+    } else if (categorieType == CategorieType.investment) {
+      _selectedCategorieType = CategorieType.investment;
+      _selectedCategorieValue = [false, false, true];
+    }
+  }
+
+  void _setTabControllerIndex(CategorieType selectedCategorieType) {
+    if (selectedCategorieType == CategorieType.expense) {
+      _tabController.index = 0;
+    } else if (selectedCategorieType == CategorieType.income) {
+      _tabController.index = 1;
+    } else if (selectedCategorieType == CategorieType.investment) {
+      _tabController.index = 2;
+    }
+  }
+
+  void _changeCategorieType(int index) {
+    if (index == 0) {
+      _selectedCategorieType = CategorieType.expense;
+      _selectedCategorieValue = [true, false, false];
+    } else if (index == 1) {
+      _selectedCategorieType = CategorieType.income;
+      _selectedCategorieValue = [false, true, false];
+    } else if (index == 2) {
+      _selectedCategorieType = CategorieType.investment;
+      _selectedCategorieValue = [false, false, true];
+    }
   }
 
   @override
@@ -368,11 +363,10 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   if (state is Finished) {
                     _expenseKey.currentState!.insertItem(
                       0,
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 100),
                     );
                     loadCategories(context);
-                  } else if (state is Deleted || state is Edited) {
-                    print(state);
+                  } else if (state is Deleted) {
                     loadCategories(context);
                   }
                 },
@@ -381,14 +375,15 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     if (state is Loading) {
                       return const CircularProgressIndicator();
                     } else if (state is Loaded) {
+                      // TODO hier weitermachen und AnimatedList in eigenes Widget auslagern
                       return AnimatedList(
                         key: _expenseKey,
                         initialItemCount: state.expenseCategories.length,
                         itemBuilder: (context, index, animation) {
                           if (state.expenseCategories.isEmpty) {
-                            return const Text('Keine Kategorien vorhanden.');
+                            return const Text('Keine Ausgabe Kategorien vorhanden.');
                           } else {
-                            if (state.expenseCategories[index].type == CategorieType.expense) {
+                            if (index < state.expenseCategories.length && state.expenseCategories[index].type == CategorieType.expense) {
                               return Card(
                                 child: ListTile(
                                   shape: const RoundedRectangleBorder(
@@ -399,7 +394,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                     onPressed: () => _deleteCategorie(context, state.expenseCategories[index], index),
                                     icon: const Icon(Icons.remove_circle_outline_rounded),
                                   ),
-                                  onTap: () => _showEditCategorieBottomSheet(state.expenseCategories[index]), // TODO
+                                  onTap: () => _showEditCategorieBottomSheet(state.expenseCategories[index]),
                                 ),
                               );
                             } else {
@@ -418,14 +413,13 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   if (state is Finished) {
                     _incomeKey.currentState!.insertItem(
                       0,
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 100),
                     );
                     loadCategories(context);
-                  } else if (state is Deleted || state is Edited) {
+                  } else if (state is Deleted) {
                     loadCategories(context);
                   }
                 },
-                // TODO hier weitermachen und editCategorie für income und investment implementieren
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {
@@ -436,9 +430,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                         initialItemCount: state.incomeCategories.length,
                         itemBuilder: (context, index, animation) {
                           if (state.incomeCategories.isEmpty) {
-                            return const Text('Keine Kategorien vorhanden.');
+                            return const Text('Keine Einnahme Kategorien vorhanden.');
                           } else {
-                            if (state.incomeCategories[index].type == CategorieType.income) {
+                            if (index < state.incomeCategories.length && state.incomeCategories[index].type == CategorieType.income) {
                               return Card(
                                 child: ListTile(
                                   shape: const RoundedRectangleBorder(
@@ -449,7 +443,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                     onPressed: () => _deleteCategorie(context, state.incomeCategories[index], index),
                                     icon: const Icon(Icons.remove_circle_outline_rounded),
                                   ),
-                                  onTap: () => {}, // TODO
+                                  onTap: () => _showEditCategorieBottomSheet(state.incomeCategories[index]),
                                 ),
                               );
                             } else {
@@ -468,7 +462,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   if (state is Finished) {
                     _investmentKey.currentState!.insertItem(
                       0,
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 100),
                     );
                     loadCategories(context);
                   } else if (state is Deleted) {
@@ -485,9 +479,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                         initialItemCount: state.investmentCategories.length,
                         itemBuilder: (context, index, animation) {
                           if (state.investmentCategories.isEmpty) {
-                            return const Text('Keine Kategorien vorhanden.');
+                            return const Text('Keine Investitions Kategorien vorhanden.');
                           } else {
-                            if (state.investmentCategories[index].type == CategorieType.investment) {
+                            if (index < state.investmentCategories.length && state.investmentCategories[index].type == CategorieType.investment) {
                               return Card(
                                 child: ListTile(
                                   shape: const RoundedRectangleBorder(
@@ -498,7 +492,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                     onPressed: () => _deleteCategorie(context, state.investmentCategories[index], index),
                                     icon: const Icon(Icons.remove_circle_outline_rounded),
                                   ),
-                                  onTap: () => {}, // TODO
+                                  onTap: () => _showEditCategorieBottomSheet(state.investmentCategories[index]),
                                 ),
                               );
                             } else {

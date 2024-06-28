@@ -36,7 +36,7 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
         editCategorieEither.fold((failure) {
           emit(const Error(message: EDIT_CATEGORIE_FAILURE));
         }, (_) {
-          emit(Edited());
+          emit(Finished());
         });
       } else if (event is DeleteCategorie) {
         final deleteCategorieEither = await deleteUseCase.categorieRepository.delete(event.categorieId);

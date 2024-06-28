@@ -58,11 +58,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> delete(int id) async {
     db = await openBookingDatabase(bookingDbName);
-    await db.delete(
-      bookingDbName,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    await db.rawDelete('DELETE FROM $bookingDbName WHERE id = ?', [id]);
   }
 
   @override

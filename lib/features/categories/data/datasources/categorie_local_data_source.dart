@@ -43,11 +43,7 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   @override
   Future<void> delete(int id) async {
     db = await openCategorieDatabase(categorieDbName);
-    await db.delete(
-      categorieDbName,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    await db.rawDelete('DELETE FROM $categorieDbName WHERE id = ?', [id]);
   }
 
   @override
@@ -74,7 +70,6 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
 
   @override
   Future<void> edit(Categorie categorie) async {
-    print(categorie.id);
     db = await openCategorieDatabase(categorieDbName);
     try {
       await db.rawUpdate('UPDATE $categorieDbName SET id = ?, type = ?, name = ? WHERE id = ?', [
