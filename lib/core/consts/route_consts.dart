@@ -5,4 +5,4 @@ const categorieListRoute = 'categorieList';
 const createBookingRoute = 'createBooking';
 const editBookingRoute = 'editBooking';
 const createAccountRoute = 'createAccount';
-const createCategorieRoute = 'createCategorie';
+const editAccountRoute = 'editAccount';

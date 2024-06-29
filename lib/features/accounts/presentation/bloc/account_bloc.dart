@@ -35,14 +35,14 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         editAccountEither.fold((failure) {
           emit(const Error(message: EDIT_ACCOUNT_FAILURE));
         }, (_) {
-          // TODO state emitten
+          emit(Finished());
         });
       } else if (event is DeleteAccount) {
         final deleteAccountEither = await deleteUseCase.accountRepository.delete(event.accountId);
         deleteAccountEither.fold((failure) {
           emit(const Error(message: DELETE_ACCOUNT_FAILURE));
         }, (_) {
-          // TODO state emitten
+          emit(Finished());
         });
       } else if (event is LoadAllAccounts) {
         final loadAccountEither = await loadAllCategoriesUseCase.accountRepository.loadAll();

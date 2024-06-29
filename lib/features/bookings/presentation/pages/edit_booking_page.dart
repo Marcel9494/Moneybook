@@ -137,43 +137,36 @@ class _EditBookingPageState extends State<EditBookingPage> {
           ),
         ],
       ),
-      body: BlocBuilder<BookingBloc, BookingState>(
-        builder: (BuildContext context, BookingState state) {
-          if (state is Initial) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                child: Card(
-                  child: Form(
-                    key: _bookingFormKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TypeSegmentedButton(
-                          bookingType: _bookingType,
-                          onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
-                        ),
-                        DateAndRepeatInputField(
-                          dateController: _dateController,
-                          repetitionType: _repetitionType.name,
-                        ),
-                        TitleTextField(hintText: 'Titel...', titleController: _titleController),
-                        AmountTextField(amountController: _amountController),
-                        AccountInputField(
-                          accountController: _accountController,
-                          hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
-                        ),
-                        CategorieInputField(categorieController: _categorieController),
-                        SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
-                      ],
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          child: Card(
+            child: Form(
+              key: _bookingFormKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TypeSegmentedButton(
+                    bookingType: _bookingType,
+                    onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
                   ),
-                ),
+                  DateAndRepeatInputField(
+                    dateController: _dateController,
+                    repetitionType: _repetitionType.name,
+                  ),
+                  TitleTextField(hintText: 'Titel...', titleController: _titleController),
+                  AmountTextField(amountController: _amountController),
+                  AccountInputField(
+                    accountController: _accountController,
+                    hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
+                  ),
+                  CategorieInputField(categorieController: _categorieController),
+                  SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
+                ],
               ),
-            );
-          }
-          return const SizedBox();
-        },
+            ),
+          ),
+        ),
       ),
     );
   }

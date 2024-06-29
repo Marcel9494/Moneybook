@@ -14,6 +14,8 @@ import 'package:moneybook/shared/presentation/widgets/navigation_widgets/navigat
 import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
 import 'features/accounts/presentation/bloc/account_bloc.dart';
+import 'features/accounts/presentation/pages/edit_account_page.dart';
+import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'injection_container.dart' as di;
@@ -79,6 +81,14 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => EditBookingPage(
                 booking: args.booking,
+              ),
+              settings: settings,
+            );
+          case editAccountRoute:
+            final args = settings.arguments as EditAccountPageArguments;
+            return MaterialPageRoute<String>(
+              builder: (BuildContext context) => EditAccountPage(
+                account: args.account,
               ),
               settings: settings,
             );

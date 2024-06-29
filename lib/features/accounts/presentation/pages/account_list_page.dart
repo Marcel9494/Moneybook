@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/value_objects/account_type.dart';
 import '../bloc/account_bloc.dart';
 import '../widgets/cards/account_card.dart';
 
@@ -16,6 +17,7 @@ class _AccountListPageState extends State<AccountListPage> {
     BlocProvider.of<AccountBloc>(context).add(
       const LoadAllAccounts(),
     );
+    // TODO eigenes Event für jeden Kontotyp den zusammengefassten Kontostand berechnen und implementieren
   }
 
   @override
@@ -28,7 +30,20 @@ class _AccountListPageState extends State<AccountListPage> {
             return ListView.builder(
               itemCount: state.accounts.length,
               itemBuilder: (BuildContext context, int index) {
-                return AccountCard(account: state.accounts[index]);
+                if (index == 0 || state.accounts[index - 1].type != state.accounts[index].type) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                        child: Text(state.accounts[index].type.name, style: const TextStyle(fontSize: 16.0)),
+                      ),
+                      AccountCard(account: state.accounts[index]),
+                    ],
+                  );
+                } else {
+                  return AccountCard(account: state.accounts[index]);
+                }
               },
             );
           }
