@@ -9,6 +9,20 @@ final class Initial extends AccountState {
   List<Object> get props => [];
 }
 
+final class Loading extends AccountState {
+  @override
+  List<Object> get props => [];
+}
+
+final class Loaded extends AccountState {
+  final List<Account> accounts;
+
+  const Loaded({required this.accounts});
+
+  @override
+  List<Object> get props => [accounts];
+}
+
 final class Finished extends AccountState {
   @override
   List<Object> get props => [];

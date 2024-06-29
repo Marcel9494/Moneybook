@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/deco/daily_report_summary.dart';
 
-import '../../../../injection_container.dart';
 import '../bloc/booking_bloc.dart';
 
 class BookingListPage extends StatefulWidget {
@@ -26,36 +25,33 @@ class _BookingListPageState extends State<BookingListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<BookingBloc>(),
-      child: Scaffold(
-        body: BlocBuilder<BookingBloc, BookingState>(
-          builder: (context, state) {
-            loadBookings(context);
-            if (state is Loaded) {
-              return ListView.builder(
-                itemCount: state.booking.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index > 0) {
-                    previousBookingDate = state.booking[index - 1].date;
-                    bookingDate = state.booking[index].date;
-                  }
-                  if (index == 0 || previousBookingDate != bookingDate) {
-                    return Column(
-                      children: [
-                        DailyReportSummary(date: state.booking[index].date),
-                        BookingCard(booking: state.booking[index]),
-                      ],
-                    );
-                  } else {
-                    return BookingCard(booking: state.booking[index]);
-                  }
-                },
-              );
-            }
-            return const SizedBox();
-          },
-        ),
+    return Scaffold(
+      body: BlocBuilder<BookingBloc, BookingState>(
+        builder: (context, state) {
+          loadBookings(context);
+          if (state is Loaded) {
+            return ListView.builder(
+              itemCount: state.booking.length,
+              itemBuilder: (BuildContext context, int index) {
+                if (index > 0) {
+                  previousBookingDate = state.booking[index - 1].date;
+                  bookingDate = state.booking[index].date;
+                }
+                if (index == 0 || previousBookingDate != bookingDate) {
+                  return Column(
+                    children: [
+                      DailyReportSummary(date: state.booking[index].date),
+                      BookingCard(booking: state.booking[index]),
+                    ],
+                  );
+                } else {
+                  return BookingCard(booking: state.booking[index]);
+                }
+              },
+            );
+          }
+          return const SizedBox();
+        },
       ),
     );
   }

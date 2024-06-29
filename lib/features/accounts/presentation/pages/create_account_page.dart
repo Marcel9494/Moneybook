@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/accounts/domain/entities/account.dart';
-import 'package:moneybook/features/accounts/presentation/widgets/account_type_input_field.dart';
+import 'package:moneybook/features/accounts/presentation/widgets/input_fields/account_type_input_field.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -46,7 +46,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           CreateAccount(
             Account(
               id: 0,
-              type: _accountType,
+              type: AccountType.fromString(_accountTypeController.text),
               name: _titleController.text,
               amount: Amount.getValue(_amountController.text),
               currency: Amount.getCurrency(_amountController.text),

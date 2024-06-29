@@ -5,7 +5,7 @@ import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart';
-import 'package:moneybook/features/bookings/domain/usecases/loadSortedMonthlyBookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';

@@ -1,14 +1,15 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../../domain/entities/account.dart';
+import '../../domain/value_objects/account_type.dart';
 import '../models/account_model.dart';
 
 abstract class AccountLocalDataSource {
   Future<void> create(Account account);
-  Future<void> update(Account account);
+  Future<void> edit(Account account);
   Future<void> delete(int id);
   Future<AccountModel> load(int id);
-  Future<List<Account>> loadSortedMonthly(DateTime selectedDate);
+  Future<List<Account>> loadAll();
 }
 
 class AccountLocalDataSourceImpl implements AccountLocalDataSource {
@@ -17,7 +18,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   static const String accountDbName = 'accounts';
   var db;
 
-  Future<void> openAccountDatabase() async {
+  Future<dynamic> openAccountDatabase(String databaseName) async {
     db = await openDatabase('$accountDbName.db', version: 1, onCreate: (Database db, int version) async {
       await db.execute('''
           CREATE TABLE IF NOT EXISTS $accountDbName (
@@ -29,11 +30,12 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
           )
           ''');
     });
+    return db;
   }
 
   @override
   Future<void> create(Account account) async {
-    await openAccountDatabase();
+    await openAccountDatabase(accountDbName);
     await db.rawInsert('INSERT INTO $accountDbName(type, name, amount, currency) VALUES(?, ?, ?, ?)', [
       account.type.name,
       account.name,
@@ -43,9 +45,9 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   }
 
   @override
-  Future<void> delete(int id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<void> delete(int id) async {
+    db = await openAccountDatabase(accountDbName);
+    await db.rawDelete('DELETE FROM $accountDbName WHERE id = ?', [id]);
   }
 
   @override
@@ -55,14 +57,39 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   }
 
   @override
-  Future<List<Account>> loadSortedMonthly(DateTime selectedDate) {
-    // TODO: implement loadSortedMonthly
-    throw UnimplementedError();
+  Future<void> edit(Account account) async {
+    db = await openAccountDatabase(accountDbName);
+    try {
+      await db.rawUpdate('UPDATE $accountDbName SET id = ?, type = ?, name = ?, amount = ?, currency = ? WHERE id = ?', [
+        account.id,
+        account.type.name,
+        account.name,
+        account.amount,
+        account.currency,
+        account.id,
+      ]);
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
   }
 
   @override
-  Future<void> update(Account account) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<List<Account>> loadAll() async {
+    db = await openAccountDatabase(accountDbName);
+    List<Map> accountMap = await db.rawQuery('SELECT * FROM $accountDbName');
+    List<Account> accountList = accountMap
+        .map(
+          (account) => Account(
+            id: account['id'],
+            type: AccountType.fromString(account['type']),
+            name: account['name'],
+            amount: account['amount'],
+            currency: account['currency'],
+          ),
+        )
+        .toList();
+    accountList.sort((first, second) => second.type.name.compareTo(first.type.name));
+    return accountList;
   }
 }

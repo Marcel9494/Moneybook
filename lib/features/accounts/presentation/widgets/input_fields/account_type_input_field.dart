@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import '../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
-import '../../../bookings/presentation/widgets/buttons/list_view_button.dart';
-import '../../domain/value_objects/account_type.dart';
+import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
+import '../../../../bookings/presentation/widgets/buttons/list_view_button.dart';
+import '../../../domain/value_objects/account_type.dart';
 
 class AccountTypeInputField extends StatefulWidget {
   final TextEditingController accountTypeController;
@@ -94,7 +94,6 @@ class _AccountTypeInputFieldState extends State<AccountTypeInputField> {
   void _setAccountType(BuildContext context, String newAccountType) {
     setState(() {
       widget.accountType = newAccountType;
-      // TODO hier weitermachen und schauen warum es nicht nur reicht widget.accountType zu setzen
       if (widget.accountType == AccountType.none.name) {
         widget.accountTypeController.text = '';
       } else {

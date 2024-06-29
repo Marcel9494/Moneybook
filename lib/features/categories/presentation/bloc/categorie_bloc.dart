@@ -6,7 +6,7 @@ import 'package:moneybook/features/categories/domain/value_objects/categorie_typ
 
 import '../../../categories/domain/usecases/create.dart';
 import '../../domain/entities/categorie.dart';
-import '../../domain/usecases/loadAll.dart';
+import '../../domain/usecases/load_all.dart';
 
 part 'categorie_event.dart';
 part 'categorie_state.dart';

@@ -7,6 +7,18 @@ enum AccountType {
   insurance,
   credit,
   other;
+
+  static AccountType fromString(String s) => switch (s) {
+        'Kein Kontotyp ausgewählt' => AccountType.none,
+        'Konto' => AccountType.account,
+        'Kapitalanlage' => AccountType.capitalInvestment,
+        'Bargeld' => AccountType.cash,
+        'Karte' => AccountType.card,
+        'Versicherung' => AccountType.insurance,
+        'Kredit' => AccountType.credit,
+        'Sonstiges' => AccountType.other,
+        _ => AccountType.none
+      };
 }
 
 extension AccountTypeExtension on AccountType {

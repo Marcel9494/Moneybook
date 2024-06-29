@@ -7,7 +7,7 @@ import '../../../../core/consts/route_consts.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';
-import '../../domain/usecases/loadSortedMonthlyBookings.dart';
+import '../../domain/usecases/load_sorted_monthly_bookings.dart';
 
 part 'booking_event.dart';
 part 'booking_state.dart';
