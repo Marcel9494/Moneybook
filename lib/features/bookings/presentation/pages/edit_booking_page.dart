@@ -160,7 +160,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     accountController: _accountController,
                     hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                   ),
-                  CategorieInputField(categorieController: _categorieController),
+                  CategorieInputField(
+                    categorieController: _categorieController,
+                    bookingType: _bookingType,
+                  ),
                   SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
                 ],
               ),

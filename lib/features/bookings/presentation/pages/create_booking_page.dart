@@ -78,6 +78,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   void _changeBookingType(Set<BookingType> newBookingType) {
     setState(() {
       _bookingType = newBookingType.first;
+      _categorieController.text = '';
     });
   }
 
@@ -121,7 +122,10 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             accountController: _accountController,
                             hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                           ),
-                          CategorieInputField(categorieController: _categorieController),
+                          CategorieInputField(
+                            categorieController: _categorieController,
+                            bookingType: _bookingType,
+                          ),
                           SaveButton(text: 'Erstellen', saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
                         ],
                       ),
