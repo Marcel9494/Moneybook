@@ -38,7 +38,8 @@ Future<void> main() async {
       repetition: RepetitionType.noRepetition,
       amount: 29.95,
       currency: '€',
-      account: 'Geldbeutel',
+      fromAccount: 'Geldbeutel',
+      toAccount: '',
       categorie: 'Lebensmittel',
     );
 

@@ -42,48 +42,64 @@ class BookingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
+                  flex: 2,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 12.0, 12.0, 8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border(right: BorderSide(color: Colors.grey.shade700, width: 0.7)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              booking.categorie,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4.0),
-                            Text(
-                              booking.account,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
+                    padding: const EdgeInsets.fromLTRB(16.0, 8.0, 0.0, 10.0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        booking.categorie,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
                 ),
                 Expanded(
+                  flex: 5,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 12.0, 12.0, 8.0),
-                    child: Text(booking.title),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 12.0, 16.0, 8.0),
-                    child: Text(
-                      formatToMoneyAmount(booking.amount.toString()),
-                      style: TextStyle(
-                        color: _getBookingTypeColor(),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(left: BorderSide(color: Colors.grey.shade700, width: 0.7)),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: Text(booking.title, overflow: TextOverflow.ellipsis),
+                                  ),
+                                ),
+                                Text(
+                                  formatToMoneyAmount(booking.amount.toString()),
+                                  style: TextStyle(
+                                    color: _getBookingTypeColor(),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4.0),
+                            Row(
+                              children: [
+                                Text(booking.fromAccount),
+                                booking.type == BookingType.transfer || booking.type == BookingType.investment
+                                    ? const Icon(Icons.arrow_right_alt_rounded, size: 20.0)
+                                    : const SizedBox(),
+                                booking.type == BookingType.transfer || booking.type == BookingType.investment
+                                    ? Text(booking.toAccount, overflow: TextOverflow.ellipsis)
+                                    : const SizedBox(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

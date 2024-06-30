@@ -34,7 +34,8 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _fromAccountController = TextEditingController();
+  final TextEditingController _toAccountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
   final RepetitionType _repetitionType = RepetitionType.noRepetition;
@@ -66,7 +67,8 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
               repetition: _repetitionType,
               amount: Amount.getValue(_amountController.text),
               currency: Amount.getCurrency(_amountController.text),
-              account: _accountController.text,
+              fromAccount: _fromAccountController.text,
+              toAccount: _toAccountController.text,
               categorie: _categorieController.text,
             ),
           ),
@@ -79,6 +81,9 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     setState(() {
       _bookingType = newBookingType.first;
       _categorieController.text = '';
+      if (_bookingType == BookingType.transfer) {
+        _categorieController.text = 'Übertrag';
+      }
     });
   }
 
@@ -119,13 +124,21 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                           TitleTextField(hintText: 'Titel...', titleController: _titleController),
                           AmountTextField(amountController: _amountController),
                           AccountInputField(
-                            accountController: _accountController,
-                            hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
+                            accountController: _fromAccountController,
+                            hintText: _bookingType.name == BookingType.income.name ? 'Konto...' : 'Abbuchungskonto...',
                           ),
-                          CategorieInputField(
-                            categorieController: _categorieController,
-                            bookingType: _bookingType,
-                          ),
+                          _bookingType.name == BookingType.transfer.name || _bookingType.name == BookingType.investment.name
+                              ? AccountInputField(
+                                  accountController: _toAccountController,
+                                  hintText: 'Konto...',
+                                )
+                              : const SizedBox(),
+                          _bookingType.name == BookingType.transfer.name
+                              ? const SizedBox()
+                              : CategorieInputField(
+                                  categorieController: _categorieController,
+                                  bookingType: _bookingType,
+                                ),
                           SaveButton(text: 'Erstellen', saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
                         ],
                       ),
