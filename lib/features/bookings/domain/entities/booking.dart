@@ -11,7 +11,8 @@ class Booking extends Equatable {
   final RepetitionType repetition;
   final double amount;
   final String currency;
-  final String account;
+  final String fromAccount;
+  final String toAccount;
   final String categorie;
 
   const Booking({
@@ -22,10 +23,11 @@ class Booking extends Equatable {
     required this.repetition,
     required this.amount,
     required this.currency,
-    required this.account,
+    required this.fromAccount,
+    required this.toAccount,
     required this.categorie,
   });
 
   @override
-  List<Object> get props => [id, type, title, date, repetition, amount, currency, account, categorie];
+  List<Object> get props => [id, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie];
 }

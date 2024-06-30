@@ -31,7 +31,8 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             repetition TEXT NOT NULL,
             amount DOUBLE NOT NULL,
             currency TEXT NOT NULL,
-            account TEXT NOT NULL,
+            fromAccount TEXT NOT NULL,
+            toAccount TEXT NOT NULL,
             categorie TEXT NOT NULL
           )
           ''');
@@ -42,17 +43,19 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> create(Booking booking) async {
     db = await openBookingDatabase(bookingDbName);
-    await db
-        .rawInsert('INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, account, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [
-      booking.type.name,
-      booking.title,
-      DateFormat('yyyy-MM-dd').format(booking.date),
-      booking.repetition.name,
-      booking.amount,
-      booking.currency,
-      booking.account,
-      booking.categorie,
-    ]);
+    await db.rawInsert(
+        'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          booking.type.name,
+          booking.title,
+          DateFormat('yyyy-MM-dd').format(booking.date),
+          booking.repetition.name,
+          booking.amount,
+          booking.currency,
+          booking.fromAccount,
+          booking.toAccount,
+          booking.categorie,
+        ]);
   }
 
   @override
@@ -81,7 +84,8 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             repetition: RepetitionType.fromString(booking['repetition']),
             amount: booking['amount'],
             currency: booking['currency'],
-            account: booking['account'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
             categorie: booking['categorie'],
           ),
         )
@@ -95,7 +99,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     db = await openBookingDatabase(bookingDbName);
     try {
       await db.rawUpdate(
-          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, account = ?, categorie = ? WHERE id = ?',
+          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ? WHERE id = ?',
           [
             booking.id,
             booking.type.name,
@@ -104,7 +108,8 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             booking.repetition.name,
             booking.amount,
             booking.currency,
-            booking.account,
+            booking.fromAccount,
+            booking.toAccount,
             booking.categorie,
             booking.id
           ]);

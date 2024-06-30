@@ -41,7 +41,8 @@ void main() {
       repetition: RepetitionType.noRepetition,
       amount: 25.0,
       currency: '€',
-      account: 'Geldbeutel',
+      fromAccount: 'Geldbeutel',
+      toAccount: '',
       categorie: 'Lebensmittel',
     );
     final tBooking = tBookingModel;

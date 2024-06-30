@@ -38,7 +38,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _fromAccountController = TextEditingController();
+  final TextEditingController _toAccountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
   final RoundedLoadingButtonController _editBookingBtnController = RoundedLoadingButtonController();
   late RepetitionType _repetitionType;
@@ -54,7 +55,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
     _dateController.text = dateFormatterDDMMYYYYEE.format(widget.booking.date);
     _titleController.text = widget.booking.title;
     _amountController.text = formatToMoneyAmount(widget.booking.amount.toString());
-    _accountController.text = widget.booking.account;
+    _fromAccountController.text = widget.booking.fromAccount;
+    _toAccountController.text = widget.booking.toAccount;
     _categorieController.text = widget.booking.categorie;
     _repetitionType = widget.booking.repetition;
     _bookingType = widget.booking.type;
@@ -80,7 +82,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
               repetition: _repetitionType,
               amount: Amount.getValue(_amountController.text),
               currency: Amount.getCurrency(_amountController.text),
-              account: _accountController.text,
+              fromAccount: _fromAccountController.text,
+              toAccount: _toAccountController.text,
               categorie: _categorieController.text,
             ),
             context,
@@ -122,6 +125,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
   void _changeBookingType(Set<BookingType> newBookingType) {
     setState(() {
       _bookingType = newBookingType.first;
+      _categorieController.text = '';
+      if (_bookingType == BookingType.transfer) {
+        _categorieController.text = 'Übertrag';
+      }
     });
   }
 
@@ -157,13 +164,21 @@ class _EditBookingPageState extends State<EditBookingPage> {
                   TitleTextField(hintText: 'Titel...', titleController: _titleController),
                   AmountTextField(amountController: _amountController),
                   AccountInputField(
-                    accountController: _accountController,
+                    accountController: _fromAccountController,
                     hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
                   ),
-                  CategorieInputField(
-                    categorieController: _categorieController,
-                    bookingType: _bookingType,
-                  ),
+                  _bookingType.name == BookingType.transfer.name || _bookingType.name == BookingType.investment.name
+                      ? AccountInputField(
+                          accountController: _toAccountController,
+                          hintText: 'Konto...',
+                        )
+                      : const SizedBox(),
+                  _bookingType.name == BookingType.transfer.name
+                      ? const SizedBox()
+                      : CategorieInputField(
+                          categorieController: _categorieController,
+                          bookingType: _bookingType,
+                        ),
                   SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
                 ],
               ),
