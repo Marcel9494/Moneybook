@@ -213,7 +213,8 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               ),
               selected: _tabIndex == 2,
               onTap: () {
-                Navigator.pushNamed(context, categorieListRoute);
+                Navigator.pop(context);
+                Navigator.popAndPushNamed(context, categorieListRoute);
               },
             ),
           ],

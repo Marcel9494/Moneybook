@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../../core/utils/date_formatter.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../../domain/value_objects/repetition_type.dart';
@@ -73,7 +74,10 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate) async {
     db = await openBookingDatabase(bookingDbName);
-    List<Map> bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName');
+    int lastday = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
+    String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
+    String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
+    List<Map> bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE date BETWEEN ? AND ?', [startDate, endDate]);
     List<Booking> bookingList = bookingMap
         .map(
           (booking) => Booking(
