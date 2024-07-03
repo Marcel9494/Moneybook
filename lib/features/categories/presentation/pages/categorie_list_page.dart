@@ -11,6 +11,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
+import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../domain/entities/categorie.dart';
 import '../../domain/value_objects/categorie_type.dart';
@@ -24,7 +25,7 @@ class CategorieListPage extends StatefulWidget {
 }
 
 class _CategorieListPageState extends State<CategorieListPage> with TickerProviderStateMixin {
-  final GlobalKey<AnimatedListState> _expenseKey = GlobalKey();
+  GlobalKey<AnimatedListState> _expenseKey = GlobalKey();
   final GlobalKey<AnimatedListState> _incomeKey = GlobalKey();
   final GlobalKey<AnimatedListState> _investmentKey = GlobalKey();
   final GlobalKey<FormState> _categorieFormKey = GlobalKey<FormState>();
@@ -375,14 +376,33 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     if (state is Loading) {
                       return const CircularProgressIndicator();
                     } else if (state is Loaded) {
-                      // TODO hier weitermachen und AnimatedList in eigenes Widget auslagern
-                      return AnimatedList(
-                        key: _expenseKey,
-                        initialItemCount: state.expenseCategories.length,
-                        itemBuilder: (context, index, animation) {
-                          if (state.expenseCategories.isEmpty) {
-                            return const Text('Keine Ausgabe Kategorien vorhanden.');
-                          } else {
+                      if (state.expenseCategories.isEmpty) {
+                        return Column(
+                          children: [
+                            // Muss vorhanden sein, damit _expenseKey.currentState nicht null ist
+                            SizedBox(
+                              height: 0.0,
+                              child: AnimatedList(
+                                key: _expenseKey,
+                                initialItemCount: state.expenseCategories.length,
+                                itemBuilder: (context, index, animation) {
+                                  return const SizedBox();
+                                },
+                              ),
+                            ),
+                            const Expanded(
+                              child: EmptyList(
+                                text: 'Keine Ausgabe Kategorien vorhanden',
+                                icon: Icons.receipt_long_rounded,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return AnimatedList(
+                          key: _expenseKey,
+                          initialItemCount: state.expenseCategories.length,
+                          itemBuilder: (context, index, animation) {
                             if (index < state.expenseCategories.length && state.expenseCategories[index].type == CategorieType.expense) {
                               return Card(
                                 child: ListTile(
@@ -400,9 +420,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                             } else {
                               return const SizedBox();
                             }
-                          }
-                        },
-                      );
+                          },
+                        );
+                      }
                     }
                     return const SizedBox();
                   },
@@ -425,13 +445,33 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     if (state is Loading) {
                       return const CircularProgressIndicator();
                     } else if (state is Loaded) {
-                      return AnimatedList(
-                        key: _incomeKey,
-                        initialItemCount: state.incomeCategories.length,
-                        itemBuilder: (context, index, animation) {
-                          if (state.incomeCategories.isEmpty) {
-                            return const Text('Keine Einnahme Kategorien vorhanden.');
-                          } else {
+                      if (state.incomeCategories.isEmpty) {
+                        return Column(
+                          children: [
+                            // Muss vorhanden sein, damit _incomeKey.currentState nicht null ist
+                            SizedBox(
+                              height: 0.0,
+                              child: AnimatedList(
+                                key: _incomeKey,
+                                initialItemCount: state.incomeCategories.length,
+                                itemBuilder: (context, index, animation) {
+                                  return const SizedBox();
+                                },
+                              ),
+                            ),
+                            const Expanded(
+                              child: EmptyList(
+                                text: 'Keine Einnahme Kategorien vorhanden',
+                                icon: Icons.receipt_long_rounded,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return AnimatedList(
+                          key: _incomeKey,
+                          initialItemCount: state.incomeCategories.length,
+                          itemBuilder: (context, index, animation) {
                             if (index < state.incomeCategories.length && state.incomeCategories[index].type == CategorieType.income) {
                               return Card(
                                 child: ListTile(
@@ -449,9 +489,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                             } else {
                               return const SizedBox();
                             }
-                          }
-                        },
-                      );
+                          },
+                        );
+                      }
                     }
                     return const SizedBox();
                   },
@@ -474,13 +514,33 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     if (state is Loading) {
                       return const CircularProgressIndicator();
                     } else if (state is Loaded) {
-                      return AnimatedList(
-                        key: _investmentKey,
-                        initialItemCount: state.investmentCategories.length,
-                        itemBuilder: (context, index, animation) {
-                          if (state.investmentCategories.isEmpty) {
-                            return const Text('Keine Investitions Kategorien vorhanden.');
-                          } else {
+                      if (state.investmentCategories.isEmpty) {
+                        return Column(
+                          children: [
+                            // Muss vorhanden sein, damit _investmentKey.currentState nicht null ist
+                            SizedBox(
+                              height: 0.0,
+                              child: AnimatedList(
+                                key: _investmentKey,
+                                initialItemCount: state.investmentCategories.length,
+                                itemBuilder: (context, index, animation) {
+                                  return const SizedBox();
+                                },
+                              ),
+                            ),
+                            const Expanded(
+                              child: EmptyList(
+                                text: 'Keine Investitions Kategorien vorhanden',
+                                icon: Icons.receipt_long_rounded,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return AnimatedList(
+                          key: _investmentKey,
+                          initialItemCount: state.investmentCategories.length,
+                          itemBuilder: (context, index, animation) {
                             if (index < state.investmentCategories.length && state.investmentCategories[index].type == CategorieType.investment) {
                               return Card(
                                 child: ListTile(
@@ -498,9 +558,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                             } else {
                               return const SizedBox();
                             }
-                          }
-                        },
-                      );
+                          },
+                        );
+                      }
                     }
                     return const SizedBox();
                   },
@@ -529,6 +589,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   color: _drawerTabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
                 ),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
                 },
               ),
@@ -546,6 +607,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   color: _drawerTabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
                 ),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
                 },
               ),
@@ -564,6 +626,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                 ),
                 selected: true,
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.popAndPushNamed(context, categorieListRoute);
                 },
               ),

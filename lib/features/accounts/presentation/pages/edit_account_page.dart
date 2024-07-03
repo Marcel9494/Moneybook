@@ -121,6 +121,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
         listener: (BuildContext context, AccountState state) {
           if (state is Finished) {
             Navigator.pop(context);
+            Navigator.pop(context);
             Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
           }
         },

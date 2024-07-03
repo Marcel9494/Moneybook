@@ -15,12 +15,12 @@ final class Loading extends BookingState {
 }
 
 final class Loaded extends BookingState {
-  final List<Booking> booking;
+  final List<Booking> bookings;
 
-  const Loaded({required this.booking});
+  const Loaded({required this.bookings});
 
   @override
-  List<Object> get props => [booking];
+  List<Object> get props => [bookings];
 }
 
 final class Finished extends BookingState {

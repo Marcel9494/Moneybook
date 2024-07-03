@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:moneybook/core/utils/number_formatter.dart';
 
 import '../../../../../core/utils/date_formatter.dart';
 
 class DailyReportSummary extends StatelessWidget {
   final DateTime date;
+  final double? dailyIncome;
+  final double? dailyExpense;
 
   const DailyReportSummary({
     super.key,
     required this.date,
+    required this.dailyIncome,
+    required this.dailyExpense,
   });
 
   @override
@@ -47,13 +52,13 @@ class DailyReportSummary extends StatelessWidget {
               ],
             ),
           ),
-          const Text(
-            'Einnahmen',
-            style: TextStyle(color: Colors.greenAccent),
+          Text(
+            formatToMoneyAmount(dailyIncome.toString()),
+            style: const TextStyle(color: Colors.greenAccent),
           ),
-          const Text(
-            'Ausgaben',
-            style: TextStyle(color: Colors.redAccent),
+          Text(
+            formatToMoneyAmount(dailyExpense.toString()),
+            style: const TextStyle(color: Colors.redAccent),
           ),
         ],
       ),

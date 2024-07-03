@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../domain/value_objects/account_type.dart';
 import '../bloc/account_bloc.dart';
 import '../widgets/cards/account_card.dart';
@@ -27,25 +28,37 @@ class _AccountListPageState extends State<AccountListPage> {
         builder: (context, state) {
           loadAccounts(context);
           if (state is Loaded) {
-            return ListView.builder(
-              itemCount: state.accounts.length,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == 0 || state.accounts[index - 1].type != state.accounts[index].type) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                        child: Text(state.accounts[index].type.name, style: const TextStyle(fontSize: 16.0)),
-                      ),
-                      AccountCard(account: state.accounts[index]),
-                    ],
-                  );
-                } else {
-                  return AccountCard(account: state.accounts[index]);
-                }
-              },
-            );
+            if (state.accounts.isEmpty) {
+              return const SizedBox(
+                width: double.infinity,
+                child: EmptyList(
+                  text: 'Noch keine Konten vorhanden',
+                  icon: Icons.account_balance_outlined,
+                ),
+              );
+            } else {
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: state.accounts.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == 0 || state.accounts[index - 1].type != state.accounts[index].type) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                            child: Text(state.accounts[index].type.name, style: const TextStyle(fontSize: 16.0)),
+                          ),
+                          AccountCard(account: state.accounts[index]),
+                        ],
+                      );
+                    } else {
+                      return AccountCard(account: state.accounts[index]);
+                    }
+                  },
+                ),
+              );
+            }
           }
           return const SizedBox();
         },

@@ -30,6 +30,7 @@ dependencies:
   sqflite_common_ffi: ^2.3.3
   modal_bottom_sheet: ^3.0.0
   rounded_loading_button_plus: ^3.0.1
+  month_picker_dialog: ^2.12.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
