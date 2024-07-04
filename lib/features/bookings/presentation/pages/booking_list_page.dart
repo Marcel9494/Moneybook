@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_value_cards.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
 import '../../domain/entities/booking.dart';
@@ -53,50 +54,74 @@ class _BookingListPageState extends State<BookingListPage> {
     return Scaffold(
       body: Column(
         children: [
-          MonthPickerButtons(
-            selectedDate: selectedDate,
-            selectedDateCallback: (DateTime newDate) {
-              setState(() {
-                selectedDate = newDate;
-              });
-            },
-          ),
           BlocBuilder<BookingBloc, BookingState>(
             builder: (context, state) {
               loadBookings(context);
               if (state is Loaded) {
                 if (state.bookings.isEmpty) {
-                  return const Expanded(
-                    child: EmptyList(
-                      text: 'Noch keine Buchungen vorhanden',
-                      icon: Icons.receipt_long_rounded,
+                  return Expanded(
+                    child: Column(
+                      children: [
+                        MonthPickerButtons(
+                          selectedDate: selectedDate,
+                          selectedDateCallback: (DateTime newDate) {
+                            setState(() {
+                              selectedDate = newDate;
+                            });
+                          },
+                        ),
+                        const Expanded(
+                          child: EmptyList(
+                            text: 'Noch keine Buchungen vorhanden',
+                            icon: Icons.receipt_long_rounded,
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 } else {
                   _calculateDailyValues(state.bookings);
                   return Expanded(
-                    child: ListView.builder(
-                      itemCount: state.bookings.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index > 0) {
-                          previousBookingDate = state.bookings[index - 1].date;
-                          bookingDate = state.bookings[index].date;
-                        }
-                        if (index == 0 || previousBookingDate != bookingDate) {
-                          return Column(
-                            children: [
-                              DailyReportSummary(
-                                date: state.bookings[index].date,
-                                dailyIncome: _dailyIncomeMap[state.bookings[index].date],
-                                dailyExpense: _dailyExpenseMap[state.bookings[index].date],
-                              ),
-                              BookingCard(booking: state.bookings[index]),
-                            ],
-                          );
-                        } else {
-                          return BookingCard(booking: state.bookings[index]);
-                        }
-                      },
+                    child: Column(
+                      children: [
+                        MonthPickerButtons(
+                          selectedDate: selectedDate,
+                          selectedDateCallback: (DateTime newDate) {
+                            setState(() {
+                              selectedDate = newDate;
+                            });
+                          },
+                        ),
+                        MonthlyValueCards(
+                          bookings: state.bookings,
+                          selectedDate: selectedDate,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: state.bookings.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index > 0) {
+                                previousBookingDate = state.bookings[index - 1].date;
+                                bookingDate = state.bookings[index].date;
+                              }
+                              if (index == 0 || previousBookingDate != bookingDate) {
+                                return Column(
+                                  children: [
+                                    DailyReportSummary(
+                                      date: state.bookings[index].date,
+                                      dailyIncome: _dailyIncomeMap[state.bookings[index].date],
+                                      dailyExpense: _dailyExpenseMap[state.bookings[index].date],
+                                    ),
+                                    BookingCard(booking: state.bookings[index]),
+                                  ],
+                                );
+                              } else {
+                                return BookingCard(booking: state.bookings[index]);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }
