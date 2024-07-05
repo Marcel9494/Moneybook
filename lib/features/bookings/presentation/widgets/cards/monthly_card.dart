@@ -29,9 +29,14 @@ class MonthlyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, overflow: TextOverflow.ellipsis),
-                Text(formatToMoneyAmount(monthlyValue.toString()), style: TextStyle(color: textColor)),
+                Text(
+                  formatToMoneyAmount(monthlyValue.toString()),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: textColor),
+                ),
                 Text(
                   'Ø ${formatToMoneyAmount(dailyAverageValue.toString())}',
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 12.0, color: Colors.grey),
                 ),
               ],
