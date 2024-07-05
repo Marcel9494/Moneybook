@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_card.dart';
 
 import '../../../domain/entities/booking.dart';
-import '../../../domain/value_objects/booking_type.dart';
 
 class MonthlyValueCards extends StatefulWidget {
   final List<Booking> bookings;
   final DateTime selectedDate;
+  final double monthlyExpense;
+  final double monthlyIncome;
+  final double monthlyInvestment;
 
   const MonthlyValueCards({
     super.key,
     required this.bookings,
     required this.selectedDate,
+    required this.monthlyExpense,
+    required this.monthlyIncome,
+    required this.monthlyInvestment,
   });
 
   @override
@@ -19,35 +24,12 @@ class MonthlyValueCards extends StatefulWidget {
 }
 
 class _MonthlyValueCardsState extends State<MonthlyValueCards> {
-  double monthlyExpense = 0.0;
-  double monthlyIncome = 0.0;
-  double monthlyInvestment = 0.0;
-  double dailyAverageExpense = 0.0;
-  double dailyAverageIncome = 0.0;
-  double dailyAverageInvestment = 0.0;
+  int numberOfDays = 0;
 
   @override
   void initState() {
     super.initState();
-    _calculateMonthlyValues(widget.bookings);
-  }
-
-  void _calculateMonthlyValues(List<Booking> bookings) {
-    monthlyExpense = 0.0;
-    monthlyIncome = 0.0;
-    monthlyInvestment = 0.0;
-    for (int i = 0; i < bookings.length; i++) {
-      if (bookings[i].type == BookingType.expense) {
-        monthlyExpense += bookings[i].amount;
-      } else if (bookings[i].type == BookingType.income) {
-        monthlyIncome += bookings[i].amount;
-      } else if (bookings[i].type == BookingType.investment) {
-        monthlyInvestment += bookings[i].amount;
-      }
-    }
-    dailyAverageExpense = monthlyExpense / DateTime(widget.selectedDate.year, widget.selectedDate.month, 0).day;
-    dailyAverageIncome = monthlyIncome / DateTime(widget.selectedDate.year, widget.selectedDate.month, 0).day;
-    dailyAverageInvestment = monthlyInvestment / DateTime(widget.selectedDate.year, widget.selectedDate.month, 0).day;
+    numberOfDays = DateTime(widget.selectedDate.year, widget.selectedDate.month, 0).day;
   }
 
   @override
@@ -59,28 +41,33 @@ class _MonthlyValueCardsState extends State<MonthlyValueCards> {
         children: [
           MonthlyCard(
             title: 'Einnahmen:',
-            monthlyValue: monthlyExpense,
-            dailyAverageValue: dailyAverageExpense,
+            monthlyValue: widget.monthlyIncome,
+            dailyAverageValue: widget.monthlyIncome / numberOfDays,
+            textColor: Colors.greenAccent,
           ),
           MonthlyCard(
             title: 'Ausgaben:',
-            monthlyValue: monthlyIncome,
-            dailyAverageValue: dailyAverageIncome,
+            monthlyValue: widget.monthlyExpense,
+            dailyAverageValue: widget.monthlyExpense / numberOfDays,
+            textColor: Colors.redAccent,
           ),
           MonthlyCard(
             title: 'Saldo:',
-            monthlyValue: monthlyIncome - monthlyExpense,
-            dailyAverageValue: dailyAverageIncome - dailyAverageExpense,
+            monthlyValue: widget.monthlyIncome - widget.monthlyExpense,
+            dailyAverageValue: (widget.monthlyIncome - widget.monthlyExpense) / numberOfDays,
+            textColor: widget.monthlyIncome - widget.monthlyExpense >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),
           MonthlyCard(
             title: 'Investment:',
-            monthlyValue: monthlyInvestment,
-            dailyAverageValue: dailyAverageInvestment,
+            monthlyValue: widget.monthlyInvestment,
+            dailyAverageValue: widget.monthlyInvestment / numberOfDays,
+            textColor: Colors.cyanAccent,
           ),
           MonthlyCard(
             title: 'Verfügbar:',
-            monthlyValue: monthlyIncome - monthlyExpense - monthlyInvestment,
-            dailyAverageValue: dailyAverageIncome - dailyAverageExpense - dailyAverageInvestment,
+            monthlyValue: widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment,
+            dailyAverageValue: (widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment) / numberOfDays,
+            textColor: widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),
         ],
       ),

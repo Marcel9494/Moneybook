@@ -23,6 +23,9 @@ class _BookingListPageState extends State<BookingListPage> {
   late DateTime selectedDate = DateTime.now();
   final Map<DateTime, double> _dailyIncomeMap = {};
   final Map<DateTime, double> _dailyExpenseMap = {};
+  double monthlyExpense = 0.0;
+  double monthlyIncome = 0.0;
+  double monthlyInvestment = 0.0;
 
   void loadBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -49,6 +52,21 @@ class _BookingListPageState extends State<BookingListPage> {
     }
   }
 
+  void _calculateMonthlyValues(List<Booking> bookings) {
+    monthlyExpense = 0.0;
+    monthlyIncome = 0.0;
+    monthlyInvestment = 0.0;
+    for (int i = 0; i < bookings.length; i++) {
+      if (bookings[i].type == BookingType.expense) {
+        monthlyExpense += bookings[i].amount;
+      } else if (bookings[i].type == BookingType.income) {
+        monthlyIncome += bookings[i].amount;
+      } else if (bookings[i].type == BookingType.investment) {
+        monthlyInvestment += bookings[i].amount;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +76,7 @@ class _BookingListPageState extends State<BookingListPage> {
             builder: (context, state) {
               loadBookings(context);
               if (state is Loaded) {
+                _calculateMonthlyValues(state.bookings);
                 if (state.bookings.isEmpty) {
                   return Expanded(
                     child: Column(
@@ -69,6 +88,13 @@ class _BookingListPageState extends State<BookingListPage> {
                               selectedDate = newDate;
                             });
                           },
+                        ),
+                        MonthlyValueCards(
+                          bookings: state.bookings,
+                          selectedDate: selectedDate,
+                          monthlyExpense: monthlyExpense,
+                          monthlyIncome: monthlyIncome,
+                          monthlyInvestment: monthlyInvestment,
                         ),
                         const Expanded(
                           child: EmptyList(
@@ -95,6 +121,9 @@ class _BookingListPageState extends State<BookingListPage> {
                         MonthlyValueCards(
                           bookings: state.bookings,
                           selectedDate: selectedDate,
+                          monthlyExpense: monthlyExpense,
+                          monthlyIncome: monthlyIncome,
+                          monthlyInvestment: monthlyInvestment,
                         ),
                         Expanded(
                           child: ListView.builder(

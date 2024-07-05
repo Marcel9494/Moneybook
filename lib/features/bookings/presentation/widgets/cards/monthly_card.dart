@@ -6,12 +6,14 @@ class MonthlyCard extends StatelessWidget {
   final String title;
   final double monthlyValue;
   final double dailyAverageValue;
+  final Color textColor;
 
   const MonthlyCard({
     super.key,
     required this.title,
     required this.monthlyValue,
     required this.dailyAverageValue,
+    required this.textColor,
   });
 
   @override
@@ -26,8 +28,8 @@ class MonthlyCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title),
-                Text(formatToMoneyAmount(monthlyValue.toString())),
+                Text(title, overflow: TextOverflow.ellipsis),
+                Text(formatToMoneyAmount(monthlyValue.toString()), style: TextStyle(color: textColor)),
                 Text(
                   'Ø ${formatToMoneyAmount(dailyAverageValue.toString())}',
                   style: const TextStyle(fontSize: 12.0, color: Colors.grey),
