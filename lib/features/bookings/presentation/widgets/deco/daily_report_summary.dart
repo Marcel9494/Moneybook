@@ -57,7 +57,7 @@ class DailyReportSummary extends StatelessWidget {
             child: Text(
               formatToMoneyAmount(dailyIncome.toString()),
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: date.isAfter(DateTime.now()) ? Colors.grey : Colors.greenAccent),
             ),
           ),
           Padding(
@@ -65,7 +65,7 @@ class DailyReportSummary extends StatelessWidget {
             child: Text(
               formatToMoneyAmount(dailyExpense.toString()),
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: Colors.redAccent),
+              style: TextStyle(color: date.isAfter(DateTime.now()) ? Colors.grey : Colors.redAccent),
             ),
           ),
         ],
