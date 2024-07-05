@@ -52,13 +52,21 @@ class DailyReportSummary extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            formatToMoneyAmount(dailyIncome.toString()),
-            style: const TextStyle(color: Colors.greenAccent),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              formatToMoneyAmount(dailyIncome.toString()),
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: Colors.greenAccent),
+            ),
           ),
-          Text(
-            formatToMoneyAmount(dailyExpense.toString()),
-            style: const TextStyle(color: Colors.redAccent),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              formatToMoneyAmount(dailyExpense.toString()),
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: Colors.redAccent),
+            ),
           ),
         ],
       ),
