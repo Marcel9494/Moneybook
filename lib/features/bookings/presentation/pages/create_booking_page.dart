@@ -58,40 +58,35 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       });
     } else {
       _createBookingBtnController.success();
+      Booking newBooking = Booking(
+        id: 0,
+        type: _bookingType,
+        title: _titleController.text,
+        date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
+        repetition: _repetitionType,
+        amount: Amount.getValue(_amountController.text),
+        currency: Amount.getCurrency(_amountController.text),
+        fromAccount: _fromAccountController.text,
+        toAccount: _toAccountController.text,
+        categorie: _categorieController.text,
+      );
       Timer(const Duration(milliseconds: durationInMs), () {
         BlocProvider.of<BookingBloc>(context).add(
-          CreateBooking(
-            Booking(
-              id: 0,
-              type: _bookingType,
-              title: _titleController.text,
-              date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
-              repetition: _repetitionType,
-              amount: Amount.getValue(_amountController.text),
-              currency: Amount.getCurrency(_amountController.text),
-              fromAccount: _fromAccountController.text,
-              toAccount: _toAccountController.text,
-              categorie: _categorieController.text,
-            ),
-          ),
+          CreateBooking(newBooking),
         );
-        // TODO hier weitermachen und bookingType unterscheiden und mit withdraw weitermachen
-        BlocProvider.of<AccountBloc>(context).add(
-          AccountDeposit(
-            Booking(
-              id: 0,
-              type: _bookingType,
-              title: _titleController.text,
-              date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
-              repetition: _repetitionType,
-              amount: Amount.getValue(_amountController.text),
-              currency: Amount.getCurrency(_amountController.text),
-              fromAccount: _fromAccountController.text,
-              toAccount: _toAccountController.text,
-              categorie: _categorieController.text,
-            ),
-          ),
-        );
+        if (_bookingType == BookingType.expense) {
+          BlocProvider.of<AccountBloc>(context).add(
+            AccountWithdraw(newBooking),
+          );
+        } else if (_bookingType == BookingType.income) {
+          BlocProvider.of<AccountBloc>(context).add(
+            AccountDeposit(newBooking),
+          );
+        } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+          BlocProvider.of<AccountBloc>(context).add(
+            AccountTransfer(newBooking),
+          );
+        }
       });
     }
   }

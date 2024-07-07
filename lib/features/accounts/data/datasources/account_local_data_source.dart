@@ -100,9 +100,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   @override
   Future<void> deposit(Booking booking) async {
     db = await openAccountDatabase(accountDbName);
-    List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [
-      booking.fromAccount,
-    ]);
+    List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       accountBalance[0]['amount'] + booking.amount,
       booking.fromAccount,
@@ -110,14 +108,27 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   }
 
   @override
-  Future<void> transfer(Booking booking) async {
-    // TODO: implement transfer
-    throw UnimplementedError();
+  Future<void> withdraw(Booking booking) async {
+    db = await openAccountDatabase(accountDbName);
+    List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
+    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
+      accountBalance[0]['amount'] - booking.amount,
+      booking.fromAccount,
+    ]);
   }
 
   @override
-  Future<void> withdraw(Booking booking) async {
-    // TODO: implement withdraw
-    throw UnimplementedError();
+  Future<void> transfer(Booking booking) async {
+    db = await openAccountDatabase(accountDbName);
+    List<Map> fromAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
+    List<Map> toAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
+    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
+      fromAccountBalance[0]['amount'] - booking.amount,
+      booking.fromAccount,
+    ]);
+    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
+      toAccountBalance[0]['amount'] + booking.amount,
+      booking.toAccount,
+    ]);
   }
 }

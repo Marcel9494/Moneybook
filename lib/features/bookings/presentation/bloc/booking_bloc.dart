@@ -38,7 +38,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           emit(const Error(message: EDIT_BOOKING_FAILURE));
         }, (_) {
           Navigator.pop(event.context);
-          Navigator.pop(event.context);
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is DeleteBooking) {

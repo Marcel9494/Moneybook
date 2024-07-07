@@ -11,6 +11,7 @@ import '../../../../core/utils/number_formatter.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount.dart';
 import '../../domain/value_objects/booking_type.dart';
@@ -44,11 +45,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
   final RoundedLoadingButtonController _editBookingBtnController = RoundedLoadingButtonController();
   late RepetitionType _repetitionType;
   late BookingType _bookingType;
+  late Booking _oldBooking;
 
   @override
   void initState() {
     super.initState();
     _initializeBooking();
+    _backupOldBooking();
   }
 
   void _initializeBooking() {
@@ -62,6 +65,21 @@ class _EditBookingPageState extends State<EditBookingPage> {
     _bookingType = widget.booking.type;
   }
 
+  void _backupOldBooking() {
+    _oldBooking = Booking(
+      id: widget.booking.id,
+      type: widget.booking.type,
+      title: widget.booking.title,
+      date: widget.booking.date,
+      repetition: widget.booking.repetition,
+      amount: Amount.getValue(widget.booking.amount.toString()),
+      currency: Amount.getCurrency(widget.booking.amount.toString()),
+      fromAccount: widget.booking.fromAccount,
+      toAccount: widget.booking.toAccount,
+      categorie: widget.booking.categorie,
+    );
+  }
+
   void _editBooking(BuildContext context) {
     final FormState form = _bookingFormKey.currentState!;
     if (form.validate() == false) {
@@ -71,24 +89,34 @@ class _EditBookingPageState extends State<EditBookingPage> {
       });
     } else {
       _editBookingBtnController.success();
+      Booking updatedBooking = Booking(
+        id: widget.booking.id,
+        type: _bookingType,
+        title: _titleController.text,
+        date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
+        repetition: _repetitionType,
+        amount: Amount.getValue(_amountController.text),
+        currency: Amount.getCurrency(_amountController.text),
+        fromAccount: _fromAccountController.text,
+        toAccount: _toAccountController.text,
+        categorie: _categorieController.text,
+      );
       Timer(const Duration(milliseconds: durationInMs), () {
         BlocProvider.of<BookingBloc>(context).add(
-          EditBooking(
-            Booking(
-              id: widget.booking.id,
-              type: _bookingType,
-              title: _titleController.text,
-              date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
-              repetition: _repetitionType,
-              amount: Amount.getValue(_amountController.text),
-              currency: Amount.getCurrency(_amountController.text),
-              fromAccount: _fromAccountController.text,
-              toAccount: _toAccountController.text,
-              categorie: _categorieController.text,
-            ),
-            context,
-          ),
+          EditBooking(updatedBooking, context),
         );
+        if (_bookingType == BookingType.expense) {
+          // TODO Vorherige Buchung rückgängig machen
+          BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldBooking));
+          BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(updatedBooking));
+        } else if (_bookingType == BookingType.income) {
+          // TODO Vorherige Buchung rückgängig machen
+          BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldBooking));
+          BlocProvider.of<AccountBloc>(context).add(AccountDeposit(updatedBooking));
+        } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+          // TODO Vorherige Buchung rückgängig machen
+          BlocProvider.of<AccountBloc>(context).add(AccountTransfer(updatedBooking));
+        }
       });
     }
   }
