@@ -37,3 +37,30 @@ class LoadAllAccounts extends AccountEvent {
   @override
   List<Object?> get props => [];
 }
+
+class AccountDeposit extends AccountEvent {
+  final Booking booking;
+
+  const AccountDeposit(this.booking);
+
+  @override
+  List<Object?> get props => [booking];
+}
+
+class AccountWithdraw extends AccountEvent {
+  final Booking booking;
+
+  const AccountWithdraw(this.booking);
+
+  @override
+  List<Object?> get props => [booking];
+}
+
+class AccountTransfer extends AccountEvent {
+  final Booking booking;
+
+  const AccountTransfer(this.booking);
+
+  @override
+  List<Object?> get props => [booking];
+}

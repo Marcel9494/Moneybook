@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/features/accounts/presentation/bloc/account_bloc.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/amount.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
-import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart' as booking_state;
 import 'package:moneybook/features/bookings/presentation/widgets/buttons/type_segmented_button.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_and_repeat_input_field.dart';
@@ -20,6 +21,7 @@ import '../../../../shared/presentation/widgets/input_fields/amount_text_field.d
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
+import '../bloc/booking_bloc.dart';
 import '../widgets/input_fields/categorie_input_field.dart';
 
 class CreateBookingPage extends StatefulWidget {
@@ -73,6 +75,23 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
             ),
           ),
         );
+        // TODO hier weitermachen und bookingType unterscheiden und mit withdraw weitermachen
+        BlocProvider.of<AccountBloc>(context).add(
+          AccountDeposit(
+            Booking(
+              id: 0,
+              type: _bookingType,
+              title: _titleController.text,
+              date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
+              repetition: _repetitionType,
+              amount: Amount.getValue(_amountController.text),
+              currency: Amount.getCurrency(_amountController.text),
+              fromAccount: _fromAccountController.text,
+              toAccount: _toAccountController.text,
+              categorie: _categorieController.text,
+            ),
+          ),
+        );
       });
     }
   }
@@ -97,13 +116,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         create: (_) => sl<BookingBloc>(),
         child: BlocConsumer<BookingBloc, BookingState>(
           listener: (BuildContext context, BookingState state) {
-            if (state is Finished) {
+            if (state is booking_state.Finished) {
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
             }
           },
           builder: (BuildContext context, state) {
-            if (state is Initial) {
+            if (state is booking_state.Initial) {
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
