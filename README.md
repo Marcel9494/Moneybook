@@ -66,3 +66,7 @@ Bisherige Auswahlmöglichkeiten:
 Aktuelles Datenbank Schema / Aufbau. Ist noch in der Design & Implementierungsphase wird wahrscheinlich noch erweitert:
 
 ![grafik](https://github.com/Marcel9494/Moneybook/assets/93829086/1efe1bef-1535-416e-894a-2f8b46d11d9b)
+
+Draw.io PNG Datei:
+
+![DatenbankSchema drawio](https://github.com/Marcel9494/Moneybook/assets/93829086/fa70d103-6f22-417a-ab54-723dfa766411)
