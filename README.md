@@ -60,3 +60,9 @@ Bisherige Auswahlmöglichkeiten:
 1.) Cockroach: https://www.cockroachlabs.com/lp/start-free-database-mc/?utm_source=google&utm_medium=cpc&utm_campaign=g-search-emea-eu-bofu-dev-serv-lp&utm_term=p-free%20database-c&utm_content=lp698001815911&utm_network=g&_bt=698001815911&_bk=free%20database&_bm=p&_bn=g&gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxttBTbWCEOXgFfWjjxgmpx8aczigHLjJxulRiWyHWuIWqMACkqHa2pxoCJ8sQAvD_BwE
 
 2.) Supabase: https://pub.dev/packages/supabase_flutter
+
+# Datenbank Schema / Aufbau:
+
+Aktuelles Datenbank Schema / Aufbau. Ist noch in der Design & Implementierungsphase wird wahrscheinlich noch erweitert:
+
+![grafik](https://github.com/Marcel9494/Moneybook/assets/93829086/1efe1bef-1535-416e-894a-2f8b46d11d9b)
