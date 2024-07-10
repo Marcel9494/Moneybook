@@ -11,6 +11,10 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 - Eigene Haushaltsbuch App benutzen die beliebig erweitert werden kann => für andere und mich
 - Erste eigene App entwickeln => für später folgende App Projekte
 
+# Vision
+
+Eine Haushaltsbuch App entwickeln die den Benutzern das Verwalten ihrer Finanzen erleichtert und ihnen eine gute Übersicht über ihre Finanzen bietet. Außerdem sollen weitere Features / Lösungen rund um persönliche Finanzen angeboten werden.
+
 # Werte / Prinzipien
 
 - Qualität vor Quantität
