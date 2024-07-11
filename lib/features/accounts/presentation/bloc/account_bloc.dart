@@ -60,21 +60,21 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         accountDepositEither.fold((failure) {
           emit(const Error(message: ACCOUNT_DEPOSIT_FAILURE));
         }, (_) {
-          emit(Finished());
+          emit(Booked());
         });
       } else if (event is AccountWithdraw) {
         final accountWithdrawEither = await createUseCase.accountRepository.withdraw(event.booking);
         accountWithdrawEither.fold((failure) {
           emit(const Error(message: ACCOUNT_WITHDRAW_FAILURE));
         }, (_) {
-          emit(Finished());
+          emit(Booked());
         });
       } else if (event is AccountTransfer) {
-        final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking);
+        final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking, event.reversal);
         accountTransferEither.fold((failure) {
           emit(const Error(message: ACCOUNT_TRANSFER_FAILURE));
         }, (_) {
-          emit(Finished());
+          emit(Booked());
         });
       }
     });

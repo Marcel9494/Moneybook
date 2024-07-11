@@ -58,9 +58,10 @@ class AccountWithdraw extends AccountEvent {
 
 class AccountTransfer extends AccountEvent {
   final Booking booking;
+  final bool reversal;
 
-  const AccountTransfer(this.booking);
+  const AccountTransfer(this.booking, this.reversal);
 
   @override
-  List<Object?> get props => [booking];
+  List<Object?> get props => [booking, reversal];
 }

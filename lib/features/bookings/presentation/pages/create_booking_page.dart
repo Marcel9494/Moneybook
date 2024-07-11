@@ -84,7 +84,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           );
         } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
           BlocProvider.of<AccountBloc>(context).add(
-            AccountTransfer(newBooking),
+            AccountTransfer(newBooking, false),
           );
         }
       });

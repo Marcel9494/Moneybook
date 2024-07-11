@@ -11,7 +11,7 @@ import '../../../../core/utils/number_formatter.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
-import '../../../accounts/presentation/bloc/account_bloc.dart';
+import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount.dart';
 import '../../domain/value_objects/booking_type.dart';
@@ -46,6 +46,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   late RepetitionType _repetitionType;
   late BookingType _bookingType;
   late Booking _oldBooking;
+  late Booking _updatedBooking;
 
   @override
   void initState() {
@@ -89,7 +90,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       });
     } else {
       _editBookingBtnController.success();
-      Booking updatedBooking = Booking(
+      _updatedBooking = Booking(
         id: widget.booking.id,
         type: _bookingType,
         title: _titleController.text,
@@ -101,23 +102,21 @@ class _EditBookingPageState extends State<EditBookingPage> {
         toAccount: _toAccountController.text,
         categorie: _categorieController.text,
       );
-      Timer(const Duration(milliseconds: durationInMs), () {
-        BlocProvider.of<BookingBloc>(context).add(
-          EditBooking(updatedBooking, context),
-        );
-        if (_bookingType == BookingType.expense) {
-          // TODO Vorherige Buchung rückgängig machen
-          BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldBooking));
-          BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(updatedBooking));
-        } else if (_bookingType == BookingType.income) {
-          // TODO Vorherige Buchung rückgängig machen
-          BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldBooking));
-          BlocProvider.of<AccountBloc>(context).add(AccountDeposit(updatedBooking));
-        } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-          // TODO Vorherige Buchung rückgängig machen
-          BlocProvider.of<AccountBloc>(context).add(AccountTransfer(updatedBooking));
-        }
+      Timer(const Duration(milliseconds: durationInMs), () async {
+        BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking, context));
+        _reverseBooking();
       });
+    }
+  }
+
+  void _reverseBooking() {
+    // Alte Buchung zuerst rückgängig machen...
+    if (_oldBooking.type == BookingType.expense) {
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_oldBooking));
+    } else if (_oldBooking.type == BookingType.income) {
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking));
+    } else if (_oldBooking.type == BookingType.transfer || _oldBooking.type == BookingType.investment) {
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_oldBooking, true));
     }
   }
 
@@ -175,40 +174,54 @@ class _EditBookingPageState extends State<EditBookingPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-          child: Card(
-            child: Form(
-              key: _bookingFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TypeSegmentedButton(
-                    bookingType: _bookingType,
-                    onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
-                  ),
-                  DateAndRepeatInputField(
-                    dateController: _dateController,
-                    repetitionType: _repetitionType.name,
-                  ),
-                  TitleTextField(hintText: 'Titel...', titleController: _titleController),
-                  AmountTextField(amountController: _amountController),
-                  AccountInputField(
-                    accountController: _fromAccountController,
-                    hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
-                  ),
-                  _bookingType.name == BookingType.transfer.name || _bookingType.name == BookingType.investment.name
-                      ? AccountInputField(
-                          accountController: _toAccountController,
-                          hintText: 'Konto...',
-                        )
-                      : const SizedBox(),
-                  _bookingType.name == BookingType.transfer.name
-                      ? const SizedBox()
-                      : CategorieInputField(
-                          categorieController: _categorieController,
-                          bookingType: _bookingType,
-                        ),
-                  SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
-                ],
+          child: BlocListener<account.AccountBloc, account.AccountState>(
+            listener: (context, state) {
+              // Nachdem alte Buchung rückgängig gemacht wurde wird die bearbeitete Buchung gebucht
+              if (state is account.Booked) {
+                if (_bookingType == BookingType.expense) {
+                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_updatedBooking));
+                } else if (_bookingType == BookingType.income) {
+                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_updatedBooking));
+                } else if (_bookingType == BookingType.investment) {
+                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking, false));
+                }
+              }
+            },
+            child: Card(
+              child: Form(
+                key: _bookingFormKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TypeSegmentedButton(
+                      bookingType: _bookingType,
+                      onSelectionChanged: (bookingType) => _changeBookingType(bookingType),
+                    ),
+                    DateAndRepeatInputField(
+                      dateController: _dateController,
+                      repetitionType: _repetitionType.name,
+                    ),
+                    TitleTextField(hintText: 'Titel...', titleController: _titleController),
+                    AmountTextField(amountController: _amountController),
+                    AccountInputField(
+                      accountController: _fromAccountController,
+                      hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
+                    ),
+                    _bookingType.name == BookingType.transfer.name || _bookingType.name == BookingType.investment.name
+                        ? AccountInputField(
+                            accountController: _toAccountController,
+                            hintText: 'Konto...',
+                          )
+                        : const SizedBox(),
+                    _bookingType.name == BookingType.transfer.name
+                        ? const SizedBox()
+                        : CategorieInputField(
+                            categorieController: _categorieController,
+                            bookingType: _bookingType,
+                          ),
+                    SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
+                  ],
+                ),
               ),
             ),
           ),
