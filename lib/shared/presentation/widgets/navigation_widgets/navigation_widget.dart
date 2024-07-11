@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/accounts/presentation/pages/account_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int tabIndex;
@@ -53,6 +54,18 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         return 'Kategorien';
       default:
         return '';
+    }
+  }
+
+  Future<void> _launchInstagramAppIfInstalled({required String url}) async {
+    try {
+      // Launch the app if installed!
+      bool launched = await launchUrl(Uri.parse(url));
+      if (launched == false) {
+        launchUrl(Uri.parse(url)); // Launch web view if app is not installed!
+      }
+    } catch (e) {
+      launchUrl(Uri.parse(url)); // Launch web view if app is not installed!
     }
   }
 
@@ -215,6 +228,80 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               onTap: () {
                 Navigator.pop(context);
                 Navigator.popAndPushNamed(context, categorieListRoute);
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.share_rounded,
+                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Folge Moneybook',
+                style: TextStyle(color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 3,
+              onTap: () {
+                // TODO richtige URL einfügen, wenn Instagram Seite live ist
+                _launchInstagramAppIfInstalled(url: 'https://www.instagram.com/TODO/');
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.info_outline_rounded,
+                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Über die App',
+                style: TextStyle(color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 4,
+              onTap: () {
+                // TODO
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.security_rounded,
+                color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Impressum',
+                style: TextStyle(color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 5,
+              onTap: () {
+                // TODO
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.gpp_good_outlined,
+                color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Datenschutzerklärung',
+                style: TextStyle(color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 6,
+              onTap: () {
+                // TODO
               },
             ),
           ],

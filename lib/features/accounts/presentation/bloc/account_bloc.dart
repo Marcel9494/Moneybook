@@ -6,6 +6,7 @@ import 'package:moneybook/features/accounts/domain/usecases/create.dart';
 import '../../../accounts/domain/usecases/delete.dart';
 import '../../../accounts/domain/usecases/edit.dart';
 import '../../../accounts/domain/usecases/load_all_categories.dart';
+import '../../../bookings/domain/entities/booking.dart';
 
 part 'account_event.dart';
 part 'account_state.dart';
@@ -14,6 +15,9 @@ const String CREATE_ACCOUNT_FAILURE = 'Konto konnte nicht erstellt werden.';
 const String EDIT_ACCOUNT_FAILURE = 'Konto konnte nicht bearbeitet werden.';
 const String DELETE_ACCOUNT_FAILURE = 'Konto konnte nicht gelöscht werden.';
 const String LOAD_ACCOUNTS_FAILURE = 'Kontoliste konnte nicht geladen werden.';
+const String ACCOUNT_DEPOSIT_FAILURE = 'Kontoeinzahlung konnte nicht durchgeführt werden.';
+const String ACCOUNT_WITHDRAW_FAILURE = 'Kontoabhebung konnte nicht durchgeführt werden.';
+const String ACCOUNT_TRANSFER_FAILURE = 'Kontotransfer konnte nicht durchgeführt werden.';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final Create createUseCase;
@@ -50,6 +54,27 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(const Error(message: LOAD_ACCOUNTS_FAILURE));
         }, (accounts) {
           emit(Loaded(accounts: accounts));
+        });
+      } else if (event is AccountDeposit) {
+        final accountDepositEither = await createUseCase.accountRepository.deposit(event.booking);
+        accountDepositEither.fold((failure) {
+          emit(const Error(message: ACCOUNT_DEPOSIT_FAILURE));
+        }, (_) {
+          emit(Booked());
+        });
+      } else if (event is AccountWithdraw) {
+        final accountWithdrawEither = await createUseCase.accountRepository.withdraw(event.booking);
+        accountWithdrawEither.fold((failure) {
+          emit(const Error(message: ACCOUNT_WITHDRAW_FAILURE));
+        }, (_) {
+          emit(Booked());
+        });
+      } else if (event is AccountTransfer) {
+        final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking, event.reversal);
+        accountTransferEither.fold((failure) {
+          emit(const Error(message: ACCOUNT_TRANSFER_FAILURE));
+        }, (_) {
+          emit(Booked());
         });
       }
     });
