@@ -34,6 +34,15 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
+  Future<Either<Failure, void>> createSerie(Booking booking) async {
+    try {
+      return Right(await bookingLocalDataSource.createSerie(booking));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> delete(int id) async {
     try {
       return Right(await bookingLocalDataSource.delete(id));

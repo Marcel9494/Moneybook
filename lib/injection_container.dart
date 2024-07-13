@@ -21,6 +21,7 @@ import 'features/accounts/domain/repositories/account_repository.dart';
 import 'features/accounts/domain/usecases/load_all_categories.dart' as load_all_accounts;
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
+import 'features/bookings/domain/usecases/createSerie.dart';
 import 'features/categories/data/datasources/categorie_local_data_source.dart';
 import 'features/categories/data/datasources/categorie_remote_data_source.dart';
 import 'features/categories/data/repositories/categorie_repository_impl.dart';
@@ -33,11 +34,12 @@ final sl = GetIt.instance;
 void init() {
   //! Features - Booking, Account
   // Bloc
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl()));
   // Use Cases
   sl.registerLazySingleton(() => create_booking.Create(sl()));
+  sl.registerLazySingleton(() => CreateSerie(sl()));
   sl.registerLazySingleton(() => edit_booking.Edit(sl()));
   sl.registerLazySingleton(() => delete_booking.Delete(sl()));
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));

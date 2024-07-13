@@ -159,6 +159,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
     });
   }
 
+  void _changeRepetitionType(RepetitionType newRepetition) {
+    setState(() {
+      _repetitionType = newRepetition;
+    });
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,6 +207,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     DateAndRepeatInputField(
                       dateController: _dateController,
                       repetitionType: _repetitionType.name,
+                      onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                     ),
                     TitleTextField(hintText: 'Titel...', titleController: _titleController),
                     AmountTextField(amountController: _amountController),

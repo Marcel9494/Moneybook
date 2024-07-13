@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
+import 'package:moneybook/features/bookings/domain/usecases/createSerie.dart';
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
@@ -16,6 +17,7 @@ Future<void> main() async {
   group('BookingBloc', () {
     late BookingBloc bookingBloc;
     late Create createUsecase;
+    late CreateSerie createSerieUsecase;
     late Create editUsecase;
     late Delete deleteUsecase;
     late LoadSortedMonthly loadSortedMonthlyUsecase;
@@ -24,10 +26,11 @@ Future<void> main() async {
     setUp(() {
       mockBookingRepository = MockBookingRepository();
       createUsecase = Create(mockBookingRepository);
+      createSerieUsecase = CreateSerie(mockBookingRepository);
       editUsecase = Create(mockBookingRepository);
       deleteUsecase = Delete(mockBookingRepository);
       loadSortedMonthlyUsecase = LoadSortedMonthly(mockBookingRepository);
-      bookingBloc = BookingBloc(createUsecase, editUsecase, deleteUsecase, loadSortedMonthlyUsecase);
+      bookingBloc = BookingBloc(createUsecase, createSerieUsecase, editUsecase, deleteUsecase, loadSortedMonthlyUsecase);
     });
 
     Booking tBooking = Booking(

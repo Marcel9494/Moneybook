@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 
 import '../../../../core/consts/route_consts.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/create.dart';
+import '../../domain/usecases/createSerie.dart';
 import '../../domain/usecases/delete.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
 
@@ -19,15 +21,31 @@ const String LOAD_BOOKINGS_FAILURE = 'Buchungen konnten nicht geladen werden.';
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final Create createUseCase;
-  final Create editUseCase;
+  final CreateSerie createSerieUseCase;
+  final Create editUseCase; // TODO auf Create auf Edit ändern
   final Delete deleteUseCase;
   final LoadSortedMonthly loadSortedMonthlyUseCase;
 
-  BookingBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadSortedMonthlyUseCase) : super(Initial()) {
+  BookingBloc(this.createUseCase, this.createSerieUseCase, this.editUseCase, this.deleteUseCase, this.loadSortedMonthlyUseCase) : super(Initial()) {
     on<BookingEvent>((event, emit) async {
       if (event is CreateBooking) {
         final createBookingEither = await createUseCase.bookingRepository.create(event.booking);
         createBookingEither.fold((failure) {
+          emit(const Error(message: CREATE_BOOKING_FAILURE));
+        }, (_) {
+          emit(Finished());
+        });
+      } else if (event is CreateSerieBooking) {
+        var createSerieBookingEither = await createUseCase.bookingRepository.create(event.booking);
+        if (event.booking.repetition == RepetitionType.weekly) {
+          for (int i = 0; i < 52; i++) {
+            DateTime nextDate = DateTime.parse(event.booking.date.toString()).add(Duration(days: (i + 1) * 7));
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
+        }
+        // TODO hier weitermachen alle Wiederholungsfälle implementieren
+        createSerieBookingEither.fold((failure) {
           emit(const Error(message: CREATE_BOOKING_FAILURE));
         }, (_) {
           emit(Finished());

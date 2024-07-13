@@ -40,7 +40,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _toAccountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
-  final RepetitionType _repetitionType = RepetitionType.noRepetition;
+  RepetitionType _repetitionType = RepetitionType.noRepetition;
   BookingType _bookingType = BookingType.expense;
 
   @override
@@ -71,21 +71,17 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         categorie: _categorieController.text,
       );
       Timer(const Duration(milliseconds: durationInMs), () {
-        BlocProvider.of<BookingBloc>(context).add(
-          CreateBooking(newBooking),
-        );
+        if (newBooking.repetition == RepetitionType.noRepetition) {
+          BlocProvider.of<BookingBloc>(context).add(CreateBooking(newBooking));
+        } else {
+          BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
+        }
         if (_bookingType == BookingType.expense) {
-          BlocProvider.of<AccountBloc>(context).add(
-            AccountWithdraw(newBooking),
-          );
+          BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
         } else if (_bookingType == BookingType.income) {
-          BlocProvider.of<AccountBloc>(context).add(
-            AccountDeposit(newBooking),
-          );
+          BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
         } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-          BlocProvider.of<AccountBloc>(context).add(
-            AccountTransfer(newBooking, false),
-          );
+          BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, false));
         }
       });
     }
@@ -99,6 +95,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         _categorieController.text = 'Übertrag';
       }
     });
+  }
+
+  void _changeRepetitionType(RepetitionType newRepetitionType) {
+    setState(() {
+      _repetitionType = newRepetitionType;
+    });
+    Navigator.pop(context);
   }
 
   @override
@@ -134,6 +137,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                           DateAndRepeatInputField(
                             dateController: _dateController,
                             repetitionType: _repetitionType.name,
+                            onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                           ),
                           TitleTextField(hintText: 'Titel...', titleController: _titleController),
                           AmountTextField(amountController: _amountController),

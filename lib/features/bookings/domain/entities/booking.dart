@@ -28,6 +28,31 @@ class Booking extends Equatable {
     required this.categorie,
   });
 
+  Booking copyWith(
+      {int? id,
+      BookingType? type,
+      String? title,
+      DateTime? date,
+      RepetitionType? repetition,
+      double? amount,
+      String? currency,
+      String? fromAccount,
+      String? toAccount,
+      String? categorie}) {
+    return Booking(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      date: date ?? this.date,
+      repetition: repetition ?? this.repetition,
+      amount: amount ?? this.amount,
+      currency: currency ?? this.currency,
+      fromAccount: fromAccount ?? this.fromAccount,
+      toAccount: toAccount ?? this.toAccount,
+      categorie: categorie ?? this.categorie,
+    );
+  }
+
   @override
   List<Object> get props => [id, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie];
 }

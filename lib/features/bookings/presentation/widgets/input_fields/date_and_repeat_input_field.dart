@@ -9,11 +9,13 @@ import '../buttons/list_view_button.dart';
 class DateAndRepeatInputField extends StatefulWidget {
   final TextEditingController dateController;
   String repetitionType;
+  Function onSelectionChanged;
 
   DateAndRepeatInputField({
     super.key,
     required this.dateController,
     required this.repetitionType,
+    required this.onSelectionChanged,
   });
 
   @override
@@ -40,47 +42,47 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
                         padding: const EdgeInsets.all(8),
                         children: <Widget>[
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.noRepetition.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.noRepetition),
                             text: RepetitionType.noRepetition.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.weekly.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.weekly),
                             text: RepetitionType.weekly.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.twoWeeks.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.twoWeeks),
                             text: RepetitionType.twoWeeks.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.monthly.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.monthly),
                             text: RepetitionType.monthly.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.monthlyBeginning.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.monthlyBeginning),
                             text: RepetitionType.monthlyBeginning.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.monthlyEnding.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.monthlyEnding),
                             text: RepetitionType.monthlyEnding.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.threeMonths.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.threeMonths),
                             text: RepetitionType.threeMonths.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.sixMonths.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.sixMonths),
                             text: RepetitionType.sixMonths.name,
                             selectedValue: repetitionType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setRepetition(context, RepetitionType.yearly.name),
+                            onPressed: () => widget.onSelectionChanged(RepetitionType.yearly),
                             text: RepetitionType.yearly.name,
                             selectedValue: repetitionType,
                           ),
@@ -95,13 +97,6 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
         );
       },
     );
-  }
-
-  void _setRepetition(BuildContext context, String newRepetition) {
-    setState(() {
-      widget.repetitionType = newRepetition;
-    });
-    Navigator.pop(context);
   }
 
   @override
