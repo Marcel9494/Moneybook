@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_value_cards.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
@@ -26,6 +27,8 @@ class _BookingListPageState extends State<BookingListPage> {
   double monthlyExpense = 0.0;
   double monthlyIncome = 0.0;
   double monthlyInvestment = 0.0;
+  double monthlyUnpaid = 0.0;
+  bool _isExpanded = false;
 
   void loadBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -56,6 +59,7 @@ class _BookingListPageState extends State<BookingListPage> {
     monthlyExpense = 0.0;
     monthlyIncome = 0.0;
     monthlyInvestment = 0.0;
+    monthlyUnpaid = 0.0;
     for (int i = 0; i < bookings.length; i++) {
       if (bookings[i].type == BookingType.expense) {
         monthlyExpense += bookings[i].amount;
@@ -64,7 +68,14 @@ class _BookingListPageState extends State<BookingListPage> {
       } else if (bookings[i].type == BookingType.investment) {
         monthlyInvestment += bookings[i].amount;
       }
+      if (bookings[i].date.isAfter(DateTime.now())) {
+        monthlyUnpaid += bookings[i].amount;
+      }
     }
+  }
+
+  bool _isSameMonth() {
+    return selectedDate.year == DateTime.now().year && selectedDate.month == DateTime.now().month;
   }
 
   @override
@@ -127,29 +138,86 @@ class _BookingListPageState extends State<BookingListPage> {
                         ),
                         Expanded(
                           child: ListView.builder(
+                            shrinkWrap: true,
                             itemCount: state.bookings.length,
                             itemBuilder: (BuildContext context, int index) {
-                              if (index > 0) {
-                                previousBookingDate = state.bookings[index - 1].date;
-                                bookingDate = state.bookings[index].date;
+                              if (state.bookings[index].date.isBefore(DateTime.now())) {
+                                if (index > 0) {
+                                  previousBookingDate = state.bookings[index - 1].date;
+                                  bookingDate = state.bookings[index].date;
+                                }
+                                if (index == 0 || previousBookingDate != bookingDate) {
+                                  return Column(
+                                    children: [
+                                      DailyReportSummary(
+                                        date: state.bookings[index].date,
+                                        dailyIncome: _dailyIncomeMap[state.bookings[index].date],
+                                        dailyExpense: _dailyExpenseMap[state.bookings[index].date],
+                                      ),
+                                      BookingCard(booking: state.bookings[index]),
+                                    ],
+                                  );
+                                } else {
+                                  return BookingCard(booking: state.bookings[index]);
+                                }
                               }
-                              if (index == 0 || previousBookingDate != bookingDate) {
-                                return Column(
-                                  children: [
-                                    DailyReportSummary(
-                                      date: state.bookings[index].date,
-                                      dailyIncome: _dailyIncomeMap[state.bookings[index].date],
-                                      dailyExpense: _dailyExpenseMap[state.bookings[index].date],
-                                    ),
-                                    BookingCard(booking: state.bookings[index]),
-                                  ],
-                                );
-                              } else {
-                                return BookingCard(booking: state.bookings[index]);
-                              }
+                              return const SizedBox();
                             },
                           ),
                         ),
+                        selectedDate.isAfter(DateTime.now()) || _isSameMonth()
+                            ? Theme(
+                                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                child: ListTileTheme(
+                                  dense: true,
+                                  child: ExpansionTile(
+                                    title: Text(
+                                      '${formatToMoneyAmount(monthlyUnpaid.toString())} Ausstehend',
+                                      style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 15.0 : 13.0),
+                                    ),
+                                    iconColor: Colors.cyanAccent,
+                                    backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+                                    onExpansionChanged: (bool expanded) {
+                                      setState(() {
+                                        _isExpanded = expanded;
+                                      });
+                                    },
+                                    children: [
+                                      SizedBox(
+                                        height: MediaQuery.sizeOf(context).height / 3,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: state.bookings.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            if (state.bookings[index].date.isAfter(DateTime.now())) {
+                                              if (index > 0) {
+                                                previousBookingDate = state.bookings[index - 1].date;
+                                                bookingDate = state.bookings[index].date;
+                                              }
+                                              if (index == 0 || previousBookingDate != bookingDate) {
+                                                return Column(
+                                                  children: [
+                                                    DailyReportSummary(
+                                                      date: state.bookings[index].date,
+                                                      dailyIncome: _dailyIncomeMap[state.bookings[index].date],
+                                                      dailyExpense: _dailyExpenseMap[state.bookings[index].date],
+                                                    ),
+                                                    BookingCard(booking: state.bookings[index]),
+                                                  ],
+                                                );
+                                              } else {
+                                                return BookingCard(booking: state.bookings[index]);
+                                              }
+                                            }
+                                            return const SizedBox();
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
                       ],
                     ),
                   );

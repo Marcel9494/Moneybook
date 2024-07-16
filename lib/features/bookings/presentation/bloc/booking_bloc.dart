@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/create.dart';
@@ -38,13 +39,60 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       } else if (event is CreateSerieBooking) {
         var createSerieBookingEither = await createUseCase.bookingRepository.create(event.booking);
         if (event.booking.repetition == RepetitionType.weekly) {
-          for (int i = 0; i < 52; i++) {
+          for (int i = 0; i < 52 * serieYears; i++) {
             DateTime nextDate = DateTime.parse(event.booking.date.toString()).add(Duration(days: (i + 1) * 7));
             Booking nextBooking = event.booking.copyWith(date: nextDate);
             createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
           }
+        } else if (event.booking.repetition == RepetitionType.twoWeeks) {
+          for (int i = 0; i < 26 * serieYears; i++) {
+            DateTime nextDate = DateTime.parse(event.booking.date.toString()).add(Duration(days: (i + 1) * 14));
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
+        } else if (event.booking.repetition == RepetitionType.monthly) {
+          for (int i = 0; i < 12 * serieYears; i++) {
+            DateTime originalDate = DateTime.parse(event.booking.date.toString());
+            DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 1), originalDate.day);
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
+        } else if (event.booking.repetition == RepetitionType.monthlyBeginning) {
+          for (int i = 0; i < 12 * serieYears; i++) {
+            DateTime originalDate = DateTime.parse(event.booking.date.toString());
+            DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 1), 1);
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
+        } else if (event.booking.repetition == RepetitionType.monthlyEnding) {
+          for (int i = 0; i < 12 * serieYears; i++) {
+            DateTime originalDate = DateTime.parse(event.booking.date.toString());
+            DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 1), 0);
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
+        } else if (event.booking.repetition == RepetitionType.threeMonths) {
+          for (int i = 0; i < 4 * serieYears; i++) {
+            DateTime originalDate = DateTime.parse(event.booking.date.toString());
+            DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 3), originalDate.day);
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
+        } else if (event.booking.repetition == RepetitionType.sixMonths) {
+          for (int i = 0; i < 2 * serieYears; i++) {
+            DateTime originalDate = DateTime.parse(event.booking.date.toString());
+            DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 6), originalDate.day);
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
+        } else if (event.booking.repetition == RepetitionType.yearly) {
+          for (int i = 0; i < 1 * serieYears; i++) {
+            DateTime originalDate = DateTime.parse(event.booking.date.toString());
+            DateTime nextDate = DateTime(originalDate.year + i + 1, originalDate.month, originalDate.day);
+            Booking nextBooking = event.booking.copyWith(date: nextDate);
+            createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
+          }
         }
-        // TODO hier weitermachen alle Wiederholungsfälle implementieren
         createSerieBookingEither.fold((failure) {
           emit(const Error(message: CREATE_BOOKING_FAILURE));
         }, (_) {

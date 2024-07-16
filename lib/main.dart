@@ -86,6 +86,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => EditBookingPage(
                 booking: args.booking,
+                editMode: args.editMode,
               ),
               settings: settings,
             );

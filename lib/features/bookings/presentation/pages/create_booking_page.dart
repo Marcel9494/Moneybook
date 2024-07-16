@@ -76,6 +76,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         } else {
           BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
         }
+        // TODO hier weitermachen für jede Buchung die in der Vergangenheit liegt auch Transaktion ausführen
         if (_bookingType == BookingType.expense) {
           BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
         } else if (_bookingType == BookingType.income) {
