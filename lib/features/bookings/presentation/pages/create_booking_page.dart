@@ -77,13 +77,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
         }
         // TODO hier weitermachen für jede Buchung die in der Vergangenheit liegt auch Transaktion ausführen
-        if (_bookingType == BookingType.expense) {
+        /*if (_bookingType == BookingType.expense) {
           BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
         } else if (_bookingType == BookingType.income) {
           BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
         } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
           BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, false));
-        }
+        }*/
       });
     }
   }
@@ -116,6 +116,18 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         child: BlocConsumer<BookingBloc, BookingState>(
           listener: (BuildContext context, BookingState state) {
             if (state is booking_state.Finished) {
+              Navigator.pop(context);
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+            } else if (state is booking_state.SerieFinished) {
+              for (int i = 0; i < state.bookings.length; i++) {
+                if (_bookingType == BookingType.expense) {
+                  BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[i]));
+                } else if (_bookingType == BookingType.income) {
+                  BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[i]));
+                } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                  BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[i], false));
+                }
+              }
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
             }
