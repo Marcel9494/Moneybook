@@ -50,6 +50,8 @@ Bei der Haushaltsbuch App gibt es aktuell folgende features die jeweils der oben
 - Buchungen (bookings)
 - Konten (accounts)
 - Kategorien (categories)
+- Budgets (budgets)
+- Statistiken (statistics)
 - Einstellungen (settings)
 
 # Lokale Datenbank Entscheidungen
