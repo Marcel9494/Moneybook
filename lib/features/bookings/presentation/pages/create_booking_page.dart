@@ -73,17 +73,16 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       Timer(const Duration(milliseconds: durationInMs), () {
         if (newBooking.repetition == RepetitionType.noRepetition) {
           BlocProvider.of<BookingBloc>(context).add(CreateBooking(newBooking));
+          if (_bookingType == BookingType.expense) {
+            BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
+          } else if (_bookingType == BookingType.income) {
+            BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
+          } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+            BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, false));
+          }
         } else {
           BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
         }
-        // TODO hier weitermachen für jede Buchung die in der Vergangenheit liegt auch Transaktion ausführen
-        /*if (_bookingType == BookingType.expense) {
-          BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
-        } else if (_bookingType == BookingType.income) {
-          BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
-        } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-          BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, false));
-        }*/
       });
     }
   }
@@ -119,14 +118,22 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
             } else if (state is booking_state.SerieFinished) {
+              // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+              // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+              // muss somit nur einmal aufgerufen werden.
+              double overallSerieAmount = 0.0;
               for (int i = 0; i < state.bookings.length; i++) {
-                if (_bookingType == BookingType.expense) {
-                  BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[i]));
-                } else if (_bookingType == BookingType.income) {
-                  BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[i]));
-                } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                  BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[i], false));
+                if (state.bookings[i].date.isBefore(DateTime.now())) {
+                  overallSerieAmount += state.bookings[i].amount;
                 }
+              }
+              state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
+              if (_bookingType == BookingType.expense) {
+                BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0]));
+              } else if (_bookingType == BookingType.income) {
+                BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0]));
+              } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], false));
               }
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));

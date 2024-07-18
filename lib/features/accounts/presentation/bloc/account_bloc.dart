@@ -71,7 +71,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(Booked());
           return;
         }
-        print(event.booking.date);
         final accountWithdrawEither = await createUseCase.accountRepository.withdraw(event.booking);
         accountWithdrawEither.fold((failure) {
           emit(const Error(message: ACCOUNT_WITHDRAW_FAILURE));
