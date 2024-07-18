@@ -9,6 +9,7 @@ import '../models/booking_model.dart';
 
 abstract class BookingLocalDataSource {
   Future<void> create(Booking booking);
+  Future<void> createSerie(Booking booking);
   Future<void> edit(Booking booking);
   Future<void> delete(int id);
   Future<BookingModel> load(int id);
@@ -45,18 +46,25 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   Future<void> create(Booking booking) async {
     db = await openBookingDatabase(bookingDbName);
     await db.rawInsert(
-        'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-          booking.type.name,
-          booking.title,
-          DateFormat('yyyy-MM-dd').format(booking.date),
-          booking.repetition.name,
-          booking.amount,
-          booking.currency,
-          booking.fromAccount,
-          booking.toAccount,
-          booking.categorie,
-        ]);
+      'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        booking.type.name,
+        booking.title,
+        DateFormat('yyyy-MM-dd').format(booking.date),
+        booking.repetition.name,
+        booking.amount,
+        booking.currency,
+        booking.fromAccount,
+        booking.toAccount,
+        booking.categorie,
+      ],
+    );
+  }
+
+  @override
+  Future<void> createSerie(Booking booking) {
+    // TODO: implement createSerie
+    throw UnimplementedError();
   }
 
   @override

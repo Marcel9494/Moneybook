@@ -40,7 +40,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final TextEditingController _toAccountController = TextEditingController();
   final TextEditingController _categorieController = TextEditingController();
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
-  final RepetitionType _repetitionType = RepetitionType.noRepetition;
+  RepetitionType _repetitionType = RepetitionType.noRepetition;
   BookingType _bookingType = BookingType.expense;
 
   @override
@@ -71,21 +71,17 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         categorie: _categorieController.text,
       );
       Timer(const Duration(milliseconds: durationInMs), () {
-        BlocProvider.of<BookingBloc>(context).add(
-          CreateBooking(newBooking),
-        );
-        if (_bookingType == BookingType.expense) {
-          BlocProvider.of<AccountBloc>(context).add(
-            AccountWithdraw(newBooking),
-          );
-        } else if (_bookingType == BookingType.income) {
-          BlocProvider.of<AccountBloc>(context).add(
-            AccountDeposit(newBooking),
-          );
-        } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-          BlocProvider.of<AccountBloc>(context).add(
-            AccountTransfer(newBooking, false),
-          );
+        if (newBooking.repetition == RepetitionType.noRepetition) {
+          BlocProvider.of<BookingBloc>(context).add(CreateBooking(newBooking));
+          if (_bookingType == BookingType.expense) {
+            BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
+          } else if (_bookingType == BookingType.income) {
+            BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
+          } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+            BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, false));
+          }
+        } else {
+          BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
         }
       });
     }
@@ -101,6 +97,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     });
   }
 
+  void _changeRepetitionType(RepetitionType newRepetitionType) {
+    setState(() {
+      _repetitionType = newRepetitionType;
+    });
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,6 +115,26 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         child: BlocConsumer<BookingBloc, BookingState>(
           listener: (BuildContext context, BookingState state) {
             if (state is booking_state.Finished) {
+              Navigator.pop(context);
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+            } else if (state is booking_state.SerieFinished) {
+              // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+              // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+              // muss somit nur einmal aufgerufen werden.
+              double overallSerieAmount = 0.0;
+              for (int i = 0; i < state.bookings.length; i++) {
+                if (state.bookings[i].date.isBefore(DateTime.now())) {
+                  overallSerieAmount += state.bookings[i].amount;
+                }
+              }
+              state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
+              if (_bookingType == BookingType.expense) {
+                BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0]));
+              } else if (_bookingType == BookingType.income) {
+                BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0]));
+              } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], false));
+              }
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
             }
@@ -134,6 +157,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                           DateAndRepeatInputField(
                             dateController: _dateController,
                             repetitionType: _repetitionType.name,
+                            onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                           ),
                           TitleTextField(hintText: 'Titel...', titleController: _titleController),
                           AmountTextField(amountController: _amountController),

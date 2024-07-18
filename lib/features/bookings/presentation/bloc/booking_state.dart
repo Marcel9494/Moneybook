@@ -28,6 +28,15 @@ final class Finished extends BookingState {
   List<Object> get props => [];
 }
 
+final class SerieFinished extends BookingState {
+  final List<Booking> bookings;
+
+  const SerieFinished({required this.bookings});
+
+  @override
+  List<Object> get props => [bookings];
+}
+
 final class Error extends BookingState {
   final String message;
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/edit_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -24,10 +25,12 @@ import '../widgets/input_fields/date_and_repeat_input_field.dart';
 
 class EditBookingPage extends StatefulWidget {
   final Booking booking;
+  final EditModeType editMode;
 
   const EditBookingPage({
     super.key,
     required this.booking,
+    required this.editMode,
   });
 
   @override
@@ -159,6 +162,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
     });
   }
 
+  void _changeRepetitionType(RepetitionType newRepetition) {
+    setState(() {
+      _repetitionType = newRepetition;
+    });
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,6 +210,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     DateAndRepeatInputField(
                       dateController: _dateController,
                       repetitionType: _repetitionType.name,
+                      onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                     ),
                     TitleTextField(hintText: 'Titel...', titleController: _titleController),
                     AmountTextField(amountController: _amountController),

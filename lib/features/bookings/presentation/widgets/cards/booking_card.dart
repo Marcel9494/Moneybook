@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/edit_mode_type.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
 
 import '../../../../../core/utils/number_formatter.dart';
+import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../domain/entities/booking.dart';
 import '../../../domain/value_objects/booking_type.dart';
 
@@ -27,10 +31,73 @@ class BookingCard extends StatelessWidget {
     return Colors.cyanAccent;
   }
 
+  void _openSerieBookingBottomSheet(BuildContext context) {
+    showCupertinoModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          child: Wrap(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const BottomSheetHeader(title: 'Buchung bearbeiten:', indent: 16.0),
+                  ListTile(
+                    leading: const Icon(Icons.looks_one_outlined, color: Colors.cyanAccent),
+                    title: const Text('Nur diese Buchung'),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    onTap: () => Navigator.popAndPushNamed(
+                      context,
+                      editBookingRoute,
+                      arguments: EditBookingPageArguments(
+                        booking,
+                        EditModeType.one,
+                      ),
+                    ),
+                  ),
+                  const Divider(indent: 16.0, endIndent: 16.0),
+                  ListTile(
+                    leading: const Icon(Icons.repeat_one_rounded, color: Colors.cyanAccent),
+                    title: const Text('Alle zukünftige Buchungen'),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    onTap: () => Navigator.popAndPushNamed(
+                      context,
+                      editBookingRoute,
+                      arguments: EditBookingPageArguments(
+                        booking,
+                        EditModeType.onlyFuture,
+                      ),
+                    ),
+                  ),
+                  const Divider(indent: 16.0, endIndent: 16.0),
+                  ListTile(
+                    leading: const Icon(Icons.all_inclusive_rounded, color: Colors.cyanAccent),
+                    title: const Text('Alle Buchungen'),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    onTap: () => Navigator.popAndPushNamed(
+                      context,
+                      editBookingRoute,
+                      arguments: EditBookingPageArguments(
+                        booking,
+                        EditModeType.all,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, editBookingRoute, arguments: EditBookingPageArguments(booking)),
+      onTap: () => booking.repetition == RepetitionType.noRepetition
+          ? Navigator.pushNamed(context, editBookingRoute, arguments: EditBookingPageArguments(booking, EditModeType.one))
+          : _openSerieBookingBottomSheet(context),
       child: Card(
         child: ClipPath(
           clipper: ShapeBorderClipper(

@@ -101,7 +101,6 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   Future<void> deposit(Booking booking) async {
     db = await openAccountDatabase(accountDbName);
     List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
-    print("Kontostand 1: ${accountBalance[0]['amount']}");
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       accountBalance[0]['amount'] + booking.amount,
       booking.fromAccount,
@@ -112,7 +111,6 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   Future<void> withdraw(Booking booking) async {
     db = await openAccountDatabase(accountDbName);
     List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
-    print("Kontostand 2: ${accountBalance[0]['amount']}");
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       accountBalance[0]['amount'] - booking.amount,
       booking.fromAccount,

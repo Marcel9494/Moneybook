@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/accounts/presentation/pages/account_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
+import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.dart';
+import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -24,7 +26,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   void initState() {
     super.initState();
     _tabIndex = widget.tabIndex;
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.animation!.addListener(_tabListener);
     _tabController.index = widget.tabIndex;
   }
@@ -51,6 +53,10 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       case 1:
         return 'Konten';
       case 2:
+        return 'Statistiken';
+      case 3:
+        return 'Budgets';
+      case 4:
         return 'Kategorien';
       default:
         return '';
@@ -91,7 +97,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               : const SizedBox(),
         ],
       ),
-      floatingActionButton: _tabIndex == 0 || _tabIndex == 1
+      floatingActionButton: _tabIndex <= 3
           ? FloatingActionButton(
               onPressed: () => Navigator.pushNamed(context, createBookingRoute),
               shape: const CircleBorder(),
@@ -114,9 +120,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         children: const [
           BookingListPage(),
           AccountListPage(),
+          StatisticPage(),
+          BudgetListPage(),
         ],
       ),
-      bottomNavigationBar: _tabIndex == 0 || _tabIndex == 1
+      bottomNavigationBar: _tabIndex <= 3
           ? BottomAppBar(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               height: 60.0,
@@ -125,25 +133,23 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Row(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     GestureDetector(
                       onTap: () => _onTabChange(0),
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 32.0),
-                        child: Column(
-                          children: <Widget>[
-                            Icon(
-                              Icons.auto_stories_rounded,
-                              size: _tabIndex == 0 ? 26.0 : 24.0,
-                              color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
-                            ),
-                            Text(
-                              'Buchungen',
-                              style: TextStyle(color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white),
-                            ),
-                          ],
-                        ),
+                      child: Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.auto_stories_rounded,
+                            size: 24.0,
+                            color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white70,
+                          ),
+                          Text(
+                            'Buchungen',
+                            style: TextStyle(color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
+                          ),
+                        ],
                       ),
                     ),
                     GestureDetector(
@@ -152,13 +158,47 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                         children: <Widget>[
                           Icon(
                             Icons.account_balance_wallet_rounded,
-                            size: _tabIndex == 1 ? 26.0 : 24.0,
-                            color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
-                          ), // icon
+                            size: 24.0,
+                            color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white70,
+                          ),
                           Text(
                             'Konten',
-                            style: TextStyle(color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white),
-                          ), // text
+                            style: TextStyle(color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(),
+                    const SizedBox(),
+                    GestureDetector(
+                      onTap: () => _onTabChange(2),
+                      child: Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.insights_rounded,
+                            size: 24.0,
+                            color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white70,
+                          ), // icon
+                          Text(
+                            'Statistiken',
+                            style: TextStyle(color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _onTabChange(3),
+                      child: Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.savings_rounded,
+                            size: 24.0,
+                            color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white70,
+                          ),
+                          Text(
+                            'Budgets',
+                            style: TextStyle(color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
+                          ),
                         ],
                       ),
                     ),
@@ -213,11 +253,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
             ),
             ListTile(
               leading: Icon(
-                Icons.donut_small,
+                Icons.insights_rounded,
                 color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
               ),
               title: Text(
-                'Kategorien',
+                'Statistiken',
                 style: TextStyle(color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white),
               ),
               trailing: Icon(
@@ -225,6 +265,44 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
               ),
               selected: _tabIndex == 2,
+              onTap: () {
+                _onTabChange(2);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.savings_rounded,
+                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Budgets',
+                style: TextStyle(color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 3,
+              onTap: () {
+                _onTabChange(3);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.donut_small,
+                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Kategorien',
+                style: TextStyle(color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 4,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.popAndPushNamed(context, categorieListRoute);
@@ -234,47 +312,10 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
             ListTile(
               leading: Icon(
                 Icons.share_rounded,
-                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Folge Moneybook',
-                style: TextStyle(color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 3,
-              onTap: () {
-                // TODO richtige URL einfügen, wenn Instagram Seite live ist
-                _launchInstagramAppIfInstalled(url: 'https://www.instagram.com/TODO/');
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.info_outline_rounded,
-                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Über die App',
-                style: TextStyle(color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 4,
-              onTap: () {
-                // TODO
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.security_rounded,
                 color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
               ),
               title: Text(
-                'Impressum',
+                'Folge Moneybook',
                 style: TextStyle(color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
               ),
               trailing: Icon(
@@ -283,16 +324,17 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               ),
               selected: _tabIndex == 5,
               onTap: () {
-                // TODO
+                // TODO richtige URL einfügen, wenn Instagram Seite live ist
+                _launchInstagramAppIfInstalled(url: 'https://www.instagram.com/TODO/');
               },
             ),
             ListTile(
               leading: Icon(
-                Icons.gpp_good_outlined,
+                Icons.info_outline_rounded,
                 color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
               ),
               title: Text(
-                'Datenschutzerklärung',
+                'Über die App',
                 style: TextStyle(color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
               ),
               trailing: Icon(
@@ -300,6 +342,42 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                 color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
               ),
               selected: _tabIndex == 6,
+              onTap: () {
+                // TODO
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.security_rounded,
+                color: _tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Impressum',
+                style: TextStyle(color: _tabIndex == 7 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 7,
+              onTap: () {
+                // TODO
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.gpp_good_outlined,
+                color: _tabIndex == 8 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              title: Text(
+                'Datenschutzerklärung',
+                style: TextStyle(color: _tabIndex == 8 ? Colors.cyan.shade400 : Colors.white),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right_rounded,
+                color: _tabIndex == 8 ? Colors.cyan.shade400 : Colors.white,
+              ),
+              selected: _tabIndex == 8,
               onTap: () {
                 // TODO
               },

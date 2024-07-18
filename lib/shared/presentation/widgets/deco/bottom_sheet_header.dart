@@ -5,11 +5,13 @@ import 'bottom_sheet_line.dart';
 class BottomSheetHeader extends StatelessWidget {
   final String title;
   final bool showCloseButton;
+  final double indent;
 
   const BottomSheetHeader({
     super.key,
     required this.title,
     this.showCloseButton = true,
+    this.indent = 0.0,
   });
 
   @override
@@ -49,7 +51,10 @@ class BottomSheetHeader extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(),
+        Divider(
+          indent: indent,
+          endIndent: indent,
+        ),
       ],
     );
   }
