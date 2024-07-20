@@ -19,6 +19,7 @@ import 'features/accounts/presentation/pages/edit_account_page.dart';
 import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
+import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
@@ -34,6 +35,9 @@ void main() {
     ),
     BlocProvider(
       create: (context) => sl<CategorieBloc>(),
+    ),
+    BlocProvider(
+      create: (context) => sl<CategorieStatsBloc>(),
     ),
   ], child: const MyApp()));
 }

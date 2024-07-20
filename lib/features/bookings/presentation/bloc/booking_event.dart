@@ -50,3 +50,12 @@ class LoadSortedMonthlyBookings extends BookingEvent {
   @override
   List<Object?> get props => [selectedDate];
 }
+
+class LoadCategorieBookings extends BookingEvent {
+  final String categorie;
+
+  const LoadCategorieBookings(this.categorie);
+
+  @override
+  List<Object?> get props => [categorie];
+}

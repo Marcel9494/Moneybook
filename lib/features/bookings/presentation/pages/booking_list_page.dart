@@ -30,7 +30,7 @@ class _BookingListPageState extends State<BookingListPage> {
   double _monthlyUnpaid = 0.0;
   bool _isExpanded = false;
 
-  void loadBookings(BuildContext context) {
+  void _loadBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
       LoadSortedMonthlyBookings(_selectedDate),
     );
@@ -85,7 +85,7 @@ class _BookingListPageState extends State<BookingListPage> {
         children: [
           BlocBuilder<BookingBloc, BookingState>(
             builder: (context, state) {
-              loadBookings(context);
+              _loadBookings(context);
               if (state is Loaded) {
                 _calculateMonthlyValues(state.bookings);
                 if (state.bookings.isEmpty) {
