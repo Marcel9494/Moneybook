@@ -32,7 +32,10 @@ class _CategoriePercentageCardState extends State<CategoriePercentageCard> {
           ),
           child: ListTile(
             title: Text('${widget.categorieStats.percentage.toStringAsFixed(1).replaceAll('.', ',')} % ${widget.categorieStats.categorie}'),
-            trailing: Text(formatToMoneyAmount(widget.categorieStats.amount.toString())),
+            trailing: Text(
+              formatToMoneyAmount(widget.categorieStats.amount.toString()),
+              style: const TextStyle(fontSize: 14.0),
+            ),
           ),
         ),
       ),

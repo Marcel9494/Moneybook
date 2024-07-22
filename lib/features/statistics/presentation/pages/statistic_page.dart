@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/features/statistics/presentation/widgets/buttons/booking_type_segmented_button.dart';
+import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
@@ -9,7 +11,12 @@ import '../widgets/cards/categorie_percentage_card.dart';
 import '../widgets/charts/categorie_pie_chart.dart';
 
 class StatisticPage extends StatefulWidget {
-  const StatisticPage({super.key});
+  final DateTime selectedDate;
+
+  const StatisticPage({
+    super.key,
+    required this.selectedDate,
+  });
 
   @override
   State<StatisticPage> createState() => _StatisticPageState();
@@ -18,9 +25,9 @@ class StatisticPage extends StatefulWidget {
 class _StatisticPageState extends State<StatisticPage> {
   BookingType _selectedBookingType = BookingType.expense;
 
-  void loadCategorieBookings(BuildContext context) {
+  void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
-      LoadSortedMonthlyBookings(DateTime.now()),
+      LoadSortedMonthlyBookings(widget.selectedDate),
     );
   }
 
@@ -30,77 +37,60 @@ class _StatisticPageState extends State<StatisticPage> {
     );
   }
 
+  void _onSelectionChanged(Set<BookingType> newSelection) {
+    setState(() {
+      _selectedBookingType = newSelection.first;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BookingBloc, BookingState>(
       builder: (context, bookingState) {
-        loadCategorieBookings(context);
+        _loadCategorieBookings(context);
         if (bookingState is Loaded) {
           _calculateCategoryStats(bookingState.bookings);
           return BlocBuilder<CategorieStatsBloc, CategorieStatsState>(
             builder: (context, state) {
-              // TODO hier weitermachen und leere Liste UI erstellen extra State für leere Liste?
               if (state is CalculatedCategorieStats) {
-                return Column(
-                  children: [
-                    CategoriePieChart(categorieStats: state.categorieStats),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, right: 6.0, left: 6.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: SegmentedButton<BookingType>(
-                          segments: <ButtonSegment<BookingType>>[
-                            ButtonSegment<BookingType>(
-                              value: BookingType.expense,
-                              label: Text(
-                                BookingType.expense.name,
-                                style: const TextStyle(fontSize: 12.0),
-                              ),
-                            ),
-                            ButtonSegment<BookingType>(
-                              value: BookingType.income,
-                              label: Text(
-                                BookingType.income.name,
-                                style: const TextStyle(fontSize: 12.0),
-                              ),
-                            ),
-                            ButtonSegment<BookingType>(
-                              value: BookingType.investment,
-                              label: Text(
-                                BookingType.investment.name,
-                                style: const TextStyle(fontSize: 12.0),
-                              ),
-                            ),
-                          ],
-                          selected: <BookingType>{_selectedBookingType},
-                          onSelectionChanged: (Set<BookingType> newSelection) {
-                            setState(() {
-                              _selectedBookingType = newSelection.first;
-                            });
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                              ),
-                            ),
-                          ),
+                if (state.categorieStats.isEmpty) {
+                  return Column(
+                    children: [
+                      CategoriePieChart(categorieStats: state.categorieStats),
+                      BookingTypeSegmentedButton(
+                        selectedBookingType: _selectedBookingType,
+                        onSelectionChanged: _onSelectionChanged,
+                      ),
+                      const Expanded(
+                        child: EmptyList(
+                          text: 'Noch keine Buchungen vorhanden',
+                          icon: Icons.donut_small,
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: state.categorieStats.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return CategoriePercentageCard(
-                            categorieStats: state.categorieStats[index],
-                            index: index,
-                          );
-                        },
+                    ],
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      CategoriePieChart(categorieStats: state.categorieStats),
+                      BookingTypeSegmentedButton(
+                        selectedBookingType: _selectedBookingType,
+                        onSelectionChanged: _onSelectionChanged,
                       ),
-                    ),
-                  ],
-                );
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: state.categorieStats.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return CategoriePercentageCard(
+                              categorieStats: state.categorieStats[index],
+                              index: index,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }
               }
               return const SizedBox();
             },

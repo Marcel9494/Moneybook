@@ -40,6 +40,7 @@ class CategorieStatsBloc extends Bloc<CategorieStatsEvent, CategorieStatsState> 
             categorieStats[i].percentage = (categorieStats[i].amount / overallAmount) * 100;
           }
         }
+        categorieStats.sort((first, second) => second.percentage.compareTo(first.percentage));
         emit(CalculatedCategorieStats(categorieStats: categorieStats));
       }
     });

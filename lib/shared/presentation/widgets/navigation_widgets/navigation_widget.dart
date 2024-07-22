@@ -6,6 +6,8 @@ import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.d
 import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../features/bookings/presentation/widgets/buttons/month_picker_buttons.dart';
+
 class BottomNavBar extends StatefulWidget {
   final int tabIndex;
 
@@ -21,6 +23,7 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
   late int _tabIndex;
   late TabController _tabController;
+  late DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -79,7 +82,10 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_setTitle()),
+        title: Text(
+          _setTitle(),
+          style: const TextStyle(fontSize: 18.0),
+        ),
         leading: Builder(
           builder: (context) {
             return IconButton(
@@ -89,6 +95,16 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           },
         ),
         actions: [
+          _tabIndex != 1
+              ? MonthPickerButtons(
+                  selectedDate: _selectedDate,
+                  selectedDateCallback: (DateTime newDate) {
+                    setState(() {
+                      _selectedDate = newDate;
+                    });
+                  },
+                )
+              : const SizedBox(),
           _tabIndex == 1
               ? IconButton(
                   onPressed: () => Navigator.pushNamed(context, createAccountRoute),
@@ -117,11 +133,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          BookingListPage(),
-          AccountListPage(),
-          StatisticPage(),
-          BudgetListPage(),
+        children: [
+          BookingListPage(selectedDate: _selectedDate),
+          const AccountListPage(),
+          StatisticPage(selectedDate: _selectedDate),
+          BudgetListPage(selectedDate: _selectedDate),
         ],
       ),
       bottomNavigationBar: _tabIndex <= 3

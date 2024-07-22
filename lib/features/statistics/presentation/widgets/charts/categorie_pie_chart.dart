@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:moneybook/core/theme/colors.dart';
 
+import '../../../../../core/consts/common_consts.dart';
 import '../../../domain/entities/categorie_stats.dart';
 
 class CategoriePieChart extends StatefulWidget {
@@ -22,15 +23,12 @@ class CategoriePieChartState extends State<CategoriePieChart> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1.5,
+      aspectRatio: 1.6,
       child: Row(
         children: <Widget>[
-          const SizedBox(
-            height: 18,
-          ),
           Expanded(
             child: AspectRatio(
-              aspectRatio: 1,
+              aspectRatio: 1.0,
               child: PieChart(
                 PieChartData(
                   pieTouchData: PieTouchData(
@@ -44,13 +42,13 @@ class CategoriePieChartState extends State<CategoriePieChart> {
                       });
                     },
                   ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  sectionsSpace: 0,
-                  centerSpaceRadius: 40,
-                  sections: showingSections(widget.categorieStats),
+                  borderData: FlBorderData(show: false),
+                  sectionsSpace: 4.0,
+                  centerSpaceRadius: 40.0,
+                  sections: widget.categorieStats.isEmpty ? showingEmptySection() : showingSections(widget.categorieStats),
                 ),
+                swapAnimationDuration: const Duration(milliseconds: animationDurationInMs),
+                swapAnimationCurve: Curves.easeOutBack,
               ),
             ),
           ),
@@ -74,6 +72,21 @@ class CategoriePieChartState extends State<CategoriePieChart> {
           fontSize: fontSize,
           color: Colors.white,
           shadows: shadows,
+        ),
+      );
+    });
+  }
+
+  List<PieChartSectionData> showingEmptySection() {
+    return List.generate(1, (_) {
+      return PieChartSectionData(
+        color: Colors.cyanAccent.withOpacity(0.75),
+        value: 100.0,
+        title: '',
+        radius: 50.0,
+        titleStyle: const TextStyle(
+          fontSize: 13.0,
+          color: Colors.white,
         ),
       );
     });

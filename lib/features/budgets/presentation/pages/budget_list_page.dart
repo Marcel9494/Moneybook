@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
 
 class BudgetListPage extends StatefulWidget {
-  const BudgetListPage({super.key});
+  final DateTime selectedDate;
+
+  const BudgetListPage({
+    super.key,
+    required this.selectedDate,
+  });
 
   @override
   State<BudgetListPage> createState() => _BudgetListPageState();

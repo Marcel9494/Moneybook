@@ -22,6 +22,7 @@ import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
+import 'shared/presentation/widgets/arguments/selected_date_page_arguments.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,7 +70,6 @@ class MyApp extends StatelessWidget {
       ],
       home: const BottomNavBar(tabIndex: 0),
       routes: {
-        bookingListRoute: (context) => const BookingListPage(),
         accountListRoute: (context) => const AccountListPage(),
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
@@ -82,6 +82,14 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => BottomNavBar(
                 tabIndex: args.tabIndex,
+              ),
+              settings: settings,
+            );
+          case bookingListRoute:
+            final args = settings.arguments as SelectedDatePageArguments;
+            return MaterialPageRoute<String>(
+              builder: (BuildContext context) => BookingListPage(
+                selectedDate: args.selectedDate,
               ),
               settings: settings,
             );
