@@ -41,7 +41,7 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
           icon: const Icon(Icons.keyboard_arrow_left_rounded),
         ),
         SizedBox(
-          width: 130.0,
+          width: 80.0,
           child: GestureDetector(
             onTap: () {
               showMonthPicker(
@@ -66,7 +66,7 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
             behavior: HitTestBehavior.translucent,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: Text(dateFormatterMMMMYYYY.format(widget.selectedDate), textAlign: TextAlign.center),
+              child: Text(dateFormatterMMMYYYY.format(widget.selectedDate), textAlign: TextAlign.center),
             ),
           ),
         ),

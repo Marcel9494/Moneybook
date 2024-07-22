@@ -18,25 +18,26 @@ class BookingRepositoryImpl implements BookingRepository {
 
   @override
   Future<Either<Failure, void>> create(Booking booking) async {
-    //if (await networkInfo.isRemoteApproved) {
     try {
       return Right(await bookingLocalDataSource.create(booking));
     } on ServerException {
       return Left(ServerFailure());
     }
-    //} else {
-    try {
-      return Right(await bookingRemoteDataSource.create(booking));
-    } on CacheException {
-      return Left(CacheFailure());
-    }
-    //}
   }
 
   @override
   Future<Either<Failure, void>> createSerie(Booking booking) async {
     try {
       return Right(await bookingLocalDataSource.createSerie(booking));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> edit(Booking booking) async {
+    try {
+      return Right(await bookingLocalDataSource.edit(booking));
     } on ServerException {
       return Left(ServerFailure());
     }
@@ -67,9 +68,9 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<Either<Failure, void>> edit(Booking booking) async {
+  Future<Either<Failure, List<Booking>>> loadCategorieBookings(String categorie) async {
     try {
-      return Right(await bookingLocalDataSource.edit(booking));
+      return Right(await bookingLocalDataSource.loadCategorieBookings(categorie));
     } on ServerException {
       return Left(ServerFailure());
     }

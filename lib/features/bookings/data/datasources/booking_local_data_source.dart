@@ -14,6 +14,7 @@ abstract class BookingLocalDataSource {
   Future<void> delete(int id);
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
+  Future<List<Booking>> loadCategorieBookings(String categorie);
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -68,6 +69,31 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
+  Future<void> edit(Booking booking) async {
+    db = await openBookingDatabase(bookingDbName);
+    try {
+      await db.rawUpdate(
+          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ? WHERE id = ?',
+          [
+            booking.id,
+            booking.type.name,
+            booking.title,
+            DateFormat('yyyy-MM-dd').format(booking.date),
+            booking.repetition.name,
+            booking.amount,
+            booking.currency,
+            booking.fromAccount,
+            booking.toAccount,
+            booking.categorie,
+            booking.id
+          ]);
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
+  }
+
+  @override
   Future<void> delete(int id) async {
     db = await openBookingDatabase(bookingDbName);
     await db.rawDelete('DELETE FROM $bookingDbName WHERE id = ?', [id]);
@@ -107,27 +133,25 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> edit(Booking booking) async {
+  Future<List<Booking>> loadCategorieBookings(String categorie) async {
     db = await openBookingDatabase(bookingDbName);
-    try {
-      await db.rawUpdate(
-          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ? WHERE id = ?',
-          [
-            booking.id,
-            booking.type.name,
-            booking.title,
-            DateFormat('yyyy-MM-dd').format(booking.date),
-            booking.repetition.name,
-            booking.amount,
-            booking.currency,
-            booking.fromAccount,
-            booking.toAccount,
-            booking.categorie,
-            booking.id
-          ]);
-    } catch (e) {
-      // TODO Fehler richtig behandeln
-      print('Error: $e');
-    }
+    List<Map> categorieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE categorie = ?', [categorie]);
+    List<Booking> categorieBookingList = categorieBookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+          ),
+        )
+        .toList();
+    return categorieBookingList;
   }
 }

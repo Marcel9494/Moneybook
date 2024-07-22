@@ -8,11 +8,15 @@ import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../bloc/booking_bloc.dart';
-import '../widgets/buttons/month_picker_buttons.dart';
 import '../widgets/deco/daily_report_summary.dart';
 
 class BookingListPage extends StatefulWidget {
-  const BookingListPage({super.key});
+  DateTime selectedDate;
+
+  BookingListPage({
+    super.key,
+    required this.selectedDate,
+  });
 
   @override
   State<BookingListPage> createState() => _BookingListPageState();
@@ -21,18 +25,18 @@ class BookingListPage extends StatefulWidget {
 class _BookingListPageState extends State<BookingListPage> {
   late DateTime _previousBookingDate;
   late DateTime _bookingDate;
-  late DateTime _selectedDate = DateTime.now();
   final Map<DateTime, double> _dailyIncomeMap = {};
   final Map<DateTime, double> _dailyExpenseMap = {};
   double _monthlyExpense = 0.0;
   double _monthlyIncome = 0.0;
   double _monthlyInvestment = 0.0;
   double _monthlyUnpaid = 0.0;
+  int _numberOfBookedBookings = 0;
   bool _isExpanded = false;
 
-  void loadBookings(BuildContext context) {
+  void _loadBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
-      LoadSortedMonthlyBookings(_selectedDate),
+      LoadSortedMonthlyBookings(widget.selectedDate),
     );
   }
 
@@ -75,7 +79,7 @@ class _BookingListPageState extends State<BookingListPage> {
   }
 
   bool _isSameMonth() {
-    return _selectedDate.year == DateTime.now().year && _selectedDate.month == DateTime.now().month;
+    return widget.selectedDate.year == DateTime.now().year && widget.selectedDate.month == DateTime.now().month;
   }
 
   @override
@@ -85,24 +89,16 @@ class _BookingListPageState extends State<BookingListPage> {
         children: [
           BlocBuilder<BookingBloc, BookingState>(
             builder: (context, state) {
-              loadBookings(context);
+              _loadBookings(context);
               if (state is Loaded) {
                 _calculateMonthlyValues(state.bookings);
                 if (state.bookings.isEmpty) {
                   return Expanded(
                     child: Column(
                       children: [
-                        MonthPickerButtons(
-                          selectedDate: _selectedDate,
-                          selectedDateCallback: (DateTime newDate) {
-                            setState(() {
-                              _selectedDate = newDate;
-                            });
-                          },
-                        ),
                         MonthlyValueCards(
                           bookings: state.bookings,
-                          selectedDate: _selectedDate,
+                          selectedDate: widget.selectedDate,
                           monthlyExpense: _monthlyExpense,
                           monthlyIncome: _monthlyIncome,
                           monthlyInvestment: _monthlyInvestment,
@@ -118,20 +114,13 @@ class _BookingListPageState extends State<BookingListPage> {
                   );
                 } else {
                   _calculateDailyValues(state.bookings);
+                  _numberOfBookedBookings = 0;
                   return Expanded(
                     child: Column(
                       children: [
-                        MonthPickerButtons(
-                          selectedDate: _selectedDate,
-                          selectedDateCallback: (DateTime newDate) {
-                            setState(() {
-                              _selectedDate = newDate;
-                            });
-                          },
-                        ),
                         MonthlyValueCards(
                           bookings: state.bookings,
-                          selectedDate: _selectedDate,
+                          selectedDate: widget.selectedDate,
                           monthlyExpense: _monthlyExpense,
                           monthlyIncome: _monthlyIncome,
                           monthlyInvestment: _monthlyInvestment,
@@ -142,6 +131,7 @@ class _BookingListPageState extends State<BookingListPage> {
                             itemCount: state.bookings.length,
                             itemBuilder: (BuildContext context, int index) {
                               if (state.bookings[index].date.isBefore(DateTime.now())) {
+                                _numberOfBookedBookings++;
                                 if (index > 0) {
                                   _previousBookingDate = state.bookings[index - 1].date;
                                   _bookingDate = state.bookings[index].date;
@@ -161,11 +151,20 @@ class _BookingListPageState extends State<BookingListPage> {
                                   return BookingCard(booking: state.bookings[index]);
                                 }
                               }
+                              if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
+                                return SizedBox(
+                                  height: MediaQuery.sizeOf(context).height / 1.5,
+                                  child: const EmptyList(
+                                    text: 'Noch keine Buchungen vorhanden',
+                                    icon: Icons.receipt_long_rounded,
+                                  ),
+                                );
+                              }
                               return const SizedBox();
                             },
                           ),
                         ),
-                        _selectedDate.isAfter(DateTime.now()) || _isSameMonth()
+                        widget.selectedDate.isAfter(DateTime.now()) || _isSameMonth()
                             ? Theme(
                                 data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                                 child: ListTileTheme(

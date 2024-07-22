@@ -19,8 +19,10 @@ import 'features/accounts/presentation/pages/edit_account_page.dart';
 import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
+import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
+import 'shared/presentation/widgets/arguments/selected_date_page_arguments.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +36,9 @@ void main() {
     ),
     BlocProvider(
       create: (context) => sl<CategorieBloc>(),
+    ),
+    BlocProvider(
+      create: (context) => sl<CategorieStatsBloc>(),
     ),
   ], child: const MyApp()));
 }
@@ -65,7 +70,6 @@ class MyApp extends StatelessWidget {
       ],
       home: const BottomNavBar(tabIndex: 0),
       routes: {
-        bookingListRoute: (context) => const BookingListPage(),
         accountListRoute: (context) => const AccountListPage(),
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
@@ -78,6 +82,14 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => BottomNavBar(
                 tabIndex: args.tabIndex,
+              ),
+              settings: settings,
+            );
+          case bookingListRoute:
+            final args = settings.arguments as SelectedDatePageArguments;
+            return MaterialPageRoute<String>(
+              builder: (BuildContext context) => BookingListPage(
+                selectedDate: args.selectedDate,
               ),
               settings: settings,
             );
