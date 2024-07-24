@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
+import '../../../../core/utils/date_formatter.dart';
 import '../../domain/entities/budget.dart';
 import '../models/budget_model.dart';
 
@@ -23,6 +24,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
           CREATE TABLE IF NOT EXISTS $databaseName (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             categorieId INTEGER NOT NULL,
+            date TEXT NOT NULL,
             amount DOUBLE NOT NULL,
             used DOUBLE NOT NULL,
             remaining DOUBLE NOT NULL,
@@ -39,9 +41,10 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     db = await openBookingDatabase(budgetDbName);
     print(budget);
     await db.rawInsert(
-      'INSERT INTO $budgetDbName(categorieId, amount, used, remaining, percentage, currency) VALUES(?, ?, ?, ?, ?, ?)',
+      'INSERT INTO $budgetDbName(categorieId, date, amount, used, remaining, percentage, currency) VALUES(?, ?, ?, ?, ?, ?, ?)',
       [
         budget.categorieId,
+        dateFormatterYYYYMMDD.format(budget.date),
         budget.amount,
         budget.used,
         budget.remaining,
@@ -71,7 +74,26 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
   @override
   Future<List<Budget>> loadMonthly(DateTime selectedDate) async {
-    // TODO: implement loadMonthly
-    throw UnimplementedError();
+    db = await openBookingDatabase(budgetDbName);
+    int lastday = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
+    String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
+    String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
+    List<Map> budgetMap = await db.rawQuery('SELECT * FROM $budgetDbName WHERE date BETWEEN ? AND ?', [startDate, endDate]);
+    List<Budget> budgetList = budgetMap
+        .map(
+          (budget) => Budget(
+            id: budget['id'],
+            categorieId: budget['categorieId'],
+            amount: budget['amount'],
+            date: DateTime.parse(budget['date']),
+            currency: budget['currency'],
+            used: budget['used'],
+            remaining: budget['remaining'],
+            percentage: budget['percentage'],
+          ),
+        )
+        .toList();
+    budgetList.sort((first, second) => second.percentage.compareTo(first.percentage));
+    return budgetList;
   }
 }

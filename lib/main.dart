@@ -18,6 +18,7 @@ import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/accounts/presentation/pages/edit_account_page.dart';
 import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
+import 'features/budgets/presentation/bloc/budget_bloc.dart';
 import 'features/budgets/presentation/pages/create_budget_page.dart';
 import 'features/budgets/presentation/pages/edit_budget_page.dart';
 import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
@@ -42,6 +43,9 @@ void main() {
     ),
     BlocProvider(
       create: (context) => sl<CategorieStatsBloc>(),
+    ),
+    BlocProvider(
+      create: (context) => sl<BudgetBloc>(),
     ),
   ], child: const MyApp()));
 }

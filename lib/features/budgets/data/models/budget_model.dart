@@ -4,6 +4,7 @@ class BudgetModel extends Budget {
   const BudgetModel({
     required super.id,
     required super.categorieId,
+    required super.date,
     required super.amount,
     required super.used,
     required super.remaining,

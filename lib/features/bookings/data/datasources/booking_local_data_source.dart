@@ -51,7 +51,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
       [
         booking.type.name,
         booking.title,
-        DateFormat('yyyy-MM-dd').format(booking.date),
+        dateFormatterYYYYMMDD.format(booking.date),
         booking.repetition.name,
         booking.amount,
         booking.currency,

@@ -7,6 +7,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/date_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
@@ -38,9 +39,16 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
       });
     } else {
       _createBudgetBtnController.success();
+      var dateFormatter = dateFormatterYYYYMMDD;
+      // Format the current date and time to match the expected format
+      var formattedDate = dateFormatter.format(DateTime.now());
+
+      // Parse the formatted date string
+      var parsedDate = dateFormatter.parse(formattedDate);
       Budget newBudget = Budget(
         id: 0,
         categorieId: 0,
+        date: dateFormatter.parse(formattedDate),
         amount: Amount.getValue(_amountController.text),
         used: 0.0,
         remaining: Amount.getValue(_amountController.text),

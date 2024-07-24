@@ -31,6 +31,13 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
         }, (_) {
           emit(Finished());
         });
+      } else if (event is LoadMonthlyBudgets) {
+        final loadBudgetEither = await loadMonthlyUseCase.budgetRepository.loadMonthly(event.selectedDate);
+        loadBudgetEither.fold((failure) {
+          emit(const Error(message: LOAD_BUDGETS_FAILURE));
+        }, (budgets) {
+          emit(Loaded(budgets: budgets));
+        });
       }
     });
   }

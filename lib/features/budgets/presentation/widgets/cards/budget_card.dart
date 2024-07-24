@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:moneybook/core/utils/number_formatter.dart';
 
 import '../../../../../core/consts/route_consts.dart';
 import '../../../../../shared/domain/value_objects/edit_mode_type.dart';
@@ -80,8 +81,8 @@ class BudgetCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _openBudgetBottomSheet(context),
-      child: const Card(
-        child: Text('Test'),
+      child: Card(
+        child: Text(formatToMoneyAmount(budget.amount.toString())),
       ),
     );
   }
