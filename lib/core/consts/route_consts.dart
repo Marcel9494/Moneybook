@@ -6,3 +6,5 @@ const createBookingRoute = 'createBooking';
 const editBookingRoute = 'editBooking';
 const createAccountRoute = 'createAccount';
 const editAccountRoute = 'editAccount';
+const createBudgetRoute = 'createBudget';
+const editBudgetRoute = 'editBudget';

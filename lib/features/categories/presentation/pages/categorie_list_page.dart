@@ -25,7 +25,7 @@ class CategorieListPage extends StatefulWidget {
 }
 
 class _CategorieListPageState extends State<CategorieListPage> with TickerProviderStateMixin {
-  GlobalKey<AnimatedListState> _expenseKey = GlobalKey();
+  final GlobalKey<AnimatedListState> _expenseKey = GlobalKey();
   final GlobalKey<AnimatedListState> _incomeKey = GlobalKey();
   final GlobalKey<AnimatedListState> _investmentKey = GlobalKey();
   final GlobalKey<FormState> _categorieFormKey = GlobalKey<FormState>();

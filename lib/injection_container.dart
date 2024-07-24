@@ -10,6 +10,9 @@ import 'package:moneybook/features/bookings/domain/usecases/delete.dart' as dele
 import 'package:moneybook/features/bookings/domain/usecases/edit.dart' as edit_booking;
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
+import 'package:moneybook/features/budgets/domain/usecases/create.dart' as create_budget;
+import 'package:moneybook/features/budgets/domain/usecases/delete.dart' as delete_budget;
+import 'package:moneybook/features/budgets/domain/usecases/edit.dart' as edit_budget;
 import 'package:moneybook/features/categories/domain/usecases/create.dart' as create_categorie;
 import 'package:moneybook/features/categories/domain/usecases/delete.dart' as delete_categorie;
 import 'package:moneybook/features/categories/domain/usecases/edit.dart' as edit_categorie;
@@ -23,6 +26,12 @@ import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'features/bookings/domain/usecases/createSerie.dart';
 import 'features/bookings/domain/usecases/load_categorie_bookings.dart';
+import 'features/budgets/data/datasources/budget_local_data_source.dart';
+import 'features/budgets/data/datasources/budget_remote_data_source.dart';
+import 'features/budgets/data/repositories/budget_repository_impl.dart';
+import 'features/budgets/domain/repositories/budget_repository.dart';
+import 'features/budgets/domain/usecases/load_monthly.dart';
+import 'features/budgets/presentation/bloc/budget_bloc.dart';
 import 'features/categories/data/datasources/categorie_local_data_source.dart';
 import 'features/categories/data/datasources/categorie_remote_data_source.dart';
 import 'features/categories/data/repositories/categorie_repository_impl.dart';
@@ -34,12 +43,13 @@ import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 final sl = GetIt.instance;
 
 void init() {
-  //! Features - Booking, Account
+  //! Features - Booking, Account, Categorie, Stats, Budget
   // Bloc
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
+  sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl()));
   // Use Cases
   sl.registerLazySingleton(() => create_booking.Create(sl()));
   sl.registerLazySingleton(() => CreateSerie(sl()));
@@ -55,6 +65,11 @@ void init() {
   sl.registerLazySingleton(() => edit_account.Edit(sl()));
   sl.registerLazySingleton(() => delete_account.Delete(sl()));
   sl.registerLazySingleton(() => load_all_accounts.LoadAllCategories(sl()));
+
+  sl.registerLazySingleton(() => create_budget.Create(sl()));
+  sl.registerLazySingleton(() => edit_budget.Edit(sl()));
+  sl.registerLazySingleton(() => delete_budget.Delete(sl()));
+  sl.registerLazySingleton(() => LoadMonthly(sl()));
   // Repository
   sl.registerLazySingleton<BookingRepository>(
     () => BookingRepositoryImpl(
@@ -74,6 +89,12 @@ void init() {
       categorieLocalDataSource: sl(),
     ),
   );
+  sl.registerLazySingleton<BudgetRepository>(
+    () => BudgetRepositoryImpl(
+      budgetRemoteDataSource: sl(),
+      budgetLocalDataSource: sl(),
+    ),
+  );
   // Data Sources
   sl.registerLazySingleton<BookingLocalDataSource>(() => BookingLocalDataSourceImpl());
   sl.registerLazySingleton<BookingRemoteDataSource>(() => BookingRemoteDataSourceImpl());
@@ -81,6 +102,8 @@ void init() {
   sl.registerLazySingleton<AccountRemoteDataSource>(() => AccountRemoteDataSourceImpl());
   sl.registerLazySingleton<CategorieLocalDataSource>(() => CategorieLocalDataSourceImpl());
   sl.registerLazySingleton<CategorieRemoteDataSource>(() => CategorieRemoteDataSourceImpl());
+  sl.registerLazySingleton<BudgetLocalDataSource>(() => BudgetLocalDataSourceImpl());
+  sl.registerLazySingleton<BudgetRemoteDataSource>(() => BudgetRemoteDataSourceImpl());
   //! Core
 
   //! External

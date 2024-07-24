@@ -18,6 +18,9 @@ import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/accounts/presentation/pages/edit_account_page.dart';
 import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
+import 'features/budgets/presentation/pages/create_budget_page.dart';
+import 'features/budgets/presentation/pages/edit_budget_page.dart';
+import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'injection_container.dart' as di;
@@ -74,6 +77,7 @@ class MyApp extends StatelessWidget {
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
         createAccountRoute: (context) => const CreateAccountPage(),
+        createBudgetRoute: (context) => const CreateBudgetPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
@@ -107,6 +111,15 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => EditAccountPage(
                 account: args.account,
+              ),
+              settings: settings,
+            );
+          case editBudgetRoute:
+            final args = settings.arguments as EditBudgetPageArguments;
+            return MaterialPageRoute<String>(
+              builder: (BuildContext context) => EditBudgetPage(
+                budget: args.budget,
+                editMode: args.editMode,
               ),
               settings: settings,
             );
