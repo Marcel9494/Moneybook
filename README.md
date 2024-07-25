@@ -73,10 +73,15 @@ Aktuelles Datenbank Schema / Aufbau. Ist noch in der Design & Implementierungsph
 
 Draw.io PNG Datei:
 
-![DatenbankSchemaBild](https://github.com/user-attachments/assets/2d845c2e-a199-4431-819b-554fa83236b0)
+![DatenbankSchemaBild](https://github.com/user-attachments/assets/2d845c2e-a199-4431-819b-554fa83236b0
 
 Reine Draw.io Datei:
 
 ![DatenbankSchema](https://github.com/user-attachments/assets/cc4579ab-46fc-4770-9922-a8ac3ffc146e)
 
+Vorteile von Fremdschlüsseln bei oben gezeigten Datenbank Schema:
+- Wenn Kategorie oder Konto bearbeitet wird, werden die enstsprechenden Daten an einer zentralen Stelle (Categorie oder Account Tabelle) aktualisiert und von den restlichen Tabellen referenziert.
+- Bessere Wartbarkeit, wenn später neue Tabellen zum Datenbank Schema hinzukommen, weil dann nicht jede Tabelle aktualisiert werden muss, sondern nur eine.
 
+Nachteile von Fremdschlüsseln bei iben gezeigten Datenbank Schema:
+- Daten müssen von mehreren Datenbanktabellen zusammengesucht werden => etwas komplexere SQL-Abfragen.
