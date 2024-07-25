@@ -85,3 +85,5 @@ Vorteile von Fremdschlüsseln bei oben gezeigten Datenbank Schema:
 
 Nachteile von Fremdschlüsseln bei iben gezeigten Datenbank Schema:
 - Daten müssen von mehreren Datenbanktabellen zusammengesucht werden => etwas komplexere SQL-Abfragen.
+
+=> Entscheidung: Fremdschlüssel verwenden, weil das System langfristig so besser wartbar und erweiterbar ist.
