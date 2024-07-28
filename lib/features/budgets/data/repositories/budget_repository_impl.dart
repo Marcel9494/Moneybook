@@ -6,6 +6,7 @@ import '../../../../core/error/exceptions.dart';
 import '../../domain/repositories/budget_repository.dart';
 import '../datasources/budget_local_data_source.dart';
 import '../datasources/budget_remote_data_source.dart';
+import '../models/budget_model.dart';
 
 class BudgetRepositoryImpl implements BudgetRepository {
   final BudgetRemoteDataSource budgetRemoteDataSource;
@@ -53,7 +54,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
   }
 
   @override
-  Future<Either<Failure, List<Budget>>> loadMonthly(DateTime selectedDate) async {
+  Future<Either<Failure, List<BudgetModel>>> loadMonthly(DateTime selectedDate) async {
     try {
       return Right(await budgetLocalDataSource.loadMonthly(selectedDate));
     } on ServerException {

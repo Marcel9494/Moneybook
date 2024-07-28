@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../data/models/budget_model.dart';
 import '../../domain/entities/budget.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';

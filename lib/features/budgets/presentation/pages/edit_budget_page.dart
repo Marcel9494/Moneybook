@@ -64,7 +64,7 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           CategorieInputField(categorieController: _categorieController, bookingType: BookingType.expense),
-                          AmountTextField(amountController: _amountController),
+                          AmountTextField(amountController: _amountController, hintText: 'Budget...'),
                           SaveButton(text: 'Speichern', saveBtnController: _editBudgetBtnController, onPressed: () => _editBudget(context)),
                         ],
                       ),

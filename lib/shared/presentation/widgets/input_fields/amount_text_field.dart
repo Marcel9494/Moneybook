@@ -30,10 +30,10 @@ class AmountTextField extends StatelessWidget {
         context: context,
         amountController: amountController,
       ),
-      decoration: const InputDecoration(
-        hintText: 'Budget...',
+      decoration: InputDecoration(
+        hintText: hintText,
         counterText: '',
-        prefixIcon: Icon(Icons.money_rounded),
+        prefixIcon: const Icon(Icons.money_rounded),
       ),
     );
   }

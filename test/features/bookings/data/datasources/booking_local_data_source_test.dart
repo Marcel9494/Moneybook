@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
+import 'package:moneybook/core/consts/database_consts.dart';
 import 'package:moneybook/features/bookings/data/datasources/booking_local_data_source.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
@@ -33,7 +34,8 @@ void main() {
     final tBooking = tBookingModel;
 
     test('should check if booking was created in local database', () async {
-      var db = await bookingLocalDataSource.openBookingDatabase('test_bookings');
+      db = await openDatabase(localDbName);
+      //var db = await bookingLocalDataSource.openBookingDatabase('test_bookings');
       //var db = await openDatabase('test_bookings.db', version: 1);
       //db.rawDelete('DELETE FROM test_bookings');
       //db.rawDelete('DELETE FROM id where name=test_bookings');

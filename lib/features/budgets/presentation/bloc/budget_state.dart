@@ -15,7 +15,7 @@ final class Loading extends BudgetState {
 }
 
 final class Loaded extends BudgetState {
-  final List<Budget> budgets;
+  final List<BudgetModel> budgets;
 
   const Loaded({required this.budgets});
 

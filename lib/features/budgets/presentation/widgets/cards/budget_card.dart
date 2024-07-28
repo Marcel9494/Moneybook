@@ -5,11 +5,11 @@ import 'package:moneybook/core/utils/number_formatter.dart';
 import '../../../../../core/consts/route_consts.dart';
 import '../../../../../shared/domain/value_objects/edit_mode_type.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
-import '../../../domain/entities/budget.dart';
+import '../../../data/models/budget_model.dart';
 import '../page_arguments/edit_budget_page_arguments.dart';
 
 class BudgetCard extends StatelessWidget {
-  final Budget budget;
+  final BudgetModel budget;
 
   const BudgetCard({
     super.key,
@@ -82,7 +82,7 @@ class BudgetCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => _openBudgetBottomSheet(context),
       child: Card(
-        child: Text(formatToMoneyAmount(budget.amount.toString())),
+        child: Text('${budget.categorie.name} ${formatToMoneyAmount(budget.amount.toString())}'),
       ),
     );
   }

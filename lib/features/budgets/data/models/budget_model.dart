@@ -10,5 +10,6 @@ class BudgetModel extends Budget {
     required super.remaining,
     required super.percentage,
     required super.currency,
+    required super.categorie,
   });
 }

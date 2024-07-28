@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:moneybook/core/error/failures.dart';
+import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/categorie.dart';
@@ -53,6 +54,15 @@ class CategorieRepositoryImpl implements CategorieRepository {
   Future<Either<Failure, void>> edit(Categorie categorie) async {
     try {
       return Right(await categorieLocalDataSource.edit(categorie));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Categorie>> getId(String categorieName, CategorieType categorieType) async {
+    try {
+      return Right(await categorieLocalDataSource.getId(categorieName, categorieType));
     } on ServerException {
       return Left(ServerFailure());
     }

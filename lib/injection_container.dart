@@ -16,6 +16,13 @@ import 'package:moneybook/features/budgets/domain/usecases/edit.dart' as edit_bu
 import 'package:moneybook/features/categories/domain/usecases/create.dart' as create_categorie;
 import 'package:moneybook/features/categories/domain/usecases/delete.dart' as delete_categorie;
 import 'package:moneybook/features/categories/domain/usecases/edit.dart' as edit_categorie;
+import 'package:moneybook/features/categories/domain/usecases/get_id.dart' as get_id;
+import 'package:moneybook/shared/data/datasources/shared_local_data_source.dart';
+import 'package:moneybook/shared/data/datasources/shared_remote_data_source.dart';
+import 'package:moneybook/shared/data/repositories/shared_repository_impl.dart';
+import 'package:moneybook/shared/data/usecases/createDb.dart';
+import 'package:moneybook/shared/domain/repositories/shared_repository.dart';
+import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 
 import 'features/accounts/data/datasources/account_local_data_source.dart';
 import 'features/accounts/data/datasources/account_remote_data_source.dart';
@@ -45,12 +52,14 @@ final sl = GetIt.instance;
 void init() {
   //! Features - Booking, Account, Categorie, Stats, Budget
   // Bloc
+  sl.registerFactory(() => SharedBloc(sl()));
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl()));
   // Use Cases
+  sl.registerLazySingleton(() => CreateDb(sl()));
   sl.registerLazySingleton(() => create_booking.Create(sl()));
   sl.registerLazySingleton(() => CreateSerie(sl()));
   sl.registerLazySingleton(() => edit_booking.Edit(sl()));
@@ -60,6 +69,7 @@ void init() {
   sl.registerLazySingleton(() => create_categorie.Create(sl()));
   sl.registerLazySingleton(() => edit_categorie.Edit(sl()));
   sl.registerLazySingleton(() => delete_categorie.Delete(sl()));
+  sl.registerLazySingleton(() => get_id.GetId(sl()));
   sl.registerLazySingleton(() => load_all_categories.LoadAll(sl()));
   sl.registerLazySingleton(() => create_account.Create(sl()));
   sl.registerLazySingleton(() => edit_account.Edit(sl()));
@@ -71,6 +81,12 @@ void init() {
   sl.registerLazySingleton(() => delete_budget.Delete(sl()));
   sl.registerLazySingleton(() => LoadMonthly(sl()));
   // Repository
+  sl.registerLazySingleton<SharedRepository>(
+    () => SharedRepositoryImpl(
+      sharedRemoteDataSource: sl(),
+      sharedLocalDataSource: sl(),
+    ),
+  );
   sl.registerLazySingleton<BookingRepository>(
     () => BookingRepositoryImpl(
       bookingRemoteDataSource: sl(),
@@ -96,6 +112,8 @@ void init() {
     ),
   );
   // Data Sources
+  sl.registerLazySingleton<SharedLocalDataSource>(() => SharedLocalDataSourceImpl());
+  sl.registerLazySingleton<SharedRemoteDataSource>(() => SharedRemoteDataSourceImpl());
   sl.registerLazySingleton<BookingLocalDataSource>(() => BookingLocalDataSourceImpl());
   sl.registerLazySingleton<BookingRemoteDataSource>(() => BookingRemoteDataSourceImpl());
   sl.registerLazySingleton<AccountLocalDataSource>(() => AccountLocalDataSourceImpl());

@@ -9,6 +9,8 @@ import 'package:moneybook/features/bookings/presentation/pages/booking_list_page
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
 import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
+import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
+import 'package:moneybook/shared/presentation/pages/introduction_page.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/navigation_widget.dart';
 
@@ -32,6 +34,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   di.init();
   runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+      create: (context) => sl<SharedBloc>(),
+    ),
     BlocProvider(
       create: (context) => sl<BookingBloc>(),
     ),
@@ -75,7 +80,8 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('de', 'DE'),
       ],
-      home: const BottomNavBar(tabIndex: 0),
+      home: const IntroductionPage(),
+      //home: const BottomNavBar(tabIndex: 0),
       routes: {
         accountListRoute: (context) => const AccountListPage(),
         categorieListRoute: (context) => const CategorieListPage(),

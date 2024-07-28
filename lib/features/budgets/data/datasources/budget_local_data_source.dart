@@ -1,6 +1,9 @@
+import 'package:moneybook/features/categories/domain/entities/categorie.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../../core/consts/database_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
+import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/budget.dart';
 import '../models/budget_model.dart';
 
@@ -9,37 +12,15 @@ abstract class BudgetLocalDataSource {
   Future<void> edit(Budget budget);
   Future<void> delete(Budget budget);
   Future<BudgetModel> load(Budget budget);
-  Future<List<Budget>> loadMonthly(DateTime selectedDate);
+  Future<List<BudgetModel>> loadMonthly(DateTime selectedDate);
 }
 
 class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   BudgetLocalDataSourceImpl();
 
-  static const String budgetDbName = 'budgets';
-  var db;
-
-  Future<dynamic> openBookingDatabase(String databaseName) async {
-    db = await openDatabase('$databaseName.db', version: 1, onCreate: (Database db, int version) async {
-      await db.execute('''
-          CREATE TABLE IF NOT EXISTS $databaseName (
-            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            categorieId INTEGER NOT NULL,
-            date TEXT NOT NULL,
-            amount DOUBLE NOT NULL,
-            used DOUBLE NOT NULL,
-            remaining DOUBLE NOT NULL,
-            percentage DOUBLE NOT NULL,
-            currency TEXT NOT NULL
-          )
-          ''');
-    });
-    return db;
-  }
-
   @override
   Future<void> create(Budget budget) async {
-    db = await openBookingDatabase(budgetDbName);
-    print(budget);
+    db = await openDatabase(localDbName);
     await db.rawInsert(
       'INSERT INTO $budgetDbName(categorieId, date, amount, used, remaining, percentage, currency) VALUES(?, ?, ?, ?, ?, ?, ?)',
       [
@@ -73,15 +54,18 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   }
 
   @override
-  Future<List<Budget>> loadMonthly(DateTime selectedDate) async {
-    db = await openBookingDatabase(budgetDbName);
+  Future<List<BudgetModel>> loadMonthly(DateTime selectedDate) async {
+    db = await openDatabase(localDbName);
     int lastday = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
     String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
     String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
-    List<Map> budgetMap = await db.rawQuery('SELECT * FROM $budgetDbName WHERE date BETWEEN ? AND ?', [startDate, endDate]);
-    List<Budget> budgetList = budgetMap
+    List<Map> budgetMap = await db.rawQuery(
+        'SELECT * FROM $budgetDbName INNER JOIN $categorieDbName ON budgets.categorieId = categories.id WHERE budgets.date BETWEEN ? AND ?',
+        [startDate, endDate]);
+    print(budgetMap);
+    List<BudgetModel> budgetList = budgetMap
         .map(
-          (budget) => Budget(
+          (budget) => BudgetModel(
             id: budget['id'],
             categorieId: budget['categorieId'],
             amount: budget['amount'],
@@ -90,6 +74,11 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
             used: budget['used'],
             remaining: budget['remaining'],
             percentage: budget['percentage'],
+            categorie: Categorie(
+              id: budget['categorieId'],
+              name: budget['name'],
+              type: CategorieType.fromString(budget['type']),
+            ),
           ),
         )
         .toList();
