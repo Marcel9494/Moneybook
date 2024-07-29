@@ -60,7 +60,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
 
   void _initializeBooking() {
     _dateController.text = dateFormatterDDMMYYYYEE.format(widget.booking.date);
-    _titleController.text = widget.booking.title;
+    _titleController.text = widget.booking.title.trim();
     _amountController.text = formatToMoneyAmount(widget.booking.amount.toString());
     _fromAccountController.text = widget.booking.fromAccount;
     _toAccountController.text = widget.booking.toAccount;

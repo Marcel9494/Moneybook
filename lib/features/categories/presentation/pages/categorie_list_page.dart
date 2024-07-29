@@ -129,7 +129,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             Categorie(
               id: 0,
               type: _selectedCategorieType,
-              name: _titleController.text,
+              name: _titleController.text.trim(),
             ),
           ),
         );

@@ -18,11 +18,17 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
       percent: 0.7,
       center: const Text(
         "70.0%",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
       ),
-      footer: const Text(
-        "Sales this week",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+      footer: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        child: Text(
+          "Gesamt: 100€ / 500€",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+          ),
+        ),
       ),
       circularStrokeCap: CircularStrokeCap.round,
       progressColor: Colors.cyan,

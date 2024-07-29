@@ -61,7 +61,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       Booking newBooking = Booking(
         id: 0,
         type: _bookingType,
-        title: _titleController.text,
+        title: _titleController.text.trim(),
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),

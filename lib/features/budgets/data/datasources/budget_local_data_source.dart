@@ -62,7 +62,6 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     List<Map> budgetMap = await db.rawQuery(
         'SELECT * FROM $budgetDbName INNER JOIN $categorieDbName ON budgets.categorieId = categories.id WHERE budgets.date BETWEEN ? AND ?',
         [startDate, endDate]);
-    print(budgetMap);
     List<BudgetModel> budgetList = budgetMap
         .map(
           (budget) => BudgetModel(

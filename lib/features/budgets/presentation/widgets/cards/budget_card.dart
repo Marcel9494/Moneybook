@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../../core/consts/route_consts.dart';
 import '../../../../../shared/domain/value_objects/edit_mode_type.dart';
@@ -82,7 +83,42 @@ class BudgetCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => _openBudgetBottomSheet(context),
       child: Card(
-        child: Text('${budget.categorie.name} ${formatToMoneyAmount(budget.amount.toString())}'),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${budget.categorie.name} ${formatToMoneyAmount(budget.amount.toString())}'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width - 50.0,
+                  animation: true,
+                  lineHeight: 21.0,
+                  animationDuration: 1600,
+                  percent: 0.9,
+                  center: Text('${budget.percentage.toString()}%'),
+                  barRadius: const Radius.circular(8.0),
+                  progressColor: Colors.cyan,
+                  padding: EdgeInsets.zero,
+                  curve: Curves.linearToEaseOut,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0, right: 18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // TODO hier weitermachen und budget Werte richtig befüllen lassen für richtige Werte
+                    Text(formatToMoneyAmount(budget.used.toString())),
+                    Text(formatToMoneyAmount(budget.remaining.toString())),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

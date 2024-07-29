@@ -37,18 +37,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
                 child: ListView.builder(
                   itemCount: state.budgets.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return BudgetCard(budget: state.budgets[index]
-                        /*budget: Budget(
-                        id: 0,
-                        categorieId: 0,
-                        date: DateTime.now(),
-                        amount: 0.0,
-                        used: 0.0,
-                        remaining: 0.0,
-                        percentage: 0.0,
-                        currency: '€',
-                      ),*/
-                        );
+                    return BudgetCard(budget: state.budgets[index]);
                   },
                 ),
               );
