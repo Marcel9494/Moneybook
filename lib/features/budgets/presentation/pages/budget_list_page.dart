@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/cards/budget_card.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/charts/budget_overview_chart.dart';
 
-import '../bloc/budget_bloc.dart';
+import '../../../bookings/domain/entities/booking.dart';
+import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
+import '../bloc/budget_bloc.dart' as budget;
 
 class BudgetListPage extends StatefulWidget {
   final DateTime selectedDate;
@@ -18,34 +20,48 @@ class BudgetListPage extends StatefulWidget {
 }
 
 class _BudgetListPageState extends State<BudgetListPage> {
-  void _loadBudgets(BuildContext context) {
-    BlocProvider.of<BudgetBloc>(context).add(
-      LoadMonthlyBudgets(widget.selectedDate),
+  void _loadAndCalculateBudgets(BuildContext context, List<Booking> bookings) {
+    BlocProvider.of<budget.BudgetBloc>(context).add(
+      budget.LoadAndCalculateMonthlyBudgets(bookings, widget.selectedDate),
+    );
+  }
+
+  void _loadMonthlyBookings(BuildContext context) {
+    BlocProvider.of<booking.BookingBloc>(context).add(
+      booking.LoadSortedMonthlyBookings(widget.selectedDate),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const BudgetOverviewChart(),
-        BlocBuilder<BudgetBloc, BudgetState>(
-          builder: (context, state) {
-            _loadBudgets(context);
-            if (state is Loaded) {
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: state.budgets.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return BudgetCard(budget: state.budgets[index]);
-                  },
-                ),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
-      ],
+    return BlocBuilder<booking.BookingBloc, booking.BookingState>(
+      builder: (context, bookingState) {
+        _loadMonthlyBookings(context);
+        if (bookingState is booking.Loaded) {
+          return BlocBuilder<budget.BudgetBloc, budget.BudgetState>(
+            builder: (context, budgetState) {
+              _loadAndCalculateBudgets(context, bookingState.bookings);
+              if (budgetState is budget.Loaded) {
+                return Column(
+                  children: [
+                    BudgetOverviewChart(budgets: budgetState.budgets),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: budgetState.budgets.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return BudgetCard(budget: budgetState.budgets[index]);
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return const SizedBox();
+            },
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 }

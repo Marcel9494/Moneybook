@@ -36,3 +36,12 @@ final class Error extends BudgetState {
   @override
   List<Object> get props => [message];
 }
+
+final class CalculatedBudgetValues extends BudgetState {
+  final List<Budget> budgets;
+
+  const CalculatedBudgetValues({required this.budgets});
+
+  @override
+  List<Object> get props => [budgets];
+}

@@ -78,6 +78,15 @@ class BudgetCard extends StatelessWidget {
     );
   }
 
+  Color _getBudgetColor() {
+    if (budget.percentage <= 75.0) {
+      return Colors.green.withOpacity(0.9);
+    } else if (budget.percentage > 75.0 && budget.percentage < 100.0) {
+      return Colors.yellowAccent.withOpacity(0.7);
+    }
+    return Colors.redAccent;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -97,10 +106,13 @@ class BudgetCard extends StatelessWidget {
                   animation: true,
                   lineHeight: 21.0,
                   animationDuration: 1600,
-                  percent: 0.9,
-                  center: Text('${budget.percentage.toString()}%'),
+                  percent: budget.percentage / 100 >= 1.0 ? 1.0 : budget.percentage / 100,
+                  center: Text(
+                    '${budget.percentage.toStringAsFixed(1).replaceAll('.', ',')} %',
+                    style: const TextStyle(color: Colors.black87),
+                  ),
                   barRadius: const Radius.circular(8.0),
-                  progressColor: Colors.cyan,
+                  progressColor: _getBudgetColor(),
                   padding: EdgeInsets.zero,
                   curve: Curves.linearToEaseOut,
                 ),
@@ -110,7 +122,6 @@ class BudgetCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // TODO hier weitermachen und budget Werte richtig befüllen lassen für richtige Werte
                     Text(formatToMoneyAmount(budget.used.toString())),
                     Text(formatToMoneyAmount(budget.remaining.toString())),
                   ],

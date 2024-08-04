@@ -1,7 +1,7 @@
 import '../../domain/entities/budget.dart';
 
 class BudgetModel extends Budget {
-  const BudgetModel({
+  BudgetModel({
     required super.id,
     required super.categorieId,
     required super.date,

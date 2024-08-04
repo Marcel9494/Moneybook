@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../bookings/domain/entities/booking.dart';
 import '../../data/models/budget_model.dart';
 import '../../domain/entities/budget.dart';
 import '../../domain/usecases/create.dart';
@@ -25,7 +26,28 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
   BudgetBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadMonthlyUseCase) : super(Initial()) {
     on<BudgetEvent>((event, emit) async {
       // TODO folgende Funktionalitäten auf einen Rutsch implementieren: Create, Edit, Delete, Load & LoadAll
-      if (event is CreateBudget) {
+      // TODO hier weitermachen und LoadBudgets und CalculateBudgets in einem Event handeln.
+      if (event is LoadAndCalculateMonthlyBudgets) {
+        final loadBudgetEither = await loadMonthlyUseCase.budgetRepository.loadMonthly(event.selectedDate);
+        loadBudgetEither.fold((failure) {
+          emit(const Error(message: LOAD_BUDGETS_FAILURE));
+        }, (budgets) {
+          for (int i = 0; i < event.bookings.length; i++) {
+            for (int j = 0; j < budgets.length; j++) {
+              if (event.bookings[i].categorie == budgets[j].categorie.name) {
+                budgets[j].used += event.bookings[i].amount;
+                break;
+              }
+            }
+          }
+          for (int i = 0; i < budgets.length; i++) {
+            budgets[i].remaining = budgets[i].amount - budgets[i].used;
+            budgets[i].percentage = (budgets[i].used / budgets[i].amount) * 100;
+          }
+          budgets.sort((first, second) => second.percentage.compareTo(first.percentage));
+          emit(Loaded(budgets: budgets));
+        });
+      } else if (event is CreateBudget) {
         final createBudgetEither = await createUseCase.budgetRepository.create(event.budget);
         createBudgetEither.fold((failure) {
           emit(const Error(message: CREATE_BUDGET_FAILURE));

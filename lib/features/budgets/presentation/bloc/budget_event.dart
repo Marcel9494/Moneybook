@@ -39,3 +39,13 @@ class LoadMonthlyBudgets extends BudgetEvent {
   @override
   List<Object?> get props => [selectedDate];
 }
+
+class LoadAndCalculateMonthlyBudgets extends BudgetEvent {
+  final List<Booking> bookings;
+  final DateTime selectedDate;
+
+  const LoadAndCalculateMonthlyBudgets(this.bookings, this.selectedDate);
+
+  @override
+  List<Object?> get props => [bookings, selectedDate];
+}

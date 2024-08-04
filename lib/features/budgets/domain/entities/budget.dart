@@ -6,13 +6,13 @@ class Budget extends Equatable {
   final int categorieId;
   final DateTime date;
   final double amount;
-  final double used;
-  final double remaining;
-  final double percentage;
+  double used;
+  double remaining;
+  double percentage;
   final String currency;
   final Categorie categorie;
 
-  const Budget({
+  Budget({
     required this.id,
     required this.categorieId,
     required this.date,
