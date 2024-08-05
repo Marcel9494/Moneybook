@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import '../../../../../core/consts/common_consts.dart';
 import '../../../domain/entities/budget.dart';
 
 class BudgetOverviewChart extends StatefulWidget {
@@ -17,6 +18,8 @@ class BudgetOverviewChart extends StatefulWidget {
 
 class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
   double _overallBudgetPercentage = 0.0;
+  double _overallBudgetAmount = 0.0;
+  double _overallBudgetUsed = 0.0;
 
   double _calculateOverallBudgetPercentage() {
     _overallBudgetPercentage = 0.0;
@@ -27,6 +30,15 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
       _overallBudgetPercentage += widget.budgets[i].percentage;
     }
     return _overallBudgetPercentage / widget.budgets.length;
+  }
+
+  void _calculateOverallBudgetValues() {
+    _overallBudgetUsed = 0.0;
+    _overallBudgetAmount = 0.0;
+    for (int i = 0; i < widget.budgets.length; i++) {
+      _overallBudgetUsed += widget.budgets[i].used;
+      _overallBudgetAmount += widget.budgets[i].amount;
+    }
   }
 
   Color _getBudgetColor() {
@@ -41,22 +53,24 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
   @override
   Widget build(BuildContext context) {
     _overallBudgetPercentage = _calculateOverallBudgetPercentage();
+    _calculateOverallBudgetValues();
     return CircularPercentIndicator(
       radius: 60.0,
-      lineWidth: 13.0,
+      lineWidth: 10.0,
       animation: true,
+      animationDuration: budgetAnimationDurationInMs,
+      curve: Curves.linearToEaseOut,
       percent: _overallBudgetPercentage / 100 >= 1.0 ? 1.0 : _overallBudgetPercentage / 100,
       center: Text(
         '${_overallBudgetPercentage.toStringAsFixed(1).replaceAll('.', ',')} %',
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
       ),
-      footer: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
+      footer: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Text(
-          // TODO hier weitermachen und Overall Budgetwerte berechnen
-          "Gesamt: 100€ / 500€",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
+          'Gesamt: ${_overallBudgetUsed.toStringAsFixed(2).replaceAll('.', ',')} € / ${_overallBudgetAmount.toStringAsFixed(2).replaceAll('.', ',')} €',
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
             fontSize: 16.0,
           ),
         ),

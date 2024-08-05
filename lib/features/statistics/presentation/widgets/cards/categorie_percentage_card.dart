@@ -31,10 +31,13 @@ class _CategoriePercentageCardState extends State<CategoriePercentageCard> {
             border: Border(left: BorderSide(color: pieChartColors[widget.index % pieChartColors.length], width: 3.5)),
           ),
           child: ListTile(
-            title: Text('${widget.categorieStats.percentage.toStringAsFixed(1).replaceAll('.', ',')} % ${widget.categorieStats.categorie}'),
+            title: Text(
+              '${widget.categorieStats.percentage.toStringAsFixed(1).replaceAll('.', ',')} % ${widget.categorieStats.categorie}',
+              style: const TextStyle(fontSize: 14.0),
+            ),
             trailing: Text(
               formatToMoneyAmount(widget.categorieStats.amount.toString()),
-              style: const TextStyle(fontSize: 14.0),
+              style: TextStyle(fontSize: 14.0, color: Colors.grey.shade400),
             ),
           ),
         ),

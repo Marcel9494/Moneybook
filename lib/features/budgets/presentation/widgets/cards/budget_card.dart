@@ -3,6 +3,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
+import '../../../../../core/consts/common_consts.dart';
 import '../../../../../core/consts/route_consts.dart';
 import '../../../../../shared/domain/value_objects/edit_mode_type.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
@@ -98,14 +99,33 @@ class BudgetCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${budget.categorie.name} ${formatToMoneyAmount(budget.amount.toString())}'),
+              Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${budget.categorie.name}: ${formatToMoneyAmount(budget.used.toString())} / ${formatToMoneyAmount(budget.amount.toString())}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        formatToMoneyAmount(budget.remaining.toString()),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: LinearPercentIndicator(
                   width: MediaQuery.of(context).size.width - 50.0,
                   animation: true,
                   lineHeight: 21.0,
-                  animationDuration: 1600,
+                  animationDuration: budgetAnimationDurationInMs,
                   percent: budget.percentage / 100 >= 1.0 ? 1.0 : budget.percentage / 100,
                   center: Text(
                     '${budget.percentage.toStringAsFixed(1).replaceAll('.', ',')} %',
@@ -115,16 +135,6 @@ class BudgetCard extends StatelessWidget {
                   progressColor: _getBudgetColor(),
                   padding: EdgeInsets.zero,
                   curve: Curves.linearToEaseOut,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0, right: 18.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(formatToMoneyAmount(budget.used.toString())),
-                    Text(formatToMoneyAmount(budget.remaining.toString())),
-                  ],
                 ),
               ),
             ],
