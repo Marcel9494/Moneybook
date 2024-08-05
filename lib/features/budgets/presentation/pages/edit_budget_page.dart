@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/categorie_input_field.dart';
@@ -37,11 +38,47 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
     // TODO
   }
 
+  void _deleteBudget(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Budget löschen?'),
+          content: const Text('Wollen Sie das Budget wirklich löschen?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ja'),
+              onPressed: () {
+                // TODO hier weitermachen und Budget löschen implementieren editieren gleich mit vorbereiten
+                /*BlocProvider.of<BudgetBloc>(context).add(
+                  DeleteBudget(widget.budget.id, context),
+                );*/
+              },
+            ),
+            TextButton(
+              child: const Text('Nein'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Budget bearbeiten'),
+        actions: [
+          IconButton(
+            onPressed: () => _deleteBudget(context),
+            icon: const Icon(Icons.delete_forever_rounded),
+          ),
+        ],
       ),
       body: BlocProvider(
         create: (_) => sl<BudgetBloc>(),

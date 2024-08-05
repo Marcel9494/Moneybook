@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/cards/budget_card.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/charts/budget_overview_chart.dart';
 
+import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../bloc/budget_bloc.dart' as budget;
@@ -42,19 +43,33 @@ class _BudgetListPageState extends State<BudgetListPage> {
             builder: (context, budgetState) {
               _loadAndCalculateBudgets(context, bookingState.bookings);
               if (budgetState is budget.Loaded) {
-                return Column(
-                  children: [
-                    BudgetOverviewChart(budgets: budgetState.budgets),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: budgetState.budgets.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return BudgetCard(budget: budgetState.budgets[index]);
-                        },
+                if (budgetState.budgets.isEmpty) {
+                  return Column(
+                    children: [
+                      BudgetOverviewChart(budgets: budgetState.budgets),
+                      const Expanded(
+                        child: EmptyList(
+                          text: 'Noch keine Budgets vorhanden',
+                          icon: Icons.savings_rounded,
+                        ),
                       ),
-                    ),
-                  ],
-                );
+                    ],
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      BudgetOverviewChart(budgets: budgetState.budgets),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: budgetState.budgets.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return BudgetCard(budget: budgetState.budgets[index]);
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }
               }
               return const SizedBox();
             },

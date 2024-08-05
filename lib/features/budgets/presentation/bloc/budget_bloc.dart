@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 
 import '../../../bookings/domain/entities/booking.dart';
 import '../../data/models/budget_model.dart';
@@ -25,8 +26,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
 
   BudgetBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadMonthlyUseCase) : super(Initial()) {
     on<BudgetEvent>((event, emit) async {
-      // TODO folgende Funktionalitäten auf einen Rutsch implementieren: Create, Edit, Delete, Load & LoadAll
-      // TODO hier weitermachen und LoadBudgets und CalculateBudgets in einem Event handeln.
+      // TODO folgende Funktionalitäten auf einen Rutsch implementieren: Edit, Delete
       if (event is LoadAndCalculateMonthlyBudgets) {
         final loadBudgetEither = await loadMonthlyUseCase.budgetRepository.loadMonthly(event.selectedDate);
         loadBudgetEither.fold((failure) {
@@ -48,7 +48,16 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           emit(Loaded(budgets: budgets));
         });
       } else if (event is CreateBudget) {
-        final createBudgetEither = await createUseCase.budgetRepository.create(event.budget);
+        List<Budget> budgets = [];
+        var createBudgetEither = await createUseCase.budgetRepository.create(event.budget);
+        budgets.add(event.budget);
+        for (int i = 0; i < 12 * serieYears; i++) {
+          DateTime originalDate = DateTime.parse(event.budget.date.toString());
+          DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 1), 1);
+          Budget nextBudget = event.budget.copyWith(date: nextDate);
+          createBudgetEither = await createUseCase.budgetRepository.create(nextBudget);
+          budgets.add(nextBudget);
+        }
         createBudgetEither.fold((failure) {
           emit(const Error(message: CREATE_BUDGET_FAILURE));
         }, (_) {
