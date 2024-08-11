@@ -3,13 +3,12 @@ import 'package:sqflite/sqflite.dart';
 import '../../../../core/consts/database_consts.dart';
 import '../../domain/entities/categorie.dart';
 import '../../domain/value_objects/categorie_type.dart';
-import '../models/categorie_model.dart';
 
 abstract class CategorieLocalDataSource {
   Future<void> create(Categorie categorie);
   Future<void> edit(Categorie categorie);
   Future<void> delete(int id);
-  Future<CategorieModel> load(int id);
+  Future<List<Categorie>> load(List<int> ids);
   Future<Categorie> getId(String categorieName, CategorieType categorieType);
   Future<List<Categorie>> loadAll();
 }
@@ -33,9 +32,19 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   }
 
   @override
-  Future<CategorieModel> load(int id) {
-    // TODO: implement load
-    throw UnimplementedError();
+  Future<List<Categorie>> load(List<int> ids) async {
+    List<Categorie> loadedCategories = [];
+    db = await openDatabase(localDbName);
+    for (int i = 0; i < ids.length; i++) {
+      List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName WHERE id = ?', [ids[i]]);
+      Categorie categorie = Categorie(
+        id: categorieMap[0]['id'],
+        type: CategorieType.fromString(categorieMap[0]['type']),
+        name: categorieMap[0]['name'],
+      );
+      loadedCategories.add(categorie);
+    }
+    return loadedCategories;
   }
 
   @override

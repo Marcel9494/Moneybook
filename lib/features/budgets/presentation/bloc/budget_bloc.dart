@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:moneybook/core/consts/common_consts.dart';
 
+import '../../../../core/consts/route_consts.dart';
+import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../data/models/budget_model.dart';
 import '../../domain/entities/budget.dart';
@@ -27,27 +30,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
   BudgetBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadMonthlyUseCase) : super(Initial()) {
     on<BudgetEvent>((event, emit) async {
       // TODO folgende Funktionalitäten auf einen Rutsch implementieren: Edit, Delete
-      if (event is LoadAndCalculateMonthlyBudgets) {
-        final loadBudgetEither = await loadMonthlyUseCase.budgetRepository.loadMonthly(event.selectedDate);
-        loadBudgetEither.fold((failure) {
-          emit(const Error(message: LOAD_BUDGETS_FAILURE));
-        }, (budgets) {
-          for (int i = 0; i < event.bookings.length; i++) {
-            for (int j = 0; j < budgets.length; j++) {
-              if (event.bookings[i].categorie == budgets[j].categorie.name) {
-                budgets[j].used += event.bookings[i].amount;
-                break;
-              }
-            }
-          }
-          for (int i = 0; i < budgets.length; i++) {
-            budgets[i].remaining = budgets[i].amount - budgets[i].used;
-            budgets[i].percentage = (budgets[i].used / budgets[i].amount) * 100;
-          }
-          budgets.sort((first, second) => second.percentage.compareTo(first.percentage));
-          emit(Loaded(budgets: budgets));
-        });
-      } else if (event is CreateBudget) {
+      if (event is CreateBudget) {
         List<Budget> budgets = [];
         var createBudgetEither = await createUseCase.budgetRepository.create(event.budget);
         budgets.add(event.budget);
@@ -69,6 +52,23 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           emit(const Error(message: LOAD_BUDGETS_FAILURE));
         }, (budgets) {
           emit(Loaded(budgets: budgets));
+        });
+      } else if (event is EditBudget) {
+        final editBudgetEither = await editUseCase.budgetRepository.edit(event.budget);
+        editBudgetEither.fold((failure) {
+          emit(const Error(message: EDIT_BUDGET_FAILURE));
+        }, (_) {
+          Navigator.pop(event.context);
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
+        });
+      } else if (event is DeleteBudget) {
+        final deleteBudgetEither = await deleteUseCase.budgetRepository.edit(event.budget);
+        deleteBudgetEither.fold((failure) {
+          emit(const Error(message: DELETE_BUDGET_FAILURE));
+        }, (_) {
+          Navigator.pop(event.context);
+          Navigator.pop(event.context);
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
         });
       }
     });

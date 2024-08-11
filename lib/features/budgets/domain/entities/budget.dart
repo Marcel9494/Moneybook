@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:moneybook/features/categories/domain/entities/categorie.dart';
 
 class Budget extends Equatable {
   final int id;
@@ -10,7 +9,6 @@ class Budget extends Equatable {
   double remaining;
   double percentage;
   final String currency;
-  final Categorie categorie;
 
   Budget({
     required this.id,
@@ -21,7 +19,6 @@ class Budget extends Equatable {
     required this.remaining,
     required this.percentage,
     required this.currency,
-    required this.categorie,
   });
 
   Budget copyWith({
@@ -33,7 +30,6 @@ class Budget extends Equatable {
     double? remaining,
     double? percentage,
     String? currency,
-    Categorie? categorie,
   }) {
     return Budget(
       id: id ?? this.id,
@@ -44,10 +40,9 @@ class Budget extends Equatable {
       remaining: remaining ?? this.remaining,
       percentage: percentage ?? this.percentage,
       currency: currency ?? this.currency,
-      categorie: categorie ?? this.categorie,
     );
   }
 
   @override
-  List<Object?> get props => [id, categorieId, date, amount, used, remaining, percentage, currency, categorie];
+  List<Object?> get props => [id, categorieId, date, amount, used, remaining, percentage, currency];
 }

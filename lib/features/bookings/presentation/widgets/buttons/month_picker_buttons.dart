@@ -41,7 +41,7 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
           icon: const Icon(Icons.keyboard_arrow_left_rounded),
         ),
         SizedBox(
-          width: 80.0,
+          width: 76.0,
           child: GestureDetector(
             onTap: () {
               showMonthPicker(

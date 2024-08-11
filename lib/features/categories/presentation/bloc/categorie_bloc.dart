@@ -55,12 +55,19 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
         }, (categorie) {
           emit(ReceivedCategorie(categorie: categorie));
         });
+      } else if (event is LoadCategoriesWithIds) {
+        final loadCategorieWithIdsEither = await loadUseCase.categorieRepository.load(event.ids);
+        loadCategorieWithIdsEither.fold((failure) {
+          emit(const Error(message: LOAD_CATEGORIES_FAILURE));
+        }, (categories) {
+          emit(ReceivedCategories(categories: categories));
+        });
       } else if (event is LoadAllCategories) {
         emit(Loading());
         final loadCategorieEither = await loadUseCase.categorieRepository.loadAll();
         loadCategorieEither.fold((failure) {
           emit(const Error(message: LOAD_CATEGORIES_FAILURE));
-        }, (categories) async {
+        }, (categories) {
           List<Categorie> expenseCategories = [];
           List<Categorie> incomeCategories = [];
           List<Categorie> investmentCategories = [];

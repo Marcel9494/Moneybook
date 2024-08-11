@@ -79,7 +79,7 @@ void init() {
   sl.registerLazySingleton(() => create_budget.Create(sl()));
   sl.registerLazySingleton(() => edit_budget.Edit(sl()));
   sl.registerLazySingleton(() => delete_budget.Delete(sl()));
-  sl.registerLazySingleton(() => LoadMonthly(sl()));
+  sl.registerLazySingleton(() => LoadMonthly(sl(), sl()));
   // Repository
   sl.registerLazySingleton<SharedRepository>(
     () => SharedRepositoryImpl(

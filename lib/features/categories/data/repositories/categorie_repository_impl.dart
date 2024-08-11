@@ -36,9 +36,12 @@ class CategorieRepositoryImpl implements CategorieRepository {
   }
 
   @override
-  Future<Either<Failure, Categorie>> load(int id) {
-    // TODO: implement load
-    throw UnimplementedError();
+  Future<Either<Failure, List<Categorie>>> load(List<int> ids) async {
+    try {
+      return Right(await categorieLocalDataSource.load(ids));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override

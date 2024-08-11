@@ -45,3 +45,12 @@ class GetCategorieId extends CategorieEvent {
 class LoadAllCategories extends CategorieEvent {
   const LoadAllCategories();
 }
+
+class LoadCategoriesWithIds extends CategorieEvent {
+  final List<int> ids;
+
+  const LoadCategoriesWithIds(this.ids);
+
+  @override
+  List<Object?> get props => [ids];
+}

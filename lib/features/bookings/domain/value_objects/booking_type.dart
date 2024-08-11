@@ -28,4 +28,19 @@ extension BookingTypeExtension on BookingType {
         throw Exception('$name is not a valid Booking type.');
     }
   }
+
+  String get pluralName {
+    switch (this) {
+      case BookingType.expense:
+        return 'Ausgaben';
+      case BookingType.income:
+        return 'Einnahmen';
+      case BookingType.transfer:
+        return 'Übertrag';
+      case BookingType.investment:
+        return 'Investitionen';
+      default:
+        throw Exception('$name is not a valid Booking type.');
+    }
+  }
 }

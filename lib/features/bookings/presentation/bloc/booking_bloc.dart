@@ -6,6 +6,7 @@ import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_a
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../categories/domain/entities/categorie.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/createSerie.dart';

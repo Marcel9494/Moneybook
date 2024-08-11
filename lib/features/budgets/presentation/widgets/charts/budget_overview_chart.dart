@@ -21,23 +21,17 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
   double _overallBudgetAmount = 0.0;
   double _overallBudgetUsed = 0.0;
 
-  double _calculateOverallBudgetPercentage() {
-    _overallBudgetPercentage = 0.0;
-    if (widget.budgets.isEmpty) {
-      return 0.0;
-    }
-    for (int i = 0; i < widget.budgets.length; i++) {
-      _overallBudgetPercentage += widget.budgets[i].percentage;
-    }
-    return _overallBudgetPercentage / widget.budgets.length;
-  }
-
   void _calculateOverallBudgetValues() {
     _overallBudgetUsed = 0.0;
     _overallBudgetAmount = 0.0;
     for (int i = 0; i < widget.budgets.length; i++) {
       _overallBudgetUsed += widget.budgets[i].used;
       _overallBudgetAmount += widget.budgets[i].amount;
+    }
+    if (_overallBudgetAmount == 0) {
+      _overallBudgetPercentage = 0.0;
+    } else {
+      _overallBudgetPercentage = (_overallBudgetUsed / _overallBudgetAmount) * 100;
     }
   }
 
@@ -52,7 +46,6 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
 
   @override
   Widget build(BuildContext context) {
-    _overallBudgetPercentage = _calculateOverallBudgetPercentage();
     _calculateOverallBudgetValues();
     return Padding(
       padding: const EdgeInsets.only(top: 12.0),

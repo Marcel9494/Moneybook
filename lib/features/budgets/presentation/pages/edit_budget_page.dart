@@ -39,6 +39,7 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
   }
 
   void _deleteBudget(BuildContext context) {
+    print(widget.budget);
     showCupertinoDialog(
       context: context,
       barrierDismissible: true,
@@ -50,10 +51,9 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
             TextButton(
               child: const Text('Ja'),
               onPressed: () {
-                // TODO hier weitermachen und Budget löschen implementieren editieren gleich mit vorbereiten
-                /*BlocProvider.of<BudgetBloc>(context).add(
-                  DeleteBudget(widget.budget.id, context),
-                );*/
+                BlocProvider.of<BudgetBloc>(context).add(
+                  DeleteBudget(widget.budget, context),
+                );
               },
             ),
             TextButton(

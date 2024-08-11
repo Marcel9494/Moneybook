@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
+import 'package:moneybook/features/categories/domain/entities/categorie.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../../core/consts/common_consts.dart';
@@ -12,10 +13,12 @@ import '../page_arguments/edit_budget_page_arguments.dart';
 
 class BudgetCard extends StatelessWidget {
   final BudgetModel budget;
+  final Categorie categorie;
 
   const BudgetCard({
     super.key,
     required this.budget,
+    required this.categorie,
   });
 
   void _openBudgetBottomSheet(BuildContext context) {
@@ -105,7 +108,7 @@ class BudgetCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${budget.categorie.name}: ${formatToMoneyAmount(budget.used.toString())} / ${formatToMoneyAmount(budget.amount.toString())}',
+                      '${categorie.name}: ${formatToMoneyAmount(budget.used.toString())} / ${formatToMoneyAmount(budget.amount.toString())}',
                       overflow: TextOverflow.ellipsis,
                     ),
                     Padding(

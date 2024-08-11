@@ -1,9 +1,7 @@
-import 'package:moneybook/features/categories/domain/entities/categorie.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../core/consts/database_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
-import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/budget.dart';
 import '../models/budget_model.dart';
 
@@ -37,14 +35,33 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
   @override
   Future<void> delete(Budget budget) async {
-    // TODO: implement delete
-    throw UnimplementedError();
+    print('Test');
+    print(budgetDbName);
+    db = await openDatabase(localDbName);
+    await db.rawDelete('DELETE FROM $budgetDbName WHERE id = ?', [budget.id]);
   }
 
   @override
   Future<void> edit(Budget budget) async {
-    // TODO: implement edit
-    throw UnimplementedError();
+    db = await openDatabase(localDbName);
+    try {
+      await db.rawUpdate(
+          'UPDATE $budgetDbName SET id = ?, categorieId = ?, amount = ?, currency = ?, used = ?, remaining = ?, percentage = ?, date = ? WHERE id = ?',
+          [
+            budget.id,
+            budget.categorieId,
+            budget.amount,
+            budget.currency,
+            budget.used,
+            budget.remaining,
+            budget.percentage,
+            budget.date,
+            budget.id,
+          ]);
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
   }
 
   @override
@@ -73,11 +90,6 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
             used: budget['used'],
             remaining: budget['remaining'],
             percentage: budget['percentage'],
-            categorie: Categorie(
-              id: budget['categorieId'],
-              name: budget['name'],
-              type: CategorieType.fromString(budget['type']),
-            ),
           ),
         )
         .toList();

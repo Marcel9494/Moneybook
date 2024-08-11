@@ -14,7 +14,6 @@ import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../bookings/domain/value_objects/amount.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
-import '../../../categories/domain/entities/categorie.dart';
 import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../../categories/presentation/bloc/categorie_bloc.dart' as categorie;
 import '../../domain/entities/budget.dart';
@@ -58,12 +57,11 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
       body: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (_) => sl<BudgetBloc>(),
-          ),
-          BlocProvider(
-            create: (context) => sl<categorie.CategorieBloc>(),
+            create: (context) => sl<BudgetBloc>(),
           ),
         ],
+        // TODO hier weitermachen und schauen warum Budget nicht richtig erstellt wird.
+        // TODO BlocProvider für CategorieBloc hinzufügen?
         child: BlocConsumer<categorie.CategorieBloc, categorie.CategorieState>(
           listener: (context, state) {
             if (state is categorie.ReceivedCategorie) {
@@ -81,7 +79,6 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
                 remaining: Amount.getValue(_amountController.text),
                 percentage: 0.0,
                 currency: Amount.getCurrency(_amountController.text),
-                categorie: Categorie(id: state.categorie.id, name: _categorieController.text, type: CategorieType.expense),
               );
               Timer(const Duration(milliseconds: durationInMs), () {
                 BlocProvider.of<BudgetBloc>(context).add(CreateBudget(newBudget));

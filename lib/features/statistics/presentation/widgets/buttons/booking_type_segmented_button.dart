@@ -28,21 +28,24 @@ class _BookingTypeSegmentedButtonState extends State<BookingTypeSegmentedButton>
             ButtonSegment<BookingType>(
               value: BookingType.expense,
               label: Text(
-                BookingType.expense.name,
+                BookingType.expense.pluralName,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 12.0),
               ),
             ),
             ButtonSegment<BookingType>(
               value: BookingType.income,
               label: Text(
-                BookingType.income.name,
+                BookingType.income.pluralName,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 12.0),
               ),
             ),
             ButtonSegment<BookingType>(
               value: BookingType.investment,
               label: Text(
-                BookingType.investment.name,
+                BookingType.investment.pluralName,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 12.0),
               ),
             ),

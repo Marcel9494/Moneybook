@@ -15,8 +15,9 @@ class CreateBudget extends BudgetEvent {
 
 class EditBudget extends BudgetEvent {
   final Budget budget;
+  final BuildContext context;
 
-  const EditBudget(this.budget);
+  const EditBudget(this.budget, this.context);
 
   @override
   List<Object?> get props => [budget];
@@ -24,8 +25,9 @@ class EditBudget extends BudgetEvent {
 
 class DeleteBudget extends BudgetEvent {
   final Budget budget;
+  final BuildContext context;
 
-  const DeleteBudget(this.budget);
+  const DeleteBudget(this.budget, this.context);
 
   @override
   List<Object?> get props => [budget];
