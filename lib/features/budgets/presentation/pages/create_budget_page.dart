@@ -14,6 +14,7 @@ import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../bookings/domain/value_objects/amount.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
+import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../../categories/presentation/bloc/categorie_bloc.dart' as categorie;
 import '../../domain/entities/budget.dart';
 import '../bloc/budget_bloc.dart';
@@ -44,25 +45,10 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
       // TODO für passende categorieId => load(categorieName) Funktion implementieren anschließend 1 in
       // TODO budget_local_data_source auf dynamisch ändern
       print('Test 2');
-      var dateFormatter = dateFormatterYYYYMMDD;
-      // Format the current date and time to match the expected format
-      var formattedDate = dateFormatter.format(DateTime.now());
-      // Parse the formatted date string
-      var parsedDate = dateFormatter.parse(formattedDate);
-      Budget newBudget = Budget(
-        id: 0,
-        categorieId: 1, // TODO dynamisch machen
-        date: dateFormatter.parse(formattedDate),
-        amount: Amount.getValue(_amountController.text),
-        used: 0.0,
-        remaining: Amount.getValue(_amountController.text),
-        percentage: 0.0,
-        currency: Amount.getCurrency(_amountController.text),
+
+      BlocProvider.of<categorie.CategorieBloc>(context).add(
+        categorie.GetCategorieId(_categorieController.text, CategorieType.expense),
       );
-      Timer(const Duration(milliseconds: durationInMs), () {
-        BlocProvider.of<BudgetBloc>(context).add(CreateBudget(newBudget));
-      });
-      //BlocProvider.of<categorie.CategorieBloc>(context).add(categorie.GetCategorieId(_categorieController.text, CategorieType.expense));
     }
   }
 
@@ -86,7 +72,6 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
             listener: (context, state) {
               print('Test 1 $state');
               if (state is categorie.ReceivedCategorie) {
-                /*print('Test 2');
                 var dateFormatter = dateFormatterYYYYMMDD;
                 // Format the current date and time to match the expected format
                 var formattedDate = dateFormatter.format(DateTime.now());
@@ -104,7 +89,7 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
                 );
                 Timer(const Duration(milliseconds: durationInMs), () {
                   BlocProvider.of<BudgetBloc>(context).add(CreateBudget(newBudget));
-                });*/
+                });
               }
             },
             builder: (context, state) {
