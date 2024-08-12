@@ -18,6 +18,9 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
   @override
   Future<void> create(Budget budget) async {
+    print(budget);
+    print("DB: $localDbName");
+    print("Tabelle: $budgetDbName");
     db = await openDatabase(localDbName);
     await db.rawInsert(
       'INSERT INTO $budgetDbName(categorieId, date, amount, used, remaining, percentage, currency) VALUES(?, ?, ?, ?, ?, ?, ?)',
@@ -76,9 +79,10 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     int lastday = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
     String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
     String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
-    List<Map> budgetMap = await db.rawQuery(
-        'SELECT * FROM $budgetDbName INNER JOIN $categorieDbName ON budgets.categorieId = categories.id WHERE budgets.date BETWEEN ? AND ?',
-        [startDate, endDate]);
+    List<Map> budgetMap = await db.rawQuery('SELECT * FROM $budgetDbName WHERE date >= ? AND date <= ?', [startDate, endDate]);
+    //List<Map> budgetMap = await db.rawQuery(
+    //    'SELECT * FROM $budgetDbName INNER JOIN $categorieDbName ON budgets.categorieId = categories.id WHERE budgets.date BETWEEN ? AND ?',
+    //    [startDate, endDate]);
     List<BudgetModel> budgetList = budgetMap
         .map(
           (budget) => BudgetModel(

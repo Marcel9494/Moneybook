@@ -41,6 +41,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           createBudgetEither = await createUseCase.budgetRepository.create(nextBudget);
           budgets.add(nextBudget);
         }
+        print(event.budget);
         createBudgetEither.fold((failure) {
           emit(const Error(message: CREATE_BUDGET_FAILURE));
         }, (_) {

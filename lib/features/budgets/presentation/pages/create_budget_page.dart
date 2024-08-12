@@ -14,7 +14,6 @@ import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../bookings/domain/value_objects/amount.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
-import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../../categories/presentation/bloc/categorie_bloc.dart' as categorie;
 import '../../domain/entities/budget.dart';
 import '../bloc/budget_bloc.dart';
@@ -44,7 +43,26 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
       // TODO hier weitermachen und ausgewählte Categorie Daten über Categoriename laden und in Budget mitgeben
       // TODO für passende categorieId => load(categorieName) Funktion implementieren anschließend 1 in
       // TODO budget_local_data_source auf dynamisch ändern
-      BlocProvider.of<categorie.CategorieBloc>(context).add(categorie.GetCategorieId(_categorieController.text, CategorieType.expense));
+      print('Test 2');
+      var dateFormatter = dateFormatterYYYYMMDD;
+      // Format the current date and time to match the expected format
+      var formattedDate = dateFormatter.format(DateTime.now());
+      // Parse the formatted date string
+      var parsedDate = dateFormatter.parse(formattedDate);
+      Budget newBudget = Budget(
+        id: 0,
+        categorieId: 1, // TODO dynamisch machen
+        date: dateFormatter.parse(formattedDate),
+        amount: Amount.getValue(_amountController.text),
+        used: 0.0,
+        remaining: Amount.getValue(_amountController.text),
+        percentage: 0.0,
+        currency: Amount.getCurrency(_amountController.text),
+      );
+      Timer(const Duration(milliseconds: durationInMs), () {
+        BlocProvider.of<BudgetBloc>(context).add(CreateBudget(newBudget));
+      });
+      //BlocProvider.of<categorie.CategorieBloc>(context).add(categorie.GetCategorieId(_categorieController.text, CategorieType.expense));
     }
   }
 
@@ -62,62 +80,67 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
         ],
         // TODO hier weitermachen und schauen warum Budget nicht richtig erstellt wird.
         // TODO BlocProvider für CategorieBloc hinzufügen?
-        child: BlocConsumer<categorie.CategorieBloc, categorie.CategorieState>(
-          listener: (context, state) {
-            if (state is categorie.ReceivedCategorie) {
-              var dateFormatter = dateFormatterYYYYMMDD;
-              // Format the current date and time to match the expected format
-              var formattedDate = dateFormatter.format(DateTime.now());
-              // Parse the formatted date string
-              var parsedDate = dateFormatter.parse(formattedDate);
-              Budget newBudget = Budget(
-                id: 0,
-                categorieId: state.categorie.id,
-                date: dateFormatter.parse(formattedDate),
-                amount: Amount.getValue(_amountController.text),
-                used: 0.0,
-                remaining: Amount.getValue(_amountController.text),
-                percentage: 0.0,
-                currency: Amount.getCurrency(_amountController.text),
-              );
-              Timer(const Duration(milliseconds: durationInMs), () {
-                BlocProvider.of<BudgetBloc>(context).add(CreateBudget(newBudget));
-              });
-            }
-          },
-          builder: (context, state) {
-            return BlocConsumer<BudgetBloc, BudgetState>(
-              listener: (BuildContext context, BudgetState state) {
-                if (state is Finished) {
-                  Navigator.pop(context);
-                  Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
-                }
-              },
-              builder: (BuildContext context, state) {
-                if (state is Initial) {
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                      child: Card(
-                        child: Form(
-                          key: _budgetFormKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CategorieInputField(categorieController: _categorieController, bookingType: BookingType.expense),
-                              AmountTextField(amountController: _amountController, hintText: 'Budget...'),
-                              SaveButton(text: 'Erstellen', saveBtnController: _createBudgetBtnController, onPressed: () => _createBudget(context)),
-                            ],
+        child: BlocProvider(
+          create: (context) => sl<BudgetBloc>(),
+          child: BlocConsumer<categorie.CategorieBloc, categorie.CategorieState>(
+            listener: (context, state) {
+              print('Test 1 $state');
+              if (state is categorie.ReceivedCategorie) {
+                /*print('Test 2');
+                var dateFormatter = dateFormatterYYYYMMDD;
+                // Format the current date and time to match the expected format
+                var formattedDate = dateFormatter.format(DateTime.now());
+                // Parse the formatted date string
+                var parsedDate = dateFormatter.parse(formattedDate);
+                Budget newBudget = Budget(
+                  id: 0,
+                  categorieId: state.categorie.id,
+                  date: dateFormatter.parse(formattedDate),
+                  amount: Amount.getValue(_amountController.text),
+                  used: 0.0,
+                  remaining: Amount.getValue(_amountController.text),
+                  percentage: 0.0,
+                  currency: Amount.getCurrency(_amountController.text),
+                );
+                Timer(const Duration(milliseconds: durationInMs), () {
+                  BlocProvider.of<BudgetBloc>(context).add(CreateBudget(newBudget));
+                });*/
+              }
+            },
+            builder: (context, state) {
+              return BlocConsumer<BudgetBloc, BudgetState>(
+                listener: (BuildContext context, BudgetState state) {
+                  if (state is Finished) {
+                    Navigator.pop(context);
+                    Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
+                  }
+                },
+                builder: (BuildContext context, state) {
+                  if (state is Initial) {
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                        child: Card(
+                          child: Form(
+                            key: _budgetFormKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CategorieInputField(categorieController: _categorieController, bookingType: BookingType.expense),
+                                AmountTextField(amountController: _amountController, hintText: 'Budget...'),
+                                SaveButton(text: 'Erstellen', saveBtnController: _createBudgetBtnController, onPressed: () => _createBudget(context)),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }
-                return const SizedBox();
-              },
-            );
-          },
+                    );
+                  }
+                  return const SizedBox();
+                },
+              );
+            },
+          ),
         ),
       ),
     );
