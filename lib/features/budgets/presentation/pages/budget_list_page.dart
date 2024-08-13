@@ -114,9 +114,6 @@ class _BudgetListPageState extends State<BudgetListPage> {
                   _loadBudgets(context);
                 }
                 if (budgetState is budget.Loaded) {
-                  // TODO hier weitermachen, wenn von leeren Budget Liste auf volle Budget Liste gewechselt wird tritt
-                  // TODO noch ein Fehler auf Bsp.: Juli 24 auf August 24 wechseln
-                  _loadCategories(context, budgetState.budgets);
                   if (budgetState.budgets.isEmpty) {
                     return Column(
                       children: [
@@ -130,6 +127,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
                       ],
                     );
                   } else {
+                    _loadCategories(context, budgetState.budgets);
                     return BlocBuilder<CategorieBloc, CategorieState>(
                       builder: (context, categorieState) {
                         if (categorieState is categorie.ReceivedCategories) {
