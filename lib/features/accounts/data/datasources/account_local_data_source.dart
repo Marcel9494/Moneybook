@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
+import '../../../../core/consts/database_consts.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../domain/entities/account.dart';
 import '../../domain/value_objects/account_type.dart';
@@ -19,27 +20,9 @@ abstract class AccountLocalDataSource {
 class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   AccountLocalDataSourceImpl();
 
-  static const String accountDbName = 'accounts';
-  var db;
-
-  Future<dynamic> openAccountDatabase(String databaseName) async {
-    db = await openDatabase('$accountDbName.db', version: 1, onCreate: (Database db, int version) async {
-      await db.execute('''
-          CREATE TABLE IF NOT EXISTS $accountDbName (
-            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            type TEXT NOT NULL,
-            name TEXT NOT NULL,
-            amount DOUBLE NOT NULL,
-            currency TEXT NOT NULL
-          )
-          ''');
-    });
-    return db;
-  }
-
   @override
   Future<void> create(Account account) async {
-    await openAccountDatabase(accountDbName);
+    db = await openDatabase(localDbName);
     await db.rawInsert('INSERT INTO $accountDbName(type, name, amount, currency) VALUES(?, ?, ?, ?)', [
       account.type.name,
       account.name,
@@ -50,7 +33,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
 
   @override
   Future<void> delete(int id) async {
-    db = await openAccountDatabase(accountDbName);
+    db = await openDatabase(localDbName);
     await db.rawDelete('DELETE FROM $accountDbName WHERE id = ?', [id]);
   }
 
@@ -62,7 +45,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
 
   @override
   Future<void> edit(Account account) async {
-    db = await openAccountDatabase(accountDbName);
+    db = await openDatabase(localDbName);
     try {
       await db.rawUpdate('UPDATE $accountDbName SET id = ?, type = ?, name = ?, amount = ?, currency = ? WHERE id = ?', [
         account.id,
@@ -80,7 +63,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
 
   @override
   Future<List<Account>> loadAll() async {
-    db = await openAccountDatabase(accountDbName);
+    db = await openDatabase(localDbName);
     List<Map> accountMap = await db.rawQuery('SELECT * FROM $accountDbName');
     List<Account> accountList = accountMap
         .map(
@@ -99,7 +82,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
 
   @override
   Future<void> deposit(Booking booking) async {
-    db = await openAccountDatabase(accountDbName);
+    db = await openDatabase(localDbName);
     List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       accountBalance[0]['amount'] + booking.amount,
@@ -109,7 +92,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
 
   @override
   Future<void> withdraw(Booking booking) async {
-    db = await openAccountDatabase(accountDbName);
+    db = await openDatabase(localDbName);
     List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       accountBalance[0]['amount'] - booking.amount,
@@ -119,7 +102,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
 
   @override
   Future<void> transfer(Booking booking, bool reversal) async {
-    db = await openAccountDatabase(accountDbName);
+    db = await openDatabase(localDbName);
     List<Map> fromAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
     List<Map> toAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [

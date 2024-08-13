@@ -35,8 +35,14 @@ class _AccountCardState extends State<AccountCard> {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(widget.account.name),
-                  Text(formatToMoneyAmount(widget.account.amount.toString())),
+                  Text(
+                    widget.account.name,
+                    style: const TextStyle(fontSize: 14.0),
+                  ),
+                  Text(
+                    formatToMoneyAmount(widget.account.amount.toString()),
+                    style: const TextStyle(fontSize: 14.0),
+                  ),
                 ],
               ),
             ),

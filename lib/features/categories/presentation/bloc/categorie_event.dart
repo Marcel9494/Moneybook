@@ -32,6 +32,25 @@ class DeleteCategorie extends CategorieEvent {
   List<Object?> get props => [categorieId, context];
 }
 
+class GetCategorieId extends CategorieEvent {
+  final String categorieName;
+  final CategorieType categorieType;
+
+  const GetCategorieId(this.categorieName, this.categorieType);
+
+  @override
+  List<Object?> get props => [categorieName, categorieType];
+}
+
 class LoadAllCategories extends CategorieEvent {
   const LoadAllCategories();
+}
+
+class LoadCategoriesWithIds extends CategorieEvent {
+  final List<int> ids;
+
+  const LoadCategoriesWithIds(this.ids);
+
+  @override
+  List<Object?> get props => [ids];
 }

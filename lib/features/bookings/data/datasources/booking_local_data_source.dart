@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:moneybook/core/consts/database_consts.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../core/utils/date_formatter.dart';
@@ -20,38 +21,15 @@ abstract class BookingLocalDataSource {
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   BookingLocalDataSourceImpl();
 
-  static const String bookingDbName = 'bookings';
-  var db;
-
-  Future<dynamic> openBookingDatabase(String databaseName) async {
-    db = await openDatabase('$databaseName.db', version: 1, onCreate: (Database db, int version) async {
-      await db.execute('''
-          CREATE TABLE IF NOT EXISTS $databaseName (
-            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            type TEXT NOT NULL,
-            title TEXT NOT NULL,
-            date TEXT NOT NULL,
-            repetition TEXT NOT NULL,
-            amount DOUBLE NOT NULL,
-            currency TEXT NOT NULL,
-            fromAccount TEXT NOT NULL,
-            toAccount TEXT NOT NULL,
-            categorie TEXT NOT NULL
-          )
-          ''');
-    });
-    return db;
-  }
-
   @override
   Future<void> create(Booking booking) async {
-    db = await openBookingDatabase(bookingDbName);
+    db = await openDatabase(localDbName);
     await db.rawInsert(
       'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         booking.type.name,
         booking.title,
-        DateFormat('yyyy-MM-dd').format(booking.date),
+        dateFormatterYYYYMMDD.format(booking.date),
         booking.repetition.name,
         booking.amount,
         booking.currency,
@@ -64,13 +42,13 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
 
   @override
   Future<void> createSerie(Booking booking) {
-    // TODO: implement createSerie
+    // TODO: implement createSerie entfernen?
     throw UnimplementedError();
   }
 
   @override
   Future<void> edit(Booking booking) async {
-    db = await openBookingDatabase(bookingDbName);
+    db = await openDatabase(localDbName);
     try {
       await db.rawUpdate(
           'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ? WHERE id = ?',
@@ -95,7 +73,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
 
   @override
   Future<void> delete(int id) async {
-    db = await openBookingDatabase(bookingDbName);
+    db = await openDatabase(localDbName);
     await db.rawDelete('DELETE FROM $bookingDbName WHERE id = ?', [id]);
   }
 
@@ -107,7 +85,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
 
   @override
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate) async {
-    db = await openBookingDatabase(bookingDbName);
+    db = await openDatabase(localDbName);
     int lastday = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
     String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
     String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
@@ -134,7 +112,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
 
   @override
   Future<List<Booking>> loadCategorieBookings(String categorie) async {
-    db = await openBookingDatabase(bookingDbName);
+    db = await openDatabase(localDbName);
     List<Map> categorieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE categorie = ?', [categorie]);
     List<Booking> categorieBookingList = categorieBookingMap
         .map(

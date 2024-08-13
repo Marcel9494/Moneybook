@@ -66,7 +66,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
             Account(
               id: widget.account.id,
               type: AccountType.fromString(_accountTypeController.text),
-              name: _nameController.text,
+              name: _nameController.text.trim(),
               amount: Amount.getValue(_amountController.text),
               currency: Amount.getCurrency(_amountController.text),
             ),

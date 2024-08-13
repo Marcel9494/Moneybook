@@ -6,6 +6,7 @@ import 'package:moneybook/features/categories/domain/value_objects/categorie_typ
 
 import '../../../categories/domain/usecases/create.dart';
 import '../../domain/entities/categorie.dart';
+import '../../domain/usecases/get_id.dart';
 import '../../domain/usecases/load_all.dart';
 
 part 'categorie_event.dart';
@@ -15,14 +16,16 @@ const String CREATE_CATEGORIE_FAILURE = 'Kategorie konnte nicht erstellt werden.
 const String EDIT_CATEGORIE_FAILURE = 'Kategorie konnte nicht bearbeitet werden.';
 const String DELETE_CATEGORIE_FAILURE = 'Kategorie konnte nicht gelöscht werden.';
 const String LOAD_CATEGORIES_FAILURE = 'Kategorien konnten nicht geladen werden.';
+const String GET_ID_CATEGORIE_FAILURE = 'Kategorie Id konnte nicht geladen werden.';
 
 class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
   final Create createUseCase;
   final Edit editUseCase;
   final Delete deleteUseCase;
   final LoadAll loadUseCase;
+  final GetId getIdUseCase;
 
-  CategorieBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadUseCase) : super(Initial()) {
+  CategorieBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadUseCase, this.getIdUseCase) : super(Initial()) {
     on<CategorieEvent>((event, emit) async {
       if (event is CreateCategorie) {
         final createCategorieEither = await createUseCase.categorieRepository.create(event.categorie);
@@ -45,12 +48,26 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
         }, (_) {
           emit(Deleted());
         });
+      } else if (event is GetCategorieId) {
+        final getIdCategorieEither = await editUseCase.categorieRepository.getId(event.categorieName, event.categorieType);
+        getIdCategorieEither.fold((failure) {
+          emit(const Error(message: GET_ID_CATEGORIE_FAILURE));
+        }, (categorie) {
+          emit(ReceivedCategorie(categorie: categorie));
+        });
+      } else if (event is LoadCategoriesWithIds) {
+        final loadCategorieWithIdsEither = await loadUseCase.categorieRepository.load(event.ids);
+        loadCategorieWithIdsEither.fold((failure) {
+          emit(const Error(message: LOAD_CATEGORIES_FAILURE));
+        }, (categories) {
+          emit(ReceivedCategories(categories: categories));
+        });
       } else if (event is LoadAllCategories) {
         emit(Loading());
         final loadCategorieEither = await loadUseCase.categorieRepository.loadAll();
         loadCategorieEither.fold((failure) {
           emit(const Error(message: LOAD_CATEGORIES_FAILURE));
-        }, (categories) async {
+        }, (categories) {
           List<Categorie> expenseCategories = [];
           List<Categorie> incomeCategories = [];
           List<Categorie> investmentCategories = [];

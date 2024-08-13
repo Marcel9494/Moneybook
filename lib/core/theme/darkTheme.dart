@@ -69,6 +69,10 @@ final darkTheme = ThemeData(
       foregroundColor: MaterialStateProperty.all<Color>(Colors.cyanAccent),
     ),
   ),
+  textSelectionTheme: const TextSelectionThemeData(
+    cursorColor: Colors.cyanAccent,
+    selectionHandleColor: Colors.cyanAccent,
+  ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: Colors.cyanAccent,
     foregroundColor: Colors.black87,

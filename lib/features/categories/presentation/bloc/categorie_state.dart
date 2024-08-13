@@ -48,6 +48,24 @@ final class Deleted extends CategorieState {
   List<Object> get props => [];
 }
 
+final class ReceivedCategorie extends CategorieState {
+  final Categorie categorie;
+
+  const ReceivedCategorie({required this.categorie});
+
+  @override
+  List<Object> get props => [categorie];
+}
+
+final class ReceivedCategories extends CategorieState {
+  final List<Categorie> categories;
+
+  const ReceivedCategories({required this.categories});
+
+  @override
+  List<Object> get props => [categories];
+}
+
 final class Error extends CategorieState {
   final String message;
 

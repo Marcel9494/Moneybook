@@ -47,7 +47,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             Account(
               id: 0,
               type: AccountType.fromString(_accountTypeController.text),
-              name: _titleController.text,
+              name: _titleController.text.trim(),
               amount: Amount.getValue(_amountController.text),
               currency: Amount.getCurrency(_amountController.text),
             ),

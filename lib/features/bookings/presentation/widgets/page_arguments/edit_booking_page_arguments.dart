@@ -1,5 +1,5 @@
+import '../../../../../shared/domain/value_objects/edit_mode_type.dart';
 import '../../../domain/entities/booking.dart';
-import '../../../domain/value_objects/edit_mode_type.dart';
 
 class EditBookingPageArguments {
   final Booking booking;

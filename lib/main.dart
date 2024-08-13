@@ -9,6 +9,8 @@ import 'package:moneybook/features/bookings/presentation/pages/booking_list_page
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
 import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
+import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
+import 'package:moneybook/shared/presentation/pages/introduction_page.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/navigation_widget.dart';
 
@@ -18,6 +20,10 @@ import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/accounts/presentation/pages/edit_account_page.dart';
 import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
 import 'features/bookings/presentation/pages/edit_booking_page.dart';
+import 'features/budgets/presentation/bloc/budget_bloc.dart';
+import 'features/budgets/presentation/pages/create_budget_page.dart';
+import 'features/budgets/presentation/pages/edit_budget_page.dart';
+import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'injection_container.dart' as di;
@@ -29,6 +35,9 @@ void main() {
   di.init();
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
+      create: (context) => sl<SharedBloc>(),
+    ),
+    BlocProvider(
       create: (context) => sl<BookingBloc>(),
     ),
     BlocProvider(
@@ -39,6 +48,9 @@ void main() {
     ),
     BlocProvider(
       create: (context) => sl<CategorieStatsBloc>(),
+    ),
+    BlocProvider(
+      create: (context) => sl<BudgetBloc>(),
     ),
   ], child: const MyApp()));
 }
@@ -68,12 +80,14 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('de', 'DE'),
       ],
-      home: const BottomNavBar(tabIndex: 0),
+      home: const IntroductionPage(),
+      //home: const BottomNavBar(tabIndex: 0),
       routes: {
         accountListRoute: (context) => const AccountListPage(),
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
         createAccountRoute: (context) => const CreateAccountPage(),
+        createBudgetRoute: (context) => const CreateBudgetPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
@@ -107,6 +121,15 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => EditAccountPage(
                 account: args.account,
+              ),
+              settings: settings,
+            );
+          case editBudgetRoute:
+            final args = settings.arguments as EditBudgetPageArguments;
+            return MaterialPageRoute<String>(
+              builder: (BuildContext context) => EditBudgetPage(
+                budget: args.budget,
+                editMode: args.editMode,
               ),
               settings: settings,
             );
