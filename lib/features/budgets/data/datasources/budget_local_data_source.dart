@@ -1,3 +1,4 @@
+import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../core/consts/database_consts.dart';
@@ -8,7 +9,7 @@ import '../models/budget_model.dart';
 abstract class BudgetLocalDataSource {
   Future<void> create(Budget budget);
   Future<void> edit(Budget budget);
-  Future<void> delete(Budget budget);
+  Future<void> delete(Budget budget, SerieModeType serieMode);
   Future<BudgetModel> load(Budget budget);
   Future<List<BudgetModel>> loadMonthly(DateTime selectedDate);
 }
@@ -18,9 +19,6 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
 
   @override
   Future<void> create(Budget budget) async {
-    print(budget);
-    print("DB: $localDbName");
-    print("Tabelle: $budgetDbName");
     db = await openDatabase(localDbName);
     await db.rawInsert(
       'INSERT INTO $budgetDbName(categorieId, date, amount, used, remaining, percentage, currency) VALUES(?, ?, ?, ?, ?, ?, ?)',
@@ -37,11 +35,16 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   }
 
   @override
-  Future<void> delete(Budget budget) async {
-    print('Test');
-    print(budgetDbName);
+  Future<void> delete(Budget budget, SerieModeType serieMode) async {
     db = await openDatabase(localDbName);
-    await db.rawDelete('DELETE FROM $budgetDbName WHERE id = ?', [budget.id]);
+    if (serieMode == SerieModeType.one) {
+      await db.rawDelete('DELETE FROM $budgetDbName WHERE id = ?', [budget.id]);
+    } else if (serieMode == SerieModeType.onlyFuture) {
+      await db.rawDelete(
+          'DELETE FROM $budgetDbName WHERE categorieId = ? AND date >= ?', [budget.categorieId, dateFormatterYYYYMMDD.format(budget.date)]);
+    } else if (serieMode == SerieModeType.all) {
+      await db.rawDelete('DELETE FROM $budgetDbName WHERE categorieId = ?', [budget.categorieId]);
+    }
   }
 
   @override
@@ -58,7 +61,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
             budget.used,
             budget.remaining,
             budget.percentage,
-            budget.date,
+            dateFormatterYYYYMMDD.format(budget.date),
             budget.id,
           ]);
     } catch (e) {
@@ -80,9 +83,6 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
     String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
     List<Map> budgetMap = await db.rawQuery('SELECT * FROM $budgetDbName WHERE date >= ? AND date <= ?', [startDate, endDate]);
-    //List<Map> budgetMap = await db.rawQuery(
-    //    'SELECT * FROM $budgetDbName INNER JOIN $categorieDbName ON budgets.categorieId = categories.id WHERE budgets.date BETWEEN ? AND ?',
-    //    [startDate, endDate]);
     List<BudgetModel> budgetList = budgetMap
         .map(
           (budget) => BudgetModel(

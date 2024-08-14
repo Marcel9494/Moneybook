@@ -3,6 +3,7 @@ import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/budgets/domain/entities/budget.dart';
 
 import '../../../../core/error/exceptions.dart';
+import '../../../../shared/domain/value_objects/serie_mode_type.dart';
 import '../../domain/repositories/budget_repository.dart';
 import '../datasources/budget_local_data_source.dart';
 import '../datasources/budget_remote_data_source.dart';
@@ -27,9 +28,9 @@ class BudgetRepositoryImpl implements BudgetRepository {
   }
 
   @override
-  Future<Either<Failure, void>> delete(Budget budget) async {
+  Future<Either<Failure, void>> delete(Budget budget, SerieModeType serieMode) async {
     try {
-      return Right(await budgetLocalDataSource.delete(budget));
+      return Right(await budgetLocalDataSource.delete(budget, serieMode));
     } on ServerException {
       return Left(ServerFailure());
     }

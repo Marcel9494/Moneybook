@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moneybook/core/consts/common_consts.dart';
+import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 
 import '../../../../core/consts/route_consts.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
@@ -41,7 +42,6 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           createBudgetEither = await createUseCase.budgetRepository.create(nextBudget);
           budgets.add(nextBudget);
         }
-        print(event.budget);
         createBudgetEither.fold((failure) {
           emit(const Error(message: CREATE_BUDGET_FAILURE));
         }, (_) {
@@ -63,7 +63,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
         });
       } else if (event is DeleteBudget) {
-        final deleteBudgetEither = await deleteUseCase.budgetRepository.edit(event.budget);
+        final deleteBudgetEither = await deleteUseCase.budgetRepository.delete(event.budget, event.serieMode);
         deleteBudgetEither.fold((failure) {
           emit(const Error(message: DELETE_BUDGET_FAILURE));
         }, (_) {

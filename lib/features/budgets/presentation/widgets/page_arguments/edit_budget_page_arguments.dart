@@ -1,12 +1,12 @@
-import '../../../../../shared/domain/value_objects/edit_mode_type.dart';
+import '../../../../../shared/domain/value_objects/serie_mode_type.dart';
 import '../../../domain/entities/budget.dart';
 
 class EditBudgetPageArguments {
   final Budget budget;
-  final EditModeType editMode;
+  final SerieModeType serieMode;
 
   EditBudgetPageArguments(
     this.budget,
-    this.editMode,
+    this.serieMode,
   );
 }

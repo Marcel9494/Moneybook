@@ -3,7 +3,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
-import 'package:moneybook/shared/domain/value_objects/edit_mode_type.dart';
+import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 
 import '../../../../../core/utils/number_formatter.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
@@ -51,7 +51,7 @@ class BookingCard extends StatelessWidget {
                       editBookingRoute,
                       arguments: EditBookingPageArguments(
                         booking,
-                        EditModeType.one,
+                        SerieModeType.one,
                       ),
                     ),
                   ),
@@ -65,7 +65,7 @@ class BookingCard extends StatelessWidget {
                       editBookingRoute,
                       arguments: EditBookingPageArguments(
                         booking,
-                        EditModeType.onlyFuture,
+                        SerieModeType.onlyFuture,
                       ),
                     ),
                   ),
@@ -79,7 +79,7 @@ class BookingCard extends StatelessWidget {
                       editBookingRoute,
                       arguments: EditBookingPageArguments(
                         booking,
-                        EditModeType.all,
+                        SerieModeType.all,
                       ),
                     ),
                   ),
@@ -96,7 +96,7 @@ class BookingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => booking.repetition == RepetitionType.noRepetition
-          ? Navigator.pushNamed(context, editBookingRoute, arguments: EditBookingPageArguments(booking, EditModeType.one))
+          ? Navigator.pushNamed(context, editBookingRoute, arguments: EditBookingPageArguments(booking, SerieModeType.one))
           : _openSerieBookingBottomSheet(context),
       child: Card(
         child: ClipPath(

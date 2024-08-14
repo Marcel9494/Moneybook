@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => EditBudgetPage(
                 budget: args.budget,
-                editMode: args.editMode,
+                serieMode: args.serieMode,
               ),
               settings: settings,
             );

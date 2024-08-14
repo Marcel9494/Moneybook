@@ -6,7 +6,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../../core/consts/common_consts.dart';
 import '../../../../../core/consts/route_consts.dart';
-import '../../../../../shared/domain/value_objects/edit_mode_type.dart';
+import '../../../../../shared/domain/value_objects/serie_mode_type.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../data/models/budget_model.dart';
 import '../page_arguments/edit_budget_page_arguments.dart';
@@ -41,7 +41,7 @@ class BudgetCard extends StatelessWidget {
                       editBudgetRoute,
                       arguments: EditBudgetPageArguments(
                         budget,
-                        EditModeType.one,
+                        SerieModeType.one,
                       ),
                     ),
                   ),
@@ -55,7 +55,7 @@ class BudgetCard extends StatelessWidget {
                       editBudgetRoute,
                       arguments: EditBudgetPageArguments(
                         budget,
-                        EditModeType.onlyFuture,
+                        SerieModeType.onlyFuture,
                       ),
                     ),
                   ),
@@ -69,7 +69,7 @@ class BudgetCard extends StatelessWidget {
                       editBudgetRoute,
                       arguments: EditBudgetPageArguments(
                         budget,
-                        EditModeType.all,
+                        SerieModeType.all,
                       ),
                     ),
                   ),
