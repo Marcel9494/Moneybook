@@ -87,6 +87,7 @@ Nachteile von Fremdschlüsseln bei iben gezeigten Datenbank Schema:
 - Daten müssen von mehreren Datenbanktabellen zusammengesucht werden => etwas komplexere SQL-Abfragen.
 
 => Entscheidung: Fremdschlüssel verwenden, weil das System langfristig so besser wartbar und erweiterbar ist.
+
 => Entscheidungsänderung: Fremdschlüssel werden vorerst nicht verwendet, weil es zu deutlich komplexeren und unstabileren Code führt.
 Erweiterbarkeit und Wartbarkeit ist weiterhin gegeben, weil es lange nicht so viele Datenbanktabellen geben wird.
 Weniger einzelne Datenbanktabellen abfragen.
