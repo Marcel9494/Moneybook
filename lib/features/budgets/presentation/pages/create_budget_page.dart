@@ -64,13 +64,10 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
             create: (context) => sl<BudgetBloc>(),
           ),
         ],
-        // TODO hier weitermachen und schauen warum Budget nicht richtig erstellt wird.
-        // TODO BlocProvider für CategorieBloc hinzufügen?
         child: BlocProvider(
           create: (context) => sl<BudgetBloc>(),
           child: BlocConsumer<categorie.CategorieBloc, categorie.CategorieState>(
             listener: (context, state) {
-              print('Test 1 $state');
               if (state is categorie.ReceivedCategorie) {
                 var dateFormatter = dateFormatterYYYYMMDD;
                 // Format the current date and time to match the expected format

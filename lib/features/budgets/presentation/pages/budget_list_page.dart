@@ -142,7 +142,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
                                     Budget budget = budgetState.budgets[index];
                                     Categorie? category = categorieState.categories.firstWhere(
                                       (cat) => cat.id == budget.categorieId,
-                                      orElse: () => const Categorie(name: 'Kategorie nicht vorhanden', id: -1, type: CategorieType.expense),
+                                      orElse: () => const Categorie(name: 'Unbekannte Kategorie', id: -1, type: CategorieType.expense),
                                     );
                                     return BudgetCard(
                                       budget: budgetState.budgets[index],

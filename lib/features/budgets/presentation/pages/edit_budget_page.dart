@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/categorie_input_field.dart';
-import 'package:moneybook/shared/domain/value_objects/edit_mode_type.dart';
+import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/route_consts.dart';
@@ -16,12 +16,12 @@ import '../bloc/budget_bloc.dart';
 
 class EditBudgetPage extends StatefulWidget {
   final Budget budget;
-  final EditModeType editMode;
+  final SerieModeType serieMode;
 
   const EditBudgetPage({
     super.key,
     required this.budget,
-    required this.editMode,
+    required this.serieMode,
   });
 
   @override
@@ -52,7 +52,7 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
               child: const Text('Ja'),
               onPressed: () {
                 BlocProvider.of<BudgetBloc>(context).add(
-                  DeleteBudget(widget.budget, context),
+                  DeleteBudget(widget.budget, widget.serieMode, context),
                 );
               },
             ),
