@@ -54,6 +54,12 @@ Bei der Haushaltsbuch App gibt es aktuell folgende features die jeweils der oben
 - Statistiken (statistics)
 - Einstellungen (settings)
 
+# Context View (Level 0)
+
+Aktuelle Context View der Moneybook App mit einer lokalen Sqflite Datenbank Anbindung.
+
+![ContextViewMoneybook](https://github.com/user-attachments/assets/21276d2b-f90f-4028-89b3-bd1e6c31cfbf)
+
 # Lokale Datenbank Entscheidungen
 
 Für lokale Datenspeicherungen wird sqflite (https://pub.dev/packages/sqflite) verwendet werden, weil hier Relationen zwischen verschiedenen Datenbanktabellen realisiert werden können
