@@ -47,7 +47,7 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
       await db.execute('''
           CREATE TABLE IF NOT EXISTS $budgetDbName (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            categorieId INTEGER NOT NULL,
+            categorie TEXT NOT NULL,
             date TEXT NOT NULL,
             amount DOUBLE NOT NULL,
             used DOUBLE NOT NULL,

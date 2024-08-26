@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
-import 'package:moneybook/features/categories/domain/entities/categorie.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../../core/consts/common_consts.dart';
 import '../../../../../core/consts/route_consts.dart';
 import '../../../../../shared/domain/value_objects/serie_mode_type.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
-import '../../../data/models/budget_model.dart';
+import '../../../domain/entities/budget.dart';
 import '../page_arguments/edit_budget_page_arguments.dart';
 
 class BudgetCard extends StatelessWidget {
-  final BudgetModel budget;
-  final Categorie categorie;
+  final Budget budget;
 
   const BudgetCard({
     super.key,
     required this.budget,
-    required this.categorie,
   });
 
   void _openBudgetBottomSheet(BuildContext context) {
@@ -108,7 +105,7 @@ class BudgetCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${categorie.name}: ${formatToMoneyAmount(budget.used.toString())} / ${formatToMoneyAmount(budget.amount.toString())}',
+                      '${budget.categorie}: ${formatToMoneyAmount(budget.used.toString())} / ${formatToMoneyAmount(budget.amount.toString())}',
                       overflow: TextOverflow.ellipsis,
                     ),
                     Padding(

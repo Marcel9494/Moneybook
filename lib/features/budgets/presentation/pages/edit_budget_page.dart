@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/categorie_input_field.dart';
+import 'package:moneybook/features/budgets/domain/entities/budget.dart';
 import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
@@ -11,7 +12,6 @@ import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_argumen
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
-import '../../domain/entities/budget.dart';
 import '../bloc/budget_bloc.dart';
 
 class EditBudgetPage extends StatefulWidget {
@@ -39,7 +39,6 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
   }
 
   void _deleteBudget(BuildContext context) {
-    print(widget.budget);
     showCupertinoDialog(
       context: context,
       barrierDismissible: true,

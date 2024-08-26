@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class Budget extends Equatable {
   final int id;
-  final int categorieId;
+  final String categorie;
   final DateTime date;
   final double amount;
   double used;
@@ -12,7 +12,7 @@ class Budget extends Equatable {
 
   Budget({
     required this.id,
-    required this.categorieId,
+    required this.categorie,
     required this.date,
     required this.amount,
     required this.used,
@@ -23,7 +23,7 @@ class Budget extends Equatable {
 
   Budget copyWith({
     int? id,
-    int? categorieId,
+    String? categorie,
     DateTime? date,
     double? amount,
     double? used,
@@ -33,7 +33,7 @@ class Budget extends Equatable {
   }) {
     return Budget(
       id: id ?? this.id,
-      categorieId: categorieId ?? this.categorieId,
+      categorie: categorie ?? this.categorie,
       date: date ?? this.date,
       amount: amount ?? this.amount,
       used: used ?? this.used,
@@ -44,5 +44,5 @@ class Budget extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, categorieId, date, amount, used, remaining, percentage, currency];
+  List<Object?> get props => [id, categorie, date, amount, used, remaining, percentage, currency];
 }

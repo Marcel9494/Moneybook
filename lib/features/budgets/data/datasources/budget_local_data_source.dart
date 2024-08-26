@@ -21,9 +21,9 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   Future<void> create(Budget budget) async {
     db = await openDatabase(localDbName);
     await db.rawInsert(
-      'INSERT INTO $budgetDbName(categorieId, date, amount, used, remaining, percentage, currency) VALUES(?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO $budgetDbName(categorie, date, amount, used, remaining, percentage, currency) VALUES(?, ?, ?, ?, ?, ?, ?)',
       [
-        budget.categorieId,
+        budget.categorie,
         dateFormatterYYYYMMDD.format(budget.date),
         budget.amount,
         budget.used,
@@ -40,10 +40,10 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     if (serieMode == SerieModeType.one) {
       await db.rawDelete('DELETE FROM $budgetDbName WHERE id = ?', [budget.id]);
     } else if (serieMode == SerieModeType.onlyFuture) {
-      await db.rawDelete(
-          'DELETE FROM $budgetDbName WHERE categorieId = ? AND date >= ?', [budget.categorieId, dateFormatterYYYYMMDD.format(budget.date)]);
+      await db
+          .rawDelete('DELETE FROM $budgetDbName WHERE categorie = ? AND date >= ?', [budget.categorie, dateFormatterYYYYMMDD.format(budget.date)]);
     } else if (serieMode == SerieModeType.all) {
-      await db.rawDelete('DELETE FROM $budgetDbName WHERE categorieId = ?', [budget.categorieId]);
+      await db.rawDelete('DELETE FROM $budgetDbName WHERE categorie = ?', [budget.categorie]);
     }
   }
 
@@ -52,10 +52,10 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
     db = await openDatabase(localDbName);
     try {
       await db.rawUpdate(
-          'UPDATE $budgetDbName SET id = ?, categorieId = ?, amount = ?, currency = ?, used = ?, remaining = ?, percentage = ?, date = ? WHERE id = ?',
+          'UPDATE $budgetDbName SET id = ?, categorie = ?, amount = ?, currency = ?, used = ?, remaining = ?, percentage = ?, date = ? WHERE id = ?',
           [
             budget.id,
-            budget.categorieId,
+            budget.categorie,
             budget.amount,
             budget.currency,
             budget.used,
@@ -87,7 +87,7 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
         .map(
           (budget) => BudgetModel(
             id: budget['id'],
-            categorieId: budget['categorieId'],
+            categorie: budget['categorie'],
             amount: budget['amount'],
             date: DateTime.parse(budget['date']),
             currency: budget['currency'],
