@@ -30,9 +30,8 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
 
   BudgetBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadMonthlyUseCase) : super(Initial()) {
     on<BudgetEvent>((event, emit) async {
-      // TODO folgende Funktionalitäten auf einen Rutsch implementieren: Edit, Delete
       if (event is CreateBudget) {
-        List<Budget> budgets = [];
+        List<Budget> budgets = []; // TODO hier weitermachen und refactorn? wird budgets Liste noch gebraucht?
         var createBudgetEither = await createUseCase.budgetRepository.create(event.budget);
         budgets.add(event.budget);
         for (int i = 0; i < 12 * serieYears; i++) {
@@ -55,7 +54,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           emit(Loaded(budgets: budgets));
         });
       } else if (event is EditBudget) {
-        final editBudgetEither = await editUseCase.budgetRepository.edit(event.budget);
+        var editBudgetEither = await editUseCase.budgetRepository.edit(event.budget, event.serieMode);
         editBudgetEither.fold((failure) {
           emit(const Error(message: EDIT_BUDGET_FAILURE));
         }, (_) {

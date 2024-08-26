@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,11 +8,14 @@ import 'package:moneybook/features/budgets/domain/entities/budget.dart';
 import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/number_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
+import '../../../bookings/domain/value_objects/amount.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../bloc/budget_bloc.dart';
 
@@ -33,9 +38,42 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
   final TextEditingController _categorieController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _editBudgetBtnController = RoundedLoadingButtonController();
+  late Budget _updatedBudget;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeBudget();
+  }
+
+  void _initializeBudget() {
+    _amountController.text = formatToMoneyAmount(widget.budget.amount.toString());
+    _categorieController.text = widget.budget.categorie;
+  }
 
   void _editBudget(BuildContext context) {
-    // TODO
+    final FormState form = _budgetFormKey.currentState!;
+    if (form.validate() == false) {
+      _editBudgetBtnController.error();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        _editBudgetBtnController.reset();
+      });
+    } else {
+      _editBudgetBtnController.success();
+      _updatedBudget = Budget(
+        id: widget.budget.id,
+        categorie: _categorieController.text,
+        date: widget.budget.date,
+        amount: Amount.getValue(_amountController.text),
+        used: 0.0,
+        remaining: 0.0,
+        percentage: 0.0,
+        currency: Amount.getCurrency(_amountController.text),
+      );
+      Timer(const Duration(milliseconds: durationInMs), () async {
+        BlocProvider.of<BudgetBloc>(context).add(EditBudget(_updatedBudget, widget.serieMode, context));
+      });
+    }
   }
 
   void _deleteBudget(BuildContext context) {

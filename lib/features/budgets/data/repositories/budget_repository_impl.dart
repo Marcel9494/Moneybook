@@ -37,9 +37,9 @@ class BudgetRepositoryImpl implements BudgetRepository {
   }
 
   @override
-  Future<Either<Failure, void>> edit(Budget budget) async {
+  Future<Either<Failure, void>> edit(Budget budget, SerieModeType serieMode) async {
     try {
-      return Right(await budgetLocalDataSource.edit(budget));
+      return Right(await budgetLocalDataSource.edit(budget, serieMode));
     } on ServerException {
       return Left(ServerFailure());
     }

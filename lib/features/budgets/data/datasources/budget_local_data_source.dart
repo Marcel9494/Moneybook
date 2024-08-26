@@ -8,7 +8,7 @@ import '../models/budget_model.dart';
 
 abstract class BudgetLocalDataSource {
   Future<void> create(Budget budget);
-  Future<void> edit(Budget budget);
+  Future<void> edit(Budget budget, SerieModeType serieMode);
   Future<void> delete(Budget budget, SerieModeType serieMode);
   Future<BudgetModel> load(Budget budget);
   Future<List<BudgetModel>> loadMonthly(DateTime selectedDate);
@@ -48,22 +48,35 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   }
 
   @override
-  Future<void> edit(Budget budget) async {
+  Future<void> edit(Budget budget, SerieModeType serieMode) async {
     db = await openDatabase(localDbName);
     try {
-      await db.rawUpdate(
-          'UPDATE $budgetDbName SET id = ?, categorie = ?, amount = ?, currency = ?, used = ?, remaining = ?, percentage = ?, date = ? WHERE id = ?',
+      if (serieMode == SerieModeType.one) {
+        await db.rawUpdate(
+          'UPDATE $budgetDbName SET categorie = ?, amount = ?, currency = ? WHERE id = ?',
           [
-            budget.id,
             budget.categorie,
             budget.amount,
             budget.currency,
-            budget.used,
-            budget.remaining,
-            budget.percentage,
-            dateFormatterYYYYMMDD.format(budget.date),
             budget.id,
-          ]);
+          ],
+        );
+      } else if (serieMode == SerieModeType.onlyFuture) {
+        await db.rawUpdate(
+          'UPDATE $budgetDbName SET categorie = ?, amount = ?, currency = ? WHERE categorie = ? AND date >= ?',
+          [budget.categorie, budget.amount, budget.currency, budget.categorie, dateFormatterYYYYMMDD.format(budget.date)],
+        );
+      } else if (serieMode == SerieModeType.all) {
+        await db.rawUpdate(
+          'UPDATE $budgetDbName SET categorie = ?, amount = ?, currency = ? WHERE categorie = ?',
+          [
+            budget.categorie,
+            budget.amount,
+            budget.currency,
+            budget.categorie,
+          ],
+        );
+      }
     } catch (e) {
       // TODO Fehler richtig behandeln
       print('Error: $e');
