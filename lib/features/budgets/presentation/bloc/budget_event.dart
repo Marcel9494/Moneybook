@@ -15,12 +15,13 @@ class CreateBudget extends BudgetEvent {
 
 class EditBudget extends BudgetEvent {
   final Budget budget;
+  final SerieModeType serieMode;
   final BuildContext context;
 
-  const EditBudget(this.budget, this.context);
+  const EditBudget(this.budget, this.serieMode, this.context);
 
   @override
-  List<Object?> get props => [budget];
+  List<Object?> get props => [budget, serieMode];
 }
 
 class DeleteBudget extends BudgetEvent {
