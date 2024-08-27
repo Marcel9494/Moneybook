@@ -31,15 +31,12 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
   BudgetBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadMonthlyUseCase) : super(Initial()) {
     on<BudgetEvent>((event, emit) async {
       if (event is CreateBudget) {
-        List<Budget> budgets = []; // TODO hier weitermachen und refactorn? wird budgets Liste noch gebraucht?
         var createBudgetEither = await createUseCase.budgetRepository.create(event.budget);
-        budgets.add(event.budget);
         for (int i = 0; i < 12 * serieYears; i++) {
           DateTime originalDate = DateTime.parse(event.budget.date.toString());
           DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 1), 1);
           Budget nextBudget = event.budget.copyWith(date: nextDate);
           createBudgetEither = await createUseCase.budgetRepository.create(nextBudget);
-          budgets.add(nextBudget);
         }
         createBudgetEither.fold((failure) {
           emit(const Error(message: CREATE_BUDGET_FAILURE));

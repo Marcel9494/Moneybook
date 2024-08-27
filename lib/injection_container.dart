@@ -21,6 +21,7 @@ import 'package:moneybook/shared/data/datasources/shared_local_data_source.dart'
 import 'package:moneybook/shared/data/datasources/shared_remote_data_source.dart';
 import 'package:moneybook/shared/data/repositories/shared_repository_impl.dart';
 import 'package:moneybook/shared/data/usecases/createDb.dart';
+import 'package:moneybook/shared/data/usecases/createStartDbValues.dart';
 import 'package:moneybook/shared/domain/repositories/shared_repository.dart';
 import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 
@@ -52,7 +53,7 @@ final sl = GetIt.instance;
 void init() {
   //! Features - Booking, Account, Categorie, Stats, Budget
   // Bloc
-  sl.registerFactory(() => SharedBloc(sl()));
+  sl.registerFactory(() => SharedBloc(sl(), sl()));
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl()));
@@ -60,6 +61,7 @@ void init() {
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl()));
   // Use Cases
   sl.registerLazySingleton(() => CreateDb(sl()));
+  sl.registerLazySingleton(() => CreateStartDbValues(sl()));
   sl.registerLazySingleton(() => create_booking.Create(sl()));
   sl.registerLazySingleton(() => CreateSerie(sl()));
   sl.registerLazySingleton(() => edit_booking.Edit(sl()));

@@ -10,3 +10,10 @@ class CreateDatabase extends SharedEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CreateStartDatabaseValues extends SharedEvent {
+  const CreateStartDatabaseValues();
+
+  @override
+  List<Object?> get props => [];
+}

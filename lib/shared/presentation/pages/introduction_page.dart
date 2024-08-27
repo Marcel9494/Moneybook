@@ -16,6 +16,7 @@ class IntroductionPage extends StatefulWidget {
 class _IntroductionPageState extends State<IntroductionPage> {
   void _endOfInstruction() {
     BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
+    BlocProvider.of<SharedBloc>(context).add(const CreateStartDatabaseValues());
     Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
   }
 
