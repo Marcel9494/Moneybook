@@ -52,6 +52,7 @@ Bei der Haushaltsbuch App gibt es aktuell folgende features die jeweils der oben
 - Kategorien (categories)
 - Budgets (budgets)
 - Statistiken (statistics)
+- Benutzer (user)
 - Einstellungen (settings)
 
 # Context View (Level 0)
