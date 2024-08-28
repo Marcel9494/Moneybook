@@ -26,6 +26,7 @@ import 'features/budgets/presentation/pages/edit_budget_page.dart';
 import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
+import 'features/user/presentation/bloc/user_bloc.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 import 'shared/presentation/widgets/arguments/selected_date_page_arguments.dart';
@@ -52,14 +53,32 @@ void main() {
     BlocProvider(
       create: (context) => sl<BudgetBloc>(),
     ),
+    BlocProvider(
+      create: (context) => sl<UserBloc>(),
+    ),
   ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  void getStartPage(BuildContext context) {
+    BlocProvider.of<SharedBloc>(context).add(DatabaseExists(context: context));
+    /*return BlocBuilder<SharedBloc, SharedState>(
+      builder: (context, state) {
+        if (state is Exists) {
+          if (state.exists) {
+            return const BottomNavBar(tabIndex: 0);
+          }
+          return const IntroductionPage();
+        }
+        return const SizedBox();
+      },
+    );*/
+  }
+
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  MaterialApp build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

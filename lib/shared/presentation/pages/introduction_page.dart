@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 import '../../../core/consts/route_consts.dart';
+import '../../../features/user/domain/entities/user.dart';
+import '../../../features/user/presentation/bloc/user_bloc.dart';
 import '../bloc/shared_bloc.dart';
 import '../widgets/arguments/bottom_nav_bar_arguments.dart';
 
@@ -15,13 +17,25 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage> {
   void _endOfInstruction() {
-    BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
     BlocProvider.of<SharedBloc>(context).add(const CreateStartDatabaseValues());
+    BlocProvider.of<UserBloc>(context).add(
+      CreateUser(
+        user: User(
+          id: 0,
+          firstStart: false,
+          lastStart: DateTime.now(),
+          language: 'De-de',
+          localDb: true,
+        ),
+      ),
+    );
     Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
   }
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
+    BlocProvider.of<UserBloc>(context).add(CheckFirstStart(context: context));
     return IntroductionScreen(
       pages: [
         PageViewModel(

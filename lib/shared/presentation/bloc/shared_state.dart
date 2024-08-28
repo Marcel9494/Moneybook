@@ -14,6 +14,15 @@ final class Created extends SharedState {
   List<Object> get props => [];
 }
 
+final class Exists extends SharedState {
+  final bool exists;
+
+  const Exists({required this.exists});
+
+  @override
+  List<Object> get props => [exists];
+}
+
 final class Error extends SharedState {
   final String message;
 

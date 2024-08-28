@@ -7,12 +7,13 @@ import '../../../features/bookings/domain/value_objects/booking_type.dart';
 abstract class SharedLocalDataSource {
   Future<void> createDb();
   Future<void> createStartDbValues();
+  Future<bool> existsDb();
 }
 
 class SharedLocalDataSourceImpl implements SharedLocalDataSource {
   SharedLocalDataSourceImpl();
 
-  var db;
+  //var db;
 
   @override
   Future<void> createDb() async {
@@ -57,6 +58,15 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
             remaining DOUBLE NOT NULL,
             percentage DOUBLE NOT NULL,
             currency TEXT NOT NULL
+          )
+          ''');
+      await db.execute('''
+          CREATE TABLE IF NOT EXISTS $userDbName (
+            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            firstStart INTEGER NOT NULL,
+            lastStart TEXT NOT NULL,
+            language TEXT NOT NULL,
+            localDb INTEGER NOT NULL
           )
           ''');
     });
@@ -241,5 +251,18 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
       0.0,
       '€',
     ]);
+  }
+
+  @override
+  Future<bool> existsDb() async {
+    db = await openDatabase(localDbName);
+    //bool exists = await databaseFactory.databaseExists(localDbName);
+    var tables = await db.rawQuery('SELECT * FROM sqlite_schema WHERE name= ?', [categorieDbName]);
+    //int? count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $categorieDbName'));
+    //print(count);
+    if (tables.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
 }

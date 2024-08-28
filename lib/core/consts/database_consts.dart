@@ -12,6 +12,7 @@ const String bookingDbName = demoMode == false ? 'bookings' : 'bookings_demo';
 const String accountDbName = demoMode == false ? 'accounts' : 'accounts_demo';
 const String categorieDbName = demoMode == false ? 'categories' : 'categories_demo';
 const String budgetDbName = demoMode == false ? 'budgets' : 'budgets_demo';
+const String userDbName = demoMode == false ? 'user' : 'user_demo';
 
 // Aktuelle Datenbank Tabellen Version
 const int localDbVersion = demoMode == false ? 1 : 1;

@@ -17,3 +17,12 @@ class CreateStartDatabaseValues extends SharedEvent {
   @override
   List<Object?> get props => [];
 }
+
+class DatabaseExists extends SharedEvent {
+  final BuildContext context;
+
+  const DatabaseExists({required this.context});
+
+  @override
+  List<Object?> get props => [context];
+}
