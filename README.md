@@ -79,7 +79,7 @@ Aktuelles Datenbank Schema / Aufbau. Ist noch in der Design & Implementierungsph
 
 Draw.io PNG Datei:
 
-![DatenbankSchemaMoneybook](https://github.com/user-attachments/assets/0cf14831-6c35-4395-849b-e5ebf2121d71)
+![DatenbankSchemaMoneybook](https://github.com/user-attachments/assets/ac3acca0-25a3-481d-8646-17ab853f4a30)
 
 Vorteile von Fremdschlüsseln bei oben gezeigten Datenbank Schema:
 - Wenn Kategorie oder Konto bearbeitet wird, werden die enstsprechenden Daten an einer zentralen Stelle (Categorie oder Account Tabelle) aktualisiert und von den restlichen Tabellen referenziert.
