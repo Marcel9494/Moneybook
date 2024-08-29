@@ -28,7 +28,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
     _loadData();
   }
 
-  // Wird aufgerufen, wenn der Benutzer den Monat wechselt
+  // Wird jedesmal aufgerufen, wenn der Benutzer den Monat wechselt
   @override
   void didUpdateWidget(BudgetListPage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -106,6 +106,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
                           itemBuilder: (BuildContext context, int index) {
                             return BudgetCard(
                               budget: budgetState.budgets[index],
+                              selectedDate: widget.selectedDate,
                             );
                           },
                         ),

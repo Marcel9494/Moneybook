@@ -32,13 +32,4 @@ class SharedRepositoryImpl implements SharedRepository {
       return Left(ServerFailure());
     }
   }
-
-  @override
-  Future<Either<Failure, bool>> existsDb() async {
-    try {
-      return Right(await sharedLocalDataSource.existsDb());
-    } on ServerException {
-      return Left(ServerFailure());
-    }
-  }
 }

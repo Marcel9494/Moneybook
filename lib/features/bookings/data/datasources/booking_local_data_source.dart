@@ -10,7 +10,6 @@ import '../models/booking_model.dart';
 
 abstract class BookingLocalDataSource {
   Future<void> create(Booking booking);
-  Future<void> createSerie(Booking booking);
   Future<void> edit(Booking booking);
   Future<void> delete(int id);
   Future<BookingModel> load(int id);
@@ -38,12 +37,6 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         booking.categorie,
       ],
     );
-  }
-
-  @override
-  Future<void> createSerie(Booking booking) {
-    // TODO: implement createSerie entfernen?
-    throw UnimplementedError();
   }
 
   @override

@@ -23,7 +23,6 @@ import 'package:moneybook/shared/data/datasources/shared_remote_data_source.dart
 import 'package:moneybook/shared/data/repositories/shared_repository_impl.dart';
 import 'package:moneybook/shared/data/usecases/createDb.dart';
 import 'package:moneybook/shared/data/usecases/createStartDbValues.dart';
-import 'package:moneybook/shared/data/usecases/existsDb.dart';
 import 'package:moneybook/shared/domain/repositories/shared_repository.dart';
 import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 
@@ -34,7 +33,6 @@ import 'features/accounts/domain/repositories/account_repository.dart';
 import 'features/accounts/domain/usecases/load_all_categories.dart' as load_all_accounts;
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
-import 'features/bookings/domain/usecases/createSerie.dart';
 import 'features/bookings/domain/usecases/load_categorie_bookings.dart';
 import 'features/budgets/data/datasources/budget_local_data_source.dart';
 import 'features/budgets/data/datasources/budget_remote_data_source.dart';
@@ -61,43 +59,48 @@ final sl = GetIt.instance;
 void init() {
   // Features
   // Bloc
-  sl.registerFactory(() => SharedBloc(sl(), sl(), sl()));
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => SharedBloc(sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => UserBloc(sl(), sl()));
   // Use Cases
+  // Shared
   sl.registerLazySingleton(() => CreateDb(sl()));
   sl.registerLazySingleton(() => CreateStartDbValues(sl()));
-  sl.registerLazySingleton(() => ExistsDb(sl()));
 
+  // Bookings
   sl.registerLazySingleton(() => create_booking.Create(sl()));
-  sl.registerLazySingleton(() => CreateSerie(sl()));
   sl.registerLazySingleton(() => edit_booking.Edit(sl()));
   sl.registerLazySingleton(() => delete_booking.Delete(sl()));
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
   sl.registerLazySingleton(() => LoadAllCategorieBookings(sl()));
 
+  // Categories
   sl.registerLazySingleton(() => create_categorie.Create(sl()));
   sl.registerLazySingleton(() => edit_categorie.Edit(sl()));
   sl.registerLazySingleton(() => delete_categorie.Delete(sl()));
   sl.registerLazySingleton(() => get_id.GetId(sl()));
   sl.registerLazySingleton(() => load_all_categories.LoadAll(sl()));
 
+  // Accounts
   sl.registerLazySingleton(() => create_account.Create(sl()));
   sl.registerLazySingleton(() => edit_account.Edit(sl()));
   sl.registerLazySingleton(() => delete_account.Delete(sl()));
   sl.registerLazySingleton(() => load_all_accounts.LoadAllCategories(sl()));
 
+  // Budgets
   sl.registerLazySingleton(() => create_budget.Create(sl()));
   sl.registerLazySingleton(() => edit_budget.Edit(sl()));
   sl.registerLazySingleton(() => delete_budget.Delete(sl()));
   sl.registerLazySingleton(() => LoadMonthly(sl(), sl()));
 
+  // User
   sl.registerLazySingleton(() => create_user.Create(sl()));
   sl.registerLazySingleton(() => FirstStart(sl()));
+
   // Repository
   sl.registerLazySingleton<SharedRepository>(
     () => SharedRepositoryImpl(
