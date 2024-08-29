@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:moneybook/features/accounts/presentation/widgets/cards/overview_cards.dart';
 
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
@@ -16,6 +17,7 @@ class AccountListPage extends StatefulWidget {
 }
 
 class _AccountListPageState extends State<AccountListPage> {
+  final Map<AccountType, double> _accountTypeAmounts = {};
   double _assets = 0.0;
   double _debts = 0.0;
 
@@ -23,7 +25,6 @@ class _AccountListPageState extends State<AccountListPage> {
     BlocProvider.of<AccountBloc>(context).add(
       const LoadAllAccounts(),
     );
-    // TODO eigenes Event für jeden Kontotyp den zusammengefassten Kontostand berechnen und implementieren
   }
 
   void _calculateOverviewValues(List<Account> accounts) {
@@ -35,6 +36,17 @@ class _AccountListPageState extends State<AccountListPage> {
       } else {
         _assets += accounts[i].amount;
       }
+    }
+  }
+
+  void _calculateAccountTypeAmounts(List<Account> accounts) {
+    _accountTypeAmounts.clear();
+    for (int i = 0; i < accounts.length; i++) {
+      if (_accountTypeAmounts.containsKey(accounts[i].type) == false) {
+        _accountTypeAmounts[accounts[i].type] = 0.0;
+      }
+      double? currentAccountTypeAmount = _accountTypeAmounts[accounts[i].type];
+      _accountTypeAmounts[accounts[i].type] = currentAccountTypeAmount! + accounts[i].amount;
     }
   }
 
@@ -55,6 +67,7 @@ class _AccountListPageState extends State<AccountListPage> {
               );
             } else {
               _calculateOverviewValues(state.accounts);
+              _calculateAccountTypeAmounts(state.accounts);
               return Column(
                 children: [
                   OverviewCards(
@@ -71,8 +84,15 @@ class _AccountListPageState extends State<AccountListPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                                child: Text(state.accounts[index].type.name, style: const TextStyle(fontSize: 16.0)),
+                                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 29.0, 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(state.accounts[index].type.name, style: const TextStyle(fontSize: 16.0)),
+                                    Text(formatToMoneyAmount(_accountTypeAmounts[state.accounts[index].type].toString()),
+                                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                               ),
                               AccountCard(account: state.accounts[index]),
                             ],
