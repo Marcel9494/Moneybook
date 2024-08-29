@@ -4,8 +4,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
-import 'package:moneybook/features/bookings/domain/usecases/createSerie.dart';
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart';
+import 'package:moneybook/features/bookings/domain/usecases/edit.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_categorie_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
@@ -18,8 +18,7 @@ Future<void> main() async {
   group('BookingBloc', () {
     late BookingBloc bookingBloc;
     late Create createUsecase;
-    late CreateSerie createSerieUsecase;
-    late Create editUsecase;
+    late Edit editUsecase;
     late Delete deleteUsecase;
     late LoadSortedMonthly loadSortedMonthlyUsecase;
     late LoadAllCategorieBookings loadCategorieBookingsUseCase;
@@ -28,13 +27,11 @@ Future<void> main() async {
     setUp(() {
       mockBookingRepository = MockBookingRepository();
       createUsecase = Create(mockBookingRepository);
-      createSerieUsecase = CreateSerie(mockBookingRepository);
-      editUsecase = Create(mockBookingRepository);
+      editUsecase = Edit(mockBookingRepository);
       deleteUsecase = Delete(mockBookingRepository);
       loadSortedMonthlyUsecase = LoadSortedMonthly(mockBookingRepository);
       loadCategorieBookingsUseCase = LoadAllCategorieBookings(mockBookingRepository);
-      bookingBloc =
-          BookingBloc(createUsecase, createSerieUsecase, editUsecase, deleteUsecase, loadSortedMonthlyUsecase, loadCategorieBookingsUseCase);
+      bookingBloc = BookingBloc(createUsecase, editUsecase, deleteUsecase, loadSortedMonthlyUsecase, loadCategorieBookingsUseCase);
     });
 
     Booking tBooking = Booking(

@@ -12,10 +12,12 @@ import '../page_arguments/edit_budget_page_arguments.dart';
 
 class BudgetCard extends StatelessWidget {
   final Budget budget;
+  final DateTime selectedDate;
 
   const BudgetCard({
     super.key,
     required this.budget,
+    required this.selectedDate,
   });
 
   void _openBudgetBottomSheet(BuildContext context) {
@@ -79,6 +81,17 @@ class BudgetCard extends StatelessWidget {
     );
   }
 
+  String _calculateBudgetPerDay() {
+    int remainingDaysOfMonth = 0;
+    if (selectedDate.month == DateTime.now().month && selectedDate.year == DateTime.now().year) {
+      int lastDayOfMonth = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
+      remainingDaysOfMonth = lastDayOfMonth - selectedDate.day + 1;
+    } else {
+      remainingDaysOfMonth = selectedDate.day + 1;
+    }
+    return formatToMoneyAmount((budget.remaining / remainingDaysOfMonth).toString());
+  }
+
   Color _getBudgetColor() {
     if (budget.percentage <= 75.0) {
       return Colors.green.withOpacity(0.9);
@@ -136,6 +149,12 @@ class BudgetCard extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   curve: Curves.linearToEaseOut,
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(budget.percentage < 100.0
+                    ? 'Du kannst noch ${_calculateBudgetPerDay()} pro Tag ausgeben.'
+                    : 'Du hast dein Budgetlimit erreicht.'),
               ),
             ],
           ),

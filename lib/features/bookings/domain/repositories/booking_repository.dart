@@ -4,7 +4,6 @@ import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 
 abstract class BookingRepository {
   Future<Either<Failure, void>> create(Booking booking);
-  Future<Either<Failure, void>> createSerie(Booking booking);
   Future<Either<Failure, void>> edit(Booking booking);
   Future<Either<Failure, void>> delete(int id);
   Future<Either<Failure, Booking>> load(int id);

@@ -1,3 +1,4 @@
+const introductionRoute = 'introduction';
 const bottomNavBarRoute = 'bottomNavBar';
 const bookingListRoute = 'bookingList';
 const accountListRoute = 'accountList';

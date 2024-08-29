@@ -23,4 +23,13 @@ class SharedRepositoryImpl implements SharedRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> createStartDbValues() async {
+    try {
+      return Right(await sharedLocalDataSource.createStartDbValues());
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

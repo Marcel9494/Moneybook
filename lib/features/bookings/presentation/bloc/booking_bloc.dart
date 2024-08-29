@@ -6,11 +6,10 @@ import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_a
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
-import '../../../categories/domain/entities/categorie.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/create.dart';
-import '../../domain/usecases/createSerie.dart';
 import '../../domain/usecases/delete.dart';
+import '../../domain/usecases/edit.dart';
 import '../../domain/usecases/load_categorie_bookings.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
 
@@ -24,14 +23,12 @@ const String LOAD_BOOKINGS_FAILURE = 'Buchungen konnten nicht geladen werden.';
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final Create createUseCase;
-  final CreateSerie createSerieUseCase;
-  final Create editUseCase; // TODO von Create auf Edit ändern
+  final Edit editUseCase;
   final Delete deleteUseCase;
   final LoadSortedMonthly loadSortedMonthlyUseCase;
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
 
-  BookingBloc(this.createUseCase, this.createSerieUseCase, this.editUseCase, this.deleteUseCase, this.loadSortedMonthlyUseCase,
-      this.loadCategorieBookingsUseCase)
+  BookingBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadSortedMonthlyUseCase, this.loadCategorieBookingsUseCase)
       : super(Initial()) {
     on<BookingEvent>((event, emit) async {
       if (event is CreateBooking) {
