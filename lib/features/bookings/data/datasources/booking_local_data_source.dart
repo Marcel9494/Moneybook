@@ -15,6 +15,7 @@ abstract class BookingLocalDataSource {
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
+  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie);
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -124,5 +125,11 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         )
         .toList();
     return categorieBookingList;
+  }
+
+  @override
+  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie) async {
+    db = await openDatabase(localDbName);
+    await db.rawUpdate('UPDATE $bookingDbName SET categorie = ? WHERE categorie = ?', [newCategorie, oldCategorie]);
   }
 }

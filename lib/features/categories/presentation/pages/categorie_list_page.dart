@@ -13,6 +13,7 @@ import '../../../../core/consts/route_consts.dart';
 import '../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../domain/entities/categorie.dart';
 import '../../domain/value_objects/categorie_type.dart';
 import '../bloc/categorie_bloc.dart';
@@ -35,6 +36,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   final RoundedLoadingButtonController _categorieBtnController = RoundedLoadingButtonController();
   CategorieType _selectedCategorieType = CategorieType.expense;
   List<bool> _selectedCategorieValue = [true, false, false];
+  String _oldCategorieName = '';
 
   @override
   void initState() {
@@ -142,6 +144,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   void _showEditCategorieBottomSheet(Categorie categorie) {
     _setSelectedCategorie(categorie.type);
     _titleController.text = categorie.name;
+    _oldCategorieName = categorie.name;
     showCupertinoModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -221,6 +224,12 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
               type: _selectedCategorieType,
               name: _titleController.text,
             ),
+          ),
+        );
+        BlocProvider.of<booking.BookingBloc>(context).add(
+          booking.UpdateBookingsWithCategorie(
+            _oldCategorieName,
+            _titleController.text,
           ),
         );
       });

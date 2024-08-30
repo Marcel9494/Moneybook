@@ -59,3 +59,13 @@ class LoadCategorieBookings extends BookingEvent {
   @override
   List<Object?> get props => [categorie];
 }
+
+class UpdateBookingsWithCategorie extends BookingEvent {
+  final String oldCategorie;
+  final String newCategorie;
+
+  const UpdateBookingsWithCategorie(this.oldCategorie, this.newCategorie);
+
+  @override
+  List<Object?> get props => [oldCategorie, newCategorie];
+}
