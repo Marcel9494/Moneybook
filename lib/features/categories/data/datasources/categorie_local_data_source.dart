@@ -26,6 +26,22 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   }
 
   @override
+  Future<void> edit(Categorie categorie) async {
+    db = await openDatabase(localDbName);
+    try {
+      await db.rawUpdate('UPDATE $categorieDbName SET id = ?, type = ?, name = ? WHERE id = ?', [
+        categorie.id,
+        categorie.type.name,
+        categorie.name,
+        categorie.id,
+      ]);
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
+  }
+
+  @override
   Future<void> delete(int id) async {
     db = await openDatabase(localDbName);
     await db.rawDelete('DELETE FROM $categorieDbName WHERE id = ?', [id]);
@@ -78,21 +94,5 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
         )
         .toList();
     return categorieList;
-  }
-
-  @override
-  Future<void> edit(Categorie categorie) async {
-    db = await openDatabase(localDbName);
-    try {
-      await db.rawUpdate('UPDATE $categorieDbName SET id = ?, type = ?, name = ? WHERE id = ?', [
-        categorie.id,
-        categorie.type.name,
-        categorie.name,
-        categorie.id,
-      ]);
-    } catch (e) {
-      // TODO Fehler richtig behandeln
-      print('Error: $e');
-    }
   }
 }
