@@ -10,4 +10,5 @@ abstract class BookingRepository {
   Future<Either<Failure, List<Booking>>> loadSortedMonthly(DateTime selectedDate);
   Future<Either<Failure, List<Booking>>> loadCategorieBookings(String categorie);
   Future<Either<Failure, void>> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie);
+  Future<Either<Failure, void>> updateAllBookingsWithAccount(String oldAccount, String newAccount);
 }

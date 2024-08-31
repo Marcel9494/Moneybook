@@ -75,4 +75,13 @@ class BookingRepositoryImpl implements BookingRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateAllBookingsWithAccount(String oldAccount, String newAccount) async {
+    try {
+      return Right(await bookingLocalDataSource.updateAllBookingsWithAccount(oldAccount, newAccount));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

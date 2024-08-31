@@ -15,6 +15,7 @@ import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../../bookings/domain/value_objects/amount.dart';
+import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../domain/value_objects/account_type.dart';
 import '../bloc/account_bloc.dart';
 
@@ -37,11 +38,13 @@ class _EditAccountPageState extends State<EditAccountPage> {
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _editAccountBtnController = RoundedLoadingButtonController();
   late AccountType _accountType;
+  String _oldAccountName = '';
 
   @override
   void initState() {
     super.initState();
     _initializeAccount();
+    _oldAccountName = widget.account.name;
   }
 
   void _initializeAccount() {
@@ -70,6 +73,12 @@ class _EditAccountPageState extends State<EditAccountPage> {
               amount: Amount.getValue(_amountController.text),
               currency: Amount.getCurrency(_amountController.text),
             ),
+          ),
+        );
+        BlocProvider.of<booking.BookingBloc>(context).add(
+          booking.UpdateBookingsWithAccount(
+            _oldAccountName,
+            _nameController.text,
           ),
         );
       });

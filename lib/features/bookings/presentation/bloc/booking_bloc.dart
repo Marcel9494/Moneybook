@@ -12,6 +12,7 @@ import '../../domain/usecases/delete.dart';
 import '../../domain/usecases/edit.dart';
 import '../../domain/usecases/load_categorie_bookings.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
+import '../../domain/usecases/update_all_bookings_with_account.dart';
 import '../../domain/usecases/update_all_bookings_with_categorie.dart';
 
 part 'booking_event.dart';
@@ -30,9 +31,10 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final LoadSortedMonthly loadSortedMonthlyUseCase;
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
   final UpdateAllBookingsWithCategorie updateAllBookingsWithCategorieUseCase;
+  final UpdateAllBookingsWithAccount updateAllBookingsWithAccountUseCase;
 
   BookingBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadSortedMonthlyUseCase, this.loadCategorieBookingsUseCase,
-      this.updateAllBookingsWithCategorieUseCase)
+      this.updateAllBookingsWithCategorieUseCase, this.updateAllBookingsWithAccountUseCase)
       : super(Initial()) {
     on<BookingEvent>((event, emit) async {
       if (event is CreateBooking) {
@@ -148,6 +150,12 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       } else if (event is UpdateBookingsWithCategorie) {
         final updateAllBookingsEither =
             await updateAllBookingsWithCategorieUseCase.bookingRepository.updateAllBookingsWithCategorie(event.oldCategorie, event.newCategorie);
+        updateAllBookingsEither.fold((failure) {
+          emit(const Error(message: UPDATE_ALL_BOOKINGS_FAILURE));
+        }, (_) {});
+      } else if (event is UpdateBookingsWithAccount) {
+        final updateAllBookingsEither =
+            await updateAllBookingsWithAccountUseCase.bookingRepository.updateAllBookingsWithAccount(event.oldAccount, event.newAccount);
         updateAllBookingsEither.fold((failure) {
           emit(const Error(message: UPDATE_ALL_BOOKINGS_FAILURE));
         }, (_) {});
