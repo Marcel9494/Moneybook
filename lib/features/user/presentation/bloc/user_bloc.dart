@@ -31,7 +31,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         checkFirstStartEither.fold((failure) {
           // TODO emit(const Error(message: CREATE_USER_FAILURE));
         }, (isFirstStart) {
-          print("Erster Start $isFirstStart");
           if (isFirstStart == false) {
             Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
           }

@@ -16,6 +16,7 @@ abstract class BookingLocalDataSource {
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie);
+  Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -130,6 +131,14 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie) async {
     db = await openDatabase(localDbName);
+    // TODO hier weitermachen und auf Ausgabe, Einnahme oder Investitionskategorie noch zusätzlich prüfen
     await db.rawUpdate('UPDATE $bookingDbName SET categorie = ? WHERE categorie = ?', [newCategorie, oldCategorie]);
+  }
+
+  @override
+  Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount) async {
+    db = await openDatabase(localDbName);
+    await db.rawUpdate('UPDATE $bookingDbName SET fromAccount = ? WHERE fromAccount = ?', [newAccount, oldAccount]);
+    await db.rawUpdate('UPDATE $bookingDbName SET toAccount = ? WHERE toAccount = ?', [newAccount, oldAccount]);
   }
 }
