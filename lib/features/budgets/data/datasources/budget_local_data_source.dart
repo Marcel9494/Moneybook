@@ -118,7 +118,6 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
   @override
   Future<void> updateAllBudgetsWithCategorie(String oldCategorie, String newCategorie) async {
     db = await openDatabase(localDbName);
-    // TODO hier weitermachen und auf Ausgabe, Einnahme oder Investitionskategorie noch zusätzlich prüfen
     await db.rawUpdate('UPDATE $budgetDbName SET categorie = ? WHERE categorie = ?', [newCategorie, oldCategorie]);
   }
 }

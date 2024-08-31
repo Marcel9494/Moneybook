@@ -4,6 +4,7 @@ import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
+import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
 import '../datasources/booking_local_data_source.dart';
 
@@ -68,9 +69,9 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie) async {
+  Future<Either<Failure, void>> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType) async {
     try {
-      return Right(await bookingLocalDataSource.updateAllBookingsWithCategorie(oldCategorie, newCategorie));
+      return Right(await bookingLocalDataSource.updateAllBookingsWithCategorie(oldCategorie, newCategorie, categorieType));
     } on ServerException {
       return Left(ServerFailure());
     }

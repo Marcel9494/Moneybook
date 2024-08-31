@@ -6,6 +6,7 @@ import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_a
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';
@@ -148,8 +149,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           emit(Loaded(bookings: bookings));
         });
       } else if (event is UpdateBookingsWithCategorie) {
-        final updateAllBookingsEither =
-            await updateAllBookingsWithCategorieUseCase.bookingRepository.updateAllBookingsWithCategorie(event.oldCategorie, event.newCategorie);
+        final updateAllBookingsEither = await updateAllBookingsWithCategorieUseCase.bookingRepository
+            .updateAllBookingsWithCategorie(event.oldCategorie, event.newCategorie, event.categorieType);
         updateAllBookingsEither.fold((failure) {
           emit(const Error(message: UPDATE_ALL_BOOKINGS_FAILURE));
         }, (_) {});

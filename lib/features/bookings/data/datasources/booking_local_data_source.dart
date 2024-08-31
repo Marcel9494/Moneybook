@@ -3,6 +3,7 @@ import 'package:moneybook/core/consts/database_consts.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../core/utils/date_formatter.dart';
+import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../../domain/value_objects/repetition_type.dart';
@@ -15,7 +16,7 @@ abstract class BookingLocalDataSource {
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
-  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie);
+  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
 }
 
@@ -44,6 +45,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> edit(Booking booking) async {
     db = await openDatabase(localDbName);
+    print(booking.type.name);
     try {
       await db.rawUpdate(
           'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ? WHERE id = ?',
@@ -129,10 +131,10 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie) async {
+  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType) async {
     db = await openDatabase(localDbName);
-    // TODO hier weitermachen und auf Ausgabe, Einnahme oder Investitionskategorie noch zusätzlich prüfen
-    await db.rawUpdate('UPDATE $bookingDbName SET categorie = ? WHERE categorie = ?', [newCategorie, oldCategorie]);
+    await db.rawUpdate(
+        'UPDATE $bookingDbName SET categorie = ? WHERE categorie = ? AND type = ?', [newCategorie, oldCategorie, categorieType.name.trim()]);
   }
 
   @override
