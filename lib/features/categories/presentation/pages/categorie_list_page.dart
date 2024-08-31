@@ -173,9 +173,6 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                     return ChoiceChip(
                                       label: Text(CategorieType.values[index].name),
                                       selected: _selectedCategorieValue[index],
-                                      onSelected: (_) => setModalBottomState(() {
-                                        _changeCategorieType(index);
-                                      }),
                                     );
                                   },
                                 ).toList(),
@@ -223,7 +220,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             Categorie(
               id: categorie.id,
               type: _selectedCategorieType,
-              name: _titleController.text,
+              name: _titleController.text.trim(),
             ),
           ),
         );
@@ -237,6 +234,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
           booking.UpdateBookingsWithCategorie(
             _oldCategorieName,
             _titleController.text,
+            _selectedCategorieType,
           ),
         );
       });
