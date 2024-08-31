@@ -14,6 +14,7 @@ import '../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
+import '../../../budgets/presentation/bloc/budget_bloc.dart' as budget;
 import '../../domain/entities/categorie.dart';
 import '../../domain/value_objects/categorie_type.dart';
 import '../bloc/categorie_bloc.dart';
@@ -224,6 +225,12 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
               type: _selectedCategorieType,
               name: _titleController.text,
             ),
+          ),
+        );
+        BlocProvider.of<budget.BudgetBloc>(context).add(
+          budget.UpdateBudgetsWithCategorie(
+            _oldCategorieName,
+            _titleController.text,
           ),
         );
         BlocProvider.of<booking.BookingBloc>(context).add(

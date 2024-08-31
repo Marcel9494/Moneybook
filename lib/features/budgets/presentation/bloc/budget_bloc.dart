@@ -13,6 +13,7 @@ import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';
 import '../../domain/usecases/edit.dart';
 import '../../domain/usecases/load_monthly.dart';
+import '../../domain/usecases/update_all_budgets_with_categorie.dart';
 
 part 'budget_event.dart';
 part 'budget_state.dart';
@@ -21,14 +22,17 @@ const String CREATE_BUDGET_FAILURE = 'Budget konnte nicht erstellt werden.';
 const String EDIT_BUDGET_FAILURE = 'Budget konnte nicht bearbeitet werden.';
 const String DELETE_BUDGET_FAILURE = 'Budget konnte nicht gelöscht werden.';
 const String LOAD_BUDGETS_FAILURE = 'Budgets konnten nicht geladen werden.';
+const String UPDATE_ALL_BUDGETS_FAILURE = 'Budgets konnten nicht aktualisiert werden.';
 
 class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
   final Create createUseCase;
   final Edit editUseCase;
   final Delete deleteUseCase;
   final LoadMonthly loadMonthlyUseCase;
+  final UpdateAllBudgetsWithCategorie updateAllBudgetsWithCategorieUseCase;
 
-  BudgetBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadMonthlyUseCase) : super(Initial()) {
+  BudgetBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadMonthlyUseCase, this.updateAllBudgetsWithCategorieUseCase)
+      : super(Initial()) {
     on<BudgetEvent>((event, emit) async {
       if (event is CreateBudget) {
         var createBudgetEither = await createUseCase.budgetRepository.create(event.budget);
@@ -67,6 +71,12 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           Navigator.pop(event.context);
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
         });
+      } else if (event is UpdateBudgetsWithCategorie) {
+        final updateAllBudgetsEither =
+            await updateAllBudgetsWithCategorieUseCase.budgetRepository.updateAllBudgetsWithCategorie(event.oldCategorie, event.newCategorie);
+        updateAllBudgetsEither.fold((failure) {
+          emit(const Error(message: UPDATE_ALL_BUDGETS_FAILURE));
+        }, (_) {});
       }
     });
   }

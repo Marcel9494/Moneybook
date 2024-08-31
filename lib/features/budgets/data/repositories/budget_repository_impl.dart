@@ -62,4 +62,13 @@ class BudgetRepositoryImpl implements BudgetRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateAllBudgetsWithCategorie(String oldCategorie, String newCategorie) async {
+    try {
+      return Right(await budgetLocalDataSource.updateAllBudgetsWithCategorie(oldCategorie, newCategorie));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

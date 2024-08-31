@@ -11,4 +11,5 @@ abstract class BudgetRepository {
   Future<Either<Failure, void>> delete(Budget budget, SerieModeType serieMode);
   Future<Either<Failure, Budget>> load(Budget budget);
   Future<Either<Failure, List<BudgetModel>>> loadMonthly(DateTime selectedDate);
+  Future<Either<Failure, void>> updateAllBudgetsWithCategorie(String oldCategorie, String newCategorie);
 }

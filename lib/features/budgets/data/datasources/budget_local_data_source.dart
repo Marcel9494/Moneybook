@@ -12,6 +12,7 @@ abstract class BudgetLocalDataSource {
   Future<void> delete(Budget budget, SerieModeType serieMode);
   Future<BudgetModel> load(Budget budget);
   Future<List<BudgetModel>> loadMonthly(DateTime selectedDate);
+  Future<void> updateAllBudgetsWithCategorie(String oldCategorie, String newCategorie);
 }
 
 class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
@@ -112,5 +113,12 @@ class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
         .toList();
     budgetList.sort((first, second) => second.percentage.compareTo(first.percentage));
     return budgetList;
+  }
+
+  @override
+  Future<void> updateAllBudgetsWithCategorie(String oldCategorie, String newCategorie) async {
+    db = await openDatabase(localDbName);
+    // TODO hier weitermachen und auf Ausgabe, Einnahme oder Investitionskategorie noch zusätzlich prüfen
+    await db.rawUpdate('UPDATE $budgetDbName SET categorie = ? WHERE categorie = ?', [newCategorie, oldCategorie]);
   }
 }

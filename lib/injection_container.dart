@@ -41,6 +41,7 @@ import 'features/budgets/data/datasources/budget_remote_data_source.dart';
 import 'features/budgets/data/repositories/budget_repository_impl.dart';
 import 'features/budgets/domain/repositories/budget_repository.dart';
 import 'features/budgets/domain/usecases/load_monthly.dart';
+import 'features/budgets/domain/usecases/update_all_budgets_with_categorie.dart';
 import 'features/budgets/presentation/bloc/budget_bloc.dart';
 import 'features/categories/data/datasources/categorie_local_data_source.dart';
 import 'features/categories/data/datasources/categorie_remote_data_source.dart';
@@ -66,7 +67,7 @@ void init() {
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
-  sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => UserBloc(sl(), sl()));
   // Use Cases
   // Shared
@@ -100,6 +101,7 @@ void init() {
   sl.registerLazySingleton(() => edit_budget.Edit(sl()));
   sl.registerLazySingleton(() => delete_budget.Delete(sl()));
   sl.registerLazySingleton(() => LoadMonthly(sl(), sl()));
+  sl.registerLazySingleton(() => UpdateAllBudgetsWithCategorie(sl()));
 
   // User
   sl.registerLazySingleton(() => create_user.Create(sl()));
