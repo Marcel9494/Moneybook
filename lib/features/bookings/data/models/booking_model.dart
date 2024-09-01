@@ -12,5 +12,6 @@ class BookingModel extends Booking {
     required super.fromAccount,
     required super.toAccount,
     required super.categorie,
+    required super.isBooked,
   });
 }

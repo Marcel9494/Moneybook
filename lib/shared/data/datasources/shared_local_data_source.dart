@@ -26,7 +26,8 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
             currency TEXT NOT NULL,
             fromAccount TEXT NOT NULL,
             toAccount TEXT NOT NULL,
-            categorie TEXT NOT NULL
+            categorie TEXT NOT NULL,
+            isBooked INTEGER NOT NULL
           )
           ''');
       await db.execute('''

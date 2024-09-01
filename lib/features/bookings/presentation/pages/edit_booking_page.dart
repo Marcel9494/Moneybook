@@ -81,6 +81,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       fromAccount: widget.booking.fromAccount,
       toAccount: widget.booking.toAccount,
       categorie: widget.booking.categorie,
+      isBooked: widget.booking.isBooked,
     );
   }
 
@@ -104,6 +105,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
         fromAccount: _fromAccountController.text,
         toAccount: _toAccountController.text,
         categorie: _categorieController.text,
+        isBooked: DateTime.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
       );
       Timer(const Duration(milliseconds: durationInMs), () async {
         BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking, context));

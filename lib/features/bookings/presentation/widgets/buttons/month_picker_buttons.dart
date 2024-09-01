@@ -20,14 +20,14 @@ class MonthPickerButtons extends StatefulWidget {
 class _MonthPickerButtonsState extends State<MonthPickerButtons> {
   void _previousMonth() {
     setState(() {
-      widget.selectedDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - 1, widget.selectedDate.day);
+      widget.selectedDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - 1, 1);
       widget.selectedDateCallback(widget.selectedDate);
     });
   }
 
   void _nextMonth() {
     setState(() {
-      widget.selectedDate = DateTime(widget.selectedDate.year, widget.selectedDate.month + 1, widget.selectedDate.day);
+      widget.selectedDate = DateTime(widget.selectedDate.year, widget.selectedDate.month + 1, 1);
       widget.selectedDateCallback(widget.selectedDate);
     });
   }

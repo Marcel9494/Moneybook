@@ -8,6 +8,7 @@ import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/usecases/check_for_new_bookings.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';
 import '../../domain/usecases/edit.dart';
@@ -24,6 +25,7 @@ const String EDIT_BOOKING_FAILURE = 'Buchung konnte nicht bearbeitet werden.';
 const String DELETE_BOOKING_FAILURE = 'Buchung konnte nicht gelöscht werden.';
 const String LOAD_BOOKINGS_FAILURE = 'Buchungen konnten nicht geladen werden.';
 const String UPDATE_ALL_BOOKINGS_FAILURE = 'Buchungen konnten nicht aktualisiert werden.';
+const String NEW_BOOKINGS_FAILURE = 'Neue Buchungen konnten nicht abgefragt/aktualisiert werden.';
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final Create createUseCase;
@@ -33,9 +35,10 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
   final UpdateAllBookingsWithCategorie updateAllBookingsWithCategorieUseCase;
   final UpdateAllBookingsWithAccount updateAllBookingsWithAccountUseCase;
+  final CheckForNewBookings checkNewBookingsUseCase;
 
   BookingBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadSortedMonthlyUseCase, this.loadCategorieBookingsUseCase,
-      this.updateAllBookingsWithCategorieUseCase, this.updateAllBookingsWithAccountUseCase)
+      this.updateAllBookingsWithCategorieUseCase, this.updateAllBookingsWithAccountUseCase, this.checkNewBookingsUseCase)
       : super(Initial()) {
     on<BookingEvent>((event, emit) async {
       if (event is CreateBooking) {
@@ -159,6 +162,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
             await updateAllBookingsWithAccountUseCase.bookingRepository.updateAllBookingsWithAccount(event.oldAccount, event.newAccount);
         updateAllBookingsEither.fold((failure) {
           emit(const Error(message: UPDATE_ALL_BOOKINGS_FAILURE));
+        }, (_) {});
+      } else if (event is CheckNewBookings) {
+        final checkNewBookingsEither = await checkNewBookingsUseCase.bookingRepository.checkForNewBookings();
+        checkNewBookingsEither.fold((failure) {
+          emit(const Error(message: NEW_BOOKINGS_FAILURE));
         }, (_) {});
       }
     });
