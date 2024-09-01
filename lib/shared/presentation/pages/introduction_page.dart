@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 import '../../../core/consts/route_consts.dart';
+import '../../../features/bookings/presentation/bloc/booking_bloc.dart';
 import '../../../features/user/domain/entities/user.dart';
 import '../../../features/user/presentation/bloc/user_bloc.dart';
 import '../bloc/shared_bloc.dart';
@@ -32,9 +33,24 @@ class _IntroductionPageState extends State<IntroductionPage> {
     Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
   }
 
+  void _calculateNewBookings() {
+    // TODO Funktion implementieren die alle Buchungen mit isBooked = false & date <= DateTime.now() zurückgibt (z.B. loadNewBookings)
+    // TODO Anschließend neuen Kontostand berechnen siehe: create_booking_page.dart mit Serienbuchungen
+    // TODO ebenfalls mit BlocConsumer arbeiten.
+    /*if (_bookingType == BookingType.expense) {
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
+    } else if (_bookingType == BookingType.income) {
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
+    } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, false));
+    }*/
+  }
+
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
+    _calculateNewBookings();
+    BlocProvider.of<BookingBloc>(context).add(const CheckNewBookings());
     BlocProvider.of<UserBloc>(context).add(CheckFirstStart(context: context));
     return IntroductionScreen(
       pages: [

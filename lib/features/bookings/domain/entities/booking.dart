@@ -14,6 +14,7 @@ class Booking extends Equatable {
   final String fromAccount;
   final String toAccount;
   final String categorie;
+  final bool isBooked;
 
   const Booking({
     required this.id,
@@ -26,6 +27,7 @@ class Booking extends Equatable {
     required this.fromAccount,
     required this.toAccount,
     required this.categorie,
+    required this.isBooked,
   });
 
   Booking copyWith(
@@ -38,7 +40,8 @@ class Booking extends Equatable {
       String? currency,
       String? fromAccount,
       String? toAccount,
-      String? categorie}) {
+      String? categorie,
+      bool? isBooked}) {
     return Booking(
       id: id ?? this.id,
       type: type ?? this.type,
@@ -50,9 +53,10 @@ class Booking extends Equatable {
       fromAccount: fromAccount ?? this.fromAccount,
       toAccount: toAccount ?? this.toAccount,
       categorie: categorie ?? this.categorie,
+      isBooked: isBooked ?? this.isBooked,
     );
   }
 
   @override
-  List<Object> get props => [id, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie];
+  List<Object> get props => [id, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked];
 }

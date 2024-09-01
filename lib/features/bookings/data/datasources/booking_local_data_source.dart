@@ -18,6 +18,7 @@ abstract class BookingLocalDataSource {
   Future<List<Booking>> loadCategorieBookings(String categorie);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
+  Future<void> checkForNewBookings();
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -27,7 +28,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   Future<void> create(Booking booking) async {
     db = await openDatabase(localDbName);
     await db.rawInsert(
-      'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         booking.type.name,
         booking.title,
@@ -38,6 +39,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         booking.fromAccount,
         booking.toAccount,
         booking.categorie,
+        booking.isBooked,
       ],
     );
   }
@@ -48,7 +50,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     print(booking.type.name);
     try {
       await db.rawUpdate(
-          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ? WHERE id = ?',
+          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
           [
             booking.id,
             booking.type.name,
@@ -60,7 +62,8 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             booking.fromAccount,
             booking.toAccount,
             booking.categorie,
-            booking.id
+            booking.isBooked,
+            booking.id,
           ]);
     } catch (e) {
       // TODO Fehler richtig behandeln
@@ -100,6 +103,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],
             categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
           ),
         )
         .toList();
@@ -124,6 +128,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],
             categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
           ),
         )
         .toList();
@@ -142,5 +147,11 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     db = await openDatabase(localDbName);
     await db.rawUpdate('UPDATE $bookingDbName SET fromAccount = ? WHERE fromAccount = ?', [newAccount, oldAccount]);
     await db.rawUpdate('UPDATE $bookingDbName SET toAccount = ? WHERE toAccount = ?', [newAccount, oldAccount]);
+  }
+
+  @override
+  Future<void> checkForNewBookings() async {
+    db = await openDatabase(localDbName);
+    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [true, DateTime.now()]);
   }
 }

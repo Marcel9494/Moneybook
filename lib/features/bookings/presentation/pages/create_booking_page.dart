@@ -69,6 +69,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         fromAccount: _fromAccountController.text,
         toAccount: _toAccountController.text,
         categorie: _categorieController.text,
+        isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
       );
       Timer(const Duration(milliseconds: durationInMs), () {
         if (newBooking.repetition == RepetitionType.noRepetition) {

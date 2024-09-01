@@ -80,3 +80,10 @@ class UpdateBookingsWithAccount extends BookingEvent {
   @override
   List<Object?> get props => [oldAccount, newAccount];
 }
+
+class CheckNewBookings extends BookingEvent {
+  const CheckNewBookings();
+
+  @override
+  List<Object?> get props => [];
+}
