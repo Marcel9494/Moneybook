@@ -16,6 +16,7 @@ abstract class BookingLocalDataSource {
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
+  Future<List<Booking>> loadNewBookings();
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
   Future<void> checkForNewBookings();
@@ -152,6 +153,31 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> checkForNewBookings() async {
     db = await openDatabase(localDbName);
-    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [true, DateTime.now()]);
+    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [true, DateTime.now().toIso8601String()]);
+  }
+
+  @override
+  Future<List<Booking>> loadNewBookings() async {
+    db = await openDatabase(localDbName);
+    List<Map> newBookingMap =
+        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [false, DateTime.now().toIso8601String()]);
+    List<Booking> newBookingList = newBookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+    return newBookingList;
   }
 }

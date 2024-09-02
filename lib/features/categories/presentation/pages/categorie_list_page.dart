@@ -388,7 +388,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {
-                      return const Center(child: CircularProgressIndicator(color: Colors.cyanAccent));
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
                       if (state.expenseCategories.isEmpty) {
                         return Column(
@@ -457,7 +457,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {
-                      return const Center(child: CircularProgressIndicator(color: Colors.cyanAccent));
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
                       if (state.incomeCategories.isEmpty) {
                         return Column(
@@ -526,7 +526,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {
-                      return const Center(child: CircularProgressIndicator(color: Colors.cyanAccent));
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
                       if (state.investmentCategories.isEmpty) {
                         return Column(

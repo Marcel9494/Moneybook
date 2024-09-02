@@ -36,6 +36,7 @@ import 'features/accounts/domain/usecases/load_all_categories.dart' as load_all_
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'features/bookings/domain/usecases/load_categorie_bookings.dart';
+import 'features/bookings/domain/usecases/load_new_bookings.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_with_account.dart';
 import 'features/budgets/data/datasources/budget_local_data_source.dart';
 import 'features/budgets/data/datasources/budget_remote_data_source.dart';
@@ -64,7 +65,7 @@ void init() {
   // Features
   // Bloc
   sl.registerFactory(() => SharedBloc(sl(), sl()));
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
@@ -81,6 +82,7 @@ void init() {
   sl.registerLazySingleton(() => delete_booking.Delete(sl()));
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
   sl.registerLazySingleton(() => LoadAllCategorieBookings(sl()));
+  sl.registerLazySingleton(() => LoadNewBookings(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithCategorie(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithAccount(sl()));
   sl.registerLazySingleton(() => CheckForNewBookings(sl()));

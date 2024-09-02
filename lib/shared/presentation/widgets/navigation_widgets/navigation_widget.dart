@@ -333,11 +333,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
             const Divider(),
             ListTile(
               leading: Icon(
-                Icons.share_rounded,
+                Icons.settings_rounded,
                 color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
               ),
               title: Text(
-                'Folge Moneybook',
+                'Einstellungen',
                 style: TextStyle(color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
               ),
               trailing: Icon(
@@ -346,62 +346,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               ),
               selected: _tabIndex == 5,
               onTap: () {
-                // TODO richtige URL einfügen, wenn Instagram Seite live ist
-                _launchInstagramAppIfInstalled(url: 'https://www.instagram.com/TODO/');
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.info_outline_rounded,
-                color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Über die App',
-                style: TextStyle(color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 6,
-              onTap: () {
-                // TODO
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.security_rounded,
-                color: _tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Impressum',
-                style: TextStyle(color: _tabIndex == 7 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 7,
-              onTap: () {
-                // TODO
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.gpp_good_outlined,
-                color: _tabIndex == 8 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Datenschutzerklärung',
-                style: TextStyle(color: _tabIndex == 8 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 8 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 8,
-              onTap: () {
-                // TODO
+                Navigator.pushNamed(context, settingsRoute);
               },
             ),
           ],

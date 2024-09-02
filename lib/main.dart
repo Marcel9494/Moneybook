@@ -9,6 +9,7 @@ import 'package:moneybook/features/bookings/presentation/pages/booking_list_page
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
 import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
+import 'package:moneybook/features/settings/presentation/pages/settings_page.dart';
 import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 import 'package:moneybook/shared/presentation/pages/introduction_page.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
@@ -60,21 +61,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  void getStartPage(BuildContext context) {
-    BlocProvider.of<SharedBloc>(context).add(DatabaseExists(context: context));
-    /*return BlocBuilder<SharedBloc, SharedState>(
-      builder: (context, state) {
-        if (state is Exists) {
-          if (state.exists) {
-            return const BottomNavBar(tabIndex: 0);
-          }
-          return const IntroductionPage();
-        }
-        return const SizedBox();
-      },
-    );*/
-  }
-
   const MyApp({super.key});
 
   @override
@@ -100,13 +86,13 @@ class MyApp extends StatelessWidget {
         Locale('de', 'DE'),
       ],
       home: const IntroductionPage(),
-      //home: const BottomNavBar(tabIndex: 0),
       routes: {
         accountListRoute: (context) => const AccountListPage(),
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
         createAccountRoute: (context) => const CreateAccountPage(),
         createBudgetRoute: (context) => const CreateBudgetPage(),
+        settingsRoute: (context) => const SettingsPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {

@@ -81,4 +81,7 @@ final darkTheme = ThemeData(
     labelColor: Colors.cyanAccent,
     indicatorColor: Colors.cyanAccent,
   ),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(
+    color: Colors.cyanAccent,
+  ),
 );

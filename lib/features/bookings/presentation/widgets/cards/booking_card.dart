@@ -19,9 +19,7 @@ class BookingCard extends StatelessWidget {
   });
 
   Color _getBookingTypeColor() {
-    if (booking.date.isAfter(DateTime.now())) {
-      return Colors.grey;
-    } else if (booking.type == BookingType.expense) {
+    if (booking.type == BookingType.expense) {
       return Colors.redAccent;
     } else if (booking.type == BookingType.income) {
       return Colors.greenAccent;

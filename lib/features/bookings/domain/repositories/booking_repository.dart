@@ -10,6 +10,7 @@ abstract class BookingRepository {
   Future<Either<Failure, Booking>> load(int id);
   Future<Either<Failure, List<Booking>>> loadSortedMonthly(DateTime selectedDate);
   Future<Either<Failure, List<Booking>>> loadCategorieBookings(String categorie);
+  Future<Either<Failure, List<Booking>>> loadNewBookings();
   Future<Either<Failure, void>> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<Either<Failure, void>> updateAllBookingsWithAccount(String oldAccount, String newAccount);
   Future<Either<Failure, void>> checkForNewBookings();
