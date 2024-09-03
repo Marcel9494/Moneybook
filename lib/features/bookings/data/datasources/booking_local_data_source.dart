@@ -153,14 +153,18 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> checkForNewBookings() async {
     db = await openDatabase(localDbName);
-    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [true, DateTime.now().toIso8601String()]);
+    DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
+    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [1/*= true*/, today.toIso8601String()]);
   }
 
   @override
   Future<List<Booking>> loadNewBookings() async {
     db = await openDatabase(localDbName);
+    DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
     List<Map> newBookingMap =
-        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [false, DateTime.now().toIso8601String()]);
+        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [0/*= false*/, today.toIso8601String()]);
     List<Booking> newBookingList = newBookingMap
         .map(
           (booking) => Booking(

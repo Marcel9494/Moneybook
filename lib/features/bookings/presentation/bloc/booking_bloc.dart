@@ -176,7 +176,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         loadNewBookingsEither.fold((failure) {
           emit(const Error(message: LOAD_NEW_BOOKINGS_FAILURE));
         }, (bookings) {
-          emit(Loaded(bookings: bookings));
+          emit(NewBookingsLoaded(bookings: bookings));
         });
       }
     });

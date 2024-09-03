@@ -48,7 +48,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
     BlocProvider.of<UserBloc>(context).add(CheckFirstStart(context: context));
     return BlocConsumer<booking.BookingBloc, booking.BookingState>(
       listener: (context, state) {
-        if (state is booking.Loaded) {
+        if (state is NewBookingsLoaded) {
           for (int i = 0; i < state.bookings.length; i++) {
             if (state.bookings[i].type == BookingType.expense) {
               BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[i]));
