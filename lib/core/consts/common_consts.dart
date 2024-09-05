@@ -1,3 +1,5 @@
+const bool adminMode = true;
+
 const int durationInMs = 800;
 const int animationDurationInMs = 650;
 const int budgetAnimationDurationInMs = 1600;

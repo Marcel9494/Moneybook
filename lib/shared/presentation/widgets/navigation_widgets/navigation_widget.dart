@@ -4,7 +4,7 @@ import 'package:moneybook/features/accounts/presentation/pages/account_list_page
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
 import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.dart';
 import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:moneybook/shared/presentation/widgets/navigation_widgets/side_menu_drawer_widget.dart';
 
 import '../../../../features/bookings/presentation/widgets/buttons/month_picker_buttons.dart';
 
@@ -47,6 +47,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       _tabIndex = index;
       _tabController.animateTo(index);
     });
+    Navigator.pop(context);
   }
 
   String _setTitle() {
@@ -63,18 +64,6 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         return 'Kategorien';
       default:
         return '';
-    }
-  }
-
-  Future<void> _launchInstagramAppIfInstalled({required String url}) async {
-    try {
-      // Launch the app if installed!
-      bool launched = await launchUrl(Uri.parse(url));
-      if (launched == false) {
-        launchUrl(Uri.parse(url)); // Launch web view if app is not installed!
-      }
-    } catch (e) {
-      launchUrl(Uri.parse(url)); // Launch web view if app is not installed!
     }
   }
 
@@ -229,128 +218,9 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               ),
             )
           : const SizedBox(),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              child: Text('Moneybook'),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.auto_stories_rounded,
-                color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Buchungen',
-                style: TextStyle(color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 0,
-              onTap: () {
-                _onTabChange(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.account_balance_wallet_rounded,
-                color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Konten',
-                style: TextStyle(color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 1,
-              onTap: () {
-                _onTabChange(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.insights_rounded,
-                color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Statistiken',
-                style: TextStyle(color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 2,
-              onTap: () {
-                _onTabChange(2);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.savings_rounded,
-                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Budgets',
-                style: TextStyle(color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 3,
-              onTap: () {
-                _onTabChange(3);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.donut_small,
-                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Kategorien',
-                style: TextStyle(color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 4,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.popAndPushNamed(context, categorieListRoute);
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.settings_rounded,
-                color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              title: Text(
-                'Einstellungen',
-                style: TextStyle(color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: _tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
-              ),
-              selected: _tabIndex == 5,
-              onTap: () {
-                Navigator.pushNamed(context, settingsRoute);
-              },
-            ),
-          ],
-        ),
+      drawer: SideMenuDrawer(
+        tabIndex: _tabIndex,
+        onTabChange: (tabIndex) => _onTabChange(tabIndex),
       ),
     );
   }
