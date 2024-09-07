@@ -9,3 +9,4 @@ const createAccountRoute = 'createAccount';
 const editAccountRoute = 'editAccount';
 const createBudgetRoute = 'createBudget';
 const editBudgetRoute = 'editBudget';
+const settingsRoute = 'settings';

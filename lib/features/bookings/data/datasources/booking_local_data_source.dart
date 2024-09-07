@@ -16,6 +16,7 @@ abstract class BookingLocalDataSource {
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
+  Future<List<Booking>> loadNewBookings();
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
   Future<void> checkForNewBookings();
@@ -47,7 +48,6 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> edit(Booking booking) async {
     db = await openDatabase(localDbName);
-    print(booking.type.name);
     try {
       await db.rawUpdate(
           'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
@@ -152,6 +152,35 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> checkForNewBookings() async {
     db = await openDatabase(localDbName);
-    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [true, DateTime.now()]);
+    DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
+    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [1/*= true*/, today.toIso8601String()]);
+  }
+
+  @override
+  Future<List<Booking>> loadNewBookings() async {
+    db = await openDatabase(localDbName);
+    DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
+    List<Map> newBookingMap =
+        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [0/*= false*/, today.toIso8601String()]);
+    List<Booking> newBookingList = newBookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+    return newBookingList;
   }
 }

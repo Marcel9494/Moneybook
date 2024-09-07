@@ -87,3 +87,10 @@ class CheckNewBookings extends BookingEvent {
   @override
   List<Object?> get props => [];
 }
+
+class LoadNewBookingsSinceLastStart extends BookingEvent {
+  const LoadNewBookingsSinceLastStart();
+
+  @override
+  List<Object?> get props => [];
+}

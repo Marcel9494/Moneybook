@@ -4,15 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import 'package:moneybook/shared/presentation/widgets/buttons/save_button.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../../../../shared/presentation/widgets/navigation_widgets/side_menu_drawer_widget.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../../budgets/presentation/bloc/budget_bloc.dart' as budget;
 import '../../domain/entities/categorie.dart';
@@ -31,19 +32,33 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   final GlobalKey<AnimatedListState> _incomeKey = GlobalKey();
   final GlobalKey<AnimatedListState> _investmentKey = GlobalKey();
   final GlobalKey<FormState> _categorieFormKey = GlobalKey<FormState>();
-  final int _drawerTabIndex = 2;
   late final TabController _tabController;
   final TextEditingController _titleController = TextEditingController();
   final RoundedLoadingButtonController _categorieBtnController = RoundedLoadingButtonController();
   CategorieType _selectedCategorieType = CategorieType.expense;
   List<bool> _selectedCategorieValue = [true, false, false];
   String _oldCategorieName = '';
+  int _tabIndex = 4;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: CategorieType.values.length, vsync: this);
     loadCategories(context);
+  }
+
+  void _onTabChange(int index) {
+    setState(() {
+      _tabIndex = index;
+    });
+    Navigator.pop(context);
+    if (_tabIndex <= 3) {
+      Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(_tabIndex));
+    } else if (_tabIndex == 4) {
+      Navigator.popAndPushNamed(context, categorieListRoute);
+    } else if (_tabIndex == 5) {
+      Navigator.popAndPushNamed(context, settingsRoute);
+    }
   }
 
   void loadCategories(BuildContext context) {
@@ -388,7 +403,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {
-                      return const Center(child: CircularProgressIndicator(color: Colors.cyanAccent));
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
                       if (state.expenseCategories.isEmpty) {
                         return Column(
@@ -457,7 +472,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {
-                      return const Center(child: CircularProgressIndicator(color: Colors.cyanAccent));
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
                       if (state.incomeCategories.isEmpty) {
                         return Column(
@@ -526,7 +541,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                 child: BlocBuilder<CategorieBloc, CategorieState>(
                   builder: (context, state) {
                     if (state is Loading) {
-                      return const Center(child: CircularProgressIndicator(color: Colors.cyanAccent));
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
                       if (state.investmentCategories.isEmpty) {
                         return Column(
@@ -583,69 +598,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             ],
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              const DrawerHeader(
-                child: Text('Moneybook'),
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.auto_stories_rounded,
-                  color: _drawerTabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
-                ),
-                title: Text(
-                  'Buchungen',
-                  style: TextStyle(color: _drawerTabIndex == 0 ? Colors.cyan.shade400 : Colors.white),
-                ),
-                trailing: Icon(
-                  Icons.keyboard_arrow_right_rounded,
-                  color: _drawerTabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.account_balance_wallet_rounded,
-                  color: _drawerTabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
-                ),
-                title: Text(
-                  'Konten',
-                  style: TextStyle(color: _drawerTabIndex == 1 ? Colors.cyan.shade400 : Colors.white),
-                ),
-                trailing: Icon(
-                  Icons.keyboard_arrow_right_rounded,
-                  color: _drawerTabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.donut_small,
-                  color: _drawerTabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
-                ),
-                title: Text(
-                  'Kategorien',
-                  style: TextStyle(color: _drawerTabIndex == 2 ? Colors.cyan.shade400 : Colors.white),
-                ),
-                trailing: Icon(
-                  Icons.keyboard_arrow_right_rounded,
-                  color: _drawerTabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
-                ),
-                selected: true,
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.popAndPushNamed(context, categorieListRoute);
-                },
-              ),
-            ],
-          ),
+        drawer: SideMenuDrawer(
+          tabIndex: _tabIndex,
+          onTabChange: (tabIndex) => _onTabChange(tabIndex),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _addCategorie(),

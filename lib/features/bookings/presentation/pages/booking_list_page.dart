@@ -172,9 +172,9 @@ class _BookingListPageState extends State<BookingListPage> {
                                   child: ExpansionTile(
                                     title: Text(
                                       '${formatToMoneyAmount(_monthlyUnpaid.toString())} Ausstehend',
-                                      style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 15.0 : 13.0),
+                                      style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 14.5 : 13.0),
                                     ),
-                                    iconColor: Colors.cyanAccent,
+                                    iconColor: _isExpanded ? Colors.white : Colors.grey,
                                     backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
                                     onExpansionChanged: (bool expanded) {
                                       setState(() {
