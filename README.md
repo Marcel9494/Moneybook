@@ -100,3 +100,16 @@ Weniger einzelne Datenbanktabellen abfragen. Kann später noch umgebaut werden.
 Animationen von Lottie: https://lottiefiles.com/de/ benutzen. Premium Abo für einen Monat abschließen, davor Animationen heraussuchen.
 
 Stichworte: finance, money
+
+# Data Analytics
+
+Daten und Benutzer mit Posthog: https://posthog.com/ analysieren und App dadurch optimieren.
+
+# Feedback Board
+
+Feedback Board mit Canny: https://canny.io/ einbinden um Benutzer Feedback einholen zu können und dadurch die App noch besser auf die Benutzerbedürfnisse auszurichten.
+Preise beachten! https://canny.io/pricing
+
+# Webseite / Landing Page
+
+Webseite / landing Page auf Hostinger: https://www.hostinger.de/?utm_campaign=Brand-Exact|NT:Se|LO:DE&utm_medium=ppc&gad_source=1&gclid=Cj0KCQjw8--2BhCHARIsAF_w1gxD3flMoBKNj4XWrJ7hCR8chwe1f3q9RzQ4q6ETrMNyoOGfOhqw83MaAgapEALw_wcB hosten.
