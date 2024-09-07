@@ -48,7 +48,6 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> edit(Booking booking) async {
     db = await openDatabase(localDbName);
-    print(booking.type.name);
     try {
       await db.rawUpdate(
           'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',

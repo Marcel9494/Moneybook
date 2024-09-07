@@ -39,7 +39,10 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
             ),
             selected: widget.tabIndex == 0,
-            onTap: () => widget.onTabChange(0),
+            onTap: () => {
+              Navigator.pop(context),
+              widget.onTabChange(0),
+            },
           ),
           ListTile(
             leading: Icon(
@@ -55,7 +58,10 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
             ),
             selected: widget.tabIndex == 1,
-            onTap: () => widget.onTabChange(1),
+            onTap: () => {
+              Navigator.pop(context),
+              widget.onTabChange(1),
+            },
           ),
           ListTile(
             leading: Icon(
@@ -71,7 +77,10 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
             ),
             selected: widget.tabIndex == 2,
-            onTap: () => widget.onTabChange(2),
+            onTap: () => {
+              Navigator.pop(context),
+              widget.onTabChange(2),
+            },
           ),
           ListTile(
             leading: Icon(
@@ -87,7 +96,10 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
             ),
             selected: widget.tabIndex == 3,
-            onTap: () => widget.onTabChange(3),
+            onTap: () => {
+              Navigator.pop(context),
+              widget.onTabChange(3),
+            },
           ),
           ListTile(
             leading: Icon(
@@ -104,7 +116,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
             ),
             selected: widget.tabIndex == 4,
             onTap: () {
-              Navigator.pop(context);
+              //Navigator.pop(context);
               Navigator.popAndPushNamed(context, categorieListRoute);
             },
           ),

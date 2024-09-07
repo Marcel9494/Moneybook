@@ -47,7 +47,6 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       _tabIndex = index;
       _tabController.animateTo(index);
     });
-    Navigator.pop(context);
   }
 
   String _setTitle() {

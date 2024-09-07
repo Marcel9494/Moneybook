@@ -47,31 +47,36 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
   @override
   Widget build(BuildContext context) {
     _calculateOverallBudgetValues();
-    return Padding(
-      padding: const EdgeInsets.only(top: 12.0),
-      child: CircularPercentIndicator(
-        radius: 60.0,
-        lineWidth: 10.0,
-        animation: true,
-        animationDuration: budgetAnimationDurationInMs,
-        curve: Curves.linearToEaseOut,
-        percent: _overallBudgetPercentage / 100 >= 1.0 ? 1.0 : _overallBudgetPercentage / 100,
-        center: Text(
-          '${_overallBudgetPercentage.toStringAsFixed(1).replaceAll('.', ',')} %',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-        ),
-        footer: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(
-            'Gesamt: ${_overallBudgetUsed.toStringAsFixed(2).replaceAll('.', ',')} € / ${_overallBudgetAmount.toStringAsFixed(2).replaceAll('.', ',')} €',
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16.0,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: CircularPercentIndicator(
+            radius: 60.0,
+            lineWidth: 10.0,
+            animation: true,
+            animationDuration: budgetAnimationDurationInMs,
+            curve: Curves.linearToEaseOut,
+            percent: _overallBudgetPercentage / 100 >= 1.0 ? 1.0 : _overallBudgetPercentage / 100,
+            center: Text(
+              '${_overallBudgetPercentage.toStringAsFixed(1).replaceAll('.', ',')} %',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
             ),
+            footer: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(
+                'Gesamt: ${_overallBudgetUsed.toStringAsFixed(2).replaceAll('.', ',')} € / ${_overallBudgetAmount.toStringAsFixed(2).replaceAll('.', ',')} €',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+            circularStrokeCap: CircularStrokeCap.round,
+            progressColor: _getBudgetColor(),
           ),
         ),
-        circularStrokeCap: CircularStrokeCap.round,
-        progressColor: _getBudgetColor(),
       ),
     );
   }

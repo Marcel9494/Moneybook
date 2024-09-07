@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
+import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/database_consts.dart';
+import '../../../../shared/presentation/bloc/shared_bloc.dart';
+import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -87,7 +91,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       onToggle: (bool value) {
                         setState(() {
                           demoMode = value;
-                          // TODO hier weitermachen und auf Prod und Demo wechseln implementieren
+                          switchDemoMode(demoMode);
+                          BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
+                          Navigator.pop(context);
+                          Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
                         });
                       },
                     ),
