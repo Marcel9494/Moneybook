@@ -86,7 +86,10 @@ class _BudgetListPageState extends State<BudgetListPage> {
                 if (budgetState.budgets.isEmpty) {
                   return Column(
                     children: [
-                      BudgetOverviewChart(budgets: budgetState.budgets),
+                      BudgetOverviewChart(
+                        budgets: budgetState.budgets,
+                        bookings: bookingState.bookings,
+                      ),
                       const Expanded(
                         child: EmptyList(
                           text: 'Noch keine Budgets vorhanden',
@@ -99,7 +102,10 @@ class _BudgetListPageState extends State<BudgetListPage> {
                   _calculateBudgetValues(bookingState.bookings, budgetState.budgets);
                   return Column(
                     children: [
-                      BudgetOverviewChart(budgets: budgetState.budgets),
+                      BudgetOverviewChart(
+                        budgets: budgetState.budgets,
+                        bookings: bookingState.bookings,
+                      ),
                       Expanded(
                         child: ListView.builder(
                           itemCount: budgetState.budgets.length,
