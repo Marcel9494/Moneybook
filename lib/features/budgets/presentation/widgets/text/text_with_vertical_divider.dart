@@ -5,7 +5,12 @@ class TextWithVerticalDivider extends StatelessWidget {
   final String description;
   final String value;
 
-  const TextWithVerticalDivider({super.key, required this.verticalDividerColor, required this.description, required this.value});
+  const TextWithVerticalDivider({
+    super.key,
+    required this.verticalDividerColor,
+    required this.description,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -26,9 +26,8 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
   double _overallBudgetPercentage = 0.0;
   double _overallBudgetAmount = 0.0;
   double _overallBudgetUsed = 0.0;
-  double _notAssigned = 0.0;
+  double _monthlyExpense = 0.0;
   double _monthlyIncome = 0.0;
-  double _available = 0.0;
 
   void _calculateOverallBudgetValues() {
     _overallBudgetUsed = 0.0;
@@ -45,13 +44,13 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
   }
 
   String _calculateNotAssigned() {
-    _notAssigned = 0.0;
+    _monthlyExpense = 0.0;
     for (int i = 0; i < widget.bookings.length; i++) {
       if (widget.bookings[i].type == BookingType.expense) {
-        _notAssigned += widget.bookings[i].amount;
+        _monthlyExpense += widget.bookings[i].amount;
       }
     }
-    return formatToMoneyAmount((_notAssigned - _overallBudgetUsed).toString());
+    return formatToMoneyAmount((_monthlyExpense - _overallBudgetUsed).toString());
   }
 
   String _calculateIncome() {
@@ -64,9 +63,8 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
     return formatToMoneyAmount(_monthlyIncome.toString());
   }
 
-  String _calculateAvailable() {
-    _available = _monthlyIncome - _notAssigned;
-    return formatToMoneyAmount(_available.toString());
+  double _calculateAvailable() {
+    return _monthlyIncome - _monthlyExpense;
   }
 
   Color _getBudgetColor() {
@@ -123,9 +121,9 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
                       value: _calculateIncome(),
                     ),
                     TextWithVerticalDivider(
-                      verticalDividerColor: _available >= 0.0 ? Colors.green.withOpacity(0.9) : Colors.redAccent,
+                      verticalDividerColor: _calculateAvailable() >= 0.0 ? Colors.green.withOpacity(0.9) : Colors.redAccent,
                       description: 'Verfügbar:',
-                      value: _calculateAvailable(),
+                      value: formatToMoneyAmount((_calculateAvailable()).toString()),
                     ),
                   ],
                 ),

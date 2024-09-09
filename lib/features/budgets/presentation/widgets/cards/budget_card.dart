@@ -152,9 +152,10 @@ class BudgetCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(budget.percentage < 100.0
-                    ? 'Du kannst noch ${_calculateBudgetPerDay()} pro Tag ausgeben.'
-                    : 'Du hast dein Budgetlimit erreicht.'),
+                child: Text(
+                  budget.percentage < 100.0 ? 'Du kannst noch ${_calculateBudgetPerDay()} pro Tag ausgeben.' : 'Du hast dein Budgetlimit erreicht.',
+                  style: const TextStyle(color: Colors.grey),
+                ),
               ),
             ],
           ),

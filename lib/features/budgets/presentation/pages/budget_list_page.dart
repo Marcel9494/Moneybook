@@ -8,6 +8,7 @@ import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../domain/entities/budget.dart';
 import '../bloc/budget_bloc.dart' as budget;
+import '../widgets/deco/create_budget_row.dart';
 
 class BudgetListPage extends StatefulWidget {
   final DateTime selectedDate;
@@ -90,6 +91,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
                         budgets: budgetState.budgets,
                         bookings: bookingState.bookings,
                       ),
+                      const CreateBudgetRow(),
                       const Expanded(
                         child: EmptyList(
                           text: 'Noch keine Budgets vorhanden',
@@ -101,11 +103,13 @@ class _BudgetListPageState extends State<BudgetListPage> {
                 } else {
                   _calculateBudgetValues(bookingState.bookings, budgetState.budgets);
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       BudgetOverviewChart(
                         budgets: budgetState.budgets,
                         bookings: bookingState.bookings,
                       ),
+                      const CreateBudgetRow(),
                       Expanded(
                         child: ListView.builder(
                           itemCount: budgetState.budgets.length,
