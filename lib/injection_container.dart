@@ -32,6 +32,7 @@ import 'features/accounts/data/datasources/account_local_data_source.dart';
 import 'features/accounts/data/datasources/account_remote_data_source.dart';
 import 'features/accounts/data/repositories/account_repository_impl.dart';
 import 'features/accounts/domain/repositories/account_repository.dart';
+import 'features/accounts/domain/usecases/check_account_name.dart';
 import 'features/accounts/domain/usecases/load_all_categories.dart' as load_all_accounts;
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
@@ -66,7 +67,7 @@ void init() {
   // Bloc
   sl.registerFactory(() => SharedBloc(sl(), sl()));
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
@@ -99,6 +100,7 @@ void init() {
   sl.registerLazySingleton(() => edit_account.Edit(sl()));
   sl.registerLazySingleton(() => delete_account.Delete(sl()));
   sl.registerLazySingleton(() => load_all_accounts.LoadAllCategories(sl()));
+  sl.registerLazySingleton(() => CheckAccountName(sl()));
 
   // Budgets
   sl.registerLazySingleton(() => create_budget.Create(sl()));

@@ -7,16 +7,16 @@ class CreateBudgetButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
+    return OutlinedButton(
       onPressed: () => Navigator.pushNamed(context, createBudgetRoute),
-      icon: const Icon(Icons.add_rounded),
-      label: const Text('Budget erstellen'),
       style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        side: BorderSide(width: 0.75, color: Colors.grey.shade700),
+        side: BorderSide(width: 0.75, color: Colors.cyanAccent.withOpacity(0.75)),
       ),
+      child: const Text('Budget erstellen', style: TextStyle(fontSize: 13.0)),
     );
   }
 }

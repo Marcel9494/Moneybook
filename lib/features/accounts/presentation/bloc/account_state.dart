@@ -33,6 +33,16 @@ final class Booked extends AccountState {
   List<Object> get props => [];
 }
 
+final class CheckedAccountName extends AccountState {
+  final bool accountNameExists;
+  final int numberOfEventCalls;
+
+  const CheckedAccountName({required this.accountNameExists, required this.numberOfEventCalls});
+
+  @override
+  List<Object> get props => [accountNameExists, numberOfEventCalls];
+}
+
 final class Error extends AccountState {
   final String message;
 

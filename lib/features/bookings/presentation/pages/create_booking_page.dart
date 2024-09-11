@@ -141,6 +141,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
             }
           },
           builder: (BuildContext context, state) {
+            // TODO wird Initial state hier noch benötigt?
             if (state is booking_state.Initial) {
               return SingleChildScrollView(
                 child: Padding(

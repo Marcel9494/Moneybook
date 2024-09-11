@@ -133,6 +133,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   }
 
   void _createCategorie() {
+    // TODO hier weitermachen und wie bei create_account_page.dart prüfen, ob Kategoriename bereits vorhanden ist.
     final FormState form = _categorieFormKey.currentState!;
     if (form.validate() == false) {
       _categorieBtnController.error();

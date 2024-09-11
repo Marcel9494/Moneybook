@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,11 +35,15 @@ class EditAccountPage extends StatefulWidget {
 class _EditAccountPageState extends State<EditAccountPage> {
   final GlobalKey<FormState> _accountFormKey = GlobalKey<FormState>();
   final TextEditingController _accountTypeController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _accountNameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _editAccountBtnController = RoundedLoadingButtonController();
   late AccountType _accountType;
   String _oldAccountName = '';
+  // Wird benötigt, damit im BlocConsumer der listener auf das Event CheckAccountNameExists auch mehrfach reagiert, wenn
+  // dieser Zähler nicht hochgezählt wird, wird das Event CheckedAccountName nicht erneut emittet, da es der gleiche
+  // State wie bei dem ersten Aufruf des Events ist und somit nicht erneut aufgerufen wird. Vielleicht gibt es eine bessere Lösung.
+  int _numberOfEventCalls = 0;
 
   @override
   void initState() {
@@ -48,41 +53,10 @@ class _EditAccountPageState extends State<EditAccountPage> {
   }
 
   void _initializeAccount() {
-    _nameController.text = widget.account.name;
+    _accountNameController.text = widget.account.name;
     _amountController.text = formatToMoneyAmount(widget.account.amount.toString());
     _accountTypeController.text = widget.account.type.name;
     _accountType = widget.account.type;
-  }
-
-  void _editAccount(BuildContext context) {
-    final FormState form = _accountFormKey.currentState!;
-    if (form.validate() == false) {
-      _editAccountBtnController.error();
-      Timer(const Duration(milliseconds: durationInMs), () {
-        _editAccountBtnController.reset();
-      });
-    } else {
-      _editAccountBtnController.success();
-      Timer(const Duration(milliseconds: durationInMs), () {
-        BlocProvider.of<AccountBloc>(context).add(
-          EditAccount(
-            Account(
-              id: widget.account.id,
-              type: AccountType.fromString(_accountTypeController.text),
-              name: _nameController.text.trim(),
-              amount: Amount.getValue(_amountController.text),
-              currency: Amount.getCurrency(_amountController.text),
-            ),
-          ),
-        );
-        BlocProvider.of<booking.BookingBloc>(context).add(
-          booking.UpdateBookingsWithAccount(
-            _oldAccountName,
-            _nameController.text,
-          ),
-        );
-      });
-    }
   }
 
   void _deleteAccount(BuildContext context) {
@@ -131,6 +105,47 @@ class _EditAccountPageState extends State<EditAccountPage> {
           if (state is Finished) {
             Navigator.pop(context);
             Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
+          } else if (state is CheckedAccountName) {
+            final FormState form = _accountFormKey.currentState!;
+            if (state.accountNameExists && _oldAccountName != _accountNameController.text) {
+              _numberOfEventCalls++;
+              _editAccountBtnController.error();
+              Flushbar(
+                title: 'Kontoname existiert bereits',
+                message: 'Der Kontoname ${_accountNameController.text.trim()} existiert bereits. Bitte benennen Sie den Kontoname um.',
+                icon: const Icon(Icons.error_outline_rounded, color: Colors.yellowAccent),
+                duration: const Duration(milliseconds: flushbarDurationInMs),
+              ).show(context);
+              Timer(const Duration(milliseconds: durationInMs), () {
+                _editAccountBtnController.reset();
+              });
+            } else if (form.validate() == false) {
+              _editAccountBtnController.error();
+              Timer(const Duration(milliseconds: durationInMs), () {
+                _editAccountBtnController.reset();
+              });
+            } else {
+              _editAccountBtnController.success();
+              Timer(const Duration(milliseconds: durationInMs), () {
+                BlocProvider.of<AccountBloc>(context).add(
+                  EditAccount(
+                    Account(
+                      id: widget.account.id,
+                      type: AccountType.fromString(_accountTypeController.text),
+                      name: _accountNameController.text.trim(),
+                      amount: Amount.getValue(_amountController.text),
+                      currency: Amount.getCurrency(_amountController.text),
+                    ),
+                  ),
+                );
+                BlocProvider.of<booking.BookingBloc>(context).add(
+                  booking.UpdateBookingsWithAccount(
+                    _oldAccountName,
+                    _accountNameController.text,
+                  ),
+                );
+              });
+            }
           }
         },
         child: SingleChildScrollView(
@@ -143,9 +158,18 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AccountTypeInputField(accountTypeController: _accountTypeController, accountType: _accountType.name),
-                    TitleTextField(hintText: 'Kontoname...', titleController: _nameController),
+                    TitleTextField(hintText: 'Kontoname...', titleController: _accountNameController),
                     AmountTextField(amountController: _amountController),
-                    SaveButton(text: 'Speichern', saveBtnController: _editAccountBtnController, onPressed: () => _editAccount(context)),
+                    SaveButton(
+                      text: 'Speichern',
+                      saveBtnController: _editAccountBtnController,
+                      onPressed: () => BlocProvider.of<AccountBloc>(context).add(
+                        CheckAccountNameExists(
+                          _accountNameController.text.trim(),
+                          _numberOfEventCalls,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

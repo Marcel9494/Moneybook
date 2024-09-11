@@ -37,7 +37,7 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<Either<Failure, Account>> load(int id) {
-    // TODO: implement loadAll
+    // TODO: implement load
     throw UnimplementedError();
   }
 
@@ -81,6 +81,15 @@ class AccountRepositoryImpl implements AccountRepository {
   Future<Either<Failure, void>> transfer(Booking booking, bool reversal) async {
     try {
       return Right(await accountLocalDataSource.transfer(booking, reversal));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> checkAccountName(String accountName) async {
+    try {
+      return Right(await accountLocalDataSource.checkAccountName(accountName));
     } on ServerException {
       return Left(ServerFailure());
     }

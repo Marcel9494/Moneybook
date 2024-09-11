@@ -65,3 +65,13 @@ class AccountTransfer extends AccountEvent {
   @override
   List<Object?> get props => [booking, reversal];
 }
+
+class CheckAccountNameExists extends AccountEvent {
+  final String accountName;
+  int numberOfEventCalls;
+
+  CheckAccountNameExists(this.accountName, this.numberOfEventCalls);
+
+  @override
+  List<Object?> get props => [accountName, numberOfEventCalls];
+}

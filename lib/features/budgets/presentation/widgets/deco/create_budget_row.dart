@@ -8,13 +8,13 @@ class CreateBudgetRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.only(right: 8.0, left: 26.0),
+      padding: EdgeInsets.fromLTRB(26.0, 4.0, 12.0, 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Budgets:',
-            style: TextStyle(fontSize: 16.0),
+            'Budgets',
+            style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
           ),
           CreateBudgetButton(),
         ],
