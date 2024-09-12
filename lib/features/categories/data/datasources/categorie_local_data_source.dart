@@ -11,6 +11,7 @@ abstract class CategorieLocalDataSource {
   Future<List<Categorie>> load(List<int> ids);
   Future<Categorie> getId(String categorieName, CategorieType categorieType);
   Future<List<Categorie>> loadAll();
+  Future<bool> checkCategorieName(Categorie categorie);
 }
 
 class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
@@ -94,5 +95,16 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
         )
         .toList();
     return categorieList;
+  }
+
+  @override
+  Future<bool> checkCategorieName(Categorie categorie) async {
+    db = await openDatabase(localDbName);
+    List<Map> categorieMap =
+        await db.rawQuery('SELECT * FROM $categorieDbName WHERE name = ? AND type = ? LIMIT 1', [categorie.name, categorie.type.name]);
+    if (categorieMap.isEmpty) {
+      return false;
+    }
+    return true;
   }
 }

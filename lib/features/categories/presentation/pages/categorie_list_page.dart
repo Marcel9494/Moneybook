@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,12 +34,14 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   final GlobalKey<AnimatedListState> _investmentKey = GlobalKey();
   final GlobalKey<FormState> _categorieFormKey = GlobalKey<FormState>();
   late final TabController _tabController;
-  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _categorieNameController = TextEditingController();
   final RoundedLoadingButtonController _categorieBtnController = RoundedLoadingButtonController();
   CategorieType _selectedCategorieType = CategorieType.expense;
   List<bool> _selectedCategorieValue = [true, false, false];
   String _oldCategorieName = '';
+  int _numberOfEventCalls = 0;
   int _tabIndex = 4;
+  bool _editMode = false;
 
   @override
   void initState() {
@@ -69,7 +72,8 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
 
   void _addCategorie() {
     _changeCategorieType(_tabController.index);
-    _titleController.text = '';
+    _categorieNameController.text = '';
+    _editMode = false;
     showCupertinoModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -110,7 +114,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                       }),
                       TitleTextField(
                         hintText: 'Kategoriename...',
-                        titleController: _titleController,
+                        titleController: _categorieNameController,
                         autofocus: true,
                       ),
                       const SizedBox(height: 8.0),
@@ -118,7 +122,16 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                         text: 'Erstellen',
                         saveBtnController: _categorieBtnController,
                         onPressed: () {
-                          _createCategorie();
+                          BlocProvider.of<CategorieBloc>(context).add(
+                            CheckCategorieNameExists(
+                              Categorie(
+                                id: 0,
+                                name: _categorieNameController.text.trim(),
+                                type: _selectedCategorieType,
+                              ),
+                              _numberOfEventCalls,
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -132,10 +145,23 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
     );
   }
 
-  void _createCategorie() {
-    // TODO hier weitermachen und wie bei create_account_page.dart prüfen, ob Kategoriename bereits vorhanden ist.
+  void _createCategorie(CheckedCategorieName state) {
     final FormState form = _categorieFormKey.currentState!;
-    if (form.validate() == false) {
+    if (state.categorieNameExists) {
+      _numberOfEventCalls++;
+      _categorieBtnController.error();
+      Flushbar(
+        title: 'Kategoriename existiert bereits',
+        message: 'Der Kategoriename ${_categorieNameController.text.trim()} existiert bereits. Bitte benennen Sie den Kategoriename um.',
+        icon: const Icon(Icons.error_outline_rounded, color: Colors.yellowAccent),
+        duration: const Duration(milliseconds: flushbarDurationInMs),
+        leftBarIndicatorColor: Colors.yellowAccent,
+        flushbarPosition: FlushbarPosition.TOP,
+      ).show(context);
+      Timer(const Duration(milliseconds: durationInMs), () {
+        _categorieBtnController.reset();
+      });
+    } else if (form.validate() == false) {
       _categorieBtnController.error();
       Timer(const Duration(milliseconds: durationInMs), () {
         _categorieBtnController.reset();
@@ -148,7 +174,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             Categorie(
               id: 0,
               type: _selectedCategorieType,
-              name: _titleController.text.trim(),
+              name: _categorieNameController.text.trim(),
             ),
           ),
         );
@@ -160,8 +186,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
 
   void _showEditCategorieBottomSheet(Categorie categorie) {
     _setSelectedCategorie(categorie.type);
-    _titleController.text = categorie.name;
+    _categorieNameController.text = categorie.name;
     _oldCategorieName = categorie.name;
+    _editMode = true;
     showCupertinoModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -199,7 +226,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                       }),
                       TitleTextField(
                         hintText: 'Kategoriename...',
-                        titleController: _titleController,
+                        titleController: _categorieNameController,
                         autofocus: true,
                       ),
                       const SizedBox(height: 8.0),
@@ -207,7 +234,16 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                         text: 'Speichern',
                         saveBtnController: _categorieBtnController,
                         onPressed: () {
-                          _editCategorie(categorie);
+                          BlocProvider.of<CategorieBloc>(context).add(
+                            CheckCategorieNameExists(
+                              Categorie(
+                                id: categorie.id,
+                                name: _categorieNameController.text,
+                                type: _selectedCategorieType,
+                              ),
+                              _numberOfEventCalls,
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -221,9 +257,23 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
     );
   }
 
-  void _editCategorie(Categorie categorie) {
+  void _editCategorie(Categorie categorie, CheckedCategorieName state) {
     final FormState form = _categorieFormKey.currentState!;
-    if (form.validate() == false) {
+    if (state.categorieNameExists && _oldCategorieName != _categorieNameController.text.trim()) {
+      _numberOfEventCalls++;
+      _categorieBtnController.error();
+      Flushbar(
+        title: 'Kategoriename existiert bereits',
+        message: 'Der Kategoriename ${_categorieNameController.text.trim()} existiert bereits. Bitte benennen Sie den Kategoriename um.',
+        icon: const Icon(Icons.error_outline_rounded, color: Colors.yellowAccent),
+        duration: const Duration(milliseconds: flushbarDurationInMs),
+        leftBarIndicatorColor: Colors.yellowAccent,
+        flushbarPosition: FlushbarPosition.TOP,
+      ).show(context);
+      Timer(const Duration(milliseconds: durationInMs), () {
+        _categorieBtnController.reset();
+      });
+    } else if (form.validate() == false) {
       _categorieBtnController.error();
       Timer(const Duration(milliseconds: durationInMs), () {
         _categorieBtnController.reset();
@@ -236,20 +286,20 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             Categorie(
               id: categorie.id,
               type: _selectedCategorieType,
-              name: _titleController.text.trim(),
+              name: _categorieNameController.text.trim(),
             ),
           ),
         );
         BlocProvider.of<budget.BudgetBloc>(context).add(
           budget.UpdateBudgetsWithCategorie(
             _oldCategorieName,
-            _titleController.text,
+            _categorieNameController.text,
           ),
         );
         BlocProvider.of<booking.BookingBloc>(context).add(
           booking.UpdateBookingsWithCategorie(
             _oldCategorieName,
-            _titleController.text,
+            _categorieNameController.text,
             _selectedCategorieType,
           ),
         );
@@ -399,6 +449,13 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     loadCategories(context);
                   } else if (state is Deleted) {
                     loadCategories(context);
+                  } else if (state is CheckedCategorieName) {
+                    if (_editMode) {
+                      _editCategorie(state.categorie, state);
+                    } else {
+                      _createCategorie(state);
+                    }
+                    loadCategories(context);
                   }
                 },
                 child: BlocBuilder<CategorieBloc, CategorieState>(
@@ -468,6 +525,13 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     loadCategories(context);
                   } else if (state is Deleted) {
                     loadCategories(context);
+                  } else if (state is CheckedCategorieName) {
+                    if (_editMode) {
+                      _editCategorie(state.categorie, state);
+                    } else {
+                      _createCategorie(state);
+                    }
+                    loadCategories(context);
                   }
                 },
                 child: BlocBuilder<CategorieBloc, CategorieState>(
@@ -536,6 +600,13 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     );
                     loadCategories(context);
                   } else if (state is Deleted) {
+                    loadCategories(context);
+                  } else if (state is CheckedCategorieName) {
+                    if (_editMode) {
+                      _editCategorie(state.categorie, state);
+                    } else {
+                      _createCategorie(state);
+                    }
                     loadCategories(context);
                   }
                 },

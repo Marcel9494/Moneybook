@@ -107,7 +107,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
             Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
           } else if (state is CheckedAccountName) {
             final FormState form = _accountFormKey.currentState!;
-            if (state.accountNameExists && _oldAccountName != _accountNameController.text) {
+            if (state.accountNameExists && _oldAccountName != _accountNameController.text.trim()) {
               _numberOfEventCalls++;
               _editAccountBtnController.error();
               Flushbar(

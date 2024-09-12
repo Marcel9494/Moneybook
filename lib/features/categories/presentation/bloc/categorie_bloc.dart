@@ -6,6 +6,7 @@ import 'package:moneybook/features/categories/domain/value_objects/categorie_typ
 
 import '../../../categories/domain/usecases/create.dart';
 import '../../domain/entities/categorie.dart';
+import '../../domain/usecases/check_categorie_name.dart';
 import '../../domain/usecases/get_id.dart';
 import '../../domain/usecases/load_all.dart';
 
@@ -17,6 +18,7 @@ const String EDIT_CATEGORIE_FAILURE = 'Kategorie konnte nicht bearbeitet werden.
 const String DELETE_CATEGORIE_FAILURE = 'Kategorie konnte nicht gelöscht werden.';
 const String LOAD_CATEGORIES_FAILURE = 'Kategorien konnten nicht geladen werden.';
 const String GET_ID_CATEGORIE_FAILURE = 'Kategorie Id konnte nicht geladen werden.';
+const String CATEGORIE_NAME_EXISTS_FAILURE = 'Kategoriename konnte nicht geprüft werden.';
 
 class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
   final Create createUseCase;
@@ -24,8 +26,10 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
   final Delete deleteUseCase;
   final LoadAll loadUseCase;
   final GetId getIdUseCase;
+  final CheckCategorieName checkCategorieNameUseCase;
 
-  CategorieBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadUseCase, this.getIdUseCase) : super(Initial()) {
+  CategorieBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadUseCase, this.getIdUseCase, this.checkCategorieNameUseCase)
+      : super(Initial()) {
     on<CategorieEvent>((event, emit) async {
       if (event is CreateCategorie) {
         final createCategorieEither = await createUseCase.categorieRepository.create(event.categorie);
@@ -84,6 +88,17 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
             expenseCategories: expenseCategories,
             incomeCategories: incomeCategories,
             investmentCategories: investmentCategories,
+          ));
+        });
+      } else if (event is CheckCategorieNameExists) {
+        final checkCategorieNameExistsEither = await checkCategorieNameUseCase.categorieRepository.checkCategorieName(event.categorie);
+        checkCategorieNameExistsEither.fold((failure) {
+          emit(const Error(message: CATEGORIE_NAME_EXISTS_FAILURE));
+        }, (categorieNameExists) {
+          emit(CheckedCategorieName(
+            categorieNameExists: categorieNameExists,
+            categorie: event.categorie,
+            numberOfEventCalls: event.numberOfEventCalls,
           ));
         });
       }
