@@ -28,14 +28,21 @@ class MonthlyCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, overflow: TextOverflow.ellipsis),
                 Text(
-                  formatToMoneyAmount(monthlyValue.toString()),
+                  title,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: textColor),
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 12.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2.0, bottom: 3.0),
+                  child: Text(
+                    formatToMoneyAmount(monthlyValue.toString()),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: textColor, fontSize: 16.0),
+                  ),
                 ),
                 Text(
-                  'Ø ${formatToMoneyAmount(dailyAverageValue.toString())}',
+                  'Ø ${formatToMoneyAmount(dailyAverageValue.toString())} p.T.',
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 12.0, color: Colors.grey),
                 ),

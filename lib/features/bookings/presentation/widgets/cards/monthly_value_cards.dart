@@ -35,36 +35,36 @@ class _MonthlyValueCardsState extends State<MonthlyValueCards> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 86.0,
+      height: 92.0,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
           MonthlyCard(
-            title: 'Einnahmen:',
+            title: 'Einnahmen',
             monthlyValue: widget.monthlyIncome,
             dailyAverageValue: widget.monthlyIncome / numberOfDays,
             textColor: Colors.greenAccent,
           ),
           MonthlyCard(
-            title: 'Ausgaben:',
+            title: 'Ausgaben',
             monthlyValue: widget.monthlyExpense,
             dailyAverageValue: widget.monthlyExpense / numberOfDays,
             textColor: Colors.redAccent,
           ),
           MonthlyCard(
-            title: 'Saldo:',
+            title: 'Saldo',
             monthlyValue: widget.monthlyIncome - widget.monthlyExpense,
             dailyAverageValue: (widget.monthlyIncome - widget.monthlyExpense) / numberOfDays,
             textColor: widget.monthlyIncome - widget.monthlyExpense >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),
           MonthlyCard(
-            title: 'Investment:',
+            title: 'Investment',
             monthlyValue: widget.monthlyInvestment,
             dailyAverageValue: widget.monthlyInvestment / numberOfDays,
             textColor: Colors.cyanAccent,
           ),
           MonthlyCard(
-            title: 'Verfügbar:',
+            title: 'Verfügbar',
             monthlyValue: widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment,
             dailyAverageValue: (widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment) / numberOfDays,
             textColor: widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment >= 0.0 ? Colors.greenAccent : Colors.redAccent,

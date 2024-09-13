@@ -105,6 +105,10 @@ class _EditAccountPageState extends State<EditAccountPage> {
           if (state is Finished) {
             Navigator.pop(context);
             Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
+          } else if (state is Deleted) {
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
           } else if (state is CheckedAccountName) {
             final FormState form = _accountFormKey.currentState!;
             if (state.accountNameExists && _oldAccountName != _accountNameController.text.trim()) {

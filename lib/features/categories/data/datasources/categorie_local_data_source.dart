@@ -100,8 +100,9 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   @override
   Future<bool> checkCategorieName(Categorie categorie) async {
     db = await openDatabase(localDbName);
-    List<Map> categorieMap =
-        await db.rawQuery('SELECT * FROM $categorieDbName WHERE name = ? AND type = ? LIMIT 1', [categorie.name, categorie.type.name]);
+    // TODO hier weitermachen und verhindern das Groß- und Kleinschreibung nicht beachtet wird z.B. Bildung und bildung
+    List<Map> categorieMap = await db
+        .rawQuery('SELECT * FROM $categorieDbName WHERE LOWER(name) = ? AND type = ? LIMIT 1', [categorie.name.toLowerCase(), categorie.type.name]);
     if (categorieMap.isEmpty) {
       return false;
     }

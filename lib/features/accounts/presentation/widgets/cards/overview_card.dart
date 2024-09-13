@@ -25,11 +25,18 @@ class OverviewCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, overflow: TextOverflow.ellipsis),
                 Text(
-                  formatToMoneyAmount(value.toString()),
+                  title,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: textColor),
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 12.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(
+                    formatToMoneyAmount(value.toString()),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: textColor),
+                  ),
                 ),
               ],
             ),

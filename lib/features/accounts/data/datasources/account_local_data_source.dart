@@ -119,7 +119,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   @override
   Future<bool> checkAccountName(String accountName) async {
     db = await openDatabase(localDbName);
-    List<Map> account = await db.rawQuery('SELECT * FROM $accountDbName WHERE name = ? LIMIT 1', [accountName]);
+    List<Map> account = await db.rawQuery('SELECT * FROM $accountDbName WHERE LOWER(name) = ? LIMIT 1', [accountName.toLowerCase()]);
     if (account.isEmpty) {
       return false;
     }

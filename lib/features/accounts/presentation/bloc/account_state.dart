@@ -28,6 +28,11 @@ final class Finished extends AccountState {
   List<Object> get props => [];
 }
 
+final class Deleted extends AccountState {
+  @override
+  List<Object> get props => [];
+}
+
 final class Booked extends AccountState {
   @override
   List<Object> get props => [];

@@ -50,7 +50,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         deleteAccountEither.fold((failure) {
           emit(const Error(message: DELETE_ACCOUNT_FAILURE));
         }, (_) {
-          emit(Finished());
+          emit(Deleted());
         });
       } else if (event is LoadAllAccounts) {
         final loadAccountEither = await loadAllCategoriesUseCase.accountRepository.loadAll();
