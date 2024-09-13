@@ -28,9 +28,24 @@ final class Finished extends AccountState {
   List<Object> get props => [];
 }
 
+final class Deleted extends AccountState {
+  @override
+  List<Object> get props => [];
+}
+
 final class Booked extends AccountState {
   @override
   List<Object> get props => [];
+}
+
+final class CheckedAccountName extends AccountState {
+  final bool accountNameExists;
+  final int numberOfEventCalls;
+
+  const CheckedAccountName({required this.accountNameExists, required this.numberOfEventCalls});
+
+  @override
+  List<Object> get props => [accountNameExists, numberOfEventCalls];
 }
 
 final class Error extends AccountState {

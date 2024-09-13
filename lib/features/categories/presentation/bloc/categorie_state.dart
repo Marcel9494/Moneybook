@@ -66,6 +66,21 @@ final class ReceivedCategories extends CategorieState {
   List<Object> get props => [categories];
 }
 
+final class CheckedCategorieName extends CategorieState {
+  final bool categorieNameExists;
+  final Categorie categorie;
+  final int numberOfEventCalls;
+
+  const CheckedCategorieName({
+    required this.categorieNameExists,
+    required this.categorie,
+    required this.numberOfEventCalls,
+  });
+
+  @override
+  List<Object> get props => [categorieNameExists, categorie, numberOfEventCalls];
+}
+
 final class Error extends CategorieState {
   final String message;
 

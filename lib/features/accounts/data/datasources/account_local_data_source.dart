@@ -15,6 +15,7 @@ abstract class AccountLocalDataSource {
   Future<void> deposit(Booking booking);
   Future<void> withdraw(Booking booking);
   Future<void> transfer(Booking booking, bool reversal);
+  Future<bool> checkAccountName(String accountName);
 }
 
 class AccountLocalDataSourceImpl implements AccountLocalDataSource {
@@ -113,5 +114,15 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
       reversal == false ? toAccountBalance[0]['amount'] : fromAccountBalance[0]['amount'] + booking.amount,
       reversal == false ? booking.toAccount : booking.fromAccount,
     ]);
+  }
+
+  @override
+  Future<bool> checkAccountName(String accountName) async {
+    db = await openDatabase(localDbName);
+    List<Map> account = await db.rawQuery('SELECT * FROM $accountDbName WHERE LOWER(name) = ? LIMIT 1', [accountName.toLowerCase()]);
+    if (account.isEmpty) {
+      return false;
+    }
+    return true;
   }
 }

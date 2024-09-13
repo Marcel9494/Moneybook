@@ -54,3 +54,13 @@ class LoadCategoriesWithIds extends CategorieEvent {
   @override
   List<Object?> get props => [ids];
 }
+
+class CheckCategorieNameExists extends CategorieEvent {
+  final Categorie categorie;
+  int numberOfEventCalls;
+
+  CheckCategorieNameExists(this.categorie, this.numberOfEventCalls);
+
+  @override
+  List<Object?> get props => [categorie, numberOfEventCalls];
+}

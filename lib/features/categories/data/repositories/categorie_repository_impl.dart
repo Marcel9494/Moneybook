@@ -70,4 +70,13 @@ class CategorieRepositoryImpl implements CategorieRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> checkCategorieName(Categorie categorie) async {
+    try {
+      return Right(await categorieLocalDataSource.checkCategorieName(categorie));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

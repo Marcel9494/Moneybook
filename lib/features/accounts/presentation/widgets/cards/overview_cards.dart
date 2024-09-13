@@ -27,17 +27,17 @@ class _OverviewCardsState extends State<OverviewCards> {
       child: Row(
         children: [
           OverviewCard(
-            title: 'Vermögen:',
+            title: 'Vermögen',
             value: widget.assets,
             textColor: Colors.greenAccent,
           ),
           OverviewCard(
-            title: 'Schulden:',
+            title: 'Schulden',
             value: widget.debts,
             textColor: Colors.redAccent,
           ),
           OverviewCard(
-            title: 'Saldo:',
+            title: 'Saldo',
             value: widget.assets - widget.debts,
             textColor: widget.assets - widget.debts >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),

@@ -6,6 +6,7 @@ import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.d
 import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/side_menu_drawer_widget.dart';
 
+import '../../../../features/accounts/presentation/widgets/buttons/create_account_button.dart';
 import '../../../../features/bookings/presentation/widgets/buttons/month_picker_buttons.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -93,13 +94,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                   },
                 )
               : const SizedBox(),
-          if (_tabIndex == 1)
-            IconButton(
-              onPressed: () => Navigator.pushNamed(context, createAccountRoute),
-              icon: const Icon(Icons.add_rounded),
-            )
-          else
-            const SizedBox(),
+          _tabIndex == 1 ? const CreateAccountButton() : const SizedBox(),
         ],
       ),
       floatingActionButton: _tabIndex <= 3

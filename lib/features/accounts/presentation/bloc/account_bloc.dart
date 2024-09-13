@@ -7,6 +7,7 @@ import '../../../accounts/domain/usecases/delete.dart';
 import '../../../accounts/domain/usecases/edit.dart';
 import '../../../accounts/domain/usecases/load_all_categories.dart';
 import '../../../bookings/domain/entities/booking.dart';
+import '../../domain/usecases/check_account_name.dart';
 
 part 'account_event.dart';
 part 'account_state.dart';
@@ -18,14 +19,17 @@ const String LOAD_ACCOUNTS_FAILURE = 'Kontoliste konnte nicht geladen werden.';
 const String ACCOUNT_DEPOSIT_FAILURE = 'Kontoeinzahlung konnte nicht durchgeführt werden.';
 const String ACCOUNT_WITHDRAW_FAILURE = 'Kontoabhebung konnte nicht durchgeführt werden.';
 const String ACCOUNT_TRANSFER_FAILURE = 'Kontotransfer konnte nicht durchgeführt werden.';
+const String ACCOUNT_NAME_EXISTS_FAILURE = 'Kontoname konnte nicht geprüft werden.';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final Create createUseCase;
   final Edit editUseCase;
   final Delete deleteUseCase;
   final LoadAllCategories loadAllCategoriesUseCase;
+  final CheckAccountName checkAccountNameUseCase;
 
-  AccountBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadAllCategoriesUseCase) : super(Initial()) {
+  AccountBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadAllCategoriesUseCase, this.checkAccountNameUseCase)
+      : super(Initial()) {
     on<AccountEvent>((event, emit) async {
       if (event is CreateAccount) {
         final createAccountEither = await createUseCase.accountRepository.create(event.account);
@@ -46,7 +50,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         deleteAccountEither.fold((failure) {
           emit(const Error(message: DELETE_ACCOUNT_FAILURE));
         }, (_) {
-          emit(Finished());
+          emit(Deleted());
         });
       } else if (event is LoadAllAccounts) {
         final loadAccountEither = await loadAllCategoriesUseCase.accountRepository.loadAll();
@@ -87,6 +91,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(const Error(message: ACCOUNT_TRANSFER_FAILURE));
         }, (_) {
           emit(Booked());
+        });
+      } else if (event is CheckAccountNameExists) {
+        final checkAccountNameExistsEither = await checkAccountNameUseCase.accountRepository.checkAccountName(event.accountName);
+        checkAccountNameExistsEither.fold((failure) {
+          emit(const Error(message: ACCOUNT_NAME_EXISTS_FAILURE));
+        }, (accountNameExists) {
+          emit(CheckedAccountName(accountNameExists: accountNameExists, numberOfEventCalls: event.numberOfEventCalls));
         });
       }
     });

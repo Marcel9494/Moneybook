@@ -32,6 +32,7 @@ import 'features/accounts/data/datasources/account_local_data_source.dart';
 import 'features/accounts/data/datasources/account_remote_data_source.dart';
 import 'features/accounts/data/repositories/account_repository_impl.dart';
 import 'features/accounts/domain/repositories/account_repository.dart';
+import 'features/accounts/domain/usecases/check_account_name.dart';
 import 'features/accounts/domain/usecases/load_all_categories.dart' as load_all_accounts;
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
@@ -49,6 +50,7 @@ import 'features/categories/data/datasources/categorie_local_data_source.dart';
 import 'features/categories/data/datasources/categorie_remote_data_source.dart';
 import 'features/categories/data/repositories/categorie_repository_impl.dart';
 import 'features/categories/domain/repositories/categorie_repository.dart';
+import 'features/categories/domain/usecases/check_categorie_name.dart';
 import 'features/categories/domain/usecases/load_all.dart' as load_all_categories;
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
@@ -64,13 +66,13 @@ final sl = GetIt.instance;
 void init() {
   // Features
   // Bloc
-  sl.registerFactory(() => SharedBloc(sl(), sl()));
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => CategorieStatsBloc());
+  sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => UserBloc(sl(), sl()));
+  sl.registerFactory(() => SharedBloc(sl(), sl()));
+  sl.registerFactory(() => CategorieStatsBloc());
   // Use Cases
   // Shared
   sl.registerLazySingleton(() => CreateDb(sl()));
@@ -93,12 +95,14 @@ void init() {
   sl.registerLazySingleton(() => delete_categorie.Delete(sl()));
   sl.registerLazySingleton(() => get_id.GetId(sl()));
   sl.registerLazySingleton(() => load_all_categories.LoadAll(sl()));
+  sl.registerLazySingleton(() => CheckCategorieName(sl()));
 
   // Accounts
   sl.registerLazySingleton(() => create_account.Create(sl()));
   sl.registerLazySingleton(() => edit_account.Edit(sl()));
   sl.registerLazySingleton(() => delete_account.Delete(sl()));
   sl.registerLazySingleton(() => load_all_accounts.LoadAllCategories(sl()));
+  sl.registerLazySingleton(() => CheckAccountName(sl()));
 
   // Budgets
   sl.registerLazySingleton(() => create_budget.Create(sl()));

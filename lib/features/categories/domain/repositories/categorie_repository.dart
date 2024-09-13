@@ -11,4 +11,5 @@ abstract class CategorieRepository {
   Future<Either<Failure, List<Categorie>>> load(List<int> ids);
   Future<Either<Failure, Categorie>> getId(String categorieName, CategorieType categorieType);
   Future<Either<Failure, List<Categorie>>> loadAll();
+  Future<Either<Failure, bool>> checkCategorieName(Categorie categorie);
 }

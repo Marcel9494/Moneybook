@@ -46,6 +46,7 @@ class DailyReportSummary extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 1.5),
                     child: Text(
                       dateFormatterMMYYYY.format(date),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),

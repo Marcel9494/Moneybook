@@ -107,22 +107,22 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
                   children: [
                     TextWithVerticalDivider(
                       verticalDividerColor: _getBudgetColor(),
-                      description: 'Gesamtbudget:',
+                      description: 'Gesamtbudget',
                       value: '${formatToMoneyAmount(_overallBudgetUsed.toString())} / ${formatToMoneyAmount(_overallBudgetAmount.toString())}',
                     ),
                     TextWithVerticalDivider(
                       verticalDividerColor: Colors.cyanAccent,
-                      description: 'Nicht zugeordnet:',
+                      description: 'Nicht zugeordnet',
                       value: _calculateNotAssigned(),
                     ),
                     TextWithVerticalDivider(
                       verticalDividerColor: Colors.cyanAccent,
-                      description: 'Einnahmen:',
+                      description: 'Einnahmen',
                       value: _calculateIncome(),
                     ),
                     TextWithVerticalDivider(
                       verticalDividerColor: _calculateAvailable() >= 0.0 ? Colors.green.withOpacity(0.9) : Colors.redAccent,
-                      description: 'Verfügbar:',
+                      description: 'Verfügbar',
                       value: formatToMoneyAmount((_calculateAvailable()).toString()),
                     ),
                   ],

@@ -11,6 +11,7 @@ abstract class CategorieLocalDataSource {
   Future<List<Categorie>> load(List<int> ids);
   Future<Categorie> getId(String categorieName, CategorieType categorieType);
   Future<List<Categorie>> loadAll();
+  Future<bool> checkCategorieName(Categorie categorie);
 }
 
 class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
@@ -94,5 +95,17 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
         )
         .toList();
     return categorieList;
+  }
+
+  @override
+  Future<bool> checkCategorieName(Categorie categorie) async {
+    db = await openDatabase(localDbName);
+    // TODO hier weitermachen und verhindern das Groß- und Kleinschreibung nicht beachtet wird z.B. Bildung und bildung
+    List<Map> categorieMap = await db
+        .rawQuery('SELECT * FROM $categorieDbName WHERE LOWER(name) = ? AND type = ? LIMIT 1', [categorie.name.toLowerCase(), categorie.type.name]);
+    if (categorieMap.isEmpty) {
+      return false;
+    }
+    return true;
   }
 }
