@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/accounts/domain/entities/account.dart';
 import 'package:moneybook/features/accounts/presentation/widgets/input_fields/account_type_input_field.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
+import 'package:moneybook/features/bookings/presentation/widgets/input_fields/account_input_field.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -15,7 +17,9 @@ import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_argumen
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/amount.dart';
+import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../domain/value_objects/account_type.dart';
 import '../bloc/account_bloc.dart';
@@ -36,6 +40,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
   final GlobalKey<FormState> _accountFormKey = GlobalKey<FormState>();
   final TextEditingController _accountTypeController = TextEditingController();
   final TextEditingController _accountNameController = TextEditingController();
+  final TextEditingController _accountController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _editAccountBtnController = RoundedLoadingButtonController();
   late AccountType _accountType;
@@ -64,26 +69,75 @@ class _EditAccountPageState extends State<EditAccountPage> {
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Konto löschen?'),
-          content: const Text('Wollen Sie das Konto wirklich löschen?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Ja'),
-              onPressed: () {
-                BlocProvider.of<AccountBloc>(context).add(
-                  DeleteAccount(widget.account.id),
-                );
-              },
+        if (widget.account.amount == 0.0) {
+          return AlertDialog(
+            title: const Text('Konto löschen?'),
+            content: const Text('Wollen Sie das Konto wirklich löschen?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ja'),
+                onPressed: () {
+                  BlocProvider.of<AccountBloc>(context).add(
+                    DeleteAccount(widget.account.id),
+                  );
+                },
+              ),
+              TextButton(
+                child: const Text('Nein'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        } else {
+          return AlertDialog(
+            title: const Text('Konto löschen?'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Bevor Sie das Konto löschen können müssen Sie den restlichen Betrag von ${formatToMoneyAmount(widget.account.amount.toString())} auf ein anderes Konto übertragen.',
+                  textAlign: TextAlign.justify,
+                ),
+                AccountInputField(
+                  hintText: 'Konto',
+                  accountController: _accountController,
+                ),
+              ],
             ),
-            TextButton(
-              child: const Text('Nein'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ja'),
+                onPressed: () {
+                  // TODO hier weitermachen und prüfen das nicht auf gleiches Konto gebucht wird
+                  Booking transferBooking = Booking(
+                    id: widget.account.id,
+                    type: BookingType.transfer,
+                    title: 'Übertrag',
+                    date: DateTime.now(), // parse DateFormat in ISO-8601,
+                    repetition: RepetitionType.noRepetition,
+                    amount: widget.account.amount,
+                    currency: Amount.getCurrency(formatToMoneyAmount(widget.account.amount.toString())),
+                    fromAccount: widget.account.name,
+                    toAccount: _accountController.text,
+                    categorie: 'Übertrag',
+                    isBooked: true,
+                  );
+                  BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(transferBooking));
+                  BlocProvider.of<AccountBloc>(context).add(AccountTransfer(transferBooking, false));
+                  BlocProvider.of<AccountBloc>(context).add(DeleteAccount(widget.account.id));
+                },
+              ),
+              TextButton(
+                child: const Text('Nein'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
       },
     );
   }

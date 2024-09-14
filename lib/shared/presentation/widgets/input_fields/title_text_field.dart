@@ -4,8 +4,9 @@ class TitleTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController titleController;
   final bool autofocus;
+  final FocusNode focusNode = FocusNode();
 
-  const TitleTextField({
+  TitleTextField({
     super.key,
     required this.hintText,
     required this.titleController,
@@ -25,6 +26,7 @@ class TitleTextField extends StatelessWidget {
       controller: titleController,
       maxLength: 80,
       autofocus: autofocus,
+      focusNode: focusNode,
       textCapitalization: TextCapitalization.sentences,
       validator: (input) => _checkTextInput(),
       decoration: InputDecoration(
@@ -34,6 +36,7 @@ class TitleTextField extends StatelessWidget {
         suffixIcon: IconButton(
           onPressed: () => {
             titleController.text = '',
+            FocusScope.of(context).requestFocus(focusNode), // Setzt den Fokus und öffnet die Tastatur
           },
           icon: const Icon(Icons.clear_rounded),
         ),

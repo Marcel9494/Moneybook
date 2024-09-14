@@ -121,7 +121,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
     } else if (_oldBooking.type == BookingType.income) {
       BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking));
     } else if (_oldBooking.type == BookingType.transfer || _oldBooking.type == BookingType.investment) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_oldBooking, true));
+      // TODO hier weitermachen und _oldBooking.copyWith Konten umtauschen from --> to und reversal löschen
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(
+          _oldBooking.copyWith(
+            fromAccount: widget.booking.toAccount,
+            toAccount: widget.booking.fromAccount,
+          ),
+          true));
     }
   }
 

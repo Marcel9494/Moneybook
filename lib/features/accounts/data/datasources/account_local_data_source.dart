@@ -106,14 +106,24 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
     db = await openDatabase(localDbName);
     List<Map> fromAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
     List<Map> toAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
+    print(fromAccountBalance[0]);
+    print(toAccountBalance[0]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
+      fromAccountBalance[0]['amount'] - booking.amount,
+      booking.fromAccount,
+    ]);
+    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
+      toAccountBalance[0]['amount'] + booking.amount,
+      booking.toAccount,
+    ]);
+    /*await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       reversal == false ? fromAccountBalance[0]['amount'] : toAccountBalance[0]['amount'] - booking.amount,
       reversal == false ? booking.fromAccount : booking.toAccount,
     ]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       reversal == false ? toAccountBalance[0]['amount'] : fromAccountBalance[0]['amount'] + booking.amount,
       reversal == false ? booking.toAccount : booking.fromAccount,
-    ]);
+    ]);*/
   }
 
   @override
