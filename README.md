@@ -108,6 +108,7 @@ Daten und Benutzer mit Posthog: https://posthog.com/ analysieren und App dadurch
 # Feedback Board
 
 Feedback Board mit Canny: https://canny.io/ einbinden um Benutzer Feedback einholen zu können und dadurch die App noch besser auf die Benutzerbedürfnisse auszurichten.
+
 Preise beachten! https://canny.io/pricing
 
 # Webseite / Landing Page
