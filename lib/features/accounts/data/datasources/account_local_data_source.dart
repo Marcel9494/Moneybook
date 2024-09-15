@@ -14,7 +14,7 @@ abstract class AccountLocalDataSource {
   Future<List<Account>> loadAll();
   Future<void> deposit(Booking booking);
   Future<void> withdraw(Booking booking);
-  Future<void> transfer(Booking booking, bool reversal);
+  Future<void> transfer(Booking booking);
   Future<bool> checkAccountName(String accountName);
 }
 
@@ -102,12 +102,10 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   }
 
   @override
-  Future<void> transfer(Booking booking, bool reversal) async {
+  Future<void> transfer(Booking booking) async {
     db = await openDatabase(localDbName);
     List<Map> fromAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
     List<Map> toAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
-    print(fromAccountBalance[0]);
-    print(toAccountBalance[0]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
       fromAccountBalance[0]['amount'] - booking.amount,
       booking.fromAccount,
@@ -116,14 +114,6 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
       toAccountBalance[0]['amount'] + booking.amount,
       booking.toAccount,
     ]);
-    /*await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      reversal == false ? fromAccountBalance[0]['amount'] : toAccountBalance[0]['amount'] - booking.amount,
-      reversal == false ? booking.fromAccount : booking.toAccount,
-    ]);
-    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      reversal == false ? toAccountBalance[0]['amount'] : fromAccountBalance[0]['amount'] + booking.amount,
-      reversal == false ? booking.toAccount : booking.fromAccount,
-    ]);*/
   }
 
   @override

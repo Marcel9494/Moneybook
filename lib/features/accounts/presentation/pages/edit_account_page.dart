@@ -110,7 +110,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
               TextButton(
                 child: const Text('Ja'),
                 onPressed: () {
-                  // TODO hier weitermachen und prüfen das nicht auf gleiches Konto gebucht wird
+                  // TODO hier weitermachen und prüfen das nicht auf gleiches Konto gebucht wird oder garnicht erst anzeigen lassen
                   Booking transferBooking = Booking(
                     id: widget.account.id,
                     type: BookingType.transfer,
@@ -125,7 +125,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                     isBooked: true,
                   );
                   BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(transferBooking));
-                  BlocProvider.of<AccountBloc>(context).add(AccountTransfer(transferBooking, false));
+                  BlocProvider.of<AccountBloc>(context).add(AccountTransfer(transferBooking));
                   BlocProvider.of<AccountBloc>(context).add(DeleteAccount(widget.account.id));
                 },
               ),

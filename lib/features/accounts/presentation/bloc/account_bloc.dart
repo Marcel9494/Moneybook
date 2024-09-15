@@ -86,7 +86,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(Booked());
           return;
         }
-        final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking, event.reversal);
+        final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking);
         accountTransferEither.fold((failure) {
           emit(const Error(message: ACCOUNT_TRANSFER_FAILURE));
         }, (_) {

@@ -58,12 +58,11 @@ class AccountWithdraw extends AccountEvent {
 
 class AccountTransfer extends AccountEvent {
   final Booking booking;
-  final bool reversal;
 
-  const AccountTransfer(this.booking, this.reversal);
+  const AccountTransfer(this.booking);
 
   @override
-  List<Object?> get props => [booking, reversal];
+  List<Object?> get props => [booking];
 }
 
 class CheckAccountNameExists extends AccountEvent {

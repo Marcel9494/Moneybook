@@ -13,16 +13,15 @@ class Transfer implements UseCase<void, Params> {
 
   @override
   Future<Either<Failure, void>> call(Params params) async {
-    return await accountRepository.transfer(params.booking, params.reversal);
+    return await accountRepository.transfer(params.booking);
   }
 }
 
 class Params extends Equatable {
   final Booking booking;
-  final bool reversal;
 
-  const Params({required this.booking, required this.reversal});
+  const Params({required this.booking});
 
   @override
-  List<Object> get props => [booking, reversal];
+  List<Object> get props => [booking];
 }

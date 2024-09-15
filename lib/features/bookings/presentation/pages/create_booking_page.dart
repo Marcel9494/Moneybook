@@ -79,7 +79,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           } else if (_bookingType == BookingType.income) {
             BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
           } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-            BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, false));
+            BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking));
           }
         } else {
           BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
@@ -134,7 +134,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
               } else if (_bookingType == BookingType.income) {
                 BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0]));
               } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], false));
+                BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0]));
               }
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));

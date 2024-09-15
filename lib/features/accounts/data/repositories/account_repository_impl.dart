@@ -78,9 +78,9 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<Either<Failure, void>> transfer(Booking booking, bool reversal) async {
+  Future<Either<Failure, void>> transfer(Booking booking) async {
     try {
-      return Right(await accountLocalDataSource.transfer(booking, reversal));
+      return Right(await accountLocalDataSource.transfer(booking));
     } on ServerException {
       return Left(ServerFailure());
     }
