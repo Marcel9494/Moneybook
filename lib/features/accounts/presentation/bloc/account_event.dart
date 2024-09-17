@@ -32,10 +32,17 @@ class DeleteAccount extends AccountEvent {
 }
 
 class LoadAllAccounts extends AccountEvent {
-  const LoadAllAccounts();
-
   @override
   List<Object?> get props => [];
+}
+
+class LoadAccountsWithFilter extends AccountEvent {
+  final List<String> accountNameFilter;
+
+  const LoadAccountsWithFilter(this.accountNameFilter);
+
+  @override
+  List<Object?> get props => [accountNameFilter];
 }
 
 class AccountDeposit extends AccountEvent {
@@ -58,12 +65,11 @@ class AccountWithdraw extends AccountEvent {
 
 class AccountTransfer extends AccountEvent {
   final Booking booking;
-  final bool reversal;
 
-  const AccountTransfer(this.booking, this.reversal);
+  const AccountTransfer(this.booking);
 
   @override
-  List<Object?> get props => [booking, reversal];
+  List<Object?> get props => [booking];
 }
 
 class CheckAccountNameExists extends AccountEvent {

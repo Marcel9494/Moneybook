@@ -23,6 +23,15 @@ final class Loaded extends AccountState {
   List<Object> get props => [accounts];
 }
 
+final class FilteredLoaded extends AccountState {
+  final List<Account> filteredAccounts;
+
+  const FilteredLoaded({required this.filteredAccounts});
+
+  @override
+  List<Object> get props => [filteredAccounts];
+}
+
 final class Finished extends AccountState {
   @override
   List<Object> get props => [];

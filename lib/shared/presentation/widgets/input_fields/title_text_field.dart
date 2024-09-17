@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 class TitleTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController titleController;
+  final int maxLength;
   final bool autofocus;
+  final FocusNode focusNode = FocusNode();
 
-  const TitleTextField({
+  TitleTextField({
     super.key,
     required this.hintText,
     required this.titleController,
+    this.maxLength = 50,
     this.autofocus = false,
   });
 
@@ -23,8 +26,9 @@ class TitleTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: titleController,
-      maxLength: 80,
+      maxLength: maxLength,
       autofocus: autofocus,
+      focusNode: focusNode,
       textCapitalization: TextCapitalization.sentences,
       validator: (input) => _checkTextInput(),
       decoration: InputDecoration(
@@ -34,6 +38,7 @@ class TitleTextField extends StatelessWidget {
         suffixIcon: IconButton(
           onPressed: () => {
             titleController.text = '',
+            FocusScope.of(context).requestFocus(focusNode), // Setzt den Fokus und öffnet die Tastatur
           },
           icon: const Icon(Icons.clear_rounded),
         ),

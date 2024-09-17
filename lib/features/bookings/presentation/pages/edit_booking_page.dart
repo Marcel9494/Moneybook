@@ -108,8 +108,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
         isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
       );
       Timer(const Duration(milliseconds: durationInMs), () async {
-        BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking, context));
         _reverseBooking();
+        BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking, context));
       });
     }
   }
@@ -121,7 +121,14 @@ class _EditBookingPageState extends State<EditBookingPage> {
     } else if (_oldBooking.type == BookingType.income) {
       BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking));
     } else if (_oldBooking.type == BookingType.transfer || _oldBooking.type == BookingType.investment) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_oldBooking, true));
+      BlocProvider.of<account.AccountBloc>(context).add(
+        account.AccountTransfer(
+          _oldBooking.copyWith(
+            fromAccount: _oldBooking.toAccount,
+            toAccount: _oldBooking.fromAccount,
+          ),
+        ),
+      );
     }
   }
 
@@ -194,8 +201,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
                   BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_updatedBooking));
                 } else if (_bookingType == BookingType.income) {
                   BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_updatedBooking));
-                } else if (_bookingType == BookingType.investment) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking, false));
+                } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking));
                 }
               }
             },

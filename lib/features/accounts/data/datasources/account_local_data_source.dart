@@ -12,9 +12,10 @@ abstract class AccountLocalDataSource {
   Future<void> delete(int id);
   Future<AccountModel> load(int id);
   Future<List<Account>> loadAll();
+  Future<List<Account>> loadAccountsWithFilter(List<String> accountNameFilter);
   Future<void> deposit(Booking booking);
   Future<void> withdraw(Booking booking);
-  Future<void> transfer(Booking booking, bool reversal);
+  Future<void> transfer(Booking booking);
   Future<bool> checkAccountName(String accountName);
 }
 
@@ -82,6 +83,26 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   }
 
   @override
+  Future<List<Account>> loadAccountsWithFilter(List<String> accountNameFilter) async {
+    db = await openDatabase(localDbName);
+    List<Map> accountMap = await db.rawQuery('SELECT * FROM $accountDbName');
+    List<Account> accountList = accountMap
+        .map(
+          (account) => Account(
+            id: account['id'],
+            type: AccountType.fromString(account['type']),
+            name: account['name'],
+            amount: account['amount'],
+            currency: account['currency'],
+          ),
+        )
+        .where((account) => !accountNameFilter.contains(account.name))
+        .toList();
+    accountList.sort((first, second) => second.type.name.compareTo(first.type.name));
+    return accountList;
+  }
+
+  @override
   Future<void> deposit(Booking booking) async {
     db = await openDatabase(localDbName);
     List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
@@ -102,17 +123,17 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   }
 
   @override
-  Future<void> transfer(Booking booking, bool reversal) async {
+  Future<void> transfer(Booking booking) async {
     db = await openDatabase(localDbName);
     List<Map> fromAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
     List<Map> toAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      reversal == false ? fromAccountBalance[0]['amount'] : toAccountBalance[0]['amount'] - booking.amount,
-      reversal == false ? booking.fromAccount : booking.toAccount,
+      fromAccountBalance[0]['amount'] - booking.amount,
+      booking.fromAccount,
     ]);
     await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      reversal == false ? toAccountBalance[0]['amount'] : fromAccountBalance[0]['amount'] + booking.amount,
-      reversal == false ? booking.toAccount : booking.fromAccount,
+      toAccountBalance[0]['amount'] + booking.amount,
+      booking.toAccount,
     ]);
   }
 

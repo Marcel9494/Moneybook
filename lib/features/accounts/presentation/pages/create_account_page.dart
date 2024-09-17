@@ -51,9 +51,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
             } else if (state is CheckedAccountName) {
+              FocusManager.instance.primaryFocus?.unfocus();
               final FormState form = _accountFormKey.currentState!;
+              _numberOfEventCalls++;
               if (state.accountNameExists) {
-                _numberOfEventCalls++;
                 _createAccountBtnController.error();
                 Flushbar(
                   title: 'Kontoname existiert bereits',
@@ -64,26 +65,28 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 Timer(const Duration(milliseconds: durationInMs), () {
                   _createAccountBtnController.reset();
                 });
-              } else if (form.validate() == false) {
-                _createAccountBtnController.error();
-                Timer(const Duration(milliseconds: durationInMs), () {
-                  _createAccountBtnController.reset();
-                });
               } else {
-                _createAccountBtnController.success();
-                Timer(const Duration(milliseconds: durationInMs), () {
-                  BlocProvider.of<AccountBloc>(context).add(
-                    CreateAccount(
-                      Account(
-                        id: 0,
-                        type: AccountType.fromString(_accountTypeController.text),
-                        name: _accountNameController.text.trim(),
-                        amount: Amount.getValue(_amountController.text),
-                        currency: Amount.getCurrency(_amountController.text),
+                if (form.validate() == false) {
+                  _createAccountBtnController.error();
+                  Timer(const Duration(milliseconds: durationInMs), () {
+                    _createAccountBtnController.reset();
+                  });
+                } else {
+                  _createAccountBtnController.success();
+                  Timer(const Duration(milliseconds: durationInMs), () {
+                    BlocProvider.of<AccountBloc>(context).add(
+                      CreateAccount(
+                        Account(
+                          id: 0,
+                          type: AccountType.fromString(_accountTypeController.text),
+                          name: _accountNameController.text.trim(),
+                          amount: Amount.getValue(_amountController.text),
+                          currency: Amount.getCurrency(_amountController.text),
+                        ),
                       ),
-                    ),
-                  );
-                });
+                    );
+                  });
+                }
               }
             }
           },
@@ -98,7 +101,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         AccountTypeInputField(accountTypeController: _accountTypeController, accountType: _accountType.name),
-                        TitleTextField(hintText: 'Kontoname...', titleController: _accountNameController),
+                        TitleTextField(hintText: 'Kontoname...', titleController: _accountNameController, maxLength: 30),
                         AmountTextField(amountController: _amountController),
                         SaveButton(
                           text: 'Erstellen',

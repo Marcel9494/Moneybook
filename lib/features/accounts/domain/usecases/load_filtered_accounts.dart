@@ -3,25 +3,24 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../bookings/domain/entities/booking.dart';
 import '../repositories/account_repository.dart';
 
-class Transfer implements UseCase<void, Params> {
+class LoadFilteredAccounts implements UseCase<void, Params> {
   final AccountRepository accountRepository;
 
-  Transfer(this.accountRepository);
+  LoadFilteredAccounts(this.accountRepository);
 
   @override
   Future<Either<Failure, void>> call(Params params) async {
-    return await accountRepository.transfer(params.booking);
+    return await accountRepository.loadAccountsWithFilter(params.accountNameFilter);
   }
 }
 
 class Params extends Equatable {
-  final Booking booking;
+  final List<String> accountNameFilter;
 
-  const Params({required this.booking});
+  const Params({required this.accountNameFilter});
 
   @override
-  List<Object> get props => [booking];
+  List<Object> get props => [accountNameFilter];
 }

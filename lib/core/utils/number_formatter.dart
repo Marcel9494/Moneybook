@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 
+// TODO hier weitermachen und formatToMoneyAmount um Centbeträge wegschneiden erweitern
 // Beispiel:
 // Input moneyAmount: 8.6
 // return 8,60 €

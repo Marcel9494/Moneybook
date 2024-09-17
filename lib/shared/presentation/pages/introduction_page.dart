@@ -55,7 +55,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
             } else if (state.bookings[i].type == BookingType.income) {
               BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[i]));
             } else if (state.bookings[i].type == BookingType.transfer || state.bookings[i].type == BookingType.investment) {
-              BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[i], false));
+              BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[i]));
             }
           }
         }

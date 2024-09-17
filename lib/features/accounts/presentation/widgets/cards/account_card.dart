@@ -28,20 +28,34 @@ class _AccountCardState extends State<AccountCard> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
           ),
           child: Container(
-            decoration: const BoxDecoration(
-              border: Border(left: BorderSide(color: Colors.cyanAccent, width: 3.5)),
+            decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: widget.account.amount >= 0.0 ? Colors.green : Colors.redAccent, width: 3.5)),
             ),
             child: ListTile(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    widget.account.name,
-                    style: const TextStyle(fontSize: 14.0),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      widget.account.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
                   ),
-                  Text(
-                    formatToMoneyAmount(widget.account.amount.toString()),
-                    style: const TextStyle(fontSize: 14.0),
+                  const SizedBox(width: 18.0),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          formatToMoneyAmount(widget.account.amount.toString()),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 14.0),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
