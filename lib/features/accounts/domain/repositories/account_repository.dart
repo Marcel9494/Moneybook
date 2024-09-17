@@ -10,6 +10,7 @@ abstract class AccountRepository {
   Future<Either<Failure, void>> delete(int id);
   Future<Either<Failure, Account>> load(int id);
   Future<Either<Failure, List<Account>>> loadAll();
+  Future<Either<Failure, List<Account>>> loadAccountsWithFilter(List<String> accountNameFilter);
   Future<Either<Failure, void>> deposit(Booking booking);
   Future<Either<Failure, void>> withdraw(Booking booking);
   Future<Either<Failure, void>> transfer(Booking booking);

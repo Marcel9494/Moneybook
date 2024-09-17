@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:moneybook/features/accounts/domain/usecases/create.dart' as create_account;
 import 'package:moneybook/features/accounts/domain/usecases/delete.dart' as delete_account;
 import 'package:moneybook/features/accounts/domain/usecases/edit.dart' as edit_account;
+import 'package:moneybook/features/accounts/domain/usecases/load_filtered_accounts.dart';
 import 'package:moneybook/features/bookings/data/datasources/booking_local_data_source.dart';
 import 'package:moneybook/features/bookings/data/repositories/booking_repository_impl.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
@@ -68,7 +69,7 @@ void init() {
   // Bloc
   sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => UserBloc(sl(), sl()));
   sl.registerFactory(() => SharedBloc(sl(), sl()));
@@ -102,6 +103,7 @@ void init() {
   sl.registerLazySingleton(() => edit_account.Edit(sl()));
   sl.registerLazySingleton(() => delete_account.Delete(sl()));
   sl.registerLazySingleton(() => load_all_accounts.LoadAllCategories(sl()));
+  sl.registerLazySingleton(() => LoadFilteredAccounts(sl()));
   sl.registerLazySingleton(() => CheckAccountName(sl()));
 
   // Budgets

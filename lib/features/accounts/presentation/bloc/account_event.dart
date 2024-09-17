@@ -32,10 +32,17 @@ class DeleteAccount extends AccountEvent {
 }
 
 class LoadAllAccounts extends AccountEvent {
-  const LoadAllAccounts();
-
   @override
   List<Object?> get props => [];
+}
+
+class LoadAccountsWithFilter extends AccountEvent {
+  final List<String> accountNameFilter;
+
+  const LoadAccountsWithFilter(this.accountNameFilter);
+
+  @override
+  List<Object?> get props => [accountNameFilter];
 }
 
 class AccountDeposit extends AccountEvent {

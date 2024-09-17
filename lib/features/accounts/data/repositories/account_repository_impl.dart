@@ -94,4 +94,13 @@ class AccountRepositoryImpl implements AccountRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<Account>>> loadAccountsWithFilter(List<String> accountNameFilter) async {
+    try {
+      return Right(await accountLocalDataSource.loadAccountsWithFilter(accountNameFilter));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

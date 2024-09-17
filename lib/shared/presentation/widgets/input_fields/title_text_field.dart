@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class TitleTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController titleController;
+  final int maxLength;
   final bool autofocus;
   final FocusNode focusNode = FocusNode();
 
@@ -10,6 +11,7 @@ class TitleTextField extends StatelessWidget {
     super.key,
     required this.hintText,
     required this.titleController,
+    this.maxLength = 50,
     this.autofocus = false,
   });
 
@@ -24,7 +26,7 @@ class TitleTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: titleController,
-      maxLength: 80,
+      maxLength: maxLength,
       autofocus: autofocus,
       focusNode: focusNode,
       textCapitalization: TextCapitalization.sentences,

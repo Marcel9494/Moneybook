@@ -8,6 +8,7 @@ import '../../../accounts/domain/usecases/edit.dart';
 import '../../../accounts/domain/usecases/load_all_categories.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../domain/usecases/check_account_name.dart';
+import '../../domain/usecases/load_filtered_accounts.dart';
 
 part 'account_event.dart';
 part 'account_state.dart';
@@ -25,10 +26,12 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final Create createUseCase;
   final Edit editUseCase;
   final Delete deleteUseCase;
-  final LoadAllCategories loadAllCategoriesUseCase;
+  final LoadAllCategories loadAllCategoriesUseCase; // TODO Name in Accounts umändern
+  final LoadFilteredAccounts loadAccountsWithFilterUseCase;
   final CheckAccountName checkAccountNameUseCase;
 
-  AccountBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadAllCategoriesUseCase, this.checkAccountNameUseCase)
+  AccountBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadAllCategoriesUseCase, this.loadAccountsWithFilterUseCase,
+      this.checkAccountNameUseCase)
       : super(Initial()) {
     on<AccountEvent>((event, emit) async {
       if (event is CreateAccount) {
@@ -58,6 +61,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(const Error(message: LOAD_ACCOUNTS_FAILURE));
         }, (accounts) {
           emit(Loaded(accounts: accounts));
+        });
+      } else if (event is LoadAccountsWithFilter) {
+        final loadAccountWithFilterEither = await loadAccountsWithFilterUseCase.accountRepository.loadAccountsWithFilter(event.accountNameFilter);
+        loadAccountWithFilterEither.fold((failure) {
+          emit(const Error(message: LOAD_ACCOUNTS_FAILURE));
+        }, (filteredAccounts) {
+          emit(FilteredLoaded(filteredAccounts: filteredAccounts));
         });
       } else if (event is AccountDeposit) {
         if (event.booking.date.isAfter(DateTime.now())) {

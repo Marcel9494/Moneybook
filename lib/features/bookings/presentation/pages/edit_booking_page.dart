@@ -83,7 +83,6 @@ class _EditBookingPageState extends State<EditBookingPage> {
       categorie: widget.booking.categorie,
       isBooked: widget.booking.isBooked,
     );
-    print(_oldBooking.amount);
   }
 
   void _editBooking(BuildContext context) {

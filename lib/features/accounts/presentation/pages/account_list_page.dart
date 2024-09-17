@@ -21,9 +21,15 @@ class _AccountListPageState extends State<AccountListPage> {
   double _assets = 0.0;
   double _debts = 0.0;
 
+  @override
+  void initState() {
+    super.initState();
+    loadAccounts(context);
+  }
+
   void loadAccounts(BuildContext context) {
     BlocProvider.of<AccountBloc>(context).add(
-      const LoadAllAccounts(),
+      LoadAllAccounts(),
     );
   }
 
@@ -55,7 +61,6 @@ class _AccountListPageState extends State<AccountListPage> {
     return Scaffold(
       body: BlocBuilder<AccountBloc, AccountState>(
         builder: (context, state) {
-          loadAccounts(context);
           if (state is Loaded) {
             if (state.accounts.isEmpty) {
               return const SizedBox(

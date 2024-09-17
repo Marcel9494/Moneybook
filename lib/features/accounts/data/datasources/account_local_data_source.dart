@@ -12,6 +12,7 @@ abstract class AccountLocalDataSource {
   Future<void> delete(int id);
   Future<AccountModel> load(int id);
   Future<List<Account>> loadAll();
+  Future<List<Account>> loadAccountsWithFilter(List<String> accountNameFilter);
   Future<void> deposit(Booking booking);
   Future<void> withdraw(Booking booking);
   Future<void> transfer(Booking booking);
@@ -76,6 +77,26 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
             currency: account['currency'],
           ),
         )
+        .toList();
+    accountList.sort((first, second) => second.type.name.compareTo(first.type.name));
+    return accountList;
+  }
+
+  @override
+  Future<List<Account>> loadAccountsWithFilter(List<String> accountNameFilter) async {
+    db = await openDatabase(localDbName);
+    List<Map> accountMap = await db.rawQuery('SELECT * FROM $accountDbName');
+    List<Account> accountList = accountMap
+        .map(
+          (account) => Account(
+            id: account['id'],
+            type: AccountType.fromString(account['type']),
+            name: account['name'],
+            amount: account['amount'],
+            currency: account['currency'],
+          ),
+        )
+        .where((account) => !accountNameFilter.contains(account.name))
         .toList();
     accountList.sort((first, second) => second.type.name.compareTo(first.type.name));
     return accountList;

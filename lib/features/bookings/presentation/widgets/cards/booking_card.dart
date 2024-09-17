@@ -157,16 +157,19 @@ class BookingCard extends StatelessWidget {
                               children: [
                                 Text(
                                   booking.fromAccount,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(color: Colors.grey),
                                 ),
                                 booking.type == BookingType.transfer || booking.type == BookingType.investment
                                     ? const Icon(Icons.arrow_right_alt_rounded, size: 20.0, color: Colors.grey)
                                     : const SizedBox(),
                                 booking.type == BookingType.transfer || booking.type == BookingType.investment
-                                    ? Text(
-                                        booking.toAccount,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(color: Colors.grey),
+                                    ? Flexible(
+                                        child: Text(
+                                          booking.toAccount,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(color: Colors.grey),
+                                        ),
                                       )
                                     : const SizedBox(),
                               ],
