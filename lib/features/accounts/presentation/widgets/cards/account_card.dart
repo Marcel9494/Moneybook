@@ -36,7 +36,7 @@ class _AccountCardState extends State<AccountCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    flex: 3,
+                    flex: 5,
                     child: Text(
                       widget.account.name,
                       overflow: TextOverflow.ellipsis,
@@ -45,7 +45,7 @@ class _AccountCardState extends State<AccountCard> {
                   ),
                   const SizedBox(width: 18.0),
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
