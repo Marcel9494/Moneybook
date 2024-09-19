@@ -155,23 +155,21 @@ class BookingCard extends StatelessWidget {
                             const SizedBox(height: 4.0),
                             Row(
                               children: [
-                                Text(
-                                  booking.fromAccount,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                                booking.type == BookingType.transfer || booking.type == BookingType.investment
-                                    ? const Icon(Icons.arrow_right_alt_rounded, size: 20.0, color: Colors.grey)
-                                    : const SizedBox(),
-                                booking.type == BookingType.transfer || booking.type == BookingType.investment
+                                booking.type == BookingType.expense || booking.type == BookingType.income
                                     ? Flexible(
                                         child: Text(
-                                          booking.toAccount,
+                                          booking.fromAccount,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(color: Colors.grey),
                                         ),
                                       )
-                                    : const SizedBox(),
+                                    : Flexible(
+                                        child: Text(
+                                          '${booking.fromAccount} \u2192 ${booking.toAccount}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(color: Colors.grey),
+                                        ),
+                                      ),
                               ],
                             ),
                           ],
