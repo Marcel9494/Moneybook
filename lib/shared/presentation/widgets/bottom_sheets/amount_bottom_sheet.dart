@@ -9,7 +9,7 @@ import '../deco/bottom_sheet_header.dart';
 
 bool _clearAmountInputField = false;
 
-void openBottomSheetForAmountInput({required BuildContext context, required TextEditingController amountController}) {
+void openBottomSheetForAmountInput({required BuildContext context, required TextEditingController amountController, bool showMinus = false}) {
   if (amountController.text.isNotEmpty) {
     _clearAmountInputField = true;
   }
@@ -51,10 +51,12 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
                       SquareButton(onPressed: () => _setAmount('9', amountController), text: '9'),
                       SquareIconButton(
                           onPressed: () => Navigator.pop(context), icon: const Icon(Icons.check_circle_rounded, color: Colors.greenAccent)),
-                      const Visibility(
-                        visible: false,
-                        child: Text(''),
-                      ),
+                      showMinus
+                          ? SquareButton(onPressed: () => _setAmount('-', amountController), text: '-')
+                          : const Visibility(
+                              visible: false,
+                              child: Text(''),
+                            ),
                       SquareButton(onPressed: () => _setAmount('0', amountController), text: '0'),
                       SquareButton(onPressed: () => _setAmount(',', amountController), text: ','),
                     ],
@@ -68,7 +70,9 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
     },
   ).whenComplete(() {
     // TODO '€' über Einstellungen setzen können je nach Sprache
-    if (amountController.text.isNotEmpty && !amountController.text.contains('€')) {
+    if (amountController.text == '-') {
+      amountController.text = '';
+    } else if (amountController.text.isNotEmpty && !amountController.text.contains('€')) {
       amountController.text = formatToMoneyAmount(amountController.text);
     }
   });

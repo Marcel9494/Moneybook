@@ -102,7 +102,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       children: [
                         AccountTypeInputField(accountTypeController: _accountTypeController, accountType: _accountType.name),
                         TitleTextField(hintText: 'Kontoname...', titleController: _accountNameController, maxLength: 30),
-                        AmountTextField(amountController: _amountController),
+                        AmountTextField(amountController: _amountController, showMinus: true),
                         SaveButton(
                           text: 'Erstellen',
                           saveBtnController: _createAccountBtnController,
