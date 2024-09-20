@@ -5,11 +5,13 @@ import '../bottom_sheets/amount_bottom_sheet.dart';
 class AmountTextField extends StatelessWidget {
   final TextEditingController amountController;
   final String hintText;
+  final bool showMinus;
 
   const AmountTextField({
     super.key,
     required this.amountController,
     this.hintText = 'Betrag...',
+    this.showMinus = false,
   });
 
   String? _checkAmountInput() {
@@ -29,6 +31,7 @@ class AmountTextField extends StatelessWidget {
       onTap: () => openBottomSheetForAmountInput(
         context: context,
         amountController: amountController,
+        showMinus: showMinus,
       ),
       decoration: InputDecoration(
         hintText: hintText,
