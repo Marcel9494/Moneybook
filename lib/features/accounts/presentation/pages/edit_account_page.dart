@@ -151,6 +151,100 @@ class _EditAccountPageState extends State<EditAccountPage> {
     );
   }
 
+  void _editAccount(BuildContext context) {
+    if (_oldAccountAmount != formatMoneyAmountToDouble(_amountController.text)) {
+      showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Neue Buchung?'),
+            content: const Text('Wollen Sie die Kontostandänderung als Buchung erfassen?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ja'),
+                onPressed: () {
+                  _editAccountWithNewAmount(context, true);
+                },
+              ),
+              TextButton(
+                child: const Text('Nein'),
+                onPressed: () {
+                  _editAccountWithNewAmount(context, false);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      Timer(const Duration(milliseconds: durationInMs), () {
+        BlocProvider.of<AccountBloc>(context).add(
+          EditAccount(
+            Account(
+              id: widget.account.id,
+              type: AccountType.fromString(_accountTypeController.text),
+              name: _accountNameController.text.trim(),
+              amount: Amount.getValue(_amountController.text),
+              currency: Amount.getCurrency(_amountController.text),
+            ),
+          ),
+        );
+        BlocProvider.of<booking.BookingBloc>(context).add(
+          booking.UpdateBookingsWithAccount(
+            _oldAccountName,
+            _accountNameController.text,
+          ),
+        );
+      });
+      _editAccountBtnController.success();
+    }
+  }
+
+  void _editAccountWithNewAmount(BuildContext context, bool createBooking) {
+    Booking newBooking = Booking(
+      id: 0,
+      type: _oldAccountAmount < formatMoneyAmountToDouble(_amountController.text) ? BookingType.income : BookingType.expense,
+      title: 'Kontoänderung',
+      date: DateTime.now(),
+      repetition: RepetitionType.noRepetition,
+      amount: (formatMoneyAmountToDouble(_amountController.text) - _oldAccountAmount).abs(),
+      currency: Amount.getCurrency(_amountController.text),
+      fromAccount: widget.account.name,
+      toAccount: '',
+      categorie: 'Kontoänderung',
+      isBooked: true,
+    );
+    if (createBooking) {
+      BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(newBooking));
+    }
+    if (_oldAccountAmount < formatMoneyAmountToDouble(_amountController.text)) {
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
+    } else if (_oldAccountAmount > formatMoneyAmountToDouble(_amountController.text)) {
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
+    }
+    Timer(const Duration(milliseconds: durationInMs), () {
+      BlocProvider.of<AccountBloc>(context).add(
+        EditAccount(
+          Account(
+            id: widget.account.id,
+            type: AccountType.fromString(_accountTypeController.text),
+            name: _accountNameController.text.trim(),
+            amount: Amount.getValue(_amountController.text),
+            currency: Amount.getCurrency(_amountController.text),
+          ),
+        ),
+      );
+      BlocProvider.of<booking.BookingBloc>(context).add(
+        booking.UpdateBookingsWithAccount(
+          _oldAccountName,
+          _accountNameController.text,
+        ),
+      );
+      Navigator.pop(context);
+      _editAccountBtnController.success();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -197,113 +291,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   _editAccountBtnController.reset();
                 });
               } else {
-                if (_oldAccountAmount != formatMoneyAmountToDouble(_amountController.text)) {
-                  showCupertinoDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Neue Buchung?'),
-                        content: const Text('Wollen Sie die Kontostandänderung als Buchung erfassen?'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Ja'),
-                            onPressed: () {
-                              Booking newBooking = Booking(
-                                id: 0,
-                                type:
-                                    _oldAccountAmount < formatMoneyAmountToDouble(_amountController.text) ? BookingType.income : BookingType.expense,
-                                title: 'Kontoänderung',
-                                date: DateTime.now(),
-                                repetition: RepetitionType.noRepetition,
-                                amount: (formatMoneyAmountToDouble(_amountController.text) - _oldAccountAmount).abs(),
-                                currency: Amount.getCurrency(_amountController.text),
-                                fromAccount: widget.account.name,
-                                toAccount: '',
-                                categorie: 'Kontoänderung',
-                                isBooked: true,
-                              );
-                              BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(newBooking));
-                              if (_oldAccountAmount < formatMoneyAmountToDouble(_amountController.text)) {
-                                BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
-                              } else if (_oldAccountAmount > formatMoneyAmountToDouble(_amountController.text)) {
-                                BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
-                              }
-                              _editAccountBtnController.success();
-                              Timer(const Duration(milliseconds: durationInMs), () {
-                                BlocProvider.of<AccountBloc>(context).add(
-                                  EditAccount(
-                                    Account(
-                                      id: widget.account.id,
-                                      type: AccountType.fromString(_accountTypeController.text),
-                                      name: _accountNameController.text.trim(),
-                                      amount: Amount.getValue(_amountController.text),
-                                      currency: Amount.getCurrency(_amountController.text),
-                                    ),
-                                  ),
-                                );
-                                BlocProvider.of<booking.BookingBloc>(context).add(
-                                  booking.UpdateBookingsWithAccount(
-                                    _oldAccountName,
-                                    _accountNameController.text,
-                                  ),
-                                );
-                                Navigator.pop(context);
-                              });
-                            },
-                          ),
-                          TextButton(
-                            child: const Text('Nein'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
-                              _editAccountBtnController.success();
-                              Booking newBooking = Booking(
-                                id: 0,
-                                type:
-                                    _oldAccountAmount < formatMoneyAmountToDouble(_amountController.text) ? BookingType.income : BookingType.expense,
-                                title: 'Kontoänderung',
-                                date: DateTime.now(),
-                                repetition: RepetitionType.noRepetition,
-                                amount: (formatMoneyAmountToDouble(_amountController.text) - _oldAccountAmount).abs(),
-                                currency: Amount.getCurrency(_amountController.text),
-                                fromAccount: widget.account.name,
-                                toAccount: '',
-                                categorie: 'Kontoänderung',
-                                isBooked: true,
-                              );
-                              if (_oldAccountAmount < formatMoneyAmountToDouble(_amountController.text)) {
-                                BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
-                              } else if (_oldAccountAmount > formatMoneyAmountToDouble(_amountController.text)) {
-                                BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
-                              }
-                              Timer(const Duration(milliseconds: durationInMs), () {
-                                BlocProvider.of<AccountBloc>(context).add(
-                                  EditAccount(
-                                    Account(
-                                      id: widget.account.id,
-                                      type: AccountType.fromString(_accountTypeController.text),
-                                      name: _accountNameController.text.trim(),
-                                      amount: Amount.getValue(_amountController.text),
-                                      currency: Amount.getCurrency(_amountController.text),
-                                    ),
-                                  ),
-                                );
-                                BlocProvider.of<booking.BookingBloc>(context).add(
-                                  booking.UpdateBookingsWithAccount(
-                                    _oldAccountName,
-                                    _accountNameController.text,
-                                  ),
-                                );
-                              });
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
+                _editAccount(context);
               }
             }
           },
