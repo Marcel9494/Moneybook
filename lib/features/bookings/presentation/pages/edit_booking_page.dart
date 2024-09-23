@@ -49,7 +49,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   late RepetitionType _repetitionType;
   late BookingType _bookingType;
   late Booking _oldBooking;
-  late Booking _updatedBooking;
+  Booking? _updatedBooking;
 
   @override
   void initState() {
@@ -109,7 +109,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       );
       Timer(const Duration(milliseconds: durationInMs), () async {
         _reverseBooking();
-        BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking, context));
+        BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking!, context));
       });
     }
   }
@@ -145,7 +145,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
               child: const Text('Ja'),
               onPressed: () {
                 BlocProvider.of<BookingBloc>(context).add(
-                  DeleteBooking(widget.booking.id, context),
+                  DeleteBooking(widget.booking, context),
                 );
               },
             ),
@@ -196,13 +196,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
           child: BlocListener<account.AccountBloc, account.AccountState>(
             listener: (context, state) {
               // Nachdem alte Buchung rückgängig gemacht wurde wird die bearbeitete Buchung gebucht
-              if (state is account.Booked) {
+              if (state is account.Booked && _updatedBooking != null) {
                 if (_bookingType == BookingType.expense) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_updatedBooking));
+                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_updatedBooking!));
                 } else if (_bookingType == BookingType.income) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_updatedBooking));
+                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_updatedBooking!));
                 } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking));
+                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking!));
                 }
               }
             },
