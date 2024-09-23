@@ -1,11 +1,12 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
 import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/check_for_new_bookings.dart';
@@ -17,6 +18,7 @@ import '../../domain/usecases/load_new_bookings.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
 import '../../domain/usecases/update_all_bookings_with_account.dart';
 import '../../domain/usecases/update_all_bookings_with_categorie.dart';
+import '../../domain/value_objects/booking_type.dart';
 
 part 'booking_event.dart';
 part 'booking_state.dart';
@@ -132,7 +134,21 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is DeleteBooking) {
-        final deleteBookingEither = await deleteUseCase.bookingRepository.delete(event.bookingId);
+        if (event.booking.type == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking));
+        } else if (event.booking.type == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.booking));
+        } else if (event.booking.type == BookingType.transfer || event.booking.type == BookingType.investment) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(
+            account.AccountTransfer(
+              event.booking.copyWith(
+                fromAccount: event.booking.toAccount,
+                toAccount: event.booking.fromAccount,
+              ),
+            ),
+          );
+        }
+        final deleteBookingEither = await deleteUseCase.bookingRepository.delete(event.booking.id);
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKING_FAILURE));
         }, (_) {
