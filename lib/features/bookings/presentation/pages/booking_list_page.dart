@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_value_cards.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
@@ -8,6 +7,7 @@ import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../bloc/booking_bloc.dart';
+import '../widgets/cards/pending_monthly_value_cards.dart';
 import '../widgets/deco/daily_report_summary.dart';
 
 class BookingListPage extends StatefulWidget {
@@ -27,10 +27,13 @@ class _BookingListPageState extends State<BookingListPage> {
   late DateTime _bookingDate;
   final Map<DateTime, double> _dailyIncomeMap = {};
   final Map<DateTime, double> _dailyExpenseMap = {};
+  final List<Booking> _dependingBookings = [];
   double _monthlyExpense = 0.0;
   double _monthlyIncome = 0.0;
   double _monthlyInvestment = 0.0;
-  double _monthlyUnpaid = 0.0;
+  double _monthlyDependingExpense = 0.0;
+  double _monthlyDependingIncome = 0.0;
+  double _monthlyDependingInvestment = 0.0;
   int _numberOfBookedBookings = 0;
   bool _isExpanded = false;
 
@@ -63,18 +66,30 @@ class _BookingListPageState extends State<BookingListPage> {
     _monthlyExpense = 0.0;
     _monthlyIncome = 0.0;
     _monthlyInvestment = 0.0;
-    _monthlyUnpaid = 0.0;
+    _monthlyDependingExpense = 0.0;
+    _monthlyDependingIncome = 0.0;
+    _monthlyDependingInvestment = 0.0;
+    _dependingBookings.clear();
     for (int i = 0; i < bookings.length; i++) {
-      if (bookings[i].type == BookingType.expense) {
-        _monthlyExpense += bookings[i].amount;
-      } else if (bookings[i].type == BookingType.income) {
-        _monthlyIncome += bookings[i].amount;
-      } else if (bookings[i].type == BookingType.investment) {
-        _monthlyInvestment += bookings[i].amount;
+      if (bookings[i].date.isAfter(DateTime.now()) == false) {
+        if (bookings[i].type == BookingType.expense) {
+          _monthlyExpense += bookings[i].amount;
+        } else if (bookings[i].type == BookingType.income) {
+          _monthlyIncome += bookings[i].amount;
+        } else if (bookings[i].type == BookingType.investment) {
+          _monthlyInvestment += bookings[i].amount;
+        }
+      } else if (bookings[i].date.isAfter(DateTime.now())) {
+        _dependingBookings.add(bookings[i]);
+        if (bookings[i].type == BookingType.expense) {
+          _monthlyDependingExpense += bookings[i].amount;
+        } else if (bookings[i].type == BookingType.income) {
+          _monthlyDependingIncome += bookings[i].amount;
+        } else if (bookings[i].type == BookingType.investment) {
+          _monthlyDependingInvestment += bookings[i].amount;
+        }
       }
-      if (bookings[i].date.isAfter(DateTime.now())) {
-        _monthlyUnpaid += bookings[i].amount;
-      }
+      _dependingBookings.sort((first, second) => first.date.compareTo(second.date));
     }
   }
 
@@ -171,7 +186,7 @@ class _BookingListPageState extends State<BookingListPage> {
                                   dense: true,
                                   child: ExpansionTile(
                                     title: Text(
-                                      '${formatToMoneyAmount(_monthlyUnpaid.toString())} Ausstehend',
+                                      _isExpanded ? '${_dependingBookings.length} Ausstehende Buchungen' : '${_dependingBookings.length} Ausstehende',
                                       style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 14.5 : 13.0),
                                     ),
                                     iconColor: _isExpanded ? Colors.white : Colors.grey,
@@ -182,39 +197,49 @@ class _BookingListPageState extends State<BookingListPage> {
                                       });
                                     },
                                     children: [
+                                      PendingMonthlyValueCards(
+                                        monthlyDependingExpense: _monthlyDependingExpense,
+                                        monthlyDependingIncome: _monthlyDependingIncome,
+                                        monthlyDependingInvestment: _monthlyDependingInvestment,
+                                      ),
                                       const Padding(
-                                        padding: EdgeInsets.only(bottom: 4.0),
+                                        padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
                                         child: Divider(indent: 12.0, endIndent: 12.0, height: 2.0),
                                       ),
                                       SizedBox(
-                                        height: MediaQuery.sizeOf(context).height / 2.5,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: state.bookings.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            if (state.bookings[index].date.isAfter(DateTime.now())) {
-                                              if (index > 0) {
-                                                _previousBookingDate = state.bookings[index - 1].date;
-                                                _bookingDate = state.bookings[index].date;
-                                              }
-                                              if (index == 0 || _previousBookingDate != _bookingDate) {
-                                                return Column(
-                                                  children: [
-                                                    DailyReportSummary(
-                                                      date: state.bookings[index].date,
-                                                      dailyIncome: _dailyIncomeMap[state.bookings[index].date],
-                                                      dailyExpense: _dailyExpenseMap[state.bookings[index].date],
-                                                    ),
-                                                    BookingCard(booking: state.bookings[index]),
-                                                  ],
-                                                );
-                                              } else {
-                                                return BookingCard(booking: state.bookings[index]);
-                                              }
-                                            }
-                                            return const SizedBox();
-                                          },
-                                        ),
+                                        height: MediaQuery.sizeOf(context).height / 2.3,
+                                        child: _dependingBookings.isEmpty
+                                            ? const EmptyList(
+                                                text: 'Keine ausstehenden Buchungen vorhanden',
+                                                icon: Icons.receipt_long_rounded,
+                                              )
+                                            : ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: _dependingBookings.length,
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  if (_dependingBookings[index].date.isAfter(DateTime.now())) {
+                                                    if (index > 0) {
+                                                      _previousBookingDate = _dependingBookings[index - 1].date;
+                                                      _bookingDate = _dependingBookings[index].date;
+                                                    }
+                                                    if (index == 0 || _previousBookingDate != _bookingDate) {
+                                                      return Column(
+                                                        children: [
+                                                          DailyReportSummary(
+                                                            date: _dependingBookings[index].date,
+                                                            dailyIncome: _dailyIncomeMap[_dependingBookings[index].date],
+                                                            dailyExpense: _dailyExpenseMap[_dependingBookings[index].date],
+                                                          ),
+                                                          BookingCard(booking: _dependingBookings[index]),
+                                                        ],
+                                                      );
+                                                    } else {
+                                                      return BookingCard(booking: _dependingBookings[index]);
+                                                    }
+                                                  }
+                                                  return const SizedBox();
+                                                },
+                                              ),
                                       ),
                                     ],
                                   ),
