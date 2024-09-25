@@ -55,6 +55,9 @@ Bei der Haushaltsbuch App gibt es aktuell folgende features die jeweils der oben
 - Benutzer (user)
 - Einstellungen (settings)
 
+Die Models im Data Layer wird vorerst nicht so umgesetzt, weil es anfangs nur eine (lokale) Datenquelle gibt und daher die entities im 
+Domain Layer reichen. Später wenn eine weitere Datenquelle hinzukommt werden wahrscheinlich die Models mitintegriert in die aktuelle Software Architektur.
+
 # Context View (Level 0)
 
 Aktuelle Context View der Moneybook App mit einer lokalen Sqflite Datenbank Anbindung.
