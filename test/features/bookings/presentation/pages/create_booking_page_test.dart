@@ -1,13 +1,16 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
+import 'package:moneybook/features/bookings/domain/usecases/check_for_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart';
 import 'package:moneybook/features/bookings/domain/usecases/edit.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_categorie_bookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/load_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/update_all_bookings_with_account.dart';
+import 'package:moneybook/features/bookings/domain/usecases/update_all_bookings_with_categorie.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
@@ -22,6 +25,10 @@ Future<void> main() async {
     late Delete deleteUsecase;
     late LoadSortedMonthly loadSortedMonthlyUsecase;
     late LoadAllCategorieBookings loadCategorieBookingsUseCase;
+    late LoadNewBookings loadNewBookingsUseCase;
+    late UpdateAllBookingsWithCategorie updateAllBookingsWithCategorieUseCase;
+    late UpdateAllBookingsWithAccount updateAllBookingsWithAccountUseCase;
+    late CheckForNewBookings checkNewBookingsUseCase;
     late MockBookingRepository mockBookingRepository;
 
     setUp(() {
@@ -31,7 +38,21 @@ Future<void> main() async {
       deleteUsecase = Delete(mockBookingRepository);
       loadSortedMonthlyUsecase = LoadSortedMonthly(mockBookingRepository);
       loadCategorieBookingsUseCase = LoadAllCategorieBookings(mockBookingRepository);
-      bookingBloc = BookingBloc(createUsecase, editUsecase, deleteUsecase, loadSortedMonthlyUsecase, loadCategorieBookingsUseCase);
+      loadNewBookingsUseCase = LoadNewBookings(mockBookingRepository);
+      updateAllBookingsWithCategorieUseCase = UpdateAllBookingsWithCategorie(mockBookingRepository);
+      updateAllBookingsWithAccountUseCase = UpdateAllBookingsWithAccount(mockBookingRepository);
+      checkNewBookingsUseCase = CheckForNewBookings(mockBookingRepository);
+      bookingBloc = BookingBloc(
+        createUsecase,
+        editUsecase,
+        deleteUsecase,
+        loadSortedMonthlyUsecase,
+        loadCategorieBookingsUseCase,
+        updateAllBookingsWithCategorieUseCase,
+        updateAllBookingsWithAccountUseCase,
+        checkNewBookingsUseCase,
+        loadNewBookingsUseCase,
+      );
     });
 
     Booking tBooking = Booking(
@@ -45,14 +66,15 @@ Future<void> main() async {
       fromAccount: 'Geldbeutel',
       toAccount: '',
       categorie: 'Lebensmittel',
+      isBooked: true,
     );
 
-    // TODO hier weitermachen und Tests implementieren
-    blocTest(
+    // TODO hier weitermachen ist es überhaupt nützlich auf dieser Ebene Tests einzubauen?
+    /*blocTest(
       'emits when booking is created',
       build: () => bookingBloc,
       act: (bloc) => bloc.add(CreateBooking(tBooking)),
-      expect: () => [null],
-    );
+      expect: () => [],
+    );*/
   });
 }

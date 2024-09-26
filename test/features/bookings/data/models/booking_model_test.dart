@@ -16,6 +16,7 @@ void main() {
     fromAccount: 'Geldbeutel',
     toAccount: '',
     categorie: 'Lebensmittel',
+    isBooked: true,
   );
 
   test('should be a subclass of Booking entity', () async {

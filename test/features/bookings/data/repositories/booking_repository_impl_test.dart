@@ -44,6 +44,7 @@ void main() {
       fromAccount: 'Geldbeutel',
       toAccount: '',
       categorie: 'Lebensmittel',
+      isBooked: true,
     );
     final tBooking = tBookingModel;
 

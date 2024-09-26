@@ -14,7 +14,7 @@ class CreateBudgetRow extends StatelessWidget {
         children: [
           Text(
             'Budgets',
-            style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
           ),
           CreateBudgetButton(),
         ],

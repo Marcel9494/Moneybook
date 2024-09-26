@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_value_cards.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
@@ -209,8 +210,8 @@ class _BookingListPageState extends State<BookingListPage> {
                                       SizedBox(
                                         height: MediaQuery.sizeOf(context).height / 2.3,
                                         child: _dependingBookings.isEmpty
-                                            ? const EmptyList(
-                                                text: 'Keine ausstehenden Buchungen vorhanden',
+                                            ? EmptyList(
+                                                text: 'Keine ausstehenden Buchungen für\n${DateFormat.MMMM().format(widget.selectedDate)} vorhanden',
                                                 icon: Icons.receipt_long_rounded,
                                               )
                                             : ListView.builder(

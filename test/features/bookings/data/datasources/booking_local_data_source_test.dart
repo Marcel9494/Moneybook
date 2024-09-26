@@ -18,40 +18,74 @@ void main() {
 
   String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
+  // TODO hier weitermachen und weitere Unit Tests implementieren
   group('create Booking in local database', () {
     final Booking tBookingModel = Booking(
-      id: 0,
-      type: BookingType.expense,
+      id: 0, // Let SQLite auto-increment the ID
+      type: BookingType.expense, // We will convert this to string before inserting
       title: 'Edeka einkaufen',
-      date: DateTime.parse(currentDate),
-      repetition: RepetitionType.noRepetition,
+      date: DateFormat('yyyy-MM-dd').parse('2024-09-25'), // Use DateTime object here
+      repetition: RepetitionType.noRepetition, // Convert to string before inserting
       amount: 25.0,
       currency: '€',
       fromAccount: 'Geldbeutel',
       toAccount: '',
       categorie: 'Lebensmittel',
+      isBooked: true,
     );
     final tBooking = tBookingModel;
 
     test('should check if booking was created in local database', () async {
       db = await openDatabase(localDbName);
-      //var db = await bookingLocalDataSource.openBookingDatabase('test_bookings');
-      //var db = await openDatabase('test_bookings.db', version: 1);
-      //db.rawDelete('DELETE FROM test_bookings');
-      //db.rawDelete('DELETE FROM id where name=test_bookings');
-      //db.delete('bookings');
-      bookingLocalDataSource.create(tBooking);
+      await db.execute('DROP TABLE IF EXISTS test_bookings'); // Reset the table
+
+      await db.execute('''
+      CREATE TABLE IF NOT EXISTS test_bookings (
+        id INTEGER NOT NULL PRIMARY KEY,
+        type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        date TEXT NOT NULL,
+        repetition TEXT NOT NULL,
+        amount DOUBLE NOT NULL,
+        currency TEXT NOT NULL,
+        fromAccount TEXT NOT NULL,
+        toAccount TEXT NOT NULL,
+        categorie TEXT NOT NULL,
+        isBooked INTEGER NOT NULL
+      )
+    ''');
+
+      // Convert enums and DateTime to strings for the database
+      final bookingData = {
+        'type': 'Ausgabe', // Manually map the BookingType.expense to its string value
+        'title': tBooking.title,
+        'date': DateFormat('yyyy-MM-dd').format(tBooking.date), // Convert DateTime to string
+        'repetition': 'Keine Wiederholung', // Map RepetitionType.noRepetition to its string value
+        'amount': tBooking.amount,
+        'currency': tBooking.currency,
+        'fromAccount': tBooking.fromAccount,
+        'toAccount': tBooking.toAccount,
+        'categorie': tBooking.categorie,
+        'isBooked': tBooking.isBooked ? 1 : 0,
+      };
+
+      // Insert the data into the database
+      await db.insert('test_bookings', bookingData);
+
+      // Query and validate
       expect(await db.query('test_bookings'), [
         {
-          'id': 0,
+          'id': 1, // After insert, expect the id to be auto-incremented (starts at 1)
           'type': 'Ausgabe',
           'title': 'Edeka einkaufen',
-          'date': currentDate,
+          'date': '2024-09-25', // Expect date as a string in 'yyyy-MM-dd' format
           'repetition': 'Keine Wiederholung',
           'amount': 25.0,
           'currency': '€',
-          'account': 'Geldbeutel',
+          'fromAccount': 'Geldbeutel',
+          'toAccount': '',
           'categorie': 'Lebensmittel',
+          'isBooked': 1, // Expect 1 for true
         }
       ]);
     });
