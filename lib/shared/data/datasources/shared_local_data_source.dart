@@ -18,6 +18,7 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
       await db.execute('''
           CREATE TABLE IF NOT EXISTS $bookingDbName (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            serieId INTEGER NOT NULL,
             type TEXT NOT NULL,
             title TEXT NOT NULL,
             date TEXT NOT NULL,

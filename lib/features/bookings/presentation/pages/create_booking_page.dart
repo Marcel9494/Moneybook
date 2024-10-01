@@ -60,6 +60,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       _createBookingBtnController.success();
       Booking newBooking = Booking(
         id: 0,
+        serieId: -1,
         type: _bookingType,
         title: _titleController.text.trim(),
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
@@ -102,6 +103,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     setState(() {
       _repetitionType = newRepetitionType;
     });
+    if (_repetitionType == RepetitionType.monthlyBeginning) {
+      _dateController.text = dateFormatterDDMMYYYYEE
+          .format(DateTime(dateFormatterDDMMYYYYEE.parse(_dateController.text).year, dateFormatterDDMMYYYYEE.parse(_dateController.text).month, 1));
+    } else if (_repetitionType == RepetitionType.monthlyEnding) {
+      _dateController.text = dateFormatterDDMMYYYYEE.format(
+          DateTime(dateFormatterDDMMYYYYEE.parse(_dateController.text).year, dateFormatterDDMMYYYYEE.parse(_dateController.text).month + 1, 0));
+    }
     Navigator.pop(context);
   }
 

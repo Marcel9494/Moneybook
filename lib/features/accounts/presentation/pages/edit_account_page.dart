@@ -120,7 +120,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   final FormState form = _deleteAccountFormKey.currentState!;
                   if (form.validate()) {
                     Booking transferBooking = Booking(
-                      id: widget.account.id,
+                      id: widget.account.id, // TODO initial auf 0 setzen?
+                      serieId: -1,
                       type: BookingType.transfer,
                       title: 'Übertrag',
                       date: DateTime.now(), // parse DateFormat in ISO-8601,
@@ -203,6 +204,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
   void _editAccountWithNewAmount(BuildContext context, bool createBooking) {
     Booking newBooking = Booking(
       id: 0,
+      serieId: -1,
       type: _oldAccountAmount < formatMoneyAmountToDouble(_amountController.text) ? BookingType.income : BookingType.expense,
       title: 'Kontoänderung',
       date: DateTime.now(),

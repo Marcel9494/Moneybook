@@ -14,9 +14,9 @@ class CreateBooking extends BookingEvent {
 }
 
 class CreateSerieBooking extends BookingEvent {
-  final Booking booking;
+  Booking booking;
 
-  const CreateSerieBooking(this.booking);
+  CreateSerieBooking(this.booking);
 
   @override
   List<Object?> get props => [booking];

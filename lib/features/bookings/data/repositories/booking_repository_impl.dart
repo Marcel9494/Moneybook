@@ -103,4 +103,13 @@ class BookingRepositoryImpl implements BookingRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, int>> getNewSerieId() async {
+    try {
+      return Right(await bookingLocalDataSource.getNewSerieId());
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

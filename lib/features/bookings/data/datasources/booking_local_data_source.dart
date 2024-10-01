@@ -20,6 +20,7 @@ abstract class BookingLocalDataSource {
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
   Future<void> checkForNewBookings();
+  Future<int> getNewSerieId();
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -29,8 +30,9 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   Future<void> create(Booking booking) async {
     db = await openDatabase(localDbName);
     await db.rawInsert(
-      'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO $bookingDbName(serieId, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
+        booking.serieId,
         booking.type.name,
         booking.title,
         dateFormatterYYYYMMDD.format(booking.date),
@@ -50,9 +52,10 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     db = await openDatabase(localDbName);
     try {
       await db.rawUpdate(
-          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+          'UPDATE $bookingDbName SET id = ?, serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
           [
             booking.id,
+            booking.serieId,
             booking.type.name,
             booking.title,
             DateFormat('yyyy-MM-dd').format(booking.date),
@@ -94,6 +97,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         .map(
           (booking) => Booking(
             id: booking['id'],
+            serieId: booking['serieId'],
             type: BookingType.fromString(booking['type']),
             title: booking['title'],
             date: DateTime.parse(booking['date']),
@@ -119,6 +123,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         .map(
           (booking) => Booking(
             id: booking['id'],
+            serieId: booking['serieId'],
             type: BookingType.fromString(booking['type']),
             title: booking['title'],
             date: DateTime.parse(booking['date']),
@@ -168,6 +173,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         .map(
           (booking) => Booking(
             id: booking['id'],
+            serieId: booking['serieId'],
             type: BookingType.fromString(booking['type']),
             title: booking['title'],
             date: DateTime.parse(booking['date']),
@@ -182,5 +188,12 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         )
         .toList();
     return newBookingList;
+  }
+
+  @override
+  Future<int> getNewSerieId() async {
+    List<Map<String, dynamic>> result = await db.rawQuery('SELECT MAX(serieId) as newSerieId FROM $bookingDbName');
+    int newSerieId = result.first['newSerieId'] != null ? result.first['newSerieId'] as int : 0;
+    return newSerieId + 1;
   }
 }

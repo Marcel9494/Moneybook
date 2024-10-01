@@ -72,6 +72,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   void _backupOldBooking() {
     _oldBooking = Booking(
       id: widget.booking.id,
+      serieId: widget.booking.serieId,
       type: widget.booking.type,
       title: widget.booking.title,
       date: widget.booking.date,
@@ -97,6 +98,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       _editBookingBtnController.success();
       _updatedBooking = Booking(
         id: widget.booking.id,
+        serieId: widget.booking.serieId,
         type: _bookingType,
         title: _titleController.text,
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
