@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/consts/route_consts.dart';
+class CreateButton extends StatelessWidget {
+  final String text;
+  final String createRoute;
 
-class CreateBudgetButton extends StatelessWidget {
-  const CreateBudgetButton({super.key});
+  const CreateButton({
+    super.key,
+    required this.text,
+    required this.createRoute,
+  });
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: () => Navigator.pushNamed(context, createBudgetRoute),
+      onPressed: () => Navigator.pushNamed(context, createRoute),
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         shape: RoundedRectangleBorder(
@@ -16,7 +21,7 @@ class CreateBudgetButton extends StatelessWidget {
         ),
         side: BorderSide(width: 0.75, color: Colors.cyanAccent.withOpacity(0.75)),
       ),
-      child: const Text('Budget erstellen', style: TextStyle(fontSize: 13.0)),
+      child: Text(text, style: const TextStyle(fontSize: 13.0)),
     );
   }
 }

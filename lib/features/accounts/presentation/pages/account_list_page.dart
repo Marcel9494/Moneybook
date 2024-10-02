@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:moneybook/features/accounts/presentation/widgets/cards/overview_cards.dart';
+import 'package:moneybook/features/budgets/presentation/widgets/deco/create_row.dart';
 
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../domain/entities/account.dart';
@@ -79,6 +81,12 @@ class _AccountListPageState extends State<AccountListPage> {
                     accounts: state.accounts,
                     assets: _assets,
                     debts: _debts,
+                  ),
+                  const CreateRow(
+                    title: 'Konten',
+                    buttonText: 'Konto erstellen',
+                    createRoute: createAccountRoute,
+                    leftPadding: 10.0,
                   ),
                   Expanded(
                     child: ListView.builder(
