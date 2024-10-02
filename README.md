@@ -10,6 +10,8 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 - Weiteres Nebeneinkommen generieren => für mich
 - Eigene Haushaltsbuch App benutzen die beliebig erweitert werden kann => für andere und mich
 - Erste eigene App entwickeln => für später folgende App Projekte
+- Aktueller Jobsituation entkommen => für mich und nachfolgendem Job
+- Hobby zum Beruf machen => für mich
 
 # Vision
 
