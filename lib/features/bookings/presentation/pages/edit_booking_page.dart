@@ -7,12 +7,15 @@ import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
+import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/number_formatter.dart';
+import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
+import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount.dart';
 import '../../domain/value_objects/booking_type.dart';
@@ -111,8 +114,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
         isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
       );
       Timer(const Duration(milliseconds: durationInMs), () async {
-        _reverseBooking();
-        BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking!, context));
+        if (widget.editMode == SerieModeType.one) {
+          _reverseBooking();
+          BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking!, context));
+        } else if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
+          BlocProvider.of<BookingBloc>(context).add(LoadSerieBookings(_updatedBooking!.serieId));
+          BlocProvider.of<BookingBloc>(context).add(UpdateSerieBookings(_updatedBooking!, context));
+        }
       });
     }
   }
@@ -196,19 +204,50 @@ class _EditBookingPageState extends State<EditBookingPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-          child: BlocListener<account.AccountBloc, account.AccountState>(
-            listener: (context, state) {
-              // Nachdem alte Buchung rückgängig gemacht wurde wird die bearbeitete Buchung gebucht
-              if (state is account.Booked && _updatedBooking != null) {
-                if (_bookingType == BookingType.expense) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_updatedBooking!));
-                } else if (_bookingType == BookingType.income) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_updatedBooking!));
-                } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking!));
-                }
-              }
-            },
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<account.AccountBloc, account.AccountState>(
+                listener: (context, state) {
+                  // Nachdem alte Buchung rückgängig gemacht wurde wird die bearbeitete Buchung gebucht
+                  if (state is account.Booked && _updatedBooking != null) {
+                    if (_bookingType == BookingType.expense) {
+                      BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_updatedBooking!));
+                    } else if (_bookingType == BookingType.income) {
+                      BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_updatedBooking!));
+                    } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                      BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking!));
+                    }
+                  }
+                },
+              ),
+              BlocListener<BookingBloc, BookingState>(
+                listener: (context, state) {
+                  // TODO hier weitermachen siehe als Beispiel create_booking_page.dart davor Buchungen rückgängig machen
+                  // TODO im Bloc nachdem die Serien Buchungen geladen wurden?
+                  if (state is SerieLoaded) {
+                    // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+                    // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+                    // muss somit nur einmal aufgerufen werden.
+                    double overallSerieAmount = 0.0;
+                    for (int i = 0; i < state.bookings.length; i++) {
+                      if (state.bookings[i].date.isBefore(DateTime.now())) {
+                        overallSerieAmount += state.bookings[i].amount;
+                      }
+                    }
+                    state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
+                    if (_bookingType == BookingType.expense) {
+                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0]));
+                    } else if (_bookingType == BookingType.income) {
+                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0]));
+                    } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0]));
+                    }
+                    Navigator.pop(context);
+                    Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+                  }
+                },
+              ),
+            ],
             child: Card(
               child: Form(
                 key: _bookingFormKey,
