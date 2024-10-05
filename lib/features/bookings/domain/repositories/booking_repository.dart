@@ -14,7 +14,7 @@ abstract class BookingRepository {
   Future<Either<Failure, List<Booking>>> loadSerieBookings(int serieId);
   Future<Either<Failure, void>> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<Either<Failure, void>> updateAllBookingsWithAccount(String oldAccount, String newAccount);
-  Future<Either<Failure, void>> updateAllBookingsInSerie(Booking booking);
+  Future<Either<Failure, void>> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
   Future<Either<Failure, void>> checkForNewBookings();
   Future<Either<Failure, int>> getNewSerieId();
 }

@@ -161,12 +161,12 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is UpdateSerieBookings) {
-        // TODO hier weitermachen und richtiges Datum setzen siehe als Beispiel: CreateSerieBooking
-        final updateSerieBookingEither = await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.booking);
+        final updateSerieBookingEither =
+            await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
         }, (_) {
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+          //Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {

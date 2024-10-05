@@ -20,7 +20,7 @@ abstract class BookingLocalDataSource {
   Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
-  Future<void> updateAllBookingsInSerie(Booking booking);
+  Future<void> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
   Future<void> checkForNewBookings();
   Future<int> getNewSerieId();
 }
@@ -54,22 +54,23 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     db = await openDatabase(localDbName);
     try {
       await db.rawUpdate(
-          'UPDATE $bookingDbName SET id = ?, serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
-          [
-            booking.id,
-            booking.serieId,
-            booking.type.name,
-            booking.title,
-            DateFormat('yyyy-MM-dd').format(booking.date),
-            booking.repetition.name,
-            booking.amount,
-            booking.currency,
-            booking.fromAccount,
-            booking.toAccount,
-            booking.categorie,
-            booking.isBooked,
-            booking.id,
-          ]);
+        'UPDATE $bookingDbName SET id = ?, serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+        [
+          booking.id,
+          booking.serieId,
+          booking.type.name,
+          booking.title,
+          DateFormat('yyyy-MM-dd').format(booking.date),
+          booking.repetition.name,
+          booking.amount,
+          booking.currency,
+          booking.fromAccount,
+          booking.toAccount,
+          booking.categorie,
+          booking.isBooked,
+          booking.id,
+        ],
+      );
     } catch (e) {
       // TODO Fehler richtig behandeln
       print('Error: $e');
@@ -210,25 +211,29 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> updateAllBookingsInSerie(Booking booking) async {
+  Future<void> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
     db = await openDatabase(localDbName);
     try {
-      await db.rawUpdate(
-          'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE serieId = ?',
+      for (int i = 0; i < serieBookings.length; i++) {
+        await db.rawUpdate(
+          'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
           [
-            booking.serieId,
-            booking.type.name,
-            booking.title,
-            DateFormat('yyyy-MM-dd').format(booking.date),
-            booking.repetition.name,
-            booking.amount,
-            booking.currency,
-            booking.fromAccount,
-            booking.toAccount,
-            booking.categorie,
-            booking.isBooked,
-            booking.serieId,
-          ]);
+            updatedBooking.serieId,
+            updatedBooking.type.name,
+            updatedBooking.title,
+            DateFormat('yyyy-MM-dd')
+                .format(serieBookings[i].date), // TODO schauen, ob dies immer richtig ist oder repetition beim Bearbeiten deaktivieren
+            updatedBooking.repetition.name,
+            updatedBooking.amount,
+            updatedBooking.currency,
+            updatedBooking.fromAccount,
+            updatedBooking.toAccount,
+            updatedBooking.categorie,
+            serieBookings[i].isBooked ? 1 : 0,
+            serieBookings[i].id,
+          ],
+        );
+      }
     } catch (e) {
       // TODO Fehler richtig behandeln
       print('Error: $e');

@@ -13,15 +13,16 @@ class UpdateAllBookingsInSerie implements UseCase<void, Params> {
 
   @override
   Future<Either<Failure, void>> call(Params params) async {
-    return await bookingRepository.updateAllBookingsInSerie(params.booking);
+    return await bookingRepository.updateAllBookingsInSerie(params.updatedBooking, params.serieBookings);
   }
 }
 
 class Params extends Equatable {
-  final Booking booking;
+  final Booking updatedBooking;
+  final List<Booking> serieBookings;
 
-  const Params({required this.booking});
+  const Params({required this.updatedBooking, required this.serieBookings});
 
   @override
-  List<Object> get props => [booking];
+  List<Object> get props => [updatedBooking, serieBookings];
 }

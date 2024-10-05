@@ -119,7 +119,6 @@ class _EditBookingPageState extends State<EditBookingPage> {
           BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking!, context));
         } else if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
           BlocProvider.of<BookingBloc>(context).add(LoadSerieBookings(_updatedBooking!.serieId));
-          BlocProvider.of<BookingBloc>(context).add(UpdateSerieBookings(_updatedBooking!, context));
         }
       });
     }
@@ -222,9 +221,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
               ),
               BlocListener<BookingBloc, BookingState>(
                 listener: (context, state) {
-                  // TODO hier weitermachen siehe als Beispiel create_booking_page.dart davor Buchungen rückgängig machen
+                  // TODO hier weitermachen siehe als Beispiel create_booking_page.dart davor Buchungen rückgängig machen hier oder
                   // TODO im Bloc nachdem die Serien Buchungen geladen wurden?
                   if (state is SerieLoaded) {
+                    BlocProvider.of<BookingBloc>(context).add(UpdateSerieBookings(_updatedBooking!, state.bookings, context));
                     // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
                     // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
                     // muss somit nur einmal aufgerufen werden.
