@@ -229,7 +229,7 @@ class _BookingListPageState extends State<BookingListPage> {
                                           child: _dependingBookings.isEmpty
                                               ? EmptyList(
                                                   text:
-                                                      'Keine ausstehenden Buchungen für\n${DateFormat.MMMM().format(widget.selectedDate)} vorhanden',
+                                                      'Keine ausstehenden Buchungen für\n${DateFormat.MMMM('De-de').format(widget.selectedDate)} vorhanden',
                                                   icon: Icons.receipt_long_rounded,
                                                 )
                                               : ListView.builder(

@@ -165,8 +165,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
             await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
-        }, (_) {
-          //Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+        }, (bookings) {
+          emit(SerieUpdated(bookings: bookings));
         });
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {

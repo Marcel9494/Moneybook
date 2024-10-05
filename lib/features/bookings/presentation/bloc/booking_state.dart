@@ -46,6 +46,15 @@ final class Finished extends BookingState {
   List<Object> get props => [];
 }
 
+final class SerieUpdated extends BookingState {
+  List<Booking> bookings;
+
+  SerieUpdated({required this.bookings});
+
+  @override
+  List<Object> get props => [bookings];
+}
+
 final class SerieFinished extends BookingState {
   final List<Booking> bookings;
 

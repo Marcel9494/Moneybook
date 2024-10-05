@@ -10,12 +10,14 @@ class DateAndRepeatInputField extends StatefulWidget {
   final TextEditingController dateController;
   String repetitionType;
   Function onSelectionChanged;
+  bool showRepetition;
 
   DateAndRepeatInputField({
     super.key,
     required this.dateController,
     required this.repetitionType,
     required this.onSelectionChanged,
+    this.showRepetition = true,
   });
 
   @override
@@ -113,45 +115,49 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
           data: IconThemeData(color: Colors.grey),
           child: Icon(Icons.calendar_month_rounded),
         ),
-        suffixIcon: Column(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.event_repeat_rounded),
-              onPressed: () => openRepeatBottomSheet(
-                context: context,
-                repetitionType: widget.repetitionType,
-              ),
-              padding: const EdgeInsets.only(top: 6.0),
-              constraints: widget.repetitionType == RepetitionType.noRepetition.name ? null : const BoxConstraints(),
-              style: const ButtonStyle(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ),
-            widget.repetitionType == RepetitionType.noRepetition.name
-                ? const SizedBox()
-                : Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0, right: 6.0),
-                    child: Text(
-                      widget.repetitionType,
-                      style: const TextStyle(fontSize: 10.0),
+        suffixIcon: widget.showRepetition
+            ? Column(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.event_repeat_rounded),
+                    onPressed: () => openRepeatBottomSheet(
+                      context: context,
+                      repetitionType: widget.repetitionType,
+                    ),
+                    padding: const EdgeInsets.only(top: 6.0),
+                    constraints: widget.repetitionType == RepetitionType.noRepetition.name ? null : const BoxConstraints(),
+                    style: const ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
-          ],
-        ),
+                  widget.repetitionType == RepetitionType.noRepetition.name
+                      ? const SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0, right: 6.0),
+                          child: Text(
+                            widget.repetitionType,
+                            style: const TextStyle(fontSize: 10.0),
+                          ),
+                        ),
+                ],
+              )
+            : const SizedBox(),
       ),
-      onTap: () async {
-        final DateTime? parsedDate = await showDatePicker(
-          context: context,
-          locale: const Locale('de', 'DE'),
-          firstDate: DateTime(DateTime.now().year - 10),
-          lastDate: DateTime(DateTime.now().year + 100),
-        );
-        if (parsedDate != null) {
-          setState(() {
-            widget.dateController.text = dateFormatterDDMMYYYYEE.format(parsedDate);
-          });
-        }
-      },
+      onTap: widget.showRepetition
+          ? () async {
+              final DateTime? parsedDate = await showDatePicker(
+                context: context,
+                locale: const Locale('de', 'DE'),
+                firstDate: DateTime(DateTime.now().year - 10),
+                lastDate: DateTime(DateTime.now().year + 100),
+              );
+              if (parsedDate != null) {
+                setState(() {
+                  widget.dateController.text = dateFormatterDDMMYYYYEE.format(parsedDate);
+                });
+              }
+            }
+          : () => {},
     );
   }
 }

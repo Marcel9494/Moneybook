@@ -20,7 +20,7 @@ abstract class BookingLocalDataSource {
   Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
-  Future<void> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
+  Future<List<Booking>> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
   Future<void> checkForNewBookings();
   Future<int> getNewSerieId();
 }
@@ -211,8 +211,9 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
+  Future<List<Booking>> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
     db = await openDatabase(localDbName);
+    List<Booking> _updatedBookings = [];
     try {
       for (int i = 0; i < serieBookings.length; i++) {
         await db.rawUpdate(
@@ -233,11 +234,32 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             serieBookings[i].id,
           ],
         );
+        List<Map> updatedSerieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE id = ?', [serieBookings[i].id]);
+        List<Booking> updatedSerieBooking = updatedSerieBookingMap
+            .map(
+              (booking) => Booking(
+                id: booking['id'],
+                serieId: booking['serieId'],
+                type: BookingType.fromString(booking['type']),
+                title: booking['title'],
+                date: DateTime.parse(booking['date']),
+                repetition: RepetitionType.fromString(booking['repetition']),
+                amount: booking['amount'],
+                currency: booking['currency'],
+                fromAccount: booking['fromAccount'],
+                toAccount: booking['toAccount'],
+                categorie: booking['categorie'],
+                isBooked: booking['isBooked'] == 0 ? false : true,
+              ),
+            )
+            .toList();
+        _updatedBookings.add(updatedSerieBooking[0]);
       }
     } catch (e) {
       // TODO Fehler richtig behandeln
       print('Error: $e');
     }
+    return _updatedBookings;
   }
 
   @override

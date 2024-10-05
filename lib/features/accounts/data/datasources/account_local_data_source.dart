@@ -110,6 +110,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
       accountBalance[0]['amount'] + booking.amount,
       booking.fromAccount,
     ]);
+    print("New Amount: ${accountBalance[0]['amount'] + booking.amount}");
   }
 
   @override
@@ -120,6 +121,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
       accountBalance[0]['amount'] - booking.amount,
       booking.fromAccount,
     ]);
+    print("New Amount: ${accountBalance[0]['amount'] - booking.amount}");
   }
 
   @override
