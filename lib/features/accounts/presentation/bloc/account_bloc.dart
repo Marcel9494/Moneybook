@@ -71,36 +71,36 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         });
       } else if (event is AccountDeposit) {
         if (event.booking.date.isAfter(DateTime.now())) {
-          emit(Booked());
+          emit(Booked(id: event.bookedId));
           return;
         }
         final accountDepositEither = await createUseCase.accountRepository.deposit(event.booking);
         accountDepositEither.fold((failure) {
           emit(const Error(message: ACCOUNT_DEPOSIT_FAILURE));
         }, (_) {
-          emit(Booked());
+          emit(Booked(id: event.bookedId));
         });
       } else if (event is AccountWithdraw) {
         if (event.booking.date.isAfter(DateTime.now())) {
-          emit(Booked());
+          emit(Booked(id: event.bookedId));
           return;
         }
         final accountWithdrawEither = await createUseCase.accountRepository.withdraw(event.booking);
         accountWithdrawEither.fold((failure) {
           emit(const Error(message: ACCOUNT_WITHDRAW_FAILURE));
         }, (_) {
-          emit(Booked());
+          emit(Booked(id: event.bookedId));
         });
       } else if (event is AccountTransfer) {
         if (event.booking.date.isAfter(DateTime.now())) {
-          emit(Booked());
+          emit(Booked(id: event.bookedId));
           return;
         }
         final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking);
         accountTransferEither.fold((failure) {
           emit(const Error(message: ACCOUNT_TRANSFER_FAILURE));
         }, (_) {
-          emit(Booked());
+          emit(Booked(id: event.bookedId));
         });
       } else if (event is CheckAccountNameExists) {
         final checkAccountNameExistsEither = await checkAccountNameUseCase.accountRepository.checkAccountName(event.accountName);

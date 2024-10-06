@@ -47,29 +47,32 @@ class LoadAccountsWithFilter extends AccountEvent {
 
 class AccountDeposit extends AccountEvent {
   final Booking booking;
+  final int bookedId;
 
-  const AccountDeposit(this.booking);
+  const AccountDeposit(this.booking, this.bookedId);
 
   @override
-  List<Object?> get props => [booking];
+  List<Object?> get props => [booking, bookedId];
 }
 
 class AccountWithdraw extends AccountEvent {
   final Booking booking;
+  final int bookedId;
 
-  const AccountWithdraw(this.booking);
+  const AccountWithdraw(this.booking, this.bookedId);
 
   @override
-  List<Object?> get props => [booking];
+  List<Object?> get props => [booking, bookedId];
 }
 
 class AccountTransfer extends AccountEvent {
   final Booking booking;
+  final int bookedId;
 
-  const AccountTransfer(this.booking);
+  const AccountTransfer(this.booking, this.bookedId);
 
   @override
-  List<Object?> get props => [booking];
+  List<Object?> get props => [booking, bookedId];
 }
 
 class CheckAccountNameExists extends AccountEvent {

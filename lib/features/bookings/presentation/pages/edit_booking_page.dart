@@ -54,6 +54,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   late Booking _oldBooking;
   List<Booking> _oldSerieBookings = [];
   Booking? _updatedBooking;
+  bool _hasAccountListenerTriggered = false;
 
   @override
   void initState() {
@@ -125,7 +126,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       Timer(const Duration(milliseconds: durationInMs), () async {
         if (widget.editMode == SerieModeType.one) {
           _reverseBooking();
-          BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking!, context));
+          BlocProvider.of<BookingBloc>(context).add(UpdateBooking(_updatedBooking!, context));
         } else if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
           BlocProvider.of<BookingBloc>(context).add(UpdateSerieBookings(_updatedBooking!, _oldSerieBookings, context));
         }
@@ -136,9 +137,9 @@ class _EditBookingPageState extends State<EditBookingPage> {
   void _reverseBooking() {
     // Alte Buchung zuerst rückgängig machen...
     if (_oldBooking.type == BookingType.expense) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_oldBooking));
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_oldBooking, 0));
     } else if (_oldBooking.type == BookingType.income) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking));
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking, 0));
     } else if (_oldBooking.type == BookingType.transfer || _oldBooking.type == BookingType.investment) {
       BlocProvider.of<account.AccountBloc>(context).add(
         account.AccountTransfer(
@@ -146,6 +147,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
             fromAccount: _oldBooking.toAccount,
             toAccount: _oldBooking.fromAccount,
           ),
+          0,
         ),
       );
     }
@@ -216,23 +218,30 @@ class _EditBookingPageState extends State<EditBookingPage> {
             listeners: [
               BlocListener<account.AccountBloc, account.AccountState>(
                 listener: (context, state) {
-                  double overallOldSerieAmount = 0.0;
-                  for (int i = 0; i < _oldSerieBookings.length; i++) {
-                    if (_oldSerieBookings[i].date.isBefore(DateTime.now())) {
-                      overallOldSerieAmount += _oldSerieBookings[i].amount;
+                  if (_hasAccountListenerTriggered == false) {
+                    if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
+                      double overallOldSerieAmount = 0.0;
+                      for (int i = 0; i < _oldSerieBookings.length; i++) {
+                        if (_oldSerieBookings[i].date.isBefore(DateTime.now())) {
+                          overallOldSerieAmount += _oldSerieBookings[i].amount;
+                        }
+                      }
+                      _oldSerieBookings[0] = _oldSerieBookings[0].copyWith(amount: overallOldSerieAmount);
+                      if (_bookingType == BookingType.expense) {
+                        BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldSerieBookings[0], 0));
+                      } else if (_bookingType == BookingType.income) {
+                        BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldSerieBookings[0], 0));
+                      } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                        BlocProvider.of<AccountBloc>(context).add(AccountTransfer(_oldSerieBookings[0], 0)); // TODO funktioniert das so?
+                      }
+                      // Account Listener soll nur 1x getriggert werden, weil es sonst zu Mehrfachbuchungen auf Konten kommen kann.
+                      setState(() {
+                        _hasAccountListenerTriggered = true;
+                      });
+                      Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
                     }
                   }
-                  _oldSerieBookings[0] = _oldSerieBookings[0].copyWith(amount: overallOldSerieAmount);
-                  print(overallOldSerieAmount);
-                  if (_bookingType == BookingType.expense) {
-                    BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldSerieBookings[0]));
-                  } else if (_bookingType == BookingType.income) {
-                    BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldSerieBookings[0]));
-                  } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                    BlocProvider.of<AccountBloc>(context).add(AccountTransfer(_oldSerieBookings[0])); // TODO funktioniert das so?
-                  }
-                  Navigator.pop(context);
-                  Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
                 },
               ),
               BlocListener<BookingBloc, BookingState>(
@@ -268,11 +277,11 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     print(overallSerieAmount);
                     state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
                     if (_bookingType == BookingType.expense) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0]));
+                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0], overallSerieAmount.toInt()));
                     } else if (_bookingType == BookingType.income) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0]));
+                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0], overallSerieAmount.toInt()));
                     } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0]));
+                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], overallSerieAmount.toInt()));
                     }
                   }
                 },

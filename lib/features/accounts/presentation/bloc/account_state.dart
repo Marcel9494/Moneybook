@@ -43,8 +43,12 @@ final class Deleted extends AccountState {
 }
 
 final class Booked extends AccountState {
+  final int id;
+
+  const Booked({required this.id});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [id];
 }
 
 final class CheckedAccountName extends AccountState {

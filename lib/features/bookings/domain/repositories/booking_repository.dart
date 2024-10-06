@@ -5,7 +5,7 @@ import 'package:moneybook/features/categories/domain/value_objects/categorie_typ
 
 abstract class BookingRepository {
   Future<Either<Failure, void>> create(Booking booking);
-  Future<Either<Failure, void>> edit(Booking booking); // TODO Name auf update ändern
+  Future<Either<Failure, void>> update(Booking booking);
   Future<Either<Failure, void>> delete(int id);
   Future<Either<Failure, Booking>> load(int id);
   Future<Either<Failure, List<Booking>>> loadSortedMonthly(DateTime selectedDate);

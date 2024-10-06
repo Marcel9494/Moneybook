@@ -11,7 +11,7 @@ import '../models/booking_model.dart';
 
 abstract class BookingLocalDataSource {
   Future<void> create(Booking booking);
-  Future<void> edit(Booking booking);
+  Future<void> update(Booking booking);
   Future<void> delete(int id);
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
@@ -50,7 +50,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> edit(Booking booking) async {
+  Future<void> update(Booking booking) async {
     db = await openDatabase(localDbName);
     try {
       await db.rawUpdate(
@@ -67,7 +67,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
           booking.fromAccount,
           booking.toAccount,
           booking.categorie,
-          booking.isBooked,
+          booking.isBooked ? 1 : 0,
           booking.id,
         ],
       );

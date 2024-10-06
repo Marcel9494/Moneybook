@@ -14,12 +14,12 @@ import '../../domain/entities/booking.dart';
 import '../../domain/usecases/check_for_new_bookings.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';
-import '../../domain/usecases/edit.dart';
 import '../../domain/usecases/get_new_serie_id.dart';
 import '../../domain/usecases/load_categorie_bookings.dart';
 import '../../domain/usecases/load_new_bookings.dart';
 import '../../domain/usecases/load_serie_bookings.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
+import '../../domain/usecases/update.dart';
 import '../../domain/usecases/update_all_bookings_in_serie.dart';
 import '../../domain/usecases/update_all_bookings_with_account.dart';
 import '../../domain/usecases/update_all_bookings_with_categorie.dart';
@@ -39,7 +39,7 @@ const String LOAD_NEW_BOOKINGS_FAILURE = 'Neue Buchungen konnten nicht geladen w
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final Create createUseCase;
-  final Edit editUseCase;
+  final Update updateUseCase;
   final Delete deleteUseCase;
   final LoadSortedMonthly loadSortedMonthlyUseCase;
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
@@ -53,7 +53,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
   BookingBloc(
     this.createUseCase,
-    this.editUseCase,
+    this.updateUseCase,
     this.deleteUseCase,
     this.loadSortedMonthlyUseCase,
     this.loadCategorieBookingsUseCase,
@@ -152,8 +152,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
             emit(SerieFinished(bookings: bookings));
           });
         });
-      } else if (event is EditBooking) {
-        final editBookingEither = await editUseCase.bookingRepository.edit(event.booking);
+      } else if (event is UpdateBooking) {
+        final editBookingEither = await updateUseCase.bookingRepository.update(event.booking);
         editBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_BOOKING_FAILURE));
         }, (_) {
@@ -170,9 +170,9 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         });
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking, 0));
         } else if (event.booking.type == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.booking));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.booking, 0));
         } else if (event.booking.type == BookingType.transfer || event.booking.type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransfer(
@@ -180,6 +180,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
                 fromAccount: event.booking.toAccount,
                 toAccount: event.booking.fromAccount,
               ),
+              0,
             ),
           );
         }

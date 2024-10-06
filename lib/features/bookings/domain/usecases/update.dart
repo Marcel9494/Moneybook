@@ -6,14 +6,14 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/booking.dart';
 
-class Edit implements UseCase<void, Params> {
+class Update implements UseCase<void, Params> {
   final BookingRepository bookingRepository;
 
-  Edit(this.bookingRepository);
+  Update(this.bookingRepository);
 
   @override
   Future<Either<Failure, void>> call(Params params) async {
-    return await bookingRepository.edit(params.booking);
+    return await bookingRepository.update(params.booking);
   }
 }
 

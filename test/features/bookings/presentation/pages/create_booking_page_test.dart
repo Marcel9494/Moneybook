@@ -5,10 +5,10 @@ import 'package:moneybook/features/bookings/domain/repositories/booking_reposito
 import 'package:moneybook/features/bookings/domain/usecases/check_for_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart';
-import 'package:moneybook/features/bookings/domain/usecases/edit.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_categorie_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/update.dart';
 import 'package:moneybook/features/bookings/domain/usecases/update_all_bookings_with_account.dart';
 import 'package:moneybook/features/bookings/domain/usecases/update_all_bookings_with_categorie.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';

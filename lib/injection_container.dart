@@ -9,9 +9,9 @@ import 'package:moneybook/features/bookings/domain/repositories/booking_reposito
 import 'package:moneybook/features/bookings/domain/usecases/check_for_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart' as create_booking;
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart' as delete_booking;
-import 'package:moneybook/features/bookings/domain/usecases/edit.dart' as edit_booking;
 import 'package:moneybook/features/bookings/domain/usecases/get_new_serie_id.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/update.dart' as edit_booking;
 import 'package:moneybook/features/bookings/domain/usecases/update_all_bookings_with_categorie.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:moneybook/features/budgets/domain/usecases/create.dart' as create_budget;
@@ -84,7 +84,7 @@ void init() {
 
   // Bookings
   sl.registerLazySingleton(() => create_booking.Create(sl()));
-  sl.registerLazySingleton(() => edit_booking.Edit(sl()));
+  sl.registerLazySingleton(() => edit_booking.Update(sl()));
   sl.registerLazySingleton(() => delete_booking.Delete(sl()));
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
   sl.registerLazySingleton(() => LoadAllCategorieBookings(sl()));
