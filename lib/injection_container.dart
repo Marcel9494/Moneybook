@@ -43,6 +43,7 @@ import 'features/bookings/domain/usecases/load_new_bookings.dart';
 import 'features/bookings/domain/usecases/load_serie_bookings.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_in_serie.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_with_account.dart';
+import 'features/bookings/domain/usecases/update_only_future_bookings_in_serie.dart';
 import 'features/budgets/data/datasources/budget_local_data_source.dart';
 import 'features/budgets/data/datasources/budget_remote_data_source.dart';
 import 'features/budgets/data/repositories/budget_repository_impl.dart';
@@ -70,7 +71,7 @@ final sl = GetIt.instance;
 void init() {
   // Features
   // Bloc
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
@@ -93,6 +94,7 @@ void init() {
   sl.registerLazySingleton(() => UpdateAllBookingsWithCategorie(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithAccount(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsInSerie(sl()));
+  sl.registerLazySingleton(() => UpdateOnlyFutureBookingsInSerie(sl()));
   sl.registerLazySingleton(() => CheckForNewBookings(sl()));
   sl.registerLazySingleton(() => GetNewSerieId(sl()));
 

@@ -23,6 +23,7 @@ import '../../domain/usecases/update.dart';
 import '../../domain/usecases/update_all_bookings_in_serie.dart';
 import '../../domain/usecases/update_all_bookings_with_account.dart';
 import '../../domain/usecases/update_all_bookings_with_categorie.dart';
+import '../../domain/usecases/update_only_future_bookings_in_serie.dart';
 import '../../domain/value_objects/booking_type.dart';
 
 part 'booking_event.dart';
@@ -48,6 +49,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final UpdateAllBookingsWithCategorie updateAllBookingsWithCategorieUseCase;
   final UpdateAllBookingsWithAccount updateAllBookingsWithAccountUseCase;
   final UpdateAllBookingsInSerie updateAllBookingsInSerieUseCase;
+  final UpdateOnlyFutureBookingsInSerie updateOnlyFutureBookingsInSerieUseCase;
   final CheckForNewBookings checkNewBookingsUseCase;
   final GetNewSerieId getNewSerieIdUseCase;
 
@@ -61,6 +63,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     this.updateAllBookingsWithCategorieUseCase,
     this.updateAllBookingsWithAccountUseCase,
     this.updateAllBookingsInSerieUseCase,
+    this.updateOnlyFutureBookingsInSerieUseCase,
     this.checkNewBookingsUseCase,
     this.loadNewBookingsUseCase,
     this.getNewSerieIdUseCase,
@@ -160,10 +163,17 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.pop(event.context);
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
-        // TODO hier weitermachen und gleiches für nur zukünftige Buchungen implementieren dieses Event auf UpdateAllSerieBookings umbenennen
-      } else if (event is UpdateSerieBookings) {
+      } else if (event is UpdateAllSerieBookings) {
         final updateSerieBookingEither =
             await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
+        updateSerieBookingEither.fold((failure) {
+          emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
+        }, (bookings) {
+          emit(SerieUpdated(bookings: bookings));
+        });
+      } else if (event is UpdateOnlyFutureSerieBookings) {
+        final updateSerieBookingEither =
+            await updateOnlyFutureBookingsInSerieUseCase.bookingRepository.updateOnlyFutureBookingsInSerie(event.updatedBooking, event.serieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
         }, (bookings) {

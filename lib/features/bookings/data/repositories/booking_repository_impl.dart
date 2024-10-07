@@ -96,6 +96,15 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
+  Future<Either<Failure, List<Booking>>> updateOnlyFutureBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
+    try {
+      return Right(await bookingLocalDataSource.updateOnlyFutureBookingsInSerie(updatedBooking, serieBookings));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> checkForNewBookings() async {
     try {
       return Right(await bookingLocalDataSource.checkForNewBookings());

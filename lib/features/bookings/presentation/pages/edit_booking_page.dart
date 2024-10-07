@@ -107,7 +107,6 @@ class _EditBookingPageState extends State<EditBookingPage> {
         _editBookingBtnController.reset();
       });
     } else {
-      // TODO hier weitermachen und Serienbuchungen bearbeiten fertig implementieren
       _editBookingBtnController.success();
       _updatedBooking = Booking(
         id: widget.booking.id,
@@ -127,8 +126,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
         if (widget.editMode == SerieModeType.one) {
           _reverseBooking();
           BlocProvider.of<BookingBloc>(context).add(UpdateBooking(_updatedBooking!, context));
-        } else if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
-          BlocProvider.of<BookingBloc>(context).add(UpdateSerieBookings(_updatedBooking!, _oldSerieBookings, context));
+        } else if (widget.editMode == SerieModeType.onlyFuture) {
+          BlocProvider.of<BookingBloc>(context).add(UpdateOnlyFutureSerieBookings(_updatedBooking!, _oldSerieBookings));
+        } else if (widget.editMode == SerieModeType.all) {
+          BlocProvider.of<BookingBloc>(context).add(UpdateAllSerieBookings(_updatedBooking!, _oldSerieBookings));
         }
       });
     }
@@ -218,6 +219,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
             listeners: [
               BlocListener<account.AccountBloc, account.AccountState>(
                 listener: (context, state) {
+                  // TODO hier weitermachen warum wird state nicht immer getriggert?
+                  print(_hasAccountListenerTriggered);
                   // Serienbuchungen rückgängig machen...
                   if (state is account.Booked && _hasAccountListenerTriggered == false) {
                     if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
