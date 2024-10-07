@@ -116,7 +116,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           } else if (event.booking.repetition == RepetitionType.monthlyEnding) {
             for (int i = 0; i < 12 * serieYears; i++) {
               DateTime originalDate = DateTime.parse(event.booking.date.toString());
-              DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 1), 0);
+              DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 2), 0);
               Booking nextBooking = event.booking.copyWith(date: nextDate);
               createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
               bookings.add(nextBooking);
@@ -160,6 +160,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.pop(event.context);
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
+        // TODO hier weitermachen und gleiches für nur zukünftige Buchungen implementieren dieses Event auf UpdateAllSerieBookings umbenennen
       } else if (event is UpdateSerieBookings) {
         final updateSerieBookingEither =
             await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
