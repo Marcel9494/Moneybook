@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -219,8 +220,6 @@ class _EditBookingPageState extends State<EditBookingPage> {
             listeners: [
               BlocListener<account.AccountBloc, account.AccountState>(
                 listener: (context, state) {
-                  // TODO hier weitermachen warum wird state nicht immer getriggert?
-                  print(_hasAccountListenerTriggered);
                   // Serienbuchungen rückgängig machen...
                   if (state is account.Booked && _hasAccountListenerTriggered == false) {
                     if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
@@ -267,7 +266,6 @@ class _EditBookingPageState extends State<EditBookingPage> {
                         isBooked: state.bookings[i].isBooked,
                       ));
                     }
-                    print(_oldSerieBookings);
                   } else if (state is SerieUpdated) {
                     // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
                     // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
@@ -278,14 +276,14 @@ class _EditBookingPageState extends State<EditBookingPage> {
                         overallSerieAmount += state.bookings[i].amount;
                       }
                     }
-                    print(overallSerieAmount);
                     state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
+                    // TODO Random().nextInt(1000000) bessere Lösung finden!
                     if (_bookingType == BookingType.expense) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0], overallSerieAmount.toInt()));
+                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0], Random().nextInt(1000000)));
                     } else if (_bookingType == BookingType.income) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0], overallSerieAmount.toInt()));
+                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0], Random().nextInt(1000000)));
                     } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], overallSerieAmount.toInt()));
+                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], Random().nextInt(1000000)));
                     }
                   }
                 },
