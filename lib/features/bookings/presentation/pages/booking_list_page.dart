@@ -180,92 +180,90 @@ class _BookingListPageState extends State<BookingListPage> {
                             },
                           ),
                         ),
-                        widget.selectedDate.isAfter(DateTime.now()) || _isSameMonth()
-                            ? Theme(
-                                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                                child: ListTileTheme(
-                                  dense: true,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        top: BorderSide(
-                                          color: _isExpanded ? Colors.transparent : Colors.grey,
-                                          width: 0.6,
-                                        ),
-                                      ),
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(8.0),
-                                        topRight: Radius.circular(8.0),
-                                      ),
-                                    ),
-                                    child: ExpansionTile(
-                                      title: Text(
-                                        _isExpanded
-                                            ? _dependingBookings.length == 1
-                                                ? '1 Ausstehende Buchung'
-                                                : '${_dependingBookings.length} Ausstehende Buchungen'
-                                            : '${_dependingBookings.length} Ausstehende',
-                                        style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 14.5 : 13.0),
-                                      ),
-                                      iconColor: _isExpanded ? Colors.white : Colors.grey,
-                                      backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
-                                      onExpansionChanged: (bool expanded) {
-                                        setState(() {
-                                          _isExpanded = expanded;
-                                        });
-                                      },
-                                      children: [
-                                        PendingMonthlyValueCards(
-                                          monthlyDependingExpense: _monthlyDependingExpense,
-                                          monthlyDependingIncome: _monthlyDependingIncome,
-                                          monthlyDependingInvestment: _monthlyDependingInvestment,
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                          child: Divider(indent: 12.0, endIndent: 12.0, height: 2.0),
-                                        ),
-                                        SizedBox(
-                                          height: MediaQuery.sizeOf(context).height / 2.3,
-                                          child: _dependingBookings.isEmpty
-                                              ? EmptyList(
-                                                  text:
-                                                      'Keine ausstehenden Buchungen für\n${DateFormat.MMMM('De-de').format(widget.selectedDate)} vorhanden',
-                                                  icon: Icons.receipt_long_rounded,
-                                                )
-                                              : ListView.builder(
-                                                  shrinkWrap: true,
-                                                  itemCount: _dependingBookings.length,
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    if (_dependingBookings[index].date.isAfter(DateTime.now())) {
-                                                      if (index > 0) {
-                                                        _previousBookingDate = _dependingBookings[index - 1].date;
-                                                        _bookingDate = _dependingBookings[index].date;
-                                                      }
-                                                      if (index == 0 || _previousBookingDate != _bookingDate) {
-                                                        return Column(
-                                                          children: [
-                                                            DailyReportSummary(
-                                                              date: _dependingBookings[index].date,
-                                                              dailyIncome: _dailyIncomeMap[_dependingBookings[index].date],
-                                                              dailyExpense: _dailyExpenseMap[_dependingBookings[index].date],
-                                                            ),
-                                                            BookingCard(booking: _dependingBookings[index]),
-                                                          ],
-                                                        );
-                                                      } else {
-                                                        return BookingCard(booking: _dependingBookings[index]);
-                                                      }
-                                                    }
-                                                    return const SizedBox();
-                                                  },
-                                                ),
-                                        ),
-                                      ],
-                                    ),
+                        Theme(
+                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          child: ListTileTheme(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(
+                                    color: _isExpanded ? Colors.transparent : Colors.grey,
+                                    width: 0.6,
                                   ),
                                 ),
-                              )
-                            : const SizedBox(),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(8.0),
+                                  topRight: Radius.circular(8.0),
+                                ),
+                              ),
+                              child: ExpansionTile(
+                                dense: true,
+                                title: Text(
+                                  _isExpanded
+                                      ? _dependingBookings.length == 1
+                                          ? '1 Ausstehende Buchung'
+                                          : '${_dependingBookings.length} Ausstehende Buchungen'
+                                      : '${_dependingBookings.length} Ausstehende',
+                                  style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 14.5 : 13.0),
+                                ),
+                                iconColor: _isExpanded ? Colors.white : Colors.grey,
+                                backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+                                onExpansionChanged: (bool expanded) {
+                                  setState(() {
+                                    _isExpanded = expanded;
+                                  });
+                                },
+                                children: [
+                                  PendingMonthlyValueCards(
+                                    monthlyDependingExpense: _monthlyDependingExpense,
+                                    monthlyDependingIncome: _monthlyDependingIncome,
+                                    monthlyDependingInvestment: _monthlyDependingInvestment,
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Divider(indent: 12.0, endIndent: 12.0, height: 2.0),
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.sizeOf(context).height / 2.3,
+                                    child: _dependingBookings.isEmpty
+                                        ? EmptyList(
+                                            text:
+                                                'Keine ausstehenden Buchungen für\n${DateFormat.MMMM('De-de').format(widget.selectedDate)} vorhanden',
+                                            icon: Icons.receipt_long_rounded,
+                                          )
+                                        : ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: _dependingBookings.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              if (_dependingBookings[index].date.isAfter(DateTime.now())) {
+                                                if (index > 0) {
+                                                  _previousBookingDate = _dependingBookings[index - 1].date;
+                                                  _bookingDate = _dependingBookings[index].date;
+                                                }
+                                                if (index == 0 || _previousBookingDate != _bookingDate) {
+                                                  return Column(
+                                                    children: [
+                                                      DailyReportSummary(
+                                                        date: _dependingBookings[index].date,
+                                                        dailyIncome: _dailyIncomeMap[_dependingBookings[index].date],
+                                                        dailyExpense: _dailyExpenseMap[_dependingBookings[index].date],
+                                                      ),
+                                                      BookingCard(booking: _dependingBookings[index]),
+                                                    ],
+                                                  );
+                                                } else {
+                                                  return BookingCard(booking: _dependingBookings[index]);
+                                                }
+                                              }
+                                              return const SizedBox();
+                                            },
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );
