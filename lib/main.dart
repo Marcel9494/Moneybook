@@ -9,6 +9,7 @@ import 'package:moneybook/features/bookings/presentation/pages/booking_list_page
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
 import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
+import 'package:moneybook/features/settings/presentation/pages/above_page.dart';
 import 'package:moneybook/features/settings/presentation/pages/settings_page.dart';
 import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 import 'package:moneybook/shared/presentation/pages/introduction_page.dart';
@@ -93,6 +94,7 @@ class MyApp extends StatelessWidget {
         createAccountRoute: (context) => const CreateAccountPage(),
         createBudgetRoute: (context) => const CreateBudgetPage(),
         settingsRoute: (context) => const SettingsPage(),
+        aboveRoute: (context) => const AbovePage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {

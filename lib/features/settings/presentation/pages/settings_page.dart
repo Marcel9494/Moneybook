@@ -51,11 +51,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               SettingsTile(
-                title: const Text('Über die App'),
+                title: const Text('Über Moneybook'),
                 leading: const Icon(Icons.info_outline_rounded),
                 trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                 backgroundColor: const Color(0xFF1E1E1E),
-                onPressed: (BuildContext context) {},
+                onPressed: (BuildContext context) {
+                  Navigator.pushNamed(context, aboveRoute);
+                },
               ),
             ],
           ),
