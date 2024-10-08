@@ -11,15 +11,19 @@ import '../models/booking_model.dart';
 
 abstract class BookingLocalDataSource {
   Future<void> create(Booking booking);
-  Future<void> edit(Booking booking);
+  Future<void> update(Booking booking);
   Future<void> delete(int id);
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
   Future<List<Booking>> loadNewBookings();
+  Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
+  Future<List<Booking>> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
+  Future<List<Booking>> updateOnlyFutureBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
   Future<void> checkForNewBookings();
+  Future<int> getNewSerieId();
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -29,8 +33,9 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   Future<void> create(Booking booking) async {
     db = await openDatabase(localDbName);
     await db.rawInsert(
-      'INSERT INTO $bookingDbName(type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO $bookingDbName(serieId, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
+        booking.serieId,
         booking.type.name,
         booking.title,
         dateFormatterYYYYMMDD.format(booking.date),
@@ -46,25 +51,27 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> edit(Booking booking) async {
+  Future<void> update(Booking booking) async {
     db = await openDatabase(localDbName);
     try {
       await db.rawUpdate(
-          'UPDATE $bookingDbName SET id = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
-          [
-            booking.id,
-            booking.type.name,
-            booking.title,
-            DateFormat('yyyy-MM-dd').format(booking.date),
-            booking.repetition.name,
-            booking.amount,
-            booking.currency,
-            booking.fromAccount,
-            booking.toAccount,
-            booking.categorie,
-            booking.isBooked,
-            booking.id,
-          ]);
+        'UPDATE $bookingDbName SET id = ?, serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+        [
+          booking.id,
+          booking.serieId,
+          booking.type.name,
+          booking.title,
+          DateFormat('yyyy-MM-dd').format(booking.date),
+          booking.repetition.name,
+          booking.amount,
+          booking.currency,
+          booking.fromAccount,
+          booking.toAccount,
+          booking.categorie,
+          booking.isBooked ? 1 : 0,
+          booking.id,
+        ],
+      );
     } catch (e) {
       // TODO Fehler richtig behandeln
       print('Error: $e');
@@ -94,6 +101,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         .map(
           (booking) => Booking(
             id: booking['id'],
+            serieId: booking['serieId'],
             type: BookingType.fromString(booking['type']),
             title: booking['title'],
             date: DateTime.parse(booking['date']),
@@ -119,6 +127,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         .map(
           (booking) => Booking(
             id: booking['id'],
+            serieId: booking['serieId'],
             type: BookingType.fromString(booking['type']),
             title: booking['title'],
             date: DateTime.parse(booking['date']),
@@ -136,28 +145,6 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType) async {
-    db = await openDatabase(localDbName);
-    await db.rawUpdate(
-        'UPDATE $bookingDbName SET categorie = ? WHERE categorie = ? AND type = ?', [newCategorie, oldCategorie, categorieType.name.trim()]);
-  }
-
-  @override
-  Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount) async {
-    db = await openDatabase(localDbName);
-    await db.rawUpdate('UPDATE $bookingDbName SET fromAccount = ? WHERE fromAccount = ?', [newAccount, oldAccount]);
-    await db.rawUpdate('UPDATE $bookingDbName SET toAccount = ? WHERE toAccount = ?', [newAccount, oldAccount]);
-  }
-
-  @override
-  Future<void> checkForNewBookings() async {
-    db = await openDatabase(localDbName);
-    DateTime today = DateTime.now();
-    today = DateTime(today.year, today.month, today.day);
-    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [1/*= true*/, today.toIso8601String()]);
-  }
-
-  @override
   Future<List<Booking>> loadNewBookings() async {
     db = await openDatabase(localDbName);
     DateTime today = DateTime.now();
@@ -168,6 +155,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         .map(
           (booking) => Booking(
             id: booking['id'],
+            serieId: booking['serieId'],
             type: BookingType.fromString(booking['type']),
             title: booking['title'],
             date: DateTime.parse(booking['date']),
@@ -182,5 +170,165 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         )
         .toList();
     return newBookingList;
+  }
+
+  @override
+  Future<List<Booking>> loadSerieBookings(int serieId) async {
+    db = await openDatabase(localDbName);
+    List<Map> serieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE serieId = ?', [serieId]);
+    List<Booking> serieBookingList = serieBookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+    return serieBookingList;
+  }
+
+  @override
+  Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType) async {
+    db = await openDatabase(localDbName);
+    await db.rawUpdate(
+        'UPDATE $bookingDbName SET categorie = ? WHERE categorie = ? AND type = ?', [newCategorie, oldCategorie, categorieType.name.trim()]);
+  }
+
+  @override
+  Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount) async {
+    db = await openDatabase(localDbName);
+    await db.rawUpdate('UPDATE $bookingDbName SET fromAccount = ? WHERE fromAccount = ?', [newAccount, oldAccount]);
+    await db.rawUpdate('UPDATE $bookingDbName SET toAccount = ? WHERE toAccount = ?', [newAccount, oldAccount]);
+  }
+
+  @override
+  Future<List<Booking>> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
+    db = await openDatabase(localDbName);
+    List<Booking> updatedBookings = [];
+    try {
+      for (int i = 0; i < serieBookings.length; i++) {
+        await db.rawUpdate(
+          'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+          [
+            updatedBooking.serieId,
+            updatedBooking.type.name,
+            updatedBooking.title,
+            DateFormat('yyyy-MM-dd')
+                .format(serieBookings[i].date), // TODO schauen, ob dies immer richtig ist oder repetition beim Bearbeiten deaktivieren
+            updatedBooking.repetition.name,
+            updatedBooking.amount,
+            updatedBooking.currency,
+            updatedBooking.fromAccount,
+            updatedBooking.toAccount,
+            updatedBooking.categorie,
+            serieBookings[i].isBooked ? 1 : 0,
+            serieBookings[i].id,
+          ],
+        );
+        List<Map> updatedSerieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE id = ?', [serieBookings[i].id]);
+        List<Booking> updatedSerieBooking = updatedSerieBookingMap
+            .map(
+              (booking) => Booking(
+                id: booking['id'],
+                serieId: booking['serieId'],
+                type: BookingType.fromString(booking['type']),
+                title: booking['title'],
+                date: DateTime.parse(booking['date']),
+                repetition: RepetitionType.fromString(booking['repetition']),
+                amount: booking['amount'],
+                currency: booking['currency'],
+                fromAccount: booking['fromAccount'],
+                toAccount: booking['toAccount'],
+                categorie: booking['categorie'],
+                isBooked: booking['isBooked'] == 0 ? false : true,
+              ),
+            )
+            .toList();
+        updatedBookings.add(updatedSerieBooking[0]);
+      }
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
+    return updatedBookings;
+  }
+
+  @override
+  Future<List<Booking>> updateOnlyFutureBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
+    db = await openDatabase(localDbName);
+    List<Booking> updatedBookings = [];
+    try {
+      for (int i = 0; i < serieBookings.length; i++) {
+        if (updatedBooking.date.isBefore(serieBookings[i].date)) {
+          await db.rawUpdate(
+            'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+            [
+              updatedBooking.serieId,
+              updatedBooking.type.name,
+              updatedBooking.title,
+              DateFormat('yyyy-MM-dd')
+                  .format(serieBookings[i].date), // TODO schauen, ob dies immer richtig ist oder repetition beim Bearbeiten deaktivieren
+              updatedBooking.repetition.name,
+              updatedBooking.amount,
+              updatedBooking.currency,
+              updatedBooking.fromAccount,
+              updatedBooking.toAccount,
+              updatedBooking.categorie,
+              serieBookings[i].isBooked ? 1 : 0,
+              serieBookings[i].id,
+            ],
+          );
+          List<Map> updatedSerieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE id = ?', [serieBookings[i].id]);
+          List<Booking> updatedSerieBooking = updatedSerieBookingMap
+              .map(
+                (booking) => Booking(
+                  id: booking['id'],
+                  serieId: booking['serieId'],
+                  type: BookingType.fromString(booking['type']),
+                  title: booking['title'],
+                  date: DateTime.parse(booking['date']),
+                  repetition: RepetitionType.fromString(booking['repetition']),
+                  amount: booking['amount'],
+                  currency: booking['currency'],
+                  fromAccount: booking['fromAccount'],
+                  toAccount: booking['toAccount'],
+                  categorie: booking['categorie'],
+                  isBooked: booking['isBooked'] == 0 ? false : true,
+                ),
+              )
+              .toList();
+          updatedBookings.add(updatedSerieBooking[0]);
+        }
+      }
+    } catch (e) {
+      // TODO Fehler richtig behandeln
+      print('Error: $e');
+    }
+    return updatedBookings;
+  }
+
+  @override
+  Future<void> checkForNewBookings() async {
+    db = await openDatabase(localDbName);
+    DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
+    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [1/*= true*/, today.toIso8601String()]);
+  }
+
+  @override
+  Future<int> getNewSerieId() async {
+    List<Map<String, dynamic>> result = await db.rawQuery('SELECT MAX(serieId) as newSerieId FROM $bookingDbName');
+    int newSerieId = result.first['newSerieId'] != null ? result.first['newSerieId'] as int : 0;
+    return newSerieId + 1;
   }
 }

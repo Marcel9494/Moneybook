@@ -87,7 +87,7 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
           child: Row(
             children: [
               CircularPercentIndicator(
-                radius: 60.0,
+                radius: 70.0,
                 lineWidth: 10.0,
                 animation: true,
                 animationDuration: budgetAnimationDurationInMs,

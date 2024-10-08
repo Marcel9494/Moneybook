@@ -5,6 +5,7 @@ import '../value_objects/booking_type.dart';
 
 class Booking extends Equatable {
   final int id;
+  final int serieId;
   final BookingType type;
   final String title;
   final DateTime date;
@@ -18,6 +19,7 @@ class Booking extends Equatable {
 
   const Booking({
     required this.id,
+    required this.serieId,
     required this.type,
     required this.title,
     required this.date,
@@ -32,6 +34,7 @@ class Booking extends Equatable {
 
   Booking copyWith(
       {int? id,
+      int? serieId,
       BookingType? type,
       String? title,
       DateTime? date,
@@ -43,6 +46,7 @@ class Booking extends Equatable {
       String? categorie,
       bool? isBooked}) {
     return Booking(
+      serieId: serieId ?? this.serieId,
       id: id ?? this.id,
       type: type ?? this.type,
       title: title ?? this.title,
@@ -58,5 +62,5 @@ class Booking extends Equatable {
   }
 
   @override
-  List<Object> get props => [id, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked];
+  List<Object> get props => [id, serieId, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked];
 }

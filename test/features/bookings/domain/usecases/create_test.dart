@@ -30,6 +30,7 @@ void main() {
     fromAccount: 'Geldbeutel',
     toAccount: '',
     categorie: 'Lebensmittel',
+    isBooked: true,
   );
 
   test(

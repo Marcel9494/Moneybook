@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/cards/budget_card.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/charts/budget_overview_chart.dart';
 
@@ -8,7 +9,7 @@ import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../domain/entities/budget.dart';
 import '../bloc/budget_bloc.dart' as budget;
-import '../widgets/deco/create_budget_row.dart';
+import '../widgets/deco/create_row.dart';
 
 class BudgetListPage extends StatefulWidget {
   final DateTime selectedDate;
@@ -91,7 +92,12 @@ class _BudgetListPageState extends State<BudgetListPage> {
                         budgets: budgetState.budgets,
                         bookings: bookingState.bookings,
                       ),
-                      const CreateBudgetRow(),
+                      const CreateRow(
+                        title: 'Budgets',
+                        buttonText: 'Budget erstellen',
+                        createRoute: createBudgetRoute,
+                        leftPadding: 26.0,
+                      ),
                       const Expanded(
                         child: EmptyList(
                           text: 'Noch keine Budgets vorhanden',
@@ -109,7 +115,12 @@ class _BudgetListPageState extends State<BudgetListPage> {
                         budgets: budgetState.budgets,
                         bookings: bookingState.bookings,
                       ),
-                      const CreateBudgetRow(),
+                      const CreateRow(
+                        title: 'Budgets',
+                        buttonText: 'Budget erstellen',
+                        createRoute: createBudgetRoute,
+                        leftPadding: 26.0,
+                      ),
                       Expanded(
                         child: ListView.builder(
                           itemCount: budgetState.budgets.length,

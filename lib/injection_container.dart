@@ -9,8 +9,9 @@ import 'package:moneybook/features/bookings/domain/repositories/booking_reposito
 import 'package:moneybook/features/bookings/domain/usecases/check_for_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart' as create_booking;
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart' as delete_booking;
-import 'package:moneybook/features/bookings/domain/usecases/edit.dart' as edit_booking;
+import 'package:moneybook/features/bookings/domain/usecases/get_new_serie_id.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/update.dart' as edit_booking;
 import 'package:moneybook/features/bookings/domain/usecases/update_all_bookings_with_categorie.dart';
 import 'package:moneybook/features/bookings/presentation/bloc/booking_bloc.dart';
 import 'package:moneybook/features/budgets/domain/usecases/create.dart' as create_budget;
@@ -39,7 +40,10 @@ import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'features/bookings/domain/usecases/load_categorie_bookings.dart';
 import 'features/bookings/domain/usecases/load_new_bookings.dart';
+import 'features/bookings/domain/usecases/load_serie_bookings.dart';
+import 'features/bookings/domain/usecases/update_all_bookings_in_serie.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_with_account.dart';
+import 'features/bookings/domain/usecases/update_only_future_bookings_in_serie.dart';
 import 'features/budgets/data/datasources/budget_local_data_source.dart';
 import 'features/budgets/data/datasources/budget_remote_data_source.dart';
 import 'features/budgets/data/repositories/budget_repository_impl.dart';
@@ -67,7 +71,7 @@ final sl = GetIt.instance;
 void init() {
   // Features
   // Bloc
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
@@ -81,14 +85,18 @@ void init() {
 
   // Bookings
   sl.registerLazySingleton(() => create_booking.Create(sl()));
-  sl.registerLazySingleton(() => edit_booking.Edit(sl()));
+  sl.registerLazySingleton(() => edit_booking.Update(sl()));
   sl.registerLazySingleton(() => delete_booking.Delete(sl()));
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
   sl.registerLazySingleton(() => LoadAllCategorieBookings(sl()));
   sl.registerLazySingleton(() => LoadNewBookings(sl()));
+  sl.registerLazySingleton(() => LoadAllSerieBookings(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithCategorie(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithAccount(sl()));
+  sl.registerLazySingleton(() => UpdateAllBookingsInSerie(sl()));
+  sl.registerLazySingleton(() => UpdateOnlyFutureBookingsInSerie(sl()));
   sl.registerLazySingleton(() => CheckForNewBookings(sl()));
+  sl.registerLazySingleton(() => GetNewSerieId(sl()));
 
   // Categories
   sl.registerLazySingleton(() => create_categorie.Create(sl()));

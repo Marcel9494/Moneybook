@@ -27,9 +27,9 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<Either<Failure, void>> edit(Booking booking) async {
+  Future<Either<Failure, void>> update(Booking booking) async {
     try {
-      return Right(await bookingLocalDataSource.edit(booking));
+      return Right(await bookingLocalDataSource.update(booking));
     } on ServerException {
       return Left(ServerFailure());
     }
@@ -87,6 +87,24 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
+  Future<Either<Failure, List<Booking>>> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
+    try {
+      return Right(await bookingLocalDataSource.updateAllBookingsInSerie(updatedBooking, serieBookings));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Booking>>> updateOnlyFutureBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings) async {
+    try {
+      return Right(await bookingLocalDataSource.updateOnlyFutureBookingsInSerie(updatedBooking, serieBookings));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> checkForNewBookings() async {
     try {
       return Right(await bookingLocalDataSource.checkForNewBookings());
@@ -99,6 +117,24 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<Either<Failure, List<Booking>>> loadNewBookings() async {
     try {
       return Right(await bookingLocalDataSource.loadNewBookings());
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Booking>>> loadSerieBookings(int serieId) async {
+    try {
+      return Right(await bookingLocalDataSource.loadSerieBookings(serieId));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> getNewSerieId() async {
+    try {
+      return Right(await bookingLocalDataSource.getNewSerieId());
     } on ServerException {
       return Left(ServerFailure());
     }

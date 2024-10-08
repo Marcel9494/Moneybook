@@ -115,66 +115,75 @@ class BudgetCard extends StatelessWidget {
               border: Border(right: BorderSide(color: _getBudgetColor(), width: 3.5)),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, left: 14.0),
+              padding: const EdgeInsets.only(top: 12.0, bottom: 12.0, left: 6.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 14.0),
-                    child: CircularPercentIndicator(
-                      radius: 32.0,
-                      animation: true,
-                      animationDuration: budgetAnimationDurationInMs,
-                      curve: Curves.linearToEaseOut,
-                      percent: budget.percentage / 100 >= 1.0 ? 1.0 : budget.percentage / 100,
-                      center: Text(
-                        '${budget.percentage.toStringAsFixed(1).replaceAll('.', ',')} %',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: CircularPercentIndicator(
+                        radius: 32.0,
+                        animation: true,
+                        animationDuration: budgetAnimationDurationInMs,
+                        curve: Curves.linearToEaseOut,
+                        percent: budget.percentage / 100 >= 1.0 ? 1.0 : budget.percentage / 100,
+                        center: Text(
+                          '${budget.percentage.toStringAsFixed(1).replaceAll('.', ',')} %',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+                        ),
+                        circularStrokeCap: CircularStrokeCap.round,
+                        progressColor: _getBudgetColor(),
                       ),
-                      circularStrokeCap: CircularStrokeCap.round,
-                      progressColor: _getBudgetColor(),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(right: BorderSide(color: Colors.grey.shade700, width: 0.7)),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(right: BorderSide(color: Colors.grey.shade700, width: 0.7)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              budget.categorie,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              '${formatToMoneyAmount(budget.used.toString())} / ${formatToMoneyAmount(budget.amount.toString())}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              budget.percentage < 100.0 ? 'Noch ${_calculateBudgetPerDay()} p.T. verfügbar' : 'Du hast dein Budgetlimit erreicht',
+                              style: const TextStyle(fontSize: 12.0, color: Colors.grey),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
+                  ),
+                  Expanded(
+                    flex: 1,
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
+                      padding: const EdgeInsets.only(top: 20.0, left: 12.0, right: 8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            budget.categorie,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            '${formatToMoneyAmount(budget.used.toString())} / ${formatToMoneyAmount(budget.amount.toString())}',
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            budget.percentage < 100.0 ? 'Noch ${_calculateBudgetPerDay()} p.T. verfügbar' : 'Du hast dein Budgetlimit erreicht',
-                            style: const TextStyle(fontSize: 12.0, color: Colors.grey),
+                            formatToMoneyAmount(budget.remaining.toString(), withoutDecimalPlaces: 6),
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: _getBudgetColor(),
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0, left: 12.0, right: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          formatToMoneyAmount(budget.remaining.toString(), withoutDecimalPlaces: 6),
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: _getBudgetColor(),
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
                     ),
                   ),
                 ],

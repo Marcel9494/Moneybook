@@ -6,22 +6,23 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/booking.dart';
 
-class Edit implements UseCase<void, Params> {
+class UpdateOnlyFutureBookingsInSerie implements UseCase<void, Params> {
   final BookingRepository bookingRepository;
 
-  Edit(this.bookingRepository);
+  UpdateOnlyFutureBookingsInSerie(this.bookingRepository);
 
   @override
   Future<Either<Failure, void>> call(Params params) async {
-    return await bookingRepository.edit(params.booking);
+    return await bookingRepository.updateOnlyFutureBookingsInSerie(params.updatedBooking, params.serieBookings);
   }
 }
 
 class Params extends Equatable {
-  final Booking booking;
+  final Booking updatedBooking;
+  final List<Booking> serieBookings;
 
-  const Params({required this.booking});
+  const Params({required this.updatedBooking, required this.serieBookings});
 
   @override
-  List<Object> get props => [booking];
+  List<Object> get props => [updatedBooking, serieBookings];
 }

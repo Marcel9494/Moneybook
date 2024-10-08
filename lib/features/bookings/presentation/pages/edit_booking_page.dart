@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +8,15 @@ import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
+import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/number_formatter.dart';
+import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
+import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount.dart';
 import '../../domain/value_objects/booking_type.dart';
@@ -49,13 +53,19 @@ class _EditBookingPageState extends State<EditBookingPage> {
   late RepetitionType _repetitionType;
   late BookingType _bookingType;
   late Booking _oldBooking;
+  List<Booking> _oldSerieBookings = [];
   Booking? _updatedBooking;
+  bool _hasAccountListenerTriggered = false;
 
   @override
   void initState() {
     super.initState();
     _initializeBooking();
-    _backupOldBooking();
+    if (widget.editMode == SerieModeType.one) {
+      _backupOldBooking();
+    } else if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
+      _backupOldBookings();
+    }
   }
 
   void _initializeBooking() {
@@ -72,6 +82,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   void _backupOldBooking() {
     _oldBooking = Booking(
       id: widget.booking.id,
+      serieId: widget.booking.serieId,
       type: widget.booking.type,
       title: widget.booking.title,
       date: widget.booking.date,
@@ -85,6 +96,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
     );
   }
 
+  void _backupOldBookings() {
+    BlocProvider.of<BookingBloc>(context).add(LoadSerieBookings(widget.booking.serieId));
+  }
+
   void _editBooking(BuildContext context) {
     final FormState form = _bookingFormKey.currentState!;
     if (form.validate() == false) {
@@ -96,6 +111,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       _editBookingBtnController.success();
       _updatedBooking = Booking(
         id: widget.booking.id,
+        serieId: widget.booking.serieId,
         type: _bookingType,
         title: _titleController.text,
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
@@ -108,8 +124,14 @@ class _EditBookingPageState extends State<EditBookingPage> {
         isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
       );
       Timer(const Duration(milliseconds: durationInMs), () async {
-        _reverseBooking();
-        BlocProvider.of<BookingBloc>(context).add(EditBooking(_updatedBooking!, context));
+        if (widget.editMode == SerieModeType.one) {
+          _reverseBooking();
+          BlocProvider.of<BookingBloc>(context).add(UpdateBooking(_updatedBooking!, context));
+        } else if (widget.editMode == SerieModeType.onlyFuture) {
+          BlocProvider.of<BookingBloc>(context).add(UpdateOnlyFutureSerieBookings(_updatedBooking!, _oldSerieBookings));
+        } else if (widget.editMode == SerieModeType.all) {
+          BlocProvider.of<BookingBloc>(context).add(UpdateAllSerieBookings(_updatedBooking!, _oldSerieBookings));
+        }
       });
     }
   }
@@ -117,9 +139,9 @@ class _EditBookingPageState extends State<EditBookingPage> {
   void _reverseBooking() {
     // Alte Buchung zuerst rückgängig machen...
     if (_oldBooking.type == BookingType.expense) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_oldBooking));
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_oldBooking, 0));
     } else if (_oldBooking.type == BookingType.income) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking));
+      BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking, 0));
     } else if (_oldBooking.type == BookingType.transfer || _oldBooking.type == BookingType.investment) {
       BlocProvider.of<account.AccountBloc>(context).add(
         account.AccountTransfer(
@@ -127,6 +149,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
             fromAccount: _oldBooking.toAccount,
             toAccount: _oldBooking.fromAccount,
           ),
+          0,
         ),
       );
     }
@@ -193,19 +216,79 @@ class _EditBookingPageState extends State<EditBookingPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-          child: BlocListener<account.AccountBloc, account.AccountState>(
-            listener: (context, state) {
-              // Nachdem alte Buchung rückgängig gemacht wurde wird die bearbeitete Buchung gebucht
-              if (state is account.Booked && _updatedBooking != null) {
-                if (_bookingType == BookingType.expense) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_updatedBooking!));
-                } else if (_bookingType == BookingType.income) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_updatedBooking!));
-                } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                  BlocProvider.of<account.AccountBloc>(context).add(account.AccountTransfer(_updatedBooking!));
-                }
-              }
-            },
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<account.AccountBloc, account.AccountState>(
+                listener: (context, state) {
+                  // Serienbuchungen rückgängig machen...
+                  if (state is account.Booked && _hasAccountListenerTriggered == false) {
+                    if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
+                      double overallOldSerieAmount = 0.0;
+                      for (int i = 0; i < _oldSerieBookings.length; i++) {
+                        if (_oldSerieBookings[i].date.isBefore(DateTime.now())) {
+                          overallOldSerieAmount += _oldSerieBookings[i].amount;
+                        }
+                      }
+                      _oldSerieBookings[0] = _oldSerieBookings[0].copyWith(amount: overallOldSerieAmount);
+                      if (_oldSerieBookings[0].type == BookingType.expense) {
+                        BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldSerieBookings[0], 0));
+                      } else if (_oldSerieBookings[0].type == BookingType.income) {
+                        BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldSerieBookings[0], 0));
+                      } else if (_oldSerieBookings[0].type == BookingType.transfer || _oldSerieBookings[0].type == BookingType.investment) {
+                        BlocProvider.of<AccountBloc>(context).add(AccountTransfer(_oldSerieBookings[0], 0)); // TODO funktioniert das so?
+                      }
+                      // Account Listener soll nur 1x getriggert werden, weil es sonst zu Mehrfachbuchungen auf Konten kommen kann.
+                      setState(() {
+                        _hasAccountListenerTriggered = true;
+                      });
+                      Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+                    }
+                  }
+                },
+              ),
+              BlocListener<BookingBloc, BookingState>(
+                listener: (context, state) {
+                  if (state is SerieLoaded) {
+                    for (int i = 0; i < state.bookings.length; i++) {
+                      _oldSerieBookings.add(Booking(
+                        id: state.bookings[i].id,
+                        serieId: state.bookings[i].serieId,
+                        type: state.bookings[i].type,
+                        title: state.bookings[i].title,
+                        date: state.bookings[i].date,
+                        repetition: state.bookings[i].repetition,
+                        amount: Amount.getValue(state.bookings[i].amount.toString()),
+                        currency: Amount.getCurrency(state.bookings[i].amount.toString()),
+                        fromAccount: state.bookings[i].fromAccount,
+                        toAccount: state.bookings[i].toAccount,
+                        categorie: state.bookings[i].categorie,
+                        isBooked: state.bookings[i].isBooked,
+                      ));
+                    }
+                  } else if (state is SerieUpdated) {
+                    // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+                    // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+                    // muss somit nur einmal aufgerufen werden.
+                    double overallSerieAmount = 0.0;
+                    for (int i = 0; i < state.bookings.length; i++) {
+                      if (state.bookings[i].date.isBefore(DateTime.now())) {
+                        overallSerieAmount += state.bookings[i].amount;
+                      }
+                    }
+                    state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
+                    // TODO Random().nextInt(1000000) bessere Lösung finden!
+                    if (_bookingType == BookingType.expense) {
+                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0], Random().nextInt(1000000)));
+                    } else if (_bookingType == BookingType.income) {
+                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0], Random().nextInt(1000000)));
+                    } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], Random().nextInt(1000000)));
+                    }
+                  }
+                },
+              ),
+            ],
             child: Card(
               child: Form(
                 key: _bookingFormKey,
@@ -220,6 +303,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       dateController: _dateController,
                       repetitionType: _repetitionType.name,
                       onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
+                      activateRepetition: false,
                     ),
                     TitleTextField(hintText: 'Titel...', titleController: _titleController),
                     AmountTextField(amountController: _amountController),

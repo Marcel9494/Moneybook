@@ -14,22 +14,42 @@ class CreateBooking extends BookingEvent {
 }
 
 class CreateSerieBooking extends BookingEvent {
-  final Booking booking;
+  Booking booking;
 
-  const CreateSerieBooking(this.booking);
+  CreateSerieBooking(this.booking);
 
   @override
   List<Object?> get props => [booking];
 }
 
-class EditBooking extends BookingEvent {
+class UpdateBooking extends BookingEvent {
   final Booking booking;
   final BuildContext context;
 
-  const EditBooking(this.booking, this.context);
+  const UpdateBooking(this.booking, this.context);
 
   @override
   List<Object?> get props => [booking, context];
+}
+
+class UpdateAllSerieBookings extends BookingEvent {
+  final Booking updatedBooking;
+  final List<Booking> serieBookings;
+
+  const UpdateAllSerieBookings(this.updatedBooking, this.serieBookings);
+
+  @override
+  List<Object?> get props => [updatedBooking, serieBookings];
+}
+
+class UpdateOnlyFutureSerieBookings extends BookingEvent {
+  final Booking updatedBooking;
+  final List<Booking> serieBookings;
+
+  const UpdateOnlyFutureSerieBookings(this.updatedBooking, this.serieBookings);
+
+  @override
+  List<Object?> get props => [updatedBooking, serieBookings];
 }
 
 class DeleteBooking extends BookingEvent {
@@ -58,6 +78,15 @@ class LoadCategorieBookings extends BookingEvent {
 
   @override
   List<Object?> get props => [categorie];
+}
+
+class LoadSerieBookings extends BookingEvent {
+  final int serieId;
+
+  const LoadSerieBookings(this.serieId);
+
+  @override
+  List<Object?> get props => [serieId];
 }
 
 class UpdateBookingsWithCategorie extends BookingEvent {

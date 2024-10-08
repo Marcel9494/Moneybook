@@ -120,7 +120,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   final FormState form = _deleteAccountFormKey.currentState!;
                   if (form.validate()) {
                     Booking transferBooking = Booking(
-                      id: widget.account.id,
+                      id: widget.account.id, // TODO initial auf 0 setzen?
+                      serieId: -1,
                       type: BookingType.transfer,
                       title: 'Übertrag',
                       date: DateTime.now(), // parse DateFormat in ISO-8601,
@@ -133,7 +134,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       isBooked: true,
                     );
                     BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(transferBooking));
-                    BlocProvider.of<AccountBloc>(context).add(AccountTransfer(transferBooking));
+                    BlocProvider.of<AccountBloc>(context).add(AccountTransfer(transferBooking, 0));
                     BlocProvider.of<AccountBloc>(context).add(DeleteAccount(widget.account.id));
                   }
                 },
@@ -203,6 +204,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
   void _editAccountWithNewAmount(BuildContext context, bool createBooking) {
     Booking newBooking = Booking(
       id: 0,
+      serieId: -1,
       type: _oldAccountAmount < formatMoneyAmountToDouble(_amountController.text) ? BookingType.income : BookingType.expense,
       title: 'Kontoänderung',
       date: DateTime.now(),
@@ -218,9 +220,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
       BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(newBooking));
     }
     if (_oldAccountAmount < formatMoneyAmountToDouble(_amountController.text)) {
-      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking));
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking, 0));
     } else if (_oldAccountAmount > formatMoneyAmountToDouble(_amountController.text)) {
-      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking));
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking, 0));
     }
     Timer(const Duration(milliseconds: durationInMs), () {
       BlocProvider.of<AccountBloc>(context).add(

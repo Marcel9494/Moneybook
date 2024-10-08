@@ -10,12 +10,14 @@ class DateAndRepeatInputField extends StatefulWidget {
   final TextEditingController dateController;
   String repetitionType;
   Function onSelectionChanged;
+  bool activateRepetition;
 
   DateAndRepeatInputField({
     super.key,
     required this.dateController,
     required this.repetitionType,
     required this.onSelectionChanged,
+    this.activateRepetition = true,
   });
 
   @override
@@ -116,16 +118,20 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
         suffixIcon: Column(
           children: [
             IconButton(
-              icon: const Icon(Icons.event_repeat_rounded),
-              onPressed: () => openRepeatBottomSheet(
-                context: context,
-                repetitionType: widget.repetitionType,
-              ),
+              icon: Icon(Icons.event_repeat_rounded, color: widget.activateRepetition ? Colors.grey.shade300 : Colors.grey),
+              onPressed: widget.activateRepetition
+                  ? () => openRepeatBottomSheet(
+                        context: context,
+                        repetitionType: widget.repetitionType,
+                      )
+                  : () => {},
               padding: const EdgeInsets.only(top: 6.0),
               constraints: widget.repetitionType == RepetitionType.noRepetition.name ? null : const BoxConstraints(),
               style: const ButtonStyle(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
+              splashColor: widget.activateRepetition ? Colors.grey.shade800 : Colors.transparent,
+              highlightColor: widget.activateRepetition ? Colors.grey.shade800 : Colors.transparent,
             ),
             widget.repetitionType == RepetitionType.noRepetition.name
                 ? const SizedBox()
@@ -133,7 +139,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
                     padding: const EdgeInsets.only(bottom: 4.0, right: 6.0),
                     child: Text(
                       widget.repetitionType,
-                      style: const TextStyle(fontSize: 10.0),
+                      style: TextStyle(fontSize: 10.0, color: widget.activateRepetition ? Colors.grey.shade300 : Colors.grey),
                     ),
                   ),
           ],
