@@ -123,3 +123,7 @@ Webseite / landing Page auf Hostinger: https://www.hostinger.de/?utm_campaign=Br
 # Mockups für Play Store Eintrag
 
 MockUPhone: https://mockuphone.com
+
+App Launchpad: https://theapplaunchpad.com/
+
+Rotato: https://rotato.app/
