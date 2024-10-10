@@ -119,3 +119,7 @@ Preise beachten! https://canny.io/pricing
 # Webseite / Landing Page
 
 Webseite / landing Page auf Hostinger: https://www.hostinger.de/?utm_campaign=Brand-Exact|NT:Se|LO:DE&utm_medium=ppc&gad_source=1&gclid=Cj0KCQjw8--2BhCHARIsAF_w1gxD3flMoBKNj4XWrJ7hCR8chwe1f3q9RzQ4q6ETrMNyoOGfOhqw83MaAgapEALw_wcB hosten.
+
+# Mockups für Play Store Eintrag
+
+MockUPhone: https://mockuphone.com
