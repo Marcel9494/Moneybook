@@ -22,8 +22,27 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
     return Drawer(
       child: ListView(
         children: [
-          const DrawerHeader(
-            child: Text('Moneybook'),
+          SizedBox(
+            height: 86.0,
+            child: DrawerHeader(
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/images/app_icon.png',
+                    width: 40,
+                    height: 40,
+                  ),
+                  const SizedBox(width: 20.0),
+                  const Text(
+                    'Moneybook',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           ListTile(
             leading: Icon(
