@@ -126,4 +126,8 @@ MockUPhone: https://mockuphone.com
 
 App Launchpad: https://theapplaunchpad.com/
 
+Erster Entwurf: https://theapplaunchpad.com/dashboard/46f0d13f-c4ab-409a-8288-d97f7cfaddb1
+
+1-monatiges Abo für 29$ pro Monat kurz vor Veröffentlichung abschließen.
+
 Rotato: https://rotato.app/
