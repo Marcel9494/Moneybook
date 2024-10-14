@@ -34,7 +34,7 @@ class MonthlyCard extends StatelessWidget {
                   style: TextStyle(color: Colors.grey.shade400, fontSize: 12.0),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 2.0, bottom: 3.0),
+                  padding: const EdgeInsets.only(top: 2.0),
                   child: Text(
                     formatToMoneyAmount(monthlyValue.toString()),
                     overflow: TextOverflow.ellipsis,

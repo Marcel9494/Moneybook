@@ -78,7 +78,13 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
           ),
         )
         .toList();
-    accountList.sort((first, second) => second.type.name.compareTo(first.type.name));
+    accountList.sort((first, second) {
+      int typeComparison = first.type.name.compareTo(second.type.name);
+      if (typeComparison != 0) {
+        return typeComparison;
+      }
+      return second.amount.compareTo(first.amount);
+    });
     return accountList;
   }
 

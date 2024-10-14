@@ -35,7 +35,7 @@ class _MonthlyValueCardsState extends State<MonthlyValueCards> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 92.0,
+      height: 86.0,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
