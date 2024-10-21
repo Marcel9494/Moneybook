@@ -123,9 +123,11 @@ class _EditBookingPageState extends State<EditBookingPage> {
         categorie: _categorieController.text,
         isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
       );
-      Timer(const Duration(milliseconds: durationInMs), () async {
+      Future.delayed(const Duration(milliseconds: durationInMs), () async {
+        // TODO hier weitermachen und async und await entfernen?
         if (widget.editMode == SerieModeType.one) {
-          _reverseBooking();
+          await _reverseBooking();
+          await _updateBooking(_updatedBooking!);
           BlocProvider.of<BookingBloc>(context).add(UpdateBooking(_updatedBooking!, context));
         } else if (widget.editMode == SerieModeType.onlyFuture) {
           BlocProvider.of<BookingBloc>(context).add(UpdateOnlyFutureSerieBookings(_updatedBooking!, _oldSerieBookings));
@@ -136,15 +138,16 @@ class _EditBookingPageState extends State<EditBookingPage> {
     }
   }
 
-  void _reverseBooking() {
-    // Alte Buchung zuerst rückgängig machen...
+  // Alte Buchung zuerst rückgängig machen...
+  Future<void> _reverseBooking() async {
     if (_oldBooking.type == BookingType.expense) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountDeposit(_oldBooking, 0));
+      print(_oldBooking.amount);
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldBooking, 0));
     } else if (_oldBooking.type == BookingType.income) {
-      BlocProvider.of<account.AccountBloc>(context).add(account.AccountWithdraw(_oldBooking, 0));
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldBooking, 0));
     } else if (_oldBooking.type == BookingType.transfer || _oldBooking.type == BookingType.investment) {
-      BlocProvider.of<account.AccountBloc>(context).add(
-        account.AccountTransfer(
+      BlocProvider.of<AccountBloc>(context).add(
+        AccountTransfer(
           _oldBooking.copyWith(
             fromAccount: _oldBooking.toAccount,
             toAccount: _oldBooking.fromAccount,
@@ -152,6 +155,18 @@ class _EditBookingPageState extends State<EditBookingPage> {
           0,
         ),
       );
+    }
+  }
+
+  // ... dann bearbeitete Buchung buchen
+  Future<void> _updateBooking(Booking updatedBooking) async {
+    if (_bookingType == BookingType.expense) {
+      print(updatedBooking.amount);
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(updatedBooking, Random().nextInt(1000000)));
+    } else if (_bookingType == BookingType.income) {
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(updatedBooking, Random().nextInt(1000000)));
+    } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
+      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(updatedBooking, Random().nextInt(1000000)));
     }
   }
 

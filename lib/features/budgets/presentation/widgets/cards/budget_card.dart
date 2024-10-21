@@ -93,10 +93,8 @@ class BudgetCard extends StatelessWidget {
   }
 
   Color _getBudgetColor() {
-    if (budget.percentage <= 75.0) {
+    if (budget.percentage <= 100.0) {
       return Colors.green.withOpacity(0.9);
-    } else if (budget.percentage > 75.0 && budget.percentage < 100.0) {
-      return Colors.yellowAccent.withOpacity(0.7);
     }
     return Colors.redAccent;
   }
