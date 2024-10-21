@@ -19,6 +19,7 @@ import '../../../../shared/presentation/widgets/input_fields/amount_text_field.d
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/amount.dart';
+import '../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../domain/value_objects/account_type.dart';
@@ -127,6 +128,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       date: DateTime.now(), // parse DateFormat in ISO-8601,
                       repetition: RepetitionType.noRepetition,
                       amount: widget.account.amount,
+                      amountType: AmountType.undefined, // TODO Undefined ändern
                       currency: Amount.getCurrency(formatToMoneyAmount(widget.account.amount.toString())),
                       fromAccount: widget.account.name,
                       toAccount: _accountController.text,
@@ -210,6 +212,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
       date: DateTime.now(),
       repetition: RepetitionType.noRepetition,
       amount: (formatMoneyAmountToDouble(_amountController.text) - _oldAccountAmount).abs(),
+      amountType: AmountType.undefined, // TODO Undefined ändern
       currency: Amount.getCurrency(_amountController.text),
       fromAccount: widget.account.name,
       toAccount: '',

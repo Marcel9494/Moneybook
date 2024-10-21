@@ -19,6 +19,7 @@ import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
 import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../../domain/value_objects/repetition_type.dart';
 import '../bloc/booking_bloc.dart';
@@ -88,6 +89,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       date: widget.booking.date,
       repetition: widget.booking.repetition,
       amount: Amount.getValue(widget.booking.amount.toString()),
+      amountType: AmountType.undefined, // TODO Undefined ändern
       currency: Amount.getCurrency(widget.booking.amount.toString()),
       fromAccount: widget.booking.fromAccount,
       toAccount: widget.booking.toAccount,
@@ -117,6 +119,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),
+        amountType: AmountType.undefined, // TODO Undefined ändern
         currency: Amount.getCurrency(_amountController.text),
         fromAccount: _fromAccountController.text,
         toAccount: _toAccountController.text,
@@ -274,6 +277,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                         date: state.bookings[i].date,
                         repetition: state.bookings[i].repetition,
                         amount: Amount.getValue(state.bookings[i].amount.toString()),
+                        amountType: AmountType.undefined, // TODO Undefined ändern
                         currency: Amount.getCurrency(state.bookings[i].amount.toString()),
                         fromAccount: state.bookings[i].fromAccount,
                         toAccount: state.bookings[i].toAccount,

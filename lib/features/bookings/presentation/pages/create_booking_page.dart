@@ -20,6 +20,7 @@ import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../bloc/booking_bloc.dart';
 import '../widgets/input_fields/categorie_input_field.dart';
@@ -66,6 +67,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),
+        amountType: AmountType.undefined, // TODO Undefined ändern
         currency: Amount.getCurrency(_amountController.text),
         fromAccount: _fromAccountController.text,
         toAccount: _toAccountController.text,
