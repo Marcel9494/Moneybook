@@ -52,6 +52,32 @@ class CategoriePieChartState extends State<CategoriePieChart> {
               ),
             ),
           ),
+          // TODO hier weitermachen und Kauf / Verkauf implementieren neuen Branch erstellen und mit Passiv/Aktiv & Fix/Variabel überlegen
+          /*const Padding(
+            padding: EdgeInsets.only(right: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Indicator(
+                  color: Colors.green,
+                  text: 'Kauf',
+                  isSquare: true,
+                ),
+                SizedBox(
+                  height: 6.0,
+                ),
+                Indicator(
+                  color: Colors.redAccent,
+                  text: 'Verkauf',
+                  isSquare: true,
+                ),
+                SizedBox(
+                  height: 18.0,
+                ),
+              ],
+            ),
+          ),*/
         ],
       ),
     );

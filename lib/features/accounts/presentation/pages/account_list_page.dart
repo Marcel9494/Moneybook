@@ -65,12 +65,26 @@ class _AccountListPageState extends State<AccountListPage> {
         builder: (context, state) {
           if (state is Loaded) {
             if (state.accounts.isEmpty) {
-              return const SizedBox(
-                width: double.infinity,
-                child: EmptyList(
-                  text: 'Noch keine Konten vorhanden',
-                  icon: Icons.account_balance_outlined,
-                ),
+              return Column(
+                children: [
+                  OverviewCards(
+                    accounts: state.accounts,
+                    assets: 0,
+                    debts: 0,
+                  ),
+                  const CreateRow(
+                    title: 'Konten',
+                    buttonText: 'Konto erstellen',
+                    createRoute: createAccountRoute,
+                    leftPadding: 10.0,
+                  ),
+                  const Expanded(
+                    child: EmptyList(
+                      text: 'Noch keine Konten vorhanden',
+                      icon: Icons.account_balance_outlined,
+                    ),
+                  ),
+                ],
               );
             } else {
               _calculateOverviewValues(state.accounts);

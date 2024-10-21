@@ -83,7 +83,7 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
       width: MediaQuery.of(context).size.width,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 12.0),
+          padding: const EdgeInsets.fromLTRB(20.0, 12.0, 12.0, 12.0),
           child: Row(
             children: [
               CircularPercentIndicator(
@@ -95,13 +95,13 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
                 percent: _overallBudgetPercentage / 100 >= 1.0 ? 1.0 : _overallBudgetPercentage / 100,
                 center: Text(
                   '${_overallBudgetPercentage.toStringAsFixed(1).replaceAll('.', ',')} %',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
                 ),
                 circularStrokeCap: CircularStrokeCap.round,
                 progressColor: _getBudgetColor(),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 28.0),
+                padding: const EdgeInsets.only(left: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

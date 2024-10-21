@@ -78,7 +78,13 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
           ),
         )
         .toList();
-    accountList.sort((first, second) => second.type.name.compareTo(first.type.name));
+    accountList.sort((first, second) {
+      int typeComparison = first.type.name.compareTo(second.type.name);
+      if (typeComparison != 0) {
+        return typeComparison;
+      }
+      return second.amount.compareTo(first.amount);
+    });
     return accountList;
   }
 
@@ -105,36 +111,58 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   @override
   Future<void> deposit(Booking booking) async {
     db = await openDatabase(localDbName);
-    List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
-    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      accountBalance[0]['amount'] + booking.amount,
-      booking.fromAccount,
-    ]);
+    await db.transaction((ta) async {
+      List<Map> accountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
+      if (accountBalance.isNotEmpty) {
+        final currentAmount = accountBalance[0]['amount'];
+        final newAmount = currentAmount + booking.amount;
+        await ta.rawUpdate(
+          'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+          [newAmount, booking.fromAccount],
+        );
+      }
+    });
   }
 
   @override
   Future<void> withdraw(Booking booking) async {
     db = await openDatabase(localDbName);
-    List<Map> accountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
-    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      accountBalance[0]['amount'] - booking.amount,
-      booking.fromAccount,
-    ]);
+    await db.transaction((ta) async {
+      List<Map> accountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
+      if (accountBalance.isNotEmpty) {
+        final currentAmount = accountBalance[0]['amount'];
+        final newAmount = currentAmount - booking.amount;
+        await ta.rawUpdate(
+          'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+          [newAmount, booking.fromAccount],
+        );
+      }
+    });
   }
 
   @override
   Future<void> transfer(Booking booking) async {
     db = await openDatabase(localDbName);
-    List<Map> fromAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
-    List<Map> toAccountBalance = await db.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
-    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      fromAccountBalance[0]['amount'] - booking.amount,
-      booking.fromAccount,
-    ]);
-    await db.rawUpdate('UPDATE $accountDbName SET amount = ? WHERE name = ?', [
-      toAccountBalance[0]['amount'] + booking.amount,
-      booking.toAccount,
-    ]);
+    await db.transaction((ta) async {
+      List<Map> fromAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
+      List<Map> toAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
+      if (fromAccountBalance.isNotEmpty && toAccountBalance.isNotEmpty) {
+        final fromCurrentAmount = fromAccountBalance[0]['amount'];
+        final toCurrentAmount = toAccountBalance[0]['amount'];
+
+        final newFromAmount = fromCurrentAmount - booking.amount;
+        final newToAmount = toCurrentAmount + booking.amount;
+
+        await ta.rawUpdate(
+          'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+          [newFromAmount, booking.fromAccount],
+        );
+        await ta.rawUpdate(
+          'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+          [newToAmount, booking.toAccount],
+        );
+      }
+    });
   }
 
   @override

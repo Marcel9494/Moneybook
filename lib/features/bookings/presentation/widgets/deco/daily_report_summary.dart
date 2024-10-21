@@ -54,7 +54,7 @@ class DailyReportSummary extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 0.0),
             child: Text(
               formatToMoneyAmount(dailyIncome.toString()),
               overflow: TextOverflow.ellipsis,
@@ -62,7 +62,7 @@ class DailyReportSummary extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 0.0),
             child: Text(
               formatToMoneyAmount(dailyExpense.toString()),
               overflow: TextOverflow.ellipsis,

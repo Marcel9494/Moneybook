@@ -117,6 +117,10 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
     ]);
     await db.rawInsert('INSERT INTO $categorieDbName(type, name) VALUES(?, ?)', [
       BookingType.expense.name,
+      'Geschenke',
+    ]);
+    await db.rawInsert('INSERT INTO $categorieDbName(type, name) VALUES(?, ?)', [
+      BookingType.expense.name,
       'Restaurant',
     ]);
     await db.rawInsert('INSERT INTO $categorieDbName(type, name) VALUES(?, ?)', [
