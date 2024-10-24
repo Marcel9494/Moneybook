@@ -1,16 +1,21 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:moneybook/core/theme/colors.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/amount_type.dart';
 
 import '../../../../../core/consts/common_consts.dart';
+import '../../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../domain/entities/categorie_stats.dart';
+import 'indicator.dart';
 
 class CategoriePieChart extends StatefulWidget {
   final List<CategorieStats> categorieStats;
+  final BookingType bookingType;
 
-  CategoriePieChart({
+  const CategoriePieChart({
     super.key,
     required this.categorieStats,
+    required this.bookingType,
   });
 
   @override
@@ -19,6 +24,7 @@ class CategoriePieChart extends StatefulWidget {
 
 class CategoriePieChartState extends State<CategoriePieChart> {
   int touchedIndex = -1;
+  final String _amountType = AmountType.buy.name;
 
   @override
   Widget build(BuildContext context) {
@@ -53,31 +59,39 @@ class CategoriePieChartState extends State<CategoriePieChart> {
             ),
           ),
           // TODO hier weitermachen und Kauf / Verkauf implementieren neuen Branch erstellen und mit Passiv/Aktiv & Fix/Variabel überlegen
-          /*const Padding(
-            padding: EdgeInsets.only(right: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Indicator(
-                  color: Colors.green,
-                  text: 'Kauf',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 6.0,
-                ),
-                Indicator(
-                  color: Colors.redAccent,
-                  text: 'Verkauf',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 18.0,
-                ),
-              ],
-            ),
-          ),*/
+          widget.bookingType.pluralName == BookingType.investment.pluralName
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () => {},
+                        child: const Indicator(
+                          color: Colors.green,
+                          text: 'Kauf',
+                          isSquare: true,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6.0,
+                      ),
+                      GestureDetector(
+                        onTap: () => {},
+                        child: const Indicator(
+                          color: Colors.redAccent,
+                          text: 'Verkauf',
+                          isSquare: true,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 18.0,
+                      ),
+                    ],
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );

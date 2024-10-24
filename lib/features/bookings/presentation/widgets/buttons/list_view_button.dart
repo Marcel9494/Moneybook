@@ -14,6 +14,8 @@ class ListViewButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(text);
+    print(selectedValue);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: OutlinedButton(

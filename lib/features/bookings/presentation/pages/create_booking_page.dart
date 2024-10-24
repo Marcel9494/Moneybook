@@ -43,6 +43,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
   RepetitionType _repetitionType = RepetitionType.noRepetition;
   BookingType _bookingType = BookingType.expense;
+  AmountType _amountType = AmountType.buy;
 
   @override
   void initState() {
@@ -115,6 +116,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     Navigator.pop(context);
   }
 
+  void _changeAmountType(AmountType newAmountType) {
+    setState(() {
+      _amountType = newAmountType;
+    });
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,7 +180,12 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                           ),
                           TitleTextField(hintText: 'Titel...', titleController: _titleController),
-                          AmountTextField(amountController: _amountController),
+                          AmountTextField(
+                            amountController: _amountController,
+                            bookingType: _bookingType,
+                            amountType: _amountType.name,
+                            onAmountTypeChanged: (amountType) => _changeAmountType(amountType),
+                          ),
                           AccountInputField(
                             accountController: _fromAccountController,
                             hintText: _bookingType.name == BookingType.income.name ? 'Konto...' : 'Abbuchungskonto...',

@@ -56,7 +56,10 @@ class _StatisticPageState extends State<StatisticPage> {
                 if (state.categorieStats.isEmpty) {
                   return Column(
                     children: [
-                      CategoriePieChart(categorieStats: state.categorieStats),
+                      CategoriePieChart(
+                        categorieStats: state.categorieStats,
+                        bookingType: _selectedBookingType,
+                      ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
                         onSelectionChanged: _onSelectionChanged,
@@ -72,7 +75,10 @@ class _StatisticPageState extends State<StatisticPage> {
                 } else {
                   return Column(
                     children: [
-                      CategoriePieChart(categorieStats: state.categorieStats),
+                      CategoriePieChart(
+                        categorieStats: state.categorieStats,
+                        bookingType: _selectedBookingType,
+                      ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
                         onSelectionChanged: _onSelectionChanged,

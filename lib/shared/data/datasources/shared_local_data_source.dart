@@ -1,8 +1,12 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../../../core/consts/database_consts.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../features/accounts/domain/value_objects/account_type.dart';
+import '../../../features/bookings/domain/entities/booking.dart';
+import '../../../features/bookings/domain/value_objects/amount_type.dart';
 import '../../../features/bookings/domain/value_objects/booking_type.dart';
+import '../../../features/bookings/domain/value_objects/repetition_type.dart';
 
 abstract class SharedLocalDataSource {
   Future<void> createDb();
@@ -14,8 +18,6 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
 
   @override
   Future<void> createDb() async {
-    // TODO hier weitermachen und Datenbank Migration weiter implementieren
-    print('Test');
     db = await openDatabase(
       localDbName,
       version: localDbVersion,
@@ -23,15 +25,8 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
         await _createAllTables(db);
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
-        //if (oldVersion < newVersion) {
-        print(oldVersion);
-        //if (oldVersion == 1) {
-        await _migrateToVersion2(db);
-        //}
-        //if (oldVersion == 2) {
-        //  await _migrateToVersion3(db);
-        //}
-        //}
+        print('Datenbank wird geupdatet mit neuer Version $newVersion');
+        await _migrateToNewVersion(db);
       },
     );
     return db;
@@ -47,7 +42,7 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
         date TEXT NOT NULL,
         repetition TEXT NOT NULL,
         amount DOUBLE NOT NULL,
-        amountType TEXT,
+        amountType TEXT NOT NULL,
         currency TEXT NOT NULL,
         fromAccount TEXT NOT NULL,
         toAccount TEXT NOT NULL,
@@ -94,7 +89,9 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
       ''');
   }
 
-  Future<void> _migrateToVersion2(Database db) async {
+  Future<void> _migrateToNewVersion(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS new_$bookingDbName');
+
     await db.execute('''
     CREATE TABLE IF NOT EXISTS new_$bookingDbName (
       id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -104,7 +101,7 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
       date TEXT NOT NULL,
       repetition TEXT NOT NULL,
       amount DOUBLE NOT NULL,
-      amountType TEXT,
+      amountType TEXT NOT NULL,
       currency TEXT NOT NULL,
       fromAccount TEXT NOT NULL,
       toAccount TEXT NOT NULL,
@@ -113,15 +110,52 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
     )
   ''');
 
-    await db.execute('''
-    INSERT INTO new_$bookingDbName (id, serieId, type, title, date, repetition, amount, amountType, currency, fromAccount, toAccount, categorie, isBooked)
-    SELECT id, serieId, type, title, date, repetition, amount, amountType, currency, fromAccount, toAccount, categorie, isBooked
-    FROM $bookingDbName;
-  ''');
+    List<Map> bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName');
+    List<Booking> bookingList = bookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType'] ?? 'Undefiniert'),
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+
+    for (int i = 0; i < bookingList.length; i++) {
+      await db.rawInsert(
+        'INSERT INTO new_$bookingDbName(serieId, type, title, date, repetition, amount, amountType, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          bookingList[i].serieId,
+          bookingList[i].type.name,
+          bookingList[i].title,
+          dateFormatterYYYYMMDD.format(bookingList[i].date),
+          bookingList[i].repetition.name,
+          bookingList[i].amount,
+          'Undefiniert',
+          bookingList[i].currency,
+          bookingList[i].fromAccount,
+          bookingList[i].toAccount,
+          bookingList[i].categorie,
+          bookingList[i].isBooked,
+        ],
+      );
+    }
 
     await db.execute('DROP TABLE IF EXISTS $bookingDbName');
 
     await db.execute('ALTER TABLE new_$bookingDbName RENAME TO $bookingDbName');
+
+    await db.execute('DROP TABLE IF EXISTS new_$bookingDbName');
   }
 
   // Placeholder for future migrations (e.g., version 3)
