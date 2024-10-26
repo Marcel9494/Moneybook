@@ -26,6 +26,8 @@ class StatisticPage extends StatefulWidget {
 class _StatisticPageState extends State<StatisticPage> {
   BookingType _selectedBookingType = BookingType.expense;
   AmountType _selectedAmountType = AmountType.buy;
+  double _overallBuyAmount = 0.0;
+  double _overallSaleAmount = 0.0;
 
   void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -39,14 +41,27 @@ class _StatisticPageState extends State<StatisticPage> {
     );
   }
 
-  void _onSelectionChanged(Set<BookingType> newSelection) {
+  void _calculateAmountTypeStats(List<Booking> bookings) {
+    _overallBuyAmount = 0.0;
+    _overallSaleAmount = 0.0;
+    for (int i = 0; i < bookings.length; i++) {
+      if (bookings[i].type.name == BookingType.investment.name) {
+        if (bookings[i].amountType.name == AmountType.buy.name) {
+          _overallBuyAmount += bookings[i].amount;
+        } else if (bookings[i].amountType.name == AmountType.sale.name) {
+          _overallSaleAmount += bookings[i].amount;
+        }
+      }
+    }
+  }
+
+  void _onBookingTypeChanged(Set<BookingType> newBookingType) {
     setState(() {
-      _selectedBookingType = newSelection.first;
+      _selectedBookingType = newBookingType.first;
     });
   }
 
   void _onAmountTypeChanged(Set<AmountType> newAmountType) {
-    print('Test');
     setState(() {
       _selectedAmountType = newAmountType.first;
     });
@@ -59,6 +74,7 @@ class _StatisticPageState extends State<StatisticPage> {
         _loadCategorieBookings(context);
         if (bookingState is Loaded) {
           _calculateCategoryStats(bookingState.bookings);
+          _calculateAmountTypeStats(bookingState.bookings);
           return BlocBuilder<CategorieStatsBloc, CategorieStatsState>(
             builder: (context, state) {
               if (state is CalculatedCategorieStats) {
@@ -69,11 +85,13 @@ class _StatisticPageState extends State<StatisticPage> {
                         categorieStats: state.categorieStats,
                         bookingType: _selectedBookingType,
                         amountType: _selectedAmountType,
-                        onAmountTypeChanged: (_selectedAmountType) => _onAmountTypeChanged(_selectedAmountType),
+                        onAmountTypeChanged: _onAmountTypeChanged,
+                        overallBuyAmount: _overallBuyAmount,
+                        overallSaleAmount: _overallSaleAmount,
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
-                        onSelectionChanged: _onSelectionChanged,
+                        onBookingTypeChanged: _onBookingTypeChanged,
                       ),
                       const Expanded(
                         child: EmptyList(
@@ -90,11 +108,13 @@ class _StatisticPageState extends State<StatisticPage> {
                         categorieStats: state.categorieStats,
                         bookingType: _selectedBookingType,
                         amountType: _selectedAmountType,
-                        onAmountTypeChanged: (_selectedAmountType) => _onAmountTypeChanged(_selectedAmountType),
+                        onAmountTypeChanged: _onAmountTypeChanged,
+                        overallBuyAmount: _overallBuyAmount,
+                        overallSaleAmount: _overallSaleAmount,
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
-                        onSelectionChanged: _onSelectionChanged,
+                        onBookingTypeChanged: _onBookingTypeChanged,
                       ),
                       Expanded(
                         child: ListView.builder(

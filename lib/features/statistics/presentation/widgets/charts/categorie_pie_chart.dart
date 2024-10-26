@@ -12,7 +12,9 @@ class CategoriePieChart extends StatefulWidget {
   final List<CategorieStats> categorieStats;
   final BookingType bookingType;
   final AmountType amountType;
-  final Function onAmountTypeChanged;
+  final Function(Set<AmountType>) onAmountTypeChanged;
+  final double overallBuyAmount;
+  final double overallSaleAmount;
 
   const CategoriePieChart({
     super.key,
@@ -20,6 +22,8 @@ class CategoriePieChart extends StatefulWidget {
     required this.bookingType,
     required this.amountType,
     required this.onAmountTypeChanged,
+    required this.overallBuyAmount,
+    required this.overallSaleAmount,
   });
 
   @override
@@ -27,7 +31,7 @@ class CategoriePieChart extends StatefulWidget {
 }
 
 class CategoriePieChartState extends State<CategoriePieChart> {
-  int touchedIndex = -1;
+  int _touchedPieIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +48,10 @@ class CategoriePieChartState extends State<CategoriePieChart> {
                     touchCallback: (FlTouchEvent event, pieTouchResponse) {
                       setState(() {
                         if (!event.isInterestedForInteractions || pieTouchResponse == null || pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
+                          _touchedPieIndex = -1;
                           return;
                         }
-                        touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                        _touchedPieIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
                       });
                     },
                   ),
@@ -63,33 +67,33 @@ class CategoriePieChartState extends State<CategoriePieChart> {
           ),
           widget.bookingType.pluralName == BookingType.investment.pluralName
               ? Padding(
-                  padding: const EdgeInsets.only(right: 24.0),
+                  padding: const EdgeInsets.only(right: 62.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       GestureDetector(
-                        onTap: () => widget.onAmountTypeChanged,
-                        child: const Indicator(
+                        onTap: () => widget.onAmountTypeChanged({AmountType.buy}),
+                        child: Indicator(
                           color: Colors.white,
-                          text: 'Kauf',
+                          text: AmountType.buy.name,
                           isSquare: false,
+                          amountType: widget.amountType,
+                          amount: widget.overallBuyAmount,
                         ),
                       ),
-                      const SizedBox(
-                        height: 6.0,
-                      ),
+                      const SizedBox(height: 4.0),
                       GestureDetector(
-                        onTap: () => widget.onAmountTypeChanged,
-                        child: const Indicator(
+                        onTap: () => widget.onAmountTypeChanged({AmountType.sale}),
+                        child: Indicator(
                           color: Colors.white,
-                          text: 'Verkauf',
+                          text: AmountType.sale.name,
                           isSquare: false,
+                          amountType: widget.amountType,
+                          amount: widget.overallSaleAmount,
                         ),
                       ),
-                      const SizedBox(
-                        height: 18.0,
-                      ),
+                      const SizedBox(height: 14.0),
                     ],
                   ),
                 )
@@ -101,7 +105,7 @@ class CategoriePieChartState extends State<CategoriePieChart> {
 
   List<PieChartSectionData> showingSections(List<CategorieStats> categorieStats) {
     return List.generate(categorieStats.length, (i) {
-      final isTouched = i == touchedIndex;
+      final isTouched = i == _touchedPieIndex;
       final fontSize = isTouched ? 18.0 : 13.0;
       final radius = isTouched ? 60.0 : 50.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 1)];
