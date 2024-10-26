@@ -2,7 +2,7 @@
     <application
         android:label="moneybook"
         android:name="${applicationName}"
-        android:icon="@mipmap/app_icon">
+        android:icon="@mipmap/moneybook_app_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

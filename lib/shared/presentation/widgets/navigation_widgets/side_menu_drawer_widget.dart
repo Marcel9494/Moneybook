@@ -28,7 +28,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               child: Row(
                 children: [
                   Image.asset(
-                    'assets/images/app_icon.png',
+                    'assets/images/moneybook_app_icon.png',
                     width: 40,
                     height: 40,
                   ),
