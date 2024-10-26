@@ -9,6 +9,7 @@ class BookingModel extends Booking {
     required super.date,
     required super.repetition,
     required super.amount,
+    required super.amountType,
     required super.currency,
     required super.fromAccount,
     required super.toAccount,

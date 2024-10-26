@@ -20,6 +20,7 @@ import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../bloc/booking_bloc.dart';
 import '../widgets/input_fields/categorie_input_field.dart';
@@ -42,6 +43,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
   RepetitionType _repetitionType = RepetitionType.noRepetition;
   BookingType _bookingType = BookingType.expense;
+  AmountType _amountType = AmountType.buy;
 
   @override
   void initState() {
@@ -66,6 +68,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),
+        amountType: _amountType,
         currency: Amount.getCurrency(_amountController.text),
         fromAccount: _fromAccountController.text,
         toAccount: _toAccountController.text,
@@ -110,6 +113,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       _dateController.text = dateFormatterDDMMYYYYEE.format(
           DateTime(dateFormatterDDMMYYYYEE.parse(_dateController.text).year, dateFormatterDDMMYYYYEE.parse(_dateController.text).month + 1, 0));
     }
+    Navigator.pop(context);
+  }
+
+  void _changeAmountType(AmountType newAmountType) {
+    setState(() {
+      _amountType = newAmountType;
+    });
     Navigator.pop(context);
   }
 
@@ -170,7 +180,12 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                           ),
                           TitleTextField(hintText: 'Titel...', titleController: _titleController),
-                          AmountTextField(amountController: _amountController),
+                          AmountTextField(
+                            amountController: _amountController,
+                            bookingType: _bookingType,
+                            amountType: _amountType.name,
+                            onAmountTypeChanged: (amountType) => _changeAmountType(amountType),
+                          ),
                           AccountInputField(
                             accountController: _fromAccountController,
                             hintText: _bookingType.name == BookingType.income.name ? 'Konto...' : 'Abbuchungskonto...',

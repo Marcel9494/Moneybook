@@ -8,6 +8,7 @@ import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import '../../../../../core/utils/number_formatter.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../domain/entities/booking.dart';
+import '../../../domain/value_objects/amount_type.dart';
 import '../../../domain/value_objects/booking_type.dart';
 
 class BookingCard extends StatelessWidget {
@@ -114,9 +115,22 @@ class BookingCard extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16.0, 8.0, 0.0, 10.0),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: Text(
-                        booking.categorie,
-                        overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            booking.categorie,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4.0),
+                          booking.amountType != AmountType.undefined
+                              ? Text(
+                                  booking.amountType.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(color: Colors.grey),
+                                )
+                              : const SizedBox(),
+                        ],
                       ),
                     ),
                   ),

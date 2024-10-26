@@ -7,9 +7,14 @@ sealed class CategorieStatsEvent extends Equatable {
 class CalculateCategorieStats extends CategorieStatsEvent {
   final List<Booking> bookings;
   final BookingType bookingType;
+  final AmountType amountType;
 
-  const CalculateCategorieStats(this.bookings, this.bookingType);
+  const CalculateCategorieStats(
+    this.bookings,
+    this.bookingType,
+    this.amountType,
+  );
 
   @override
-  List<Object?> get props => [bookings, bookingType];
+  List<Object?> get props => [bookings, bookingType, amountType];
 }

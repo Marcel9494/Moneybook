@@ -1,16 +1,29 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:moneybook/core/theme/colors.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/amount_type.dart';
 
 import '../../../../../core/consts/common_consts.dart';
+import '../../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../domain/entities/categorie_stats.dart';
+import 'indicator.dart';
 
 class CategoriePieChart extends StatefulWidget {
   final List<CategorieStats> categorieStats;
+  final BookingType bookingType;
+  final AmountType amountType;
+  final Function(Set<AmountType>) onAmountTypeChanged;
+  final double overallBuyAmount;
+  final double overallSaleAmount;
 
-  CategoriePieChart({
+  const CategoriePieChart({
     super.key,
     required this.categorieStats,
+    required this.bookingType,
+    required this.amountType,
+    required this.onAmountTypeChanged,
+    required this.overallBuyAmount,
+    required this.overallSaleAmount,
   });
 
   @override
@@ -18,7 +31,7 @@ class CategoriePieChart extends StatefulWidget {
 }
 
 class CategoriePieChartState extends State<CategoriePieChart> {
-  int touchedIndex = -1;
+  int _touchedPieIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +48,10 @@ class CategoriePieChartState extends State<CategoriePieChart> {
                     touchCallback: (FlTouchEvent event, pieTouchResponse) {
                       setState(() {
                         if (!event.isInterestedForInteractions || pieTouchResponse == null || pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
+                          _touchedPieIndex = -1;
                           return;
                         }
-                        touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                        _touchedPieIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
                       });
                     },
                   ),
@@ -52,32 +65,39 @@ class CategoriePieChartState extends State<CategoriePieChart> {
               ),
             ),
           ),
-          // TODO hier weitermachen und Kauf / Verkauf implementieren neuen Branch erstellen und mit Passiv/Aktiv & Fix/Variabel überlegen
-          /*const Padding(
-            padding: EdgeInsets.only(right: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Indicator(
-                  color: Colors.green,
-                  text: 'Kauf',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 6.0,
-                ),
-                Indicator(
-                  color: Colors.redAccent,
-                  text: 'Verkauf',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 18.0,
-                ),
-              ],
-            ),
-          ),*/
+          widget.bookingType.pluralName == BookingType.investment.pluralName
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 62.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () => widget.onAmountTypeChanged({AmountType.buy}),
+                        child: Indicator(
+                          color: Colors.white,
+                          text: AmountType.buy.name,
+                          isSquare: false,
+                          amountType: widget.amountType,
+                          amount: widget.overallBuyAmount,
+                        ),
+                      ),
+                      const SizedBox(height: 4.0),
+                      GestureDetector(
+                        onTap: () => widget.onAmountTypeChanged({AmountType.sale}),
+                        child: Indicator(
+                          color: Colors.white,
+                          text: AmountType.sale.name,
+                          isSquare: false,
+                          amountType: widget.amountType,
+                          amount: widget.overallSaleAmount,
+                        ),
+                      ),
+                      const SizedBox(height: 14.0),
+                    ],
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );
@@ -85,7 +105,7 @@ class CategoriePieChartState extends State<CategoriePieChart> {
 
   List<PieChartSectionData> showingSections(List<CategorieStats> categorieStats) {
     return List.generate(categorieStats.length, (i) {
-      final isTouched = i == touchedIndex;
+      final isTouched = i == _touchedPieIndex;
       final fontSize = isTouched ? 18.0 : 13.0;
       final radius = isTouched ? 60.0 : 50.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 1)];

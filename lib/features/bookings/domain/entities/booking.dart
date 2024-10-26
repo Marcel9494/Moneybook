@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
+import '../value_objects/amount_type.dart';
 import '../value_objects/booking_type.dart';
 
 class Booking extends Equatable {
@@ -11,6 +12,7 @@ class Booking extends Equatable {
   final DateTime date;
   final RepetitionType repetition;
   final double amount;
+  final AmountType amountType;
   final String currency;
   final String fromAccount;
   final String toAccount;
@@ -25,6 +27,7 @@ class Booking extends Equatable {
     required this.date,
     required this.repetition,
     required this.amount,
+    required this.amountType,
     required this.currency,
     required this.fromAccount,
     required this.toAccount,
@@ -40,6 +43,7 @@ class Booking extends Equatable {
       DateTime? date,
       RepetitionType? repetition,
       double? amount,
+      AmountType? amountType,
       String? currency,
       String? fromAccount,
       String? toAccount,
@@ -53,6 +57,7 @@ class Booking extends Equatable {
       date: date ?? this.date,
       repetition: repetition ?? this.repetition,
       amount: amount ?? this.amount,
+      amountType: amountType ?? this.amountType,
       currency: currency ?? this.currency,
       fromAccount: fromAccount ?? this.fromAccount,
       toAccount: toAccount ?? this.toAccount,
@@ -62,5 +67,5 @@ class Booking extends Equatable {
   }
 
   @override
-  List<Object> get props => [id, serieId, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked];
+  List<Object> get props => [id, serieId, type, title, date, repetition, amount, amountType, currency, fromAccount, toAccount, categorie, isBooked];
 }

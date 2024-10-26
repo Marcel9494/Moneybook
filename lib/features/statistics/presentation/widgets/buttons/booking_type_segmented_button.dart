@@ -4,12 +4,12 @@ import '../../../../bookings/domain/value_objects/booking_type.dart';
 
 class BookingTypeSegmentedButton extends StatefulWidget {
   final BookingType selectedBookingType;
-  final Function(Set<BookingType>) onSelectionChanged;
+  final Function(Set<BookingType>) onBookingTypeChanged;
 
   const BookingTypeSegmentedButton({
     super.key,
     required this.selectedBookingType,
-    required this.onSelectionChanged,
+    required this.onBookingTypeChanged,
   });
 
   @override
@@ -51,7 +51,7 @@ class _BookingTypeSegmentedButtonState extends State<BookingTypeSegmentedButton>
             ),
           ],
           selected: <BookingType>{widget.selectedBookingType},
-          onSelectionChanged: widget.onSelectionChanged,
+          onSelectionChanged: widget.onBookingTypeChanged,
           style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               const RoundedRectangleBorder(

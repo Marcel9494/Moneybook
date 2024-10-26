@@ -5,6 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../../domain/value_objects/repetition_type.dart';
 import '../models/booking_model.dart';
@@ -33,7 +34,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   Future<void> create(Booking booking) async {
     db = await openDatabase(localDbName);
     await db.rawInsert(
-      'INSERT INTO $bookingDbName(serieId, type, title, date, repetition, amount, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO $bookingDbName(serieId, type, title, date, repetition, amount, amountType, currency, fromAccount, toAccount, categorie, isBooked) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         booking.serieId,
         booking.type.name,
@@ -41,6 +42,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         dateFormatterYYYYMMDD.format(booking.date),
         booking.repetition.name,
         booking.amount,
+        booking.amountType.name,
         booking.currency,
         booking.fromAccount,
         booking.toAccount,
@@ -55,7 +57,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     db = await openDatabase(localDbName);
     try {
       await db.rawUpdate(
-        'UPDATE $bookingDbName SET id = ?, serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+        'UPDATE $bookingDbName SET id = ?, serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, amountType = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
         [
           booking.id,
           booking.serieId,
@@ -64,6 +66,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
           DateFormat('yyyy-MM-dd').format(booking.date),
           booking.repetition.name,
           booking.amount,
+          booking.amountType.name,
           booking.currency,
           booking.fromAccount,
           booking.toAccount,
@@ -107,6 +110,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             date: DateTime.parse(booking['date']),
             repetition: RepetitionType.fromString(booking['repetition']),
             amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType']),
             currency: booking['currency'],
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],
@@ -133,6 +137,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             date: DateTime.parse(booking['date']),
             repetition: RepetitionType.fromString(booking['repetition']),
             amount: booking['amount'],
+            amountType: booking['amountType'],
             currency: booking['currency'],
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],
@@ -161,6 +166,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             date: DateTime.parse(booking['date']),
             repetition: RepetitionType.fromString(booking['repetition']),
             amount: booking['amount'],
+            amountType: booking['amountType'],
             currency: booking['currency'],
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],
@@ -186,6 +192,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             date: DateTime.parse(booking['date']),
             repetition: RepetitionType.fromString(booking['repetition']),
             amount: booking['amount'],
+            amountType: booking['amountType'],
             currency: booking['currency'],
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],
@@ -218,7 +225,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     try {
       for (int i = 0; i < serieBookings.length; i++) {
         await db.rawUpdate(
-          'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+          'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, amountType = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
           [
             updatedBooking.serieId,
             updatedBooking.type.name,
@@ -227,6 +234,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                 .format(serieBookings[i].date), // TODO schauen, ob dies immer richtig ist oder repetition beim Bearbeiten deaktivieren
             updatedBooking.repetition.name,
             updatedBooking.amount,
+            updatedBooking.amountType.name,
             updatedBooking.currency,
             updatedBooking.fromAccount,
             updatedBooking.toAccount,
@@ -246,6 +254,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                 date: DateTime.parse(booking['date']),
                 repetition: RepetitionType.fromString(booking['repetition']),
                 amount: booking['amount'],
+                amountType: booking['amountType'],
                 currency: booking['currency'],
                 fromAccount: booking['fromAccount'],
                 toAccount: booking['toAccount'],
@@ -271,7 +280,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
       for (int i = 0; i < serieBookings.length; i++) {
         if (updatedBooking.date.isBefore(serieBookings[i].date)) {
           await db.rawUpdate(
-            'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+            'UPDATE $bookingDbName SET serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, amountType = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
             [
               updatedBooking.serieId,
               updatedBooking.type.name,
@@ -280,6 +289,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                   .format(serieBookings[i].date), // TODO schauen, ob dies immer richtig ist oder repetition beim Bearbeiten deaktivieren
               updatedBooking.repetition.name,
               updatedBooking.amount,
+              updatedBooking.amountType.name,
               updatedBooking.currency,
               updatedBooking.fromAccount,
               updatedBooking.toAccount,
@@ -299,6 +309,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                   date: DateTime.parse(booking['date']),
                   repetition: RepetitionType.fromString(booking['repetition']),
                   amount: booking['amount'],
+                  amountType: booking['amountType'],
                   currency: booking['currency'],
                   fromAccount: booking['fromAccount'],
                   toAccount: booking['toAccount'],

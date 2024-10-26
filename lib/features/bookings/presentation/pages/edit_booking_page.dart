@@ -19,6 +19,7 @@ import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
 import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../../domain/value_objects/repetition_type.dart';
 import '../bloc/booking_bloc.dart';
@@ -52,6 +53,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   final RoundedLoadingButtonController _editBookingBtnController = RoundedLoadingButtonController();
   late RepetitionType _repetitionType;
   late BookingType _bookingType;
+  late AmountType _amountType;
   late Booking _oldBooking;
   List<Booking> _oldSerieBookings = [];
   Booking? _updatedBooking;
@@ -77,6 +79,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
     _categorieController.text = widget.booking.categorie;
     _repetitionType = widget.booking.repetition;
     _bookingType = widget.booking.type;
+    _amountType = widget.booking.amountType;
   }
 
   void _backupOldBooking() {
@@ -88,6 +91,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       date: widget.booking.date,
       repetition: widget.booking.repetition,
       amount: Amount.getValue(widget.booking.amount.toString()),
+      amountType: widget.booking.amountType,
       currency: Amount.getCurrency(widget.booking.amount.toString()),
       fromAccount: widget.booking.fromAccount,
       toAccount: widget.booking.toAccount,
@@ -117,6 +121,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),
+        amountType: _amountType,
         currency: Amount.getCurrency(_amountController.text),
         fromAccount: _fromAccountController.text,
         toAccount: _toAccountController.text,
@@ -161,7 +166,6 @@ class _EditBookingPageState extends State<EditBookingPage> {
   // ... dann bearbeitete Buchung buchen
   Future<void> _updateBooking(Booking updatedBooking) async {
     if (_bookingType == BookingType.expense) {
-      print(updatedBooking.amount);
       BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(updatedBooking, Random().nextInt(1000000)));
     } else if (_bookingType == BookingType.income) {
       BlocProvider.of<AccountBloc>(context).add(AccountDeposit(updatedBooking, Random().nextInt(1000000)));
@@ -212,6 +216,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
   void _changeRepetitionType(RepetitionType newRepetition) {
     setState(() {
       _repetitionType = newRepetition;
+    });
+    Navigator.pop(context);
+  }
+
+  void _changeAmountType(AmountType newAmountType) {
+    setState(() {
+      _amountType = newAmountType;
     });
     Navigator.pop(context);
   }
@@ -274,6 +285,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                         date: state.bookings[i].date,
                         repetition: state.bookings[i].repetition,
                         amount: Amount.getValue(state.bookings[i].amount.toString()),
+                        amountType: state.bookings[i].amountType,
                         currency: Amount.getCurrency(state.bookings[i].amount.toString()),
                         fromAccount: state.bookings[i].fromAccount,
                         toAccount: state.bookings[i].toAccount,
@@ -321,7 +333,12 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       activateRepetition: false,
                     ),
                     TitleTextField(hintText: 'Titel...', titleController: _titleController),
-                    AmountTextField(amountController: _amountController),
+                    AmountTextField(
+                      amountController: _amountController,
+                      bookingType: _bookingType,
+                      amountType: _amountType.name,
+                      onAmountTypeChanged: (amountType) => _changeAmountType(amountType),
+                    ),
                     AccountInputField(
                       accountController: _fromAccountController,
                       hintText: _bookingType.name == BookingType.expense.name ? 'Abbuchungskonto...' : 'Konto...',
