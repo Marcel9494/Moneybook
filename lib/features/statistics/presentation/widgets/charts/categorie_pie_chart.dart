@@ -11,11 +11,15 @@ import 'indicator.dart';
 class CategoriePieChart extends StatefulWidget {
   final List<CategorieStats> categorieStats;
   final BookingType bookingType;
+  final AmountType amountType;
+  final Function onAmountTypeChanged;
 
   const CategoriePieChart({
     super.key,
     required this.categorieStats,
     required this.bookingType,
+    required this.amountType,
+    required this.onAmountTypeChanged,
   });
 
   @override
@@ -24,7 +28,6 @@ class CategoriePieChart extends StatefulWidget {
 
 class CategoriePieChartState extends State<CategoriePieChart> {
   int touchedIndex = -1;
-  final String _amountType = AmountType.buy.name;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,6 @@ class CategoriePieChartState extends State<CategoriePieChart> {
               ),
             ),
           ),
-          // TODO hier weitermachen und Kauf / Verkauf implementieren neuen Branch erstellen und mit Passiv/Aktiv & Fix/Variabel überlegen
           widget.bookingType.pluralName == BookingType.investment.pluralName
               ? Padding(
                   padding: const EdgeInsets.only(right: 24.0),
@@ -67,22 +69,22 @@ class CategoriePieChartState extends State<CategoriePieChart> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       GestureDetector(
-                        onTap: () => {},
+                        onTap: () => widget.onAmountTypeChanged,
                         child: const Indicator(
-                          color: Colors.green,
+                          color: Colors.white,
                           text: 'Kauf',
-                          isSquare: true,
+                          isSquare: false,
                         ),
                       ),
                       const SizedBox(
                         height: 6.0,
                       ),
                       GestureDetector(
-                        onTap: () => {},
+                        onTap: () => widget.onAmountTypeChanged,
                         child: const Indicator(
-                          color: Colors.redAccent,
+                          color: Colors.white,
                           text: 'Verkauf',
-                          isSquare: true,
+                          isSquare: false,
                         ),
                       ),
                       const SizedBox(

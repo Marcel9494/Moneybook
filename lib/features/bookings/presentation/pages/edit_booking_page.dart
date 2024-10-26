@@ -91,7 +91,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       date: widget.booking.date,
       repetition: widget.booking.repetition,
       amount: Amount.getValue(widget.booking.amount.toString()),
-      amountType: AmountType.undefined, // TODO Undefined ändern
+      amountType: widget.booking.amountType,
       currency: Amount.getCurrency(widget.booking.amount.toString()),
       fromAccount: widget.booking.fromAccount,
       toAccount: widget.booking.toAccount,
@@ -285,7 +285,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                         date: state.bookings[i].date,
                         repetition: state.bookings[i].repetition,
                         amount: Amount.getValue(state.bookings[i].amount.toString()),
-                        amountType: AmountType.undefined, // TODO Undefined ändern
+                        amountType: state.bookings[i].amountType,
                         currency: Amount.getCurrency(state.bookings[i].amount.toString()),
                         fromAccount: state.bookings[i].fromAccount,
                         toAccount: state.bookings[i].toAccount,

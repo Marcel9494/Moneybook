@@ -128,7 +128,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       date: DateTime.now(), // parse DateFormat in ISO-8601,
                       repetition: RepetitionType.noRepetition,
                       amount: widget.account.amount,
-                      amountType: AmountType.undefined, // TODO Undefined ändern
+                      amountType: AmountType.undefined,
                       currency: Amount.getCurrency(formatToMoneyAmount(widget.account.amount.toString())),
                       fromAccount: widget.account.name,
                       toAccount: _accountController.text,
@@ -212,7 +212,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
       date: DateTime.now(),
       repetition: RepetitionType.noRepetition,
       amount: (formatMoneyAmountToDouble(_amountController.text) - _oldAccountAmount).abs(),
-      amountType: AmountType.undefined, // TODO Undefined ändern
+      amountType: AmountType.undefined,
       currency: Amount.getCurrency(_amountController.text),
       fromAccount: widget.account.name,
       toAccount: '',

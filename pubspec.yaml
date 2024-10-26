@@ -45,6 +45,13 @@ dependencies:
 
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.14.1"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  min_sdk_android: 21
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0

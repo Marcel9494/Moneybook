@@ -68,7 +68,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),
-        amountType: AmountType.undefined, // TODO Undefined ändern
+        amountType: _amountType,
         currency: Amount.getCurrency(_amountController.text),
         fromAccount: _fromAccountController.text,
         toAccount: _toAccountController.text,

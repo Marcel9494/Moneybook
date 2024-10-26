@@ -4,6 +4,7 @@ import 'package:moneybook/features/statistics/presentation/widgets/buttons/booki
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
 import '../../../bookings/domain/entities/booking.dart';
+import '../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart';
 import '../bloc/categorie_stats_bloc.dart';
@@ -24,6 +25,7 @@ class StatisticPage extends StatefulWidget {
 
 class _StatisticPageState extends State<StatisticPage> {
   BookingType _selectedBookingType = BookingType.expense;
+  AmountType _selectedAmountType = AmountType.buy;
 
   void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -33,13 +35,20 @@ class _StatisticPageState extends State<StatisticPage> {
 
   void _calculateCategoryStats(List<Booking> bookings) {
     BlocProvider.of<CategorieStatsBloc>(context).add(
-      CalculateCategorieStats(bookings, _selectedBookingType),
+      CalculateCategorieStats(bookings, _selectedBookingType, _selectedAmountType),
     );
   }
 
   void _onSelectionChanged(Set<BookingType> newSelection) {
     setState(() {
       _selectedBookingType = newSelection.first;
+    });
+  }
+
+  void _onAmountTypeChanged(Set<AmountType> newAmountType) {
+    print('Test');
+    setState(() {
+      _selectedAmountType = newAmountType.first;
     });
   }
 
@@ -59,6 +68,8 @@ class _StatisticPageState extends State<StatisticPage> {
                       CategoriePieChart(
                         categorieStats: state.categorieStats,
                         bookingType: _selectedBookingType,
+                        amountType: _selectedAmountType,
+                        onAmountTypeChanged: (_selectedAmountType) => _onAmountTypeChanged(_selectedAmountType),
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
@@ -78,6 +89,8 @@ class _StatisticPageState extends State<StatisticPage> {
                       CategoriePieChart(
                         categorieStats: state.categorieStats,
                         bookingType: _selectedBookingType,
+                        amountType: _selectedAmountType,
+                        onAmountTypeChanged: (_selectedAmountType) => _onAmountTypeChanged(_selectedAmountType),
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
