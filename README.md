@@ -1,42 +1,6 @@
 # Moneybook
 Haushaltsbuch zum Verwalten deiner Finanzen.
 
-# Ziele
-
-- Flutter, Dart, SQL, Datenbanken, Clean Architektur, Design Pattern, Git/Github(-Actions), CI/CD & UI/UX Design Fähigkeiten lernen und verbessern => für späteren Job
-- Agile Vorgehensweise verbessern und DDD (Domain Driven Design) und TDD (Test-Driven-Development) lernen => für Job
-- Software Projekt für eigenes Portfolio zum Vorzeigen => für mich und späteren Job
-- Eigenes Projekt und Side Hustle aufbauen => für mich und späteren Job
-- Weiteres Nebeneinkommen generieren => für mich
-- Eigene Haushaltsbuch App benutzen die beliebig erweitert werden kann => für andere und mich
-- Erste eigene App entwickeln => für später folgende App Projekte
-- Aktueller Jobsituation entkommen => für mich und nachfolgendem Job
-- Hobby zum Beruf machen => für mich
-
-# Vision
-
-Eine Haushaltsbuch App entwickeln die den Benutzern das Verwalten ihrer Finanzen erleichtert und ihnen eine gute Übersicht über ihre Finanzen bietet. Außerdem sollen weitere Features / Lösungen rund um persönliche Finanzen angeboten werden.
-
-# Werte / Prinzipien
-
-- Qualität vor Quantität
-- Immer wieder 1% besser
-- Keep it simple and stupid (KISS)
-- Funktionierender und sehr guter wartbarer, erweiterbarer Code ist das Wichtigste
-- Exzellente, moderne UI/UX ist ein Muss
-- Schnelle Release-Zyklen realisieren
-- Kunden- und eigener Nutzen stehen im Fokus
-
-# Erweiterungen
-
-Folgende Erweiterungen/Features die in späteren Meilensteinen hinzukommen werden müssen bei jedem Issue beachtet werden:
-
-- Die App wird mehrsprachig, beliebig viele Sprachen können hinzukommen
-- Unterschiedliche Währungen werden hinzukommen
-- Datenbanken / Datenquellen müssen austauschbar sein
-- Die App wird responsiv für Smartphones, Tablets und Desktop (Web)
-- In der App sollen Interaktionen zwischen Benutzern stattfinden können
-
 # Design Entscheidungen
 
 Es wurde sich für das Clean Architektur Pattern entschieden, weil diese Software Architektur wartbar, testbar, flexibel und erweiterbar ist.
@@ -78,56 +42,3 @@ Bisherige Auswahlmöglichkeiten:
 1.) Cockroach: https://www.cockroachlabs.com/lp/start-free-database-mc/?utm_source=google&utm_medium=cpc&utm_campaign=g-search-emea-eu-bofu-dev-serv-lp&utm_term=p-free%20database-c&utm_content=lp698001815911&utm_network=g&_bt=698001815911&_bk=free%20database&_bm=p&_bn=g&gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxttBTbWCEOXgFfWjjxgmpx8aczigHLjJxulRiWyHWuIWqMACkqHa2pxoCJ8sQAvD_BwE
 
 2.) Supabase: https://pub.dev/packages/supabase_flutter
-
-# Datenbank Schema / Aufbau:
-
-Aktuelles Datenbank Schema / Aufbau. Ist noch in der Design & Implementierungsphase wird wahrscheinlich noch erweitert:
-
-Draw.io PNG Datei:
-
-![DatenbankSchemaMoneybook](https://github.com/user-attachments/assets/ac3acca0-25a3-481d-8646-17ab853f4a30)
-
-Vorteile von Fremdschlüsseln bei oben gezeigten Datenbank Schema:
-- Wenn Kategorie oder Konto bearbeitet wird, werden die enstsprechenden Daten an einer zentralen Stelle (Categorie oder Account Tabelle) aktualisiert und von den restlichen Tabellen referenziert.
-- Bessere Wartbarkeit, wenn später neue Tabellen zum Datenbank Schema hinzukommen, weil dann nicht jede Tabelle aktualisiert werden muss, sondern nur eine.
-
-Nachteile von Fremdschlüsseln bei iben gezeigten Datenbank Schema:
-- Daten müssen von mehreren Datenbanktabellen zusammengesucht werden => etwas komplexere SQL-Abfragen.
-
-=> Entscheidung: Fremdschlüssel verwenden, weil das System langfristig so besser wartbar und erweiterbar ist.
-
-=> Entscheidungsänderung: Fremdschlüssel werden vorerst nicht verwendet, weil es zu deutlich komplexeren und unstabileren Code führt.
-Erweiterbarkeit und Wartbarkeit ist weiterhin gegeben, weil es lange nicht so viele Datenbanktabellen geben wird.
-Weniger einzelne Datenbanktabellen abfragen. Kann später noch umgebaut werden.
-
-# Animationen
-
-Animationen von Lottie: https://lottiefiles.com/de/ benutzen. Premium Abo für einen Monat abschließen, davor Animationen heraussuchen.
-
-Stichworte: finance, money
-
-# Data Analytics
-
-Daten und Benutzer mit Posthog: https://posthog.com/ analysieren und App dadurch optimieren.
-
-# Feedback Board
-
-Feedback Board mit Canny: https://canny.io/ einbinden um Benutzer Feedback einholen zu können und dadurch die App noch besser auf die Benutzerbedürfnisse auszurichten.
-
-Preise beachten! https://canny.io/pricing
-
-# Webseite / Landing Page
-
-Webseite / landing Page auf Hostinger: https://www.hostinger.de/?utm_campaign=Brand-Exact|NT:Se|LO:DE&utm_medium=ppc&gad_source=1&gclid=Cj0KCQjw8--2BhCHARIsAF_w1gxD3flMoBKNj4XWrJ7hCR8chwe1f3q9RzQ4q6ETrMNyoOGfOhqw83MaAgapEALw_wcB hosten.
-
-# Mockups für Play Store Eintrag
-
-MockUPhone: https://mockuphone.com
-
-App Launchpad: https://theapplaunchpad.com/
-
-Erster Entwurf: https://theapplaunchpad.com/dashboard/46f0d13f-c4ab-409a-8288-d97f7cfaddb1
-
-1-monatiges Abo für 29$ pro Monat kurz vor Veröffentlichung abschließen.
-
-Rotato: https://rotato.app/

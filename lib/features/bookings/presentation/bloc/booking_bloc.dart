@@ -179,7 +179,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }, (bookings) {
           emit(SerieUpdated(bookings: bookings));
         });
-        // TODO hier weitermachen und extra Event für Serienbuchungen löschen oder hier mit implementieren?
+        // TODO hier weitermachen und extra Event für Serienbuchungen löschen oder hier mit implementieren? Davor testen was genau noch nicht funktioniert
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {
           BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking, 0));
