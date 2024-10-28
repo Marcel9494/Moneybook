@@ -27,10 +27,13 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
             child: DrawerHeader(
               child: Row(
                 children: [
-                  Image.asset(
-                    'assets/images/moneybook_app_icon.png',
-                    width: 40,
-                    height: 40,
+                  ClipOval(
+                    child: Image.asset(
+                      'assets/images/moneybook_app_icon.png',
+                      width: 46.0,
+                      height: 46.0,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   const SizedBox(width: 20.0),
                   const Text(
