@@ -36,6 +36,17 @@ class _AbovePageState extends State<AbovePage> {
           Card(
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/moneybook_app_icon.png',
+                      width: 72.0,
+                      height: 72.0,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
