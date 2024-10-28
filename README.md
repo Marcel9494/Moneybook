@@ -1,6 +1,10 @@
 # Moneybook
 Haushaltsbuch zum Verwalten deiner Finanzen.
 
+# App UI
+
+TODO
+
 # Design Entscheidungen
 
 Es wurde sich für das Clean Architektur Pattern entschieden, weil diese Software Architektur wartbar, testbar, flexibel und erweiterbar ist.
