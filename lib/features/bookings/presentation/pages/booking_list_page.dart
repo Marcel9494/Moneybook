@@ -94,10 +94,6 @@ class _BookingListPageState extends State<BookingListPage> {
     }
   }
 
-  bool _isSameMonth() {
-    return widget.selectedDate.year == DateTime.now().year && widget.selectedDate.month == DateTime.now().month;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

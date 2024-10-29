@@ -14,6 +14,8 @@ import '../../domain/entities/booking.dart';
 import '../../domain/usecases/check_for_new_bookings.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';
+import '../../domain/usecases/delete_all_bookings_in_serie.dart';
+import '../../domain/usecases/delete_only_future_bookings_in_serie.dart';
 import '../../domain/usecases/get_new_serie_id.dart';
 import '../../domain/usecases/load_categorie_bookings.dart';
 import '../../domain/usecases/load_new_bookings.dart';
@@ -33,6 +35,7 @@ const String CREATE_BOOKING_FAILURE = 'Buchung konnte nicht erstellt werden.';
 const String UPDATE_BOOKING_FAILURE = 'Buchung konnte nicht bearbeitet werden.';
 const String UPDATE_SERIE_BOOKINGS_FAILURE = 'Serienbuchungen konnten nicht bearbeitet werden.';
 const String DELETE_BOOKING_FAILURE = 'Buchung konnte nicht gelöscht werden.';
+const String DELETE_BOOKINGS_FAILURE = 'Buchungen konnten nicht gelöscht werden.';
 const String LOAD_BOOKINGS_FAILURE = 'Buchungen konnten nicht geladen werden.';
 const String UPDATE_ALL_BOOKINGS_FAILURE = 'Buchungen konnten nicht aktualisiert werden.';
 const String NEW_BOOKINGS_FAILURE = 'Neue Buchungen konnten nicht abgefragt/aktualisiert werden.';
@@ -42,6 +45,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final Create createUseCase;
   final Update updateUseCase;
   final Delete deleteUseCase;
+  final DeleteAllBookingsInSerie deleteAllSerieBookingsUseCase;
+  final DeleteOnlyFutureBookingsInSerie deleteOnlyFutureSerieBookingsUseCase;
   final LoadSortedMonthly loadSortedMonthlyUseCase;
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
   final LoadNewBookings loadNewBookingsUseCase;
@@ -57,6 +62,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     this.createUseCase,
     this.updateUseCase,
     this.deleteUseCase,
+    this.deleteAllSerieBookingsUseCase,
+    this.deleteOnlyFutureSerieBookingsUseCase,
     this.loadSortedMonthlyUseCase,
     this.loadCategorieBookingsUseCase,
     this.loadSerieBookingsUseCase,
@@ -179,7 +186,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }, (bookings) {
           emit(SerieUpdated(bookings: bookings));
         });
-        // TODO hier weitermachen und extra Event für Serienbuchungen löschen oder hier mit implementieren? Davor testen was genau noch nicht funktioniert
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {
           BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking, 0));
@@ -199,6 +205,41 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         final deleteBookingEither = await deleteUseCase.bookingRepository.delete(event.booking.id);
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKING_FAILURE));
+        }, (_) {
+          Navigator.pop(event.context);
+          Navigator.pop(event.context);
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+        });
+      } else if (event is DeleteAllSerieBookings) {
+        // TODO hier weitermachen und überlegen, ob neuer Kontostand hier berechnet wird oder in edit_booking_page mit neuem State SerieDeleted
+        /*if (event.booking.type == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking, 0));
+        } else if (event.booking.type == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.booking, 0));
+        } else if (event.booking.type == BookingType.transfer || event.booking.type == BookingType.investment) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(
+            account.AccountTransfer(
+              event.booking.copyWith(
+                fromAccount: event.booking.toAccount,
+                toAccount: event.booking.fromAccount,
+              ),
+              0,
+            ),
+          );
+        }*/
+        final deleteBookingEither = await deleteUseCase.bookingRepository.deleteAllBookingsInSerie(event.serieId);
+        deleteBookingEither.fold((failure) {
+          emit(const Error(message: DELETE_BOOKINGS_FAILURE));
+        }, (_) {
+          Navigator.pop(event.context);
+          Navigator.pop(event.context);
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+        });
+      } else if (event is DeleteOnlyFutureSerieBookings) {
+        // TODO Buchungen buchen siehe DeleteAllSerieBookings
+        final deleteBookingEither = await deleteUseCase.bookingRepository.deleteOnlyFutureBookingsInSerie(event.serieId, event.from);
+        deleteBookingEither.fold((failure) {
+          emit(const Error(message: DELETE_BOOKINGS_FAILURE));
         }, (_) {
           Navigator.pop(event.context);
           Navigator.pop(event.context);

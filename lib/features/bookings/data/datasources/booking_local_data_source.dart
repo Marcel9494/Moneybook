@@ -14,6 +14,8 @@ abstract class BookingLocalDataSource {
   Future<void> create(Booking booking);
   Future<void> update(Booking booking);
   Future<void> delete(int id);
+  Future<void> deleteAllBookingsInSerie(int serieId);
+  Future<void> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from);
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
@@ -85,6 +87,18 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   Future<void> delete(int id) async {
     db = await openDatabase(localDbName);
     await db.rawDelete('DELETE FROM $bookingDbName WHERE id = ?', [id]);
+  }
+
+  @override
+  Future<void> deleteAllBookingsInSerie(int serieId) async {
+    db = await openDatabase(localDbName);
+    await db.rawDelete('DELETE FROM $bookingDbName WHERE serieId = ?', [serieId]);
+  }
+
+  @override
+  Future<void> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from) async {
+    db = await openDatabase(localDbName);
+    await db.rawDelete('DELETE FROM $bookingDbName WHERE serieId = ? AND date <= ?', [serieId, from]);
   }
 
   @override
