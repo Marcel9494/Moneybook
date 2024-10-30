@@ -7,6 +7,8 @@ abstract class BookingRepository {
   Future<Either<Failure, void>> create(Booking booking);
   Future<Either<Failure, void>> update(Booking booking);
   Future<Either<Failure, void>> delete(int id);
+  Future<Either<Failure, void>> deleteAllBookingsInSerie(int serieId);
+  Future<Either<Failure, void>> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from);
   Future<Either<Failure, Booking>> load(int id);
   Future<Either<Failure, List<Booking>>> loadSortedMonthly(DateTime selectedDate);
   Future<Either<Failure, List<Booking>>> loadCategorieBookings(String categorie);

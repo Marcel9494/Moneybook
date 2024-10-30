@@ -139,4 +139,22 @@ class BookingRepositoryImpl implements BookingRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteAllBookingsInSerie(int serieId) async {
+    try {
+      return Right(await bookingLocalDataSource.deleteAllBookingsInSerie(serieId));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from) async {
+    try {
+      return Right(await bookingLocalDataSource.deleteOnlyFutureBookingsInSerie(serieId, from));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

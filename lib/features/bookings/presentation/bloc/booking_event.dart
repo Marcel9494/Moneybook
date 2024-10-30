@@ -62,6 +62,28 @@ class DeleteBooking extends BookingEvent {
   List<Object?> get props => [booking, context];
 }
 
+class DeleteOnlyFutureSerieBookings extends BookingEvent {
+  final int serieId;
+  final DateTime from;
+  final BuildContext context;
+
+  const DeleteOnlyFutureSerieBookings(this.serieId, this.from, this.context);
+
+  @override
+  List<Object?> get props => [serieId, from, context];
+}
+
+class DeleteAllSerieBookings extends BookingEvent {
+  final int serieId;
+  final List<Booking> bookings;
+  final BuildContext context;
+
+  const DeleteAllSerieBookings(this.serieId, this.bookings, this.context);
+
+  @override
+  List<Object?> get props => [serieId, bookings, context];
+}
+
 class LoadSortedMonthlyBookings extends BookingEvent {
   final DateTime selectedDate;
 
