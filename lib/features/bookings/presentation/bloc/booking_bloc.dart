@@ -211,32 +211,39 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is DeleteAllSerieBookings) {
-        // TODO hier weitermachen und überlegen, ob neuer Kontostand hier berechnet wird oder in edit_booking_page mit neuem State SerieDeleted
-        /*if (event.booking.type == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking, 0));
-        } else if (event.booking.type == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.booking, 0));
-        } else if (event.booking.type == BookingType.transfer || event.booking.type == BookingType.investment) {
+        double overallSerieAmount = 0.0;
+        for (int i = 0; i < event.bookings.length; i++) {
+          // TODO DateTime.now() ersetzen
+          if (event.bookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.bookings[i].amount;
+          }
+        }
+        print(overallSerieAmount);
+        event.bookings[0] = event.bookings[0].copyWith(amount: overallSerieAmount);
+        if (event.bookings[0].type == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.bookings[0], 0));
+        } else if (event.bookings[0].type == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.bookings[0], 0));
+        } else if (event.bookings[0].type == BookingType.transfer || event.bookings[0].type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransfer(
-              event.booking.copyWith(
-                fromAccount: event.booking.toAccount,
-                toAccount: event.booking.fromAccount,
+              event.bookings[0].copyWith(
+                fromAccount: event.bookings[0].toAccount,
+                toAccount: event.bookings[0].fromAccount,
               ),
               0,
             ),
           );
-        }*/
+        }
         final deleteBookingEither = await deleteUseCase.bookingRepository.deleteAllBookingsInSerie(event.serieId);
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKINGS_FAILURE));
         }, (_) {
           Navigator.pop(event.context);
-          Navigator.pop(event.context);
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
         });
       } else if (event is DeleteOnlyFutureSerieBookings) {
-        // TODO Buchungen buchen siehe DeleteAllSerieBookings
+        // TODO hier weitermachen Buchungen buchen siehe DeleteAllSerieBookings
         final deleteBookingEither = await deleteUseCase.bookingRepository.deleteOnlyFutureBookingsInSerie(event.serieId, event.from);
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKINGS_FAILURE));

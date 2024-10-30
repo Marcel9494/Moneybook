@@ -96,12 +96,12 @@ class _BookingListPageState extends State<BookingListPage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadBookings(context);
     return Scaffold(
       body: Column(
         children: [
           BlocBuilder<BookingBloc, BookingState>(
             builder: (context, state) {
-              _loadBookings(context);
               if (state is Loaded) {
                 _calculateMonthlyValues(state.bookings);
                 if (state.bookings.isEmpty) {

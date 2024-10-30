@@ -75,12 +75,13 @@ class DeleteOnlyFutureSerieBookings extends BookingEvent {
 
 class DeleteAllSerieBookings extends BookingEvent {
   final int serieId;
+  final List<Booking> bookings;
   final BuildContext context;
 
-  const DeleteAllSerieBookings(this.serieId, this.context);
+  const DeleteAllSerieBookings(this.serieId, this.bookings, this.context);
 
   @override
-  List<Object?> get props => [serieId, context];
+  List<Object?> get props => [serieId, bookings, context];
 }
 
 class LoadSortedMonthlyBookings extends BookingEvent {
