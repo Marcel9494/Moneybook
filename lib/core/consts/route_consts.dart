@@ -3,6 +3,7 @@ const bottomNavBarRoute = 'bottomNavBar';
 const bookingListRoute = 'bookingList';
 const accountListRoute = 'accountList';
 const categorieListRoute = 'categorieList';
+const categorieStatisticRoute = 'categorieStatistic';
 const createBookingRoute = 'createBooking';
 const editBookingRoute = 'editBooking';
 const createAccountRoute = 'createAccount';

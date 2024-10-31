@@ -11,6 +11,8 @@ import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/
 import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
 import 'package:moneybook/features/settings/presentation/pages/above_page.dart';
 import 'package:moneybook/features/settings/presentation/pages/settings_page.dart';
+import 'package:moneybook/features/statistics/presentation/pages/categorie_statistic_page.dart';
+import 'package:moneybook/features/statistics/presentation/widgets/page_arguments/categorie_statistic_page_arguments.dart';
 import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 import 'package:moneybook/shared/presentation/pages/introduction_page.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
@@ -137,6 +139,15 @@ class MyApp extends StatelessWidget {
               builder: (BuildContext context) => EditBudgetPage(
                 budget: args.budget,
                 serieMode: args.serieMode,
+              ),
+              settings: settings,
+            );
+          case categorieStatisticRoute:
+            final args = settings.arguments as CategorieStatisticPageArguments;
+            return MaterialPageRoute<String>(
+              builder: (BuildContext context) => CategorieStatisticPage(
+                categorie: args.categorie,
+                selectedDate: args.selectedDate,
               ),
               settings: settings,
             );

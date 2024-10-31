@@ -151,7 +151,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             date: DateTime.parse(booking['date']),
             repetition: RepetitionType.fromString(booking['repetition']),
             amount: booking['amount'],
-            amountType: booking['amountType'],
+            amountType: AmountType.fromString(booking['amountType']),
             currency: booking['currency'],
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],

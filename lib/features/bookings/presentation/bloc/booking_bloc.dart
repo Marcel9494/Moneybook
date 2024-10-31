@@ -263,8 +263,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         final loadCategorieBookingEither = await loadCategorieBookingsUseCase.bookingRepository.loadCategorieBookings(event.categorie);
         loadCategorieBookingEither.fold((failure) {
           emit(const Error(message: LOAD_BOOKINGS_FAILURE));
-        }, (bookings) {
-          emit(Loaded(bookings: bookings));
+        }, (categorieBookings) {
+          emit(CategorieBookingsLoaded(categorieBookings: categorieBookings));
         });
       } else if (event is LoadSerieBookings) {
         final loadSerieBookingEither = await loadSerieBookingsUseCase.bookingRepository.loadSerieBookings(event.serieId);

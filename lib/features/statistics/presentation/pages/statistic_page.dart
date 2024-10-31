@@ -69,9 +69,9 @@ class _StatisticPageState extends State<StatisticPage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadCategorieBookings(context);
     return BlocBuilder<BookingBloc, BookingState>(
       builder: (context, bookingState) {
-        _loadCategorieBookings(context);
         if (bookingState is Loaded) {
           _calculateCategoryStats(bookingState.bookings);
           _calculateAmountTypeStats(bookingState.bookings);
@@ -123,6 +123,7 @@ class _StatisticPageState extends State<StatisticPage> {
                             return CategoriePercentageCard(
                               categorieStats: state.categorieStats[index],
                               index: index,
+                              selectedDate: widget.selectedDate,
                             );
                           },
                         ),
