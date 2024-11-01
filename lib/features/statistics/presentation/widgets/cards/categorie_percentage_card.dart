@@ -26,11 +26,15 @@ class _CategoriePercentageCardState extends State<CategoriePercentageCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, categorieStatisticRoute,
-          arguments: CategorieStatisticPageArguments(
-            widget.categorieStats.categorie,
-            widget.selectedDate,
-          )),
+      onTap: () => Navigator.pushNamed(
+        context,
+        categorieStatisticRoute,
+        arguments: CategorieStatisticPageArguments(
+          widget.categorieStats.categorie,
+          widget.categorieStats.bookingType,
+          widget.selectedDate,
+        ),
+      ),
       child: Card(
         child: ClipPath(
           clipper: ShapeBorderClipper(

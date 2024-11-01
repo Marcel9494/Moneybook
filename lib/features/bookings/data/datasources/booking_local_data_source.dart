@@ -19,6 +19,7 @@ abstract class BookingLocalDataSource {
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadCategorieBookings(String categorie);
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber);
   Future<List<Booking>> loadNewBookings();
   Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
@@ -160,6 +161,37 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
           ),
         )
         .toList();
+    return categorieBookingList;
+  }
+
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber) async {
+    db = await openDatabase(localDbName);
+    int lastday = DateTime(date.year, date.month + 1, 0).day;
+    String startDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month - (monthNumber - 1), 1));
+    String endDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month, lastday));
+    List<Map> categorieBookingMap =
+        await db.rawQuery('SELECT * FROM $bookingDbName WHERE categorie = ? AND date BETWEEN ? AND ?', [categorie, startDate, endDate]);
+
+    List<Booking> categorieBookingList = categorieBookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType']),
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+
     return categorieBookingList;
   }
 

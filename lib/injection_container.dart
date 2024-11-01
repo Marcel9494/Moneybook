@@ -10,6 +10,7 @@ import 'package:moneybook/features/bookings/domain/usecases/check_for_new_bookin
 import 'package:moneybook/features/bookings/domain/usecases/create.dart' as create_booking;
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart' as delete_booking;
 import 'package:moneybook/features/bookings/domain/usecases/get_new_serie_id.dart';
+import 'package:moneybook/features/bookings/domain/usecases/load_past_categorie_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_sorted_monthly_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/update.dart' as edit_booking;
 import 'package:moneybook/features/bookings/domain/usecases/update_all_bookings_with_categorie.dart';
@@ -73,7 +74,7 @@ final sl = GetIt.instance;
 void init() {
   // Features
   // Bloc
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
@@ -93,6 +94,7 @@ void init() {
   sl.registerLazySingleton(() => DeleteOnlyFutureBookingsInSerie(sl()));
   sl.registerLazySingleton(() => LoadSortedMonthly(sl()));
   sl.registerLazySingleton(() => LoadAllCategorieBookings(sl()));
+  sl.registerLazySingleton(() => LoadPastCategorieBookings(sl()));
   sl.registerLazySingleton(() => LoadNewBookings(sl()));
   sl.registerLazySingleton(() => LoadAllSerieBookings(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithCategorie(sl()));

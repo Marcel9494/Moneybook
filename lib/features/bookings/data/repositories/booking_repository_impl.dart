@@ -157,4 +157,13 @@ class BookingRepositoryImpl implements BookingRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<Booking>>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber) async {
+    try {
+      return Right(await bookingLocalDataSource.loadPastMonthlyCategorieBookings(categorie, date, monthNumber));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

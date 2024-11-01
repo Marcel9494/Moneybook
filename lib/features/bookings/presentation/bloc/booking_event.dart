@@ -102,6 +102,17 @@ class LoadCategorieBookings extends BookingEvent {
   List<Object?> get props => [categorie];
 }
 
+class LoadPastMonthlyCategorieBookings extends BookingEvent {
+  final String categorie;
+  final DateTime date;
+  final int monthNumber;
+
+  const LoadPastMonthlyCategorieBookings(this.categorie, this.date, this.monthNumber);
+
+  @override
+  List<Object?> get props => [categorie, date, monthNumber];
+}
+
 class LoadSerieBookings extends BookingEvent {
   final int serieId;
 

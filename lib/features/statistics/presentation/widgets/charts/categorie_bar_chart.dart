@@ -1,20 +1,29 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../bookings/domain/value_objects/booking_type.dart';
 import 'legend.dart';
 
 class CategorieBarChart extends StatefulWidget {
-  CategorieBarChart({super.key});
-
+  final BookingType bookingType;
+  final DateTime selectedDate;
   final Color leftBarColor = Colors.greenAccent;
   final Color midBarColor = Colors.redAccent;
   final Color rightBarColor = Colors.cyanAccent;
   final Color avgColor = Colors.orange;
+
+  CategorieBarChart({
+    super.key,
+    required this.bookingType,
+    required this.selectedDate,
+  });
+
   @override
-  State<StatefulWidget> createState() => BarChartSample2State();
+  State<StatefulWidget> createState() => CategorieBarChartState();
 }
 
-class BarChartSample2State extends State<CategorieBarChart> {
+class CategorieBarChartState extends State<CategorieBarChart> {
   final double width = 7;
 
   late List<BarChartGroupData> rawBarGroups;
@@ -25,7 +34,7 @@ class BarChartSample2State extends State<CategorieBarChart> {
   @override
   void initState() {
     super.initState();
-    final barGroup1 = makeGroupData(0, 5, 12);
+    final barGroup1 = makeGroupData(0, 5, 0);
     final barGroup2 = makeGroupData(1, 16, 12);
     final barGroup3 = makeGroupData(2, 18, 5);
     final barGroup4 = makeGroupData(3, 20, 16);
@@ -51,36 +60,27 @@ class BarChartSample2State extends State<CategorieBarChart> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: 1.2,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const Text(
-              'Legende',
-              style: TextStyle(
-                color: Colors.cyanAccent,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                LegendsListWidget(
-                  legends: [
-                    Legend('Aktiv', Colors.cyanAccent),
-                    Legend('Passiv', Colors.redAccent),
-                    Legend('Undefiniert', Colors.orangeAccent),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 38,
-            ),
+            widget.bookingType.name == BookingType.investment.name
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      LegendsListWidget(
+                        legends: [
+                          Legend('Aktiv', Colors.cyanAccent),
+                          Legend('Passiv', Colors.redAccent),
+                          Legend('Undefiniert', Colors.orangeAccent),
+                        ],
+                      ),
+                    ],
+                  )
+                : const SizedBox(),
+            const SizedBox(height: 30.0),
             Expanded(
               child: BarChart(
                 BarChartData(
@@ -191,44 +191,50 @@ class BarChartSample2State extends State<CategorieBarChart> {
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    final titles = <String>['Mn', 'Te', 'Wd', 'Tu', 'Fr', 'St', 'Su'];
+    List<String> months = [];
+    for (int i = 6; i >= 0; i--) {
+      DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month + i);
+      String monthName = DateFormat('MMM', 'de-DE').format(monthDate);
+      months.add(monthName);
+    }
 
-    final Widget text = Text(
-      titles[value.toInt()],
+    final Widget monthText = Text(
+      months[value.toInt()],
       style: const TextStyle(
         color: Color(0xff7589a2),
         fontWeight: FontWeight.bold,
-        fontSize: 14,
+        fontSize: 14.0,
       ),
     );
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 16,
-      child: text,
+      space: 16.0,
+      child: monthText,
     );
   }
 
   BarChartGroupData makeGroupData(int x, double y1, double y2) {
     return BarChartGroupData(
-      barsSpace: 4,
+      barsSpace: 4.0,
       x: x,
       barRods: [
         BarChartRodData(
           toY: y1,
           color: widget.leftBarColor,
-          width: width,
+          width: widget.bookingType.name == BookingType.investment.name ? width : 12.0,
         ),
-        BarChartRodData(
-          toY: y2,
-          color: widget.midBarColor,
-          width: width,
-        ),
-        BarChartRodData(
-          toY: y2,
-          color: widget.rightBarColor,
-          width: width,
-        ),
+        widget.bookingType.name == BookingType.investment.name
+            ? BarChartRodData(
+                toY: y2,
+                color: widget.midBarColor,
+                width: width,
+              )
+            : BarChartRodData(
+                toY: 0.0,
+                color: widget.midBarColor,
+                width: 0.0,
+              ),
       ],
     );
   }

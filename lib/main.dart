@@ -147,6 +147,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => CategorieStatisticPage(
                 categorie: args.categorie,
+                bookingType: args.bookingType,
                 selectedDate: args.selectedDate,
               ),
               settings: settings,
