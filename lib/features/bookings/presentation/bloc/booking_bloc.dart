@@ -265,16 +265,16 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         final loadCategorieBookingEither = await loadCategorieBookingsUseCase.bookingRepository.loadCategorieBookings(event.categorie);
         loadCategorieBookingEither.fold((failure) {
           emit(const Error(message: LOAD_BOOKINGS_FAILURE));
-        }, (categorieBookings) {
-          emit(CategorieBookingsLoaded(categorieBookings: categorieBookings));
+        }, (bookings) {
+          emit(CategorieBookingsLoaded(bookings: bookings));
         });
       } else if (event is LoadPastMonthlyCategorieBookings) {
         final loadPastMonthlyCategorieBookingEither = await loadPastMonthlyCategorieBookingsUseCase.bookingRepository
             .loadPastMonthlyCategorieBookings(event.categorie, event.date, event.monthNumber);
         loadPastMonthlyCategorieBookingEither.fold((failure) {
           emit(const Error(message: LOAD_BOOKINGS_FAILURE));
-        }, (categorieBookings) {
-          emit(CategorieBookingsLoaded(categorieBookings: categorieBookings));
+        }, (bookings) {
+          emit(CategorieBookingsLoaded(bookings: bookings));
         });
       } else if (event is LoadSerieBookings) {
         final loadSerieBookingEither = await loadSerieBookingsUseCase.bookingRepository.loadSerieBookings(event.serieId);

@@ -2,10 +2,12 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../bookings/domain/entities/booking.dart';
 import '../../../../bookings/domain/value_objects/booking_type.dart';
 import 'legend.dart';
 
 class CategorieBarChart extends StatefulWidget {
+  final List<Booking> bookings;
   final BookingType bookingType;
   final DateTime selectedDate;
   final Color leftBarColor = Colors.greenAccent;
@@ -15,6 +17,7 @@ class CategorieBarChart extends StatefulWidget {
 
   CategorieBarChart({
     super.key,
+    required this.bookings,
     required this.bookingType,
     required this.selectedDate,
   });
@@ -24,36 +27,46 @@ class CategorieBarChart extends StatefulWidget {
 }
 
 class CategorieBarChartState extends State<CategorieBarChart> {
-  final double width = 7;
+  final double width = 7.0;
 
+  List<BarChartGroupData> items = [];
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
 
   int touchedGroupIndex = -1;
 
+  final Map<String, double> _monthlyAmountMap = {};
+
+  // TODO hier weitermachen und bei jedem Datumswechsel neu aufrufen
+  List<BarChartGroupData> _calculateDiagramValues() {
+    _monthlyAmountMap.clear();
+    for (int i = 6; i >= 0; i--) {
+      DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - i);
+      String monthName = DateFormat('MMMM', 'de-DE').format(monthDate);
+      _monthlyAmountMap[monthName] = 0.0;
+    }
+    for (int i = 0; i < widget.bookings.length; i++) {
+      if (widget.bookings[i].type == widget.bookingType) {
+        DateTime monthDate = DateTime(widget.bookings[i].date.year, widget.bookings[i].date.month, widget.bookings[i].date.day);
+        String monthName = DateFormat('MMMM', 'de-DE').format(monthDate);
+        double? monthlyAmount = 0.0;
+        monthlyAmount = _monthlyAmountMap[monthName];
+        _monthlyAmountMap[monthName] = monthlyAmount! + widget.bookings[i].amount;
+      }
+    }
+    items = [];
+    List<double> monthlyAmounts = _monthlyAmountMap.values.toList();
+    for (int i = 0; i < monthlyAmounts.length; i++) {
+      items.add(makeGroupData(i, monthlyAmounts[i], 0));
+    }
+    return items;
+  }
+
   @override
   void initState() {
     super.initState();
-    final barGroup1 = makeGroupData(0, 5, 0);
-    final barGroup2 = makeGroupData(1, 16, 12);
-    final barGroup3 = makeGroupData(2, 18, 5);
-    final barGroup4 = makeGroupData(3, 20, 16);
-    final barGroup5 = makeGroupData(4, 17, 6);
-    final barGroup6 = makeGroupData(5, 19, 1.5);
-    final barGroup7 = makeGroupData(6, 10, 1.5);
-
-    final items = [
-      barGroup1,
-      barGroup2,
-      barGroup3,
-      barGroup4,
-      barGroup5,
-      barGroup6,
-      barGroup7,
-    ];
-
+    items = _calculateDiagramValues();
     rawBarGroups = items;
-
     showingBarGroups = rawBarGroups;
   }
 
@@ -193,7 +206,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
   Widget bottomTitles(double value, TitleMeta meta) {
     List<String> months = [];
     for (int i = 6; i >= 0; i--) {
-      DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month + i);
+      DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - i);
       String monthName = DateFormat('MMM', 'de-DE').format(monthDate);
       months.add(monthName);
     }

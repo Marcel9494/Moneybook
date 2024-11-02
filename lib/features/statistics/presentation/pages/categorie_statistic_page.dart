@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 
+import '../../../../shared/presentation/widgets/deco/empty_list.dart';
+import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart';
 import '../../../bookings/presentation/widgets/buttons/month_picker_buttons.dart';
+import '../../../bookings/presentation/widgets/deco/daily_report_summary.dart';
 import '../widgets/charts/categorie_bar_chart.dart';
 
 class CategorieStatisticPage extends StatefulWidget {
@@ -24,13 +27,18 @@ class CategorieStatisticPage extends StatefulWidget {
 }
 
 class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
+  late DateTime _previousBookingDate;
+  late DateTime _bookingDate;
+  final Map<DateTime, double> _dailyIncomeMap = {};
+  final Map<DateTime, double> _dailyExpenseMap = {};
+  int _numberOfBookedBookings = 0;
+
   @override
   void initState() {
     super.initState();
     _loadCategorieBookings(context);
   }
 
-  // TODO hier weitermachen und auf LoadMonthlyCategorieBookings erweitern mit widget.selectedDate
   void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
       LoadPastMonthlyCategorieBookings(widget.categorie, widget.selectedDate, 7),
@@ -42,6 +50,25 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
       LoadSortedMonthlyBookings(widget.selectedDate),
     );
     return true;
+  }
+
+  void _calculateDailyValues(List<Booking> bookings) {
+    _dailyIncomeMap.clear();
+    _dailyExpenseMap.clear();
+    for (int i = 0; i < bookings.length; i++) {
+      if (_dailyIncomeMap.containsKey(bookings[i].date) == false) {
+        _dailyIncomeMap[bookings[i].date] = 0.0;
+        _dailyExpenseMap[bookings[i].date] = 0.0;
+      }
+      double? dailyAmount = 0.0;
+      if (bookings[i].type == BookingType.income) {
+        dailyAmount = _dailyIncomeMap[bookings[i].date];
+        _dailyIncomeMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
+      } else if (bookings[i].type == BookingType.expense) {
+        dailyAmount = _dailyExpenseMap[bookings[i].date];
+        _dailyExpenseMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
+      }
+    }
   }
 
   @override
@@ -63,12 +90,14 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
           ],
         ),
         body: BlocBuilder<BookingBloc, BookingState>(
-          builder: (context, bookingState) {
-            if (bookingState is CategorieBookingsLoaded) {
+          builder: (context, state) {
+            if (state is CategorieBookingsLoaded) {
+              _calculateDailyValues(state.bookings);
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CategorieBarChart(
+                    bookings: state.bookings,
                     bookingType: widget.bookingType,
                     selectedDate: widget.selectedDate,
                   ),
@@ -81,11 +110,44 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                   ),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: bookingState.categorieBookings.length,
+                      shrinkWrap: true,
+                      itemCount: state.bookings.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return BookingCard(
-                          booking: bookingState.categorieBookings[index],
-                        );
+                        int lastday = DateTime(widget.selectedDate.year, widget.selectedDate.month + 1, 0).day;
+                        DateTime startDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, 1);
+                        DateTime endDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, lastday + 1);
+                        DateTime bookingDate = state.bookings[index].date;
+                        if (bookingDate.isAfter(startDate) && bookingDate.isBefore(endDate)) {
+                          _numberOfBookedBookings++;
+                          if (index > 0) {
+                            _previousBookingDate = state.bookings[index - 1].date;
+                            _bookingDate = state.bookings[index].date;
+                          }
+                          if (index == 0 || _previousBookingDate != _bookingDate) {
+                            return Column(
+                              children: [
+                                DailyReportSummary(
+                                  date: state.bookings[index].date,
+                                  dailyIncome: _dailyIncomeMap[state.bookings[index].date],
+                                  dailyExpense: _dailyExpenseMap[state.bookings[index].date],
+                                ),
+                                BookingCard(booking: state.bookings[index]),
+                              ],
+                            );
+                          } else {
+                            return BookingCard(booking: state.bookings[index]);
+                          }
+                        }
+                        if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
+                          return SizedBox(
+                            height: MediaQuery.sizeOf(context).height / 1.5,
+                            child: const EmptyList(
+                              text: 'Noch keine Buchungen vorhanden',
+                              icon: Icons.receipt_long_rounded,
+                            ),
+                          );
+                        }
+                        return const SizedBox();
                       },
                     ),
                   ),
