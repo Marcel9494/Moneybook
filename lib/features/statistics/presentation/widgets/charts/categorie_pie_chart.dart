@@ -65,6 +65,7 @@ class CategoriePieChartState extends State<CategoriePieChart> {
               ),
             ),
           ),
+          // TODO hier weitermachen und mit Aktiv/Passiv und Fix/Variabel erweitern
           widget.bookingType.pluralName == BookingType.investment.pluralName
               ? Padding(
                   padding: const EdgeInsets.only(right: 62.0),

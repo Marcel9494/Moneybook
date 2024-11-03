@@ -99,12 +99,12 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       if (_bookingType == BookingType.transfer) {
         _categorieController.text = 'Übertrag';
       }
+      if (_bookingType == BookingType.investment) {
+        _amountType = AmountType.buy;
+      } else {
+        _amountType = AmountType.undefined;
+      }
     });
-    if (_bookingType == BookingType.investment) {
-      _amountType = AmountType.buy;
-    } else {
-      _amountType = AmountType.undefined;
-    }
   }
 
   void _changeRepetitionType(RepetitionType newRepetitionType) {

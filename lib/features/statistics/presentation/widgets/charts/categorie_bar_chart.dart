@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../bookings/domain/entities/booking.dart';
+import '../../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../../bookings/domain/value_objects/booking_type.dart';
 import 'legend.dart';
 
@@ -37,6 +38,14 @@ class CategorieBarChartState extends State<CategorieBarChart> {
 
   final Map<String, double> _monthlyAmountMap = {};
 
+  @override
+  void initState() {
+    super.initState();
+    items = _calculateDiagramValues();
+    rawBarGroups = items;
+    showingBarGroups = rawBarGroups;
+  }
+
   // TODO hier weitermachen und bei jedem Datumswechsel neu aufrufen
   List<BarChartGroupData> _calculateDiagramValues() {
     _monthlyAmountMap.clear();
@@ -62,12 +71,35 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     return items;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    items = _calculateDiagramValues();
-    rawBarGroups = items;
-    showingBarGroups = rawBarGroups;
+  String _getFirstAmountType() {
+    if (BookingType.expense.name == widget.bookingType.name) {
+      return AmountType.variable.name;
+    } else if (BookingType.income.name == widget.bookingType.name) {
+      return AmountType.active.name;
+    } else if (BookingType.investment.name == widget.bookingType.name) {
+      return AmountType.buy.name;
+    }
+    return '';
+  }
+
+  String _getSecondAmountType() {
+    if (BookingType.expense.name == widget.bookingType.name) {
+      return AmountType.fix.name;
+    } else if (BookingType.income.name == widget.bookingType.name) {
+      return AmountType.passive.name;
+    } else if (BookingType.investment.name == widget.bookingType.name) {
+      return AmountType.sale.name;
+    }
+    return '';
+  }
+
+  String _getThirthAmountType() {
+    if (BookingType.expense.name == widget.bookingType.name) {
+      return AmountType.undefined.name;
+    } else if (BookingType.income.name == widget.bookingType.name) {
+      return AmountType.undefined.name;
+    }
+    return '';
   }
 
   @override
@@ -79,20 +111,20 @@ class CategorieBarChartState extends State<CategorieBarChart> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            widget.bookingType.name == BookingType.investment.name
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      LegendsListWidget(
-                        legends: [
-                          Legend('Aktiv', Colors.cyanAccent),
-                          Legend('Passiv', Colors.redAccent),
-                          Legend('Undefiniert', Colors.orangeAccent),
-                        ],
-                      ),
-                    ],
-                  )
-                : const SizedBox(),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                LegendsListWidget(
+                  legends: [
+                    Legend(_getFirstAmountType(), Colors.cyanAccent),
+                    Legend(_getSecondAmountType(), Colors.redAccent),
+                    BookingType.investment.name == widget.bookingType.name
+                        ? Legend('', Colors.transparent)
+                        : Legend(_getThirthAmountType(), Colors.orangeAccent),
+                  ],
+                ),
+              ],
+            ),
             const SizedBox(height: 30.0),
             Expanded(
               child: BarChart(
