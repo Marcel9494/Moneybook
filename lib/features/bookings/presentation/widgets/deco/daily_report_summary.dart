@@ -5,14 +5,16 @@ import '../../../../../core/utils/date_formatter.dart';
 
 class DailyReportSummary extends StatelessWidget {
   final DateTime date;
-  final double? dailyIncome;
-  final double? dailyExpense;
+  final double? rightValue;
+  final double? leftValue;
+  final bool showLeftValue;
 
   const DailyReportSummary({
     super.key,
     required this.date,
-    required this.dailyIncome,
-    required this.dailyExpense,
+    required this.rightValue,
+    this.leftValue = 0.0,
+    this.showLeftValue = true,
   });
 
   @override
@@ -53,18 +55,20 @@ class DailyReportSummary extends StatelessWidget {
               ],
             ),
           ),
+          showLeftValue
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 0.0),
+                  child: Text(
+                    formatToMoneyAmount(leftValue.toString()),
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.greenAccent),
+                  ),
+                )
+              : const SizedBox(),
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 0.0),
             child: Text(
-              formatToMoneyAmount(dailyIncome.toString()),
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: Colors.greenAccent),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 0.0),
-            child: Text(
-              formatToMoneyAmount(dailyExpense.toString()),
+              formatToMoneyAmount(rightValue.toString()),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(color: Colors.redAccent),
             ),

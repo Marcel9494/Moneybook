@@ -153,8 +153,8 @@ class _BookingListPageState extends State<BookingListPage> {
                                     children: [
                                       DailyReportSummary(
                                         date: state.bookings[index].date,
-                                        dailyIncome: _dailyIncomeMap[state.bookings[index].date],
-                                        dailyExpense: _dailyExpenseMap[state.bookings[index].date],
+                                        leftValue: _dailyIncomeMap[state.bookings[index].date],
+                                        rightValue: _dailyExpenseMap[state.bookings[index].date],
                                       ),
                                       BookingCard(booking: state.bookings[index]),
                                     ],
@@ -241,8 +241,8 @@ class _BookingListPageState extends State<BookingListPage> {
                                                     children: [
                                                       DailyReportSummary(
                                                         date: _dependingBookings[index].date,
-                                                        dailyIncome: _dailyIncomeMap[_dependingBookings[index].date],
-                                                        dailyExpense: _dailyExpenseMap[_dependingBookings[index].date],
+                                                        leftValue: _dailyIncomeMap[_dependingBookings[index].date],
+                                                        rightValue: _dailyExpenseMap[_dependingBookings[index].date],
                                                       ),
                                                       BookingCard(booking: _dependingBookings[index]),
                                                     ],

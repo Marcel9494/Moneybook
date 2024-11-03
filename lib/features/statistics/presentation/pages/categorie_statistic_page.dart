@@ -4,6 +4,7 @@ import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_c
 
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../bookings/domain/entities/booking.dart';
+import '../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart';
 import '../../../bookings/presentation/widgets/buttons/month_picker_buttons.dart';
@@ -29,8 +30,8 @@ class CategorieStatisticPage extends StatefulWidget {
 class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
   late DateTime _previousBookingDate;
   late DateTime _bookingDate;
-  final Map<DateTime, double> _dailyIncomeMap = {};
-  final Map<DateTime, double> _dailyExpenseMap = {};
+  final Map<DateTime, double> _dailyLeftValuesMap = {};
+  final Map<DateTime, double> _dailyRightValuesMap = {};
   int _numberOfBookedBookings = 0;
 
   @override
@@ -53,20 +54,28 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
   }
 
   void _calculateDailyValues(List<Booking> bookings) {
-    _dailyIncomeMap.clear();
-    _dailyExpenseMap.clear();
+    _dailyLeftValuesMap.clear();
+    _dailyRightValuesMap.clear();
     for (int i = 0; i < bookings.length; i++) {
-      if (_dailyIncomeMap.containsKey(bookings[i].date) == false) {
-        _dailyIncomeMap[bookings[i].date] = 0.0;
-        _dailyExpenseMap[bookings[i].date] = 0.0;
+      if (_dailyLeftValuesMap.containsKey(bookings[i].date) == false) {
+        _dailyLeftValuesMap[bookings[i].date] = 0.0;
+        _dailyRightValuesMap[bookings[i].date] = 0.0;
       }
       double? dailyAmount = 0.0;
       if (bookings[i].type == BookingType.income) {
-        dailyAmount = _dailyIncomeMap[bookings[i].date];
-        _dailyIncomeMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
+        dailyAmount = _dailyLeftValuesMap[bookings[i].date];
+        _dailyLeftValuesMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
       } else if (bookings[i].type == BookingType.expense) {
-        dailyAmount = _dailyExpenseMap[bookings[i].date];
-        _dailyExpenseMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
+        dailyAmount = _dailyRightValuesMap[bookings[i].date];
+        _dailyRightValuesMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
+      } else if (bookings[i].type == BookingType.investment) {
+        if (bookings[i].amountType.name == AmountType.buy.name) {
+          dailyAmount = _dailyLeftValuesMap[bookings[i].date];
+          _dailyLeftValuesMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
+        } else if (bookings[i].amountType.name == AmountType.sale.name) {
+          dailyAmount = _dailyRightValuesMap[bookings[i].date];
+          _dailyRightValuesMap[bookings[i].date] = dailyAmount! + bookings[i].amount;
+        }
       }
     }
   }
@@ -128,8 +137,8 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                               children: [
                                 DailyReportSummary(
                                   date: state.bookings[index].date,
-                                  dailyIncome: _dailyIncomeMap[state.bookings[index].date],
-                                  dailyExpense: _dailyExpenseMap[state.bookings[index].date],
+                                  leftValue: _dailyLeftValuesMap[state.bookings[index].date],
+                                  rightValue: _dailyRightValuesMap[state.bookings[index].date],
                                 ),
                                 BookingCard(booking: state.bookings[index]),
                               ],
