@@ -28,6 +28,13 @@ class _StatisticPageState extends State<StatisticPage> {
   AmountType _selectedAmountType = AmountType.buy;
   double _overallBuyAmount = 0.0;
   double _overallSaleAmount = 0.0;
+  List<AmountType> _amountTypes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getAmountTypes();
+  }
 
   void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -41,6 +48,7 @@ class _StatisticPageState extends State<StatisticPage> {
     );
   }
 
+  // TODO hier weitermachen und alle Werte berechnen
   void _calculateAmountTypeStats(List<Booking> bookings) {
     _overallBuyAmount = 0.0;
     _overallSaleAmount = 0.0;
@@ -55,9 +63,29 @@ class _StatisticPageState extends State<StatisticPage> {
     }
   }
 
+  List<AmountType> _getAmountTypes() {
+    _amountTypes.clear();
+    if (BookingType.expense.name == _selectedBookingType.name) {
+      _amountTypes.add(AmountType.overall);
+      _amountTypes.add(AmountType.variable);
+      _amountTypes.add(AmountType.fix);
+      _amountTypes.add(AmountType.undefined);
+    } else if (BookingType.income.name == _selectedBookingType.name) {
+      _amountTypes.add(AmountType.overall);
+      _amountTypes.add(AmountType.active);
+      _amountTypes.add(AmountType.passive);
+      _amountTypes.add(AmountType.undefined);
+    } else if (BookingType.investment.name == _selectedBookingType.name) {
+      _amountTypes.add(AmountType.buy);
+      _amountTypes.add(AmountType.sale);
+    }
+    return _amountTypes;
+  }
+
   void _onBookingTypeChanged(Set<BookingType> newBookingType) {
     setState(() {
       _selectedBookingType = newBookingType.first;
+      _getAmountTypes();
     });
   }
 
@@ -88,6 +116,7 @@ class _StatisticPageState extends State<StatisticPage> {
                         onAmountTypeChanged: _onAmountTypeChanged,
                         overallBuyAmount: _overallBuyAmount,
                         overallSaleAmount: _overallSaleAmount,
+                        amountTypes: _amountTypes,
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
@@ -111,6 +140,7 @@ class _StatisticPageState extends State<StatisticPage> {
                         onAmountTypeChanged: _onAmountTypeChanged,
                         overallBuyAmount: _overallBuyAmount,
                         overallSaleAmount: _overallSaleAmount,
+                        amountTypes: _amountTypes,
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,

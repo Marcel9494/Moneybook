@@ -5,7 +5,8 @@ enum AmountType {
   active,
   passive,
   fix,
-  variable;
+  variable,
+  overall;
 
   static AmountType fromString(String s) => switch (s) {
         'Undefiniert' => AmountType.undefined,
@@ -15,6 +16,7 @@ enum AmountType {
         'Passiv' => AmountType.passive,
         'Fix' => AmountType.fix,
         'Variabel' => AmountType.variable,
+        'Gesamt' => AmountType.overall,
         _ => AmountType.undefined
       };
 }
@@ -36,6 +38,8 @@ extension AmountTypeExtension on AmountType {
         return 'Fix';
       case AmountType.variable:
         return 'Variabel';
+      case AmountType.overall:
+        return 'Gesamt';
       default:
         throw Exception('$name is not a valid Amount type.');
     }

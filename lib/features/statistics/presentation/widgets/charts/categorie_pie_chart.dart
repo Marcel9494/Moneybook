@@ -15,6 +15,7 @@ class CategoriePieChart extends StatefulWidget {
   final Function(Set<AmountType>) onAmountTypeChanged;
   final double overallBuyAmount;
   final double overallSaleAmount;
+  final List<AmountType> amountTypes;
 
   const CategoriePieChart({
     super.key,
@@ -24,6 +25,7 @@ class CategoriePieChart extends StatefulWidget {
     required this.onAmountTypeChanged,
     required this.overallBuyAmount,
     required this.overallSaleAmount,
+    required this.amountTypes,
   });
 
   @override
@@ -35,6 +37,7 @@ class CategoriePieChartState extends State<CategoriePieChart> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.amountTypes);
     return AspectRatio(
       aspectRatio: 1.6,
       child: Row(
@@ -66,39 +69,33 @@ class CategoriePieChartState extends State<CategoriePieChart> {
             ),
           ),
           // TODO hier weitermachen und mit Aktiv/Passiv und Fix/Variabel erweitern
-          widget.bookingType.pluralName == BookingType.investment.pluralName
-              ? Padding(
-                  padding: const EdgeInsets.only(right: 62.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 62.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ...widget.amountTypes.map((amountType) {
+                  return Column(
+                    children: [
                       GestureDetector(
-                        onTap: () => widget.onAmountTypeChanged({AmountType.buy}),
+                        onTap: () => widget.onAmountTypeChanged({amountType}),
                         child: Indicator(
                           color: Colors.white,
-                          text: AmountType.buy.name,
+                          text: amountType.name,
                           isSquare: false,
                           amountType: widget.amountType,
-                          amount: widget.overallBuyAmount,
+                          amount: 0.0, //_getOverallAmount(amountType), // Dynamisch den Betrag holen
                         ),
                       ),
                       const SizedBox(height: 4.0),
-                      GestureDetector(
-                        onTap: () => widget.onAmountTypeChanged({AmountType.sale}),
-                        child: Indicator(
-                          color: Colors.white,
-                          text: AmountType.sale.name,
-                          isSquare: false,
-                          amountType: widget.amountType,
-                          amount: widget.overallSaleAmount,
-                        ),
-                      ),
-                      const SizedBox(height: 14.0),
                     ],
-                  ),
-                )
-              : const SizedBox(),
+                  );
+                }).toList(),
+                const SizedBox(height: 14.0),
+              ],
+            ),
+          ),
         ],
       ),
     );
