@@ -11,20 +11,14 @@ import 'indicator.dart';
 class CategoriePieChart extends StatefulWidget {
   final List<CategorieStats> categorieStats;
   final BookingType bookingType;
-  final AmountType amountType;
   final Function(Set<AmountType>) onAmountTypeChanged;
-  final double overallBuyAmount;
-  final double overallSaleAmount;
-  final List<AmountType> amountTypes;
+  final Map<AmountType, double> amountTypes;
 
   const CategoriePieChart({
     super.key,
     required this.categorieStats,
     required this.bookingType,
-    required this.amountType,
     required this.onAmountTypeChanged,
-    required this.overallBuyAmount,
-    required this.overallSaleAmount,
     required this.amountTypes,
   });
 
@@ -37,9 +31,8 @@ class CategoriePieChartState extends State<CategoriePieChart> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.amountTypes);
     return AspectRatio(
-      aspectRatio: 1.6,
+      aspectRatio: 1.7,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -60,7 +53,7 @@ class CategoriePieChartState extends State<CategoriePieChart> {
                   ),
                   borderData: FlBorderData(show: false),
                   sectionsSpace: 4.0,
-                  centerSpaceRadius: 40.0,
+                  centerSpaceRadius: 34.0,
                   sections: widget.categorieStats.isEmpty ? showingEmptySection() : showingSections(widget.categorieStats),
                 ),
                 swapAnimationDuration: const Duration(milliseconds: animationDurationInMs),
@@ -68,24 +61,23 @@ class CategoriePieChartState extends State<CategoriePieChart> {
               ),
             ),
           ),
-          // TODO hier weitermachen und mit Aktiv/Passiv und Fix/Variabel erweitern
           Padding(
             padding: const EdgeInsets.only(right: 62.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                ...widget.amountTypes.map((amountType) {
+                ...widget.amountTypes.entries.map((amountType) {
                   return Column(
                     children: [
                       GestureDetector(
-                        onTap: () => widget.onAmountTypeChanged({amountType}),
+                        onTap: () => widget.onAmountTypeChanged({amountType.key}),
                         child: Indicator(
                           color: Colors.white,
-                          text: amountType.name,
+                          text: amountType.key.name,
                           isSquare: false,
-                          amountType: widget.amountType,
-                          amount: 0.0, //_getOverallAmount(amountType), // Dynamisch den Betrag holen
+                          amountType: amountType.key,
+                          amount: amountType.value,
                         ),
                       ),
                       const SizedBox(height: 4.0),

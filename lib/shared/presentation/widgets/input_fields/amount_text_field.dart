@@ -40,11 +40,9 @@ class AmountTextField extends StatelessWidget {
     if (BookingType.expense.name == bookingType.name) {
       _amountTypes.add(AmountType.variable);
       _amountTypes.add(AmountType.fix);
-      _amountTypes.add(AmountType.undefined);
     } else if (BookingType.income.name == bookingType.name) {
       _amountTypes.add(AmountType.active);
       _amountTypes.add(AmountType.passive);
-      _amountTypes.add(AmountType.undefined);
     } else if (BookingType.investment.name == bookingType.name) {
       _amountTypes.add(AmountType.buy);
       _amountTypes.add(AmountType.sale);
@@ -63,7 +61,7 @@ class AmountTextField extends StatelessWidget {
                 children: [
                   const BottomSheetHeader(title: 'Betragstyp auswählen:'),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height / 4.0,
+                    height: MediaQuery.of(context).size.height / 5.0,
                     child: SingleChildScrollView(
                       child: ListView.builder(
                         shrinkWrap: true,

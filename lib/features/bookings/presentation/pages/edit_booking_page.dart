@@ -215,10 +215,12 @@ class _EditBookingPageState extends State<EditBookingPage> {
       if (_bookingType == BookingType.transfer) {
         _categorieController.text = 'Übertrag';
       }
-      if (_bookingType == BookingType.investment) {
+      if (_bookingType == BookingType.expense) {
+        _amountType = AmountType.variable;
+      } else if (_bookingType == BookingType.income) {
+        _amountType = AmountType.active;
+      } else if (_bookingType == BookingType.investment) {
         _amountType = AmountType.buy;
-      } else {
-        _amountType = AmountType.undefined;
       }
     });
   }

@@ -24,7 +24,7 @@ class MonthlyCard extends StatelessWidget {
         width: 116.0,
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+            padding: const EdgeInsets.fromLTRB(12.0, 8.0, 8.0, 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -38,13 +38,13 @@ class MonthlyCard extends StatelessWidget {
                   child: Text(
                     formatToMoneyAmount(monthlyValue.toString()),
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: textColor, fontSize: 16.0),
+                    style: TextStyle(color: textColor, fontSize: 14.0),
                   ),
                 ),
                 Text(
                   'Ø ${formatToMoneyAmount(dailyAverageValue.toString())} p.T.',
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12.0, color: Colors.grey),
+                  style: const TextStyle(fontSize: 11.0, color: Colors.grey),
                 ),
               ],
             ),

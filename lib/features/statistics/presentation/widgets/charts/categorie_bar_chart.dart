@@ -93,15 +93,6 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     return '';
   }
 
-  String _getThirthAmountType() {
-    if (BookingType.expense.name == widget.bookingType.name) {
-      return AmountType.undefined.name;
-    } else if (BookingType.income.name == widget.bookingType.name) {
-      return AmountType.undefined.name;
-    }
-    return '';
-  }
-
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -118,9 +109,6 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                   legends: [
                     Legend(_getFirstAmountType(), Colors.cyanAccent),
                     Legend(_getSecondAmountType(), Colors.redAccent),
-                    BookingType.investment.name == widget.bookingType.name
-                        ? Legend('', Colors.transparent)
-                        : Legend(_getThirthAmountType(), Colors.orangeAccent),
                   ],
                 ),
               ],
@@ -129,7 +117,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
             Expanded(
               child: BarChart(
                 BarChartData(
-                  maxY: 20,
+                  maxY: 20.0,
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: ((group) {
