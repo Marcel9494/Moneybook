@@ -32,10 +32,11 @@ class CategoriePieChartState extends State<CategoriePieChart> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1.7,
+      aspectRatio: 1.75,
       child: Row(
         children: <Widget>[
           Expanded(
+            flex: 2,
             child: AspectRatio(
               aspectRatio: 1.0,
               child: PieChart(
@@ -61,31 +62,34 @@ class CategoriePieChartState extends State<CategoriePieChart> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 62.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                ...widget.amountTypes.entries.map((amountType) {
-                  return Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () => widget.onAmountTypeChanged({amountType.key}),
-                        child: Indicator(
-                          color: Colors.white,
-                          text: amountType.key.name,
-                          isSquare: false,
-                          amountType: amountType.key,
-                          amount: amountType.value,
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 14.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  ...widget.amountTypes.entries.map((amountType) {
+                    return Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () => widget.onAmountTypeChanged({amountType.key}),
+                          child: Indicator(
+                            color: Colors.white,
+                            text: amountType.key.name,
+                            isSquare: false,
+                            amountType: amountType.key,
+                            amount: amountType.value,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4.0),
-                    ],
-                  );
-                }).toList(),
-                const SizedBox(height: 14.0),
-              ],
+                        const SizedBox(height: 4.0),
+                      ],
+                    );
+                  }).toList(),
+                  const SizedBox(height: 14.0),
+                ],
+              ),
             ),
           ),
         ],

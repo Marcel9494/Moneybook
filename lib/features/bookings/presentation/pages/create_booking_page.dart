@@ -98,6 +98,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       _categorieController.text = '';
       if (_bookingType == BookingType.transfer) {
         _categorieController.text = 'Übertrag';
+        _amountType = AmountType.undefined;
       }
       if (_bookingType == BookingType.expense) {
         _amountType = AmountType.variable;

@@ -25,14 +25,8 @@ class StatisticPage extends StatefulWidget {
 
 class _StatisticPageState extends State<StatisticPage> {
   BookingType _selectedBookingType = BookingType.expense;
-  AmountType _selectedAmountType = AmountType.buy;
+  AmountType _selectedAmountType = AmountType.overallExpense;
   Map<AmountType, double> _amountTypes = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _getAmountTypes();
-  }
 
   void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -46,27 +40,53 @@ class _StatisticPageState extends State<StatisticPage> {
     );
   }
 
-  // TODO hier weitermachen und wenn man von der Kategorie Statistik Seite zurückkommt sollen die Werte weiterhin richtig berechnet und angezeigt werden
   void _calculateAmountTypeStats(List<Booking> bookings) {
-    //_amountTypes.clear();
+    _amountTypes.clear();
     for (int i = 0; i < bookings.length; i++) {
       if (_selectedBookingType.name == BookingType.expense.name) {
-        if (bookings[i].amountType.name == AmountType.overall.name) {
-          _amountTypes[AmountType.overall] = _amountTypes[AmountType.overall]! + bookings[i].amount;
-        } else if (bookings[i].amountType.name == AmountType.variable.name) {
+        print('Test 1');
+        if (_amountTypes.containsKey(AmountType.variable) == false) {
+          _selectedAmountType = AmountType.overallExpense;
+          _amountTypes[AmountType.overallExpense] = 0.0;
+          _amountTypes[AmountType.variable] = 0.0;
+          _amountTypes[AmountType.fix] = 0.0;
+        }
+        if (bookings[i].amountType.name == AmountType.variable.name) {
           _amountTypes[AmountType.variable] = _amountTypes[AmountType.variable]! + bookings[i].amount;
+          _amountTypes[AmountType.overallExpense] = _amountTypes[AmountType.overallExpense]! + bookings[i].amount;
         } else if (bookings[i].amountType.name == AmountType.fix.name) {
           _amountTypes[AmountType.fix] = _amountTypes[AmountType.fix]! + bookings[i].amount;
+          _amountTypes[AmountType.overallExpense] = _amountTypes[AmountType.overallExpense]! + bookings[i].amount;
+        } else if (bookings[i].amountType.name == AmountType.undefined.name) {
+          _amountTypes[AmountType.overallExpense] = _amountTypes[AmountType.overallExpense]! + bookings[i].amount;
         }
+        print(bookings[i].amount);
+        print(_selectedBookingType.name);
+        print(bookings[i].amountType.name);
       } else if (_selectedBookingType.name == BookingType.income.name) {
-        if (bookings[i].amountType.name == AmountType.overall.name) {
-          _amountTypes[AmountType.overall] = _amountTypes[AmountType.overall]! + bookings[i].amount;
-        } else if (bookings[i].amountType.name == AmountType.active.name) {
+        print('Test 2');
+        if (_amountTypes.containsKey(AmountType.active) == false) {
+          _selectedAmountType = AmountType.overallIncome;
+          _amountTypes[AmountType.overallIncome] = 0.0;
+          _amountTypes[AmountType.active] = 0.0;
+          _amountTypes[AmountType.passive] = 0.0;
+        }
+        if (bookings[i].amountType.name == AmountType.active.name) {
           _amountTypes[AmountType.active] = _amountTypes[AmountType.active]! + bookings[i].amount;
+          _amountTypes[AmountType.overallIncome] = _amountTypes[AmountType.overallIncome]! + bookings[i].amount;
         } else if (bookings[i].amountType.name == AmountType.passive.name) {
           _amountTypes[AmountType.passive] = _amountTypes[AmountType.passive]! + bookings[i].amount;
+          _amountTypes[AmountType.overallIncome] = _amountTypes[AmountType.overallIncome]! + bookings[i].amount;
+        } else if (bookings[i].amountType.name == AmountType.undefined.name) {
+          _amountTypes[AmountType.overallIncome] = _amountTypes[AmountType.overallIncome]! + bookings[i].amount;
         }
       } else if (_selectedBookingType.name == BookingType.investment.name) {
+        print('Test 3');
+        if (_amountTypes.containsKey(AmountType.buy) == false) {
+          _selectedAmountType = AmountType.buy;
+          _amountTypes[AmountType.buy] = 0.0;
+          _amountTypes[AmountType.sale] = 0.0;
+        }
         if (bookings[i].amountType.name == AmountType.buy.name) {
           _amountTypes[AmountType.buy] = _amountTypes[AmountType.buy]! + bookings[i].amount;
         } else if (bookings[i].amountType.name == AmountType.sale.name) {
@@ -76,32 +96,12 @@ class _StatisticPageState extends State<StatisticPage> {
     }
   }
 
-  Map<AmountType, double> _getAmountTypes() {
-    _amountTypes.clear();
-    if (BookingType.expense.name == _selectedBookingType.name) {
-      _selectedAmountType = AmountType.overall;
-      _amountTypes[AmountType.overall] = 0.0;
-      _amountTypes[AmountType.variable] = 0.0;
-      _amountTypes[AmountType.fix] = 0.0;
-    } else if (BookingType.income.name == _selectedBookingType.name) {
-      _selectedAmountType = AmountType.overall;
-      _amountTypes[AmountType.overall] = 0.0;
-      _amountTypes[AmountType.active] = 0.0;
-      _amountTypes[AmountType.passive] = 0.0;
-    } else if (BookingType.investment.name == _selectedBookingType.name) {
-      _selectedAmountType = AmountType.buy;
-      _amountTypes[AmountType.buy] = 0.0;
-      _amountTypes[AmountType.sale] = 0.0;
-    }
-    return _amountTypes;
-  }
-
-  void _onBookingTypeChanged(Set<BookingType> newBookingType) {
+  /*void _onBookingTypeChanged(Set<BookingType> newBookingType) {
     setState(() {
       _selectedBookingType = newBookingType.first;
-      _getAmountTypes();
+      _calculateAmountTypeStats(bookings);
     });
-  }
+  }*/
 
   void _onAmountTypeChanged(Set<AmountType> newAmountType) {
     setState(() {
@@ -116,7 +116,7 @@ class _StatisticPageState extends State<StatisticPage> {
       builder: (context, bookingState) {
         if (bookingState is Loaded) {
           _calculateCategoryStats(bookingState.bookings);
-          _calculateAmountTypeStats(bookingState.bookings);
+          //_calculateAmountTypeStats(bookingState.bookings);
           return BlocBuilder<CategorieStatsBloc, CategorieStatsState>(
             builder: (context, state) {
               if (state is CalculatedCategorieStats) {
@@ -131,7 +131,12 @@ class _StatisticPageState extends State<StatisticPage> {
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
-                        onBookingTypeChanged: _onBookingTypeChanged,
+                        onBookingTypeChanged: (Set<BookingType> newBookingType) {
+                          setState(() {
+                            _selectedBookingType = newBookingType.first;
+                            _calculateAmountTypeStats(bookingState.bookings);
+                          });
+                        },
                       ),
                       const Expanded(
                         child: EmptyList(
@@ -152,7 +157,12 @@ class _StatisticPageState extends State<StatisticPage> {
                       ),
                       BookingTypeSegmentedButton(
                         selectedBookingType: _selectedBookingType,
-                        onBookingTypeChanged: _onBookingTypeChanged,
+                        onBookingTypeChanged: (Set<BookingType> newBookingType) {
+                          setState(() {
+                            _selectedBookingType = newBookingType.first;
+                            _calculateAmountTypeStats(bookingState.bookings);
+                          });
+                        },
                       ),
                       Expanded(
                         child: ListView.builder(
