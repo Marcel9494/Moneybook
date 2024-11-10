@@ -93,6 +93,19 @@ class LoadSortedMonthlyBookings extends BookingEvent {
   List<Object?> get props => [selectedDate];
 }
 
+class LoadAmountTypeMonthlyBookings extends BookingEvent {
+  final DateTime selectedDate;
+  final AmountType amountType;
+
+  const LoadAmountTypeMonthlyBookings(
+    this.selectedDate,
+    this.amountType,
+  );
+
+  @override
+  List<Object?> get props => [selectedDate, amountType];
+}
+
 class LoadCategorieBookings extends BookingEvent {
   final String categorie;
 

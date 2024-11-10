@@ -31,7 +31,7 @@ class _StatisticPageState extends State<StatisticPage> {
 
   void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
-      LoadSortedMonthlyBookings(widget.selectedDate),
+      LoadAmountTypeMonthlyBookings(widget.selectedDate, _selectedAmountType),
     );
   }
 
@@ -44,17 +44,14 @@ class _StatisticPageState extends State<StatisticPage> {
   void _calculateAmountTypeStats(List<Booking> bookings, BookingType bookingType) {
     _amountTypes.clear();
     if (bookingType.pluralName == BookingType.expense.pluralName) {
-      //_selectedAmountType = AmountType.overallExpense;
       _amountTypes[AmountType.overallExpense] = 0.0;
       _amountTypes[AmountType.variable] = 0.0;
       _amountTypes[AmountType.fix] = 0.0;
     } else if (bookingType.pluralName == BookingType.income.pluralName) {
-      //_selectedAmountType = AmountType.overallIncome;
       _amountTypes[AmountType.overallIncome] = 0.0;
       _amountTypes[AmountType.active] = 0.0;
       _amountTypes[AmountType.passive] = 0.0;
     } else if (bookingType.pluralName == BookingType.investment.pluralName) {
-      //_selectedAmountType = AmountType.buy;
       _amountTypes[AmountType.buy] = 0.0;
       _amountTypes[AmountType.sale] = 0.0;
     }
@@ -83,10 +80,24 @@ class _StatisticPageState extends State<StatisticPage> {
     }
   }
 
+  // TODO hier weitermachen und Gesamt richtig berechnen und _onAmountTypeChanged unten wieder aufrufen
+  // TODO Am Anfang 1x alle Buchungen laden und von dort aus Gesamt berechnen?
   void _onAmountTypeChanged(Set<AmountType> newAmountType) {
-    print(newAmountType.first);
     setState(() {
       _selectedAmountType = newAmountType.first;
+    });
+  }
+
+  void _onBookingTypeChanged(BookingType newBookingType) {
+    setState(() {
+      _selectedBookingType = newBookingType;
+      if (_selectedBookingType == BookingType.expense) {
+        _selectedAmountType = AmountType.overallExpense;
+      } else if (_selectedBookingType == BookingType.income) {
+        _selectedAmountType = AmountType.overallIncome;
+      } else if (_selectedBookingType == BookingType.investment) {
+        _selectedAmountType = AmountType.buy;
+      }
     });
   }
 
@@ -112,7 +123,6 @@ class _StatisticPageState extends State<StatisticPage> {
                             child: CategoriePieChart(
                               categorieStats: state.categorieStats,
                               bookingType: _selectedBookingType,
-                              onAmountTypeChanged: _onAmountTypeChanged,
                               amountTypes: _amountTypes,
                               amountType: _selectedAmountType,
                             ),
@@ -128,9 +138,12 @@ class _StatisticPageState extends State<StatisticPage> {
                                   ..._amountTypes.entries.map((amountType) {
                                     return Column(
                                       children: [
-                                        // TODO hier weitermachen warum wird der AmountType nicht geändert bei Klick?
                                         GestureDetector(
-                                          onTap: () => _onAmountTypeChanged({amountType.key}),
+                                          onTap: () {
+                                            setState(() {
+                                              _selectedAmountType = amountType.key;
+                                            });
+                                          },
                                           child: Indicator(
                                             color: Colors.white,
                                             text: amountType.key.name,
@@ -156,6 +169,7 @@ class _StatisticPageState extends State<StatisticPage> {
                           setState(() {
                             _selectedBookingType = newBookingType.first;
                             _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
+                            _onBookingTypeChanged(_selectedBookingType);
                           });
                         },
                       ),
@@ -178,7 +192,6 @@ class _StatisticPageState extends State<StatisticPage> {
                             child: CategoriePieChart(
                               categorieStats: state.categorieStats,
                               bookingType: _selectedBookingType,
-                              onAmountTypeChanged: _onAmountTypeChanged,
                               amountTypes: _amountTypes,
                               amountType: _selectedAmountType,
                             ),
@@ -195,7 +208,11 @@ class _StatisticPageState extends State<StatisticPage> {
                                     return Column(
                                       children: [
                                         GestureDetector(
-                                          onTap: () => _onAmountTypeChanged({_selectedAmountType}),
+                                          onTap: () {
+                                            setState(() {
+                                              _selectedAmountType = amountType.key;
+                                            });
+                                          },
                                           child: Indicator(
                                             color: Colors.white,
                                             text: amountType.key.name,
@@ -221,6 +238,7 @@ class _StatisticPageState extends State<StatisticPage> {
                           setState(() {
                             _selectedBookingType = newBookingType.first;
                             _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
+                            _onBookingTypeChanged(_selectedBookingType);
                           });
                         },
                       ),

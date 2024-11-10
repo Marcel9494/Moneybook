@@ -18,6 +18,7 @@ abstract class BookingLocalDataSource {
   Future<void> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from);
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
+  Future<List<Booking>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType);
   Future<List<Booking>> loadCategorieBookings(String categorie);
   Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber);
   Future<List<Booking>> loadNewBookings();
@@ -135,6 +136,41 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         )
         .toList();
     bookingList.sort((first, second) => second.date.compareTo(first.date));
+    return bookingList;
+  }
+
+  @override
+  Future<List<Booking>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType) async {
+    db = await openDatabase(localDbName);
+    List<Map> bookingMap;
+    int lastday = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
+    String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
+    String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
+    if (AmountType.overallExpense == amountType || AmountType.overallIncome == amountType) {
+      bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE date BETWEEN ? AND ?', [startDate, endDate]);
+    } else {
+      bookingMap =
+          await db.rawQuery('SELECT * FROM $bookingDbName WHERE date BETWEEN ? AND ? AND amountType = ?', [startDate, endDate, amountType.name]);
+    }
+    List<Booking> bookingList = bookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType']),
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
     return bookingList;
   }
 

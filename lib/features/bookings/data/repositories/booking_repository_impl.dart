@@ -4,6 +4,7 @@ import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
+import 'package:moneybook/features/bookings/domain/value_objects/amount_type.dart';
 import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
 import '../datasources/booking_local_data_source.dart';
@@ -162,6 +163,15 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<Either<Failure, List<Booking>>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber) async {
     try {
       return Right(await bookingLocalDataSource.loadPastMonthlyCategorieBookings(categorie, date, monthNumber));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Booking>>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType) async {
+    try {
+      return Right(await bookingLocalDataSource.loadMonthlyAmountTypeBookings(selectedDate, amountType));
     } on ServerException {
       return Left(ServerFailure());
     }

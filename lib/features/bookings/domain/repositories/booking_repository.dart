@@ -3,6 +3,8 @@ import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
+import '../value_objects/amount_type.dart';
+
 abstract class BookingRepository {
   Future<Either<Failure, void>> create(Booking booking);
   Future<Either<Failure, void>> update(Booking booking);
@@ -11,6 +13,7 @@ abstract class BookingRepository {
   Future<Either<Failure, void>> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from);
   Future<Either<Failure, Booking>> load(int id);
   Future<Either<Failure, List<Booking>>> loadSortedMonthly(DateTime selectedDate);
+  Future<Either<Failure, List<Booking>>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType);
   Future<Either<Failure, List<Booking>>> loadCategorieBookings(String categorie);
   Future<Either<Failure, List<Booking>>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber);
   Future<Either<Failure, List<Booking>>> loadNewBookings();

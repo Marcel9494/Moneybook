@@ -18,6 +18,7 @@ import '../../domain/usecases/delete_all_bookings_in_serie.dart';
 import '../../domain/usecases/delete_only_future_bookings_in_serie.dart';
 import '../../domain/usecases/get_new_serie_id.dart';
 import '../../domain/usecases/load_categorie_bookings.dart';
+import '../../domain/usecases/load_monthly_amount_type_bookings.dart';
 import '../../domain/usecases/load_new_bookings.dart';
 import '../../domain/usecases/load_past_categorie_bookings.dart';
 import '../../domain/usecases/load_serie_bookings.dart';
@@ -27,6 +28,7 @@ import '../../domain/usecases/update_all_bookings_in_serie.dart';
 import '../../domain/usecases/update_all_bookings_with_account.dart';
 import '../../domain/usecases/update_all_bookings_with_categorie.dart';
 import '../../domain/usecases/update_only_future_bookings_in_serie.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 
 part 'booking_event.dart';
@@ -49,6 +51,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final DeleteAllBookingsInSerie deleteAllSerieBookingsUseCase;
   final DeleteOnlyFutureBookingsInSerie deleteOnlyFutureSerieBookingsUseCase;
   final LoadSortedMonthly loadSortedMonthlyUseCase;
+  final LoadMonthlyAmountTypeBookings loadAmountTypeMonthlyUseCase;
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
   final LoadPastCategorieBookings loadPastMonthlyCategorieBookingsUseCase;
   final LoadNewBookings loadNewBookingsUseCase;
@@ -67,6 +70,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     this.deleteAllSerieBookingsUseCase,
     this.deleteOnlyFutureSerieBookingsUseCase,
     this.loadSortedMonthlyUseCase,
+    this.loadAmountTypeMonthlyUseCase,
     this.loadCategorieBookingsUseCase,
     this.loadPastMonthlyCategorieBookingsUseCase,
     this.loadSerieBookingsUseCase,
@@ -256,6 +260,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         });
       } else if (event is LoadSortedMonthlyBookings) {
         final loadBookingEither = await loadSortedMonthlyUseCase.bookingRepository.loadSortedMonthly(event.selectedDate);
+        loadBookingEither.fold((failure) {
+          emit(const Error(message: LOAD_BOOKINGS_FAILURE));
+        }, (bookings) {
+          emit(Loaded(bookings: bookings));
+        });
+      } else if (event is LoadAmountTypeMonthlyBookings) {
+        final loadBookingEither =
+            await loadAmountTypeMonthlyUseCase.bookingRepository.loadMonthlyAmountTypeBookings(event.selectedDate, event.amountType);
         loadBookingEither.fold((failure) {
           emit(const Error(message: LOAD_BOOKINGS_FAILURE));
         }, (bookings) {

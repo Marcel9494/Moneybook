@@ -10,7 +10,6 @@ import '../../../domain/entities/categorie_stats.dart';
 class CategoriePieChart extends StatefulWidget {
   final List<CategorieStats> categorieStats;
   final BookingType bookingType;
-  final Function(Set<AmountType>) onAmountTypeChanged;
   final Map<AmountType, double> amountTypes;
   final AmountType amountType;
 
@@ -18,7 +17,6 @@ class CategoriePieChart extends StatefulWidget {
     super.key,
     required this.categorieStats,
     required this.bookingType,
-    required this.onAmountTypeChanged,
     required this.amountTypes,
     required this.amountType,
   });
