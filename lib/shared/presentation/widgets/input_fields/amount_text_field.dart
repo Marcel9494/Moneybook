@@ -23,7 +23,7 @@ class AmountTextField extends StatelessWidget {
     this.amountType = '',
     this.hintText = 'Betrag...',
     this.showMinus = false,
-    this.bookingType = BookingType.expense,
+    this.bookingType = BookingType.none,
   });
 
   static void _emptyFunction(AmountType amountType) {}
@@ -103,7 +103,7 @@ class AmountTextField extends StatelessWidget {
         hintText: hintText,
         counterText: '',
         prefixIcon: const Icon(Icons.money_rounded),
-        suffixIcon: bookingType.name != BookingType.transfer.name
+        suffixIcon: bookingType.name != BookingType.transfer.name && bookingType != BookingType.none
             ? Column(
                 children: [
                   IconButton(

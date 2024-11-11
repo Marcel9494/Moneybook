@@ -23,6 +23,15 @@ final class Loaded extends BookingState {
   List<Object> get props => [bookings];
 }
 
+final class AmountTypeBookingsLoaded extends BookingState {
+  List<Booking> bookings;
+
+  AmountTypeBookingsLoaded({required this.bookings});
+
+  @override
+  List<Object> get props => [bookings];
+}
+
 final class CategorieBookingsLoaded extends BookingState {
   List<Booking> bookings;
 

@@ -29,7 +29,13 @@ class _StatisticPageState extends State<StatisticPage> {
   AmountType _selectedAmountType = AmountType.overallExpense;
   Map<AmountType, double> _amountTypes = {};
 
-  void _loadCategorieBookings(BuildContext context) {
+  void _loadMonthlyBookings(BuildContext context) {
+    BlocProvider.of<BookingBloc>(context).add(
+      LoadSortedMonthlyBookings(widget.selectedDate),
+    );
+  }
+
+  void _loadAmountTypeBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
       LoadAmountTypeMonthlyBookings(widget.selectedDate, _selectedAmountType),
     );
@@ -103,7 +109,8 @@ class _StatisticPageState extends State<StatisticPage> {
 
   @override
   Widget build(BuildContext context) {
-    _loadCategorieBookings(context);
+    _loadMonthlyBookings(context);
+    //_loadAmountTypeBookings(context);
     return BlocBuilder<BookingBloc, BookingState>(
       builder: (context, bookingState) {
         if (bookingState is Loaded) {
@@ -142,6 +149,12 @@ class _StatisticPageState extends State<StatisticPage> {
                                           onTap: () {
                                             setState(() {
                                               _selectedAmountType = amountType.key;
+                                              /*for (int i = 0; i < bookingState.bookings.length; i++) {
+                                                if (bookingState.bookings[i].amountType == _selectedAmountType) {
+                                                  _filteredBookings.add(bookingState.bookings[i]);
+                                                }
+                                              }*/
+                                              //_calculateCategoryStats(_filteredBookings);
                                             });
                                           },
                                           child: Indicator(
@@ -211,7 +224,13 @@ class _StatisticPageState extends State<StatisticPage> {
                                           onTap: () {
                                             setState(() {
                                               _selectedAmountType = amountType.key;
+                                              /*for (int i = 0; i < bookingState.bookings.length; i++) {
+                                                if (bookingState.bookings[i].amountType == _selectedAmountType) {
+                                                  _filteredBookings.add(bookingState.bookings[i]);
+                                                }
+                                              }*/
                                             });
+                                            //_calculateCategoryStats(_filteredBookings);
                                           },
                                           child: Indicator(
                                             color: Colors.white,
