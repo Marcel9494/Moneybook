@@ -7,6 +7,7 @@ import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart';
+import '../../domain/entities/categorie_stats.dart';
 import '../bloc/categorie_stats_bloc.dart';
 import '../widgets/cards/categorie_percentage_card.dart';
 import '../widgets/charts/categorie_pie_chart.dart';
@@ -28,6 +29,7 @@ class _StatisticPageState extends State<StatisticPage> {
   BookingType _selectedBookingType = BookingType.expense;
   AmountType _selectedAmountType = AmountType.overallExpense;
   Map<AmountType, double> _amountTypes = {};
+  List<CategorieStats> _categorieStats = [];
 
   void _loadMonthlyBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -42,9 +44,121 @@ class _StatisticPageState extends State<StatisticPage> {
   }
 
   void _calculateCategoryStats(List<Booking> bookings) {
-    BlocProvider.of<CategorieStatsBloc>(context).add(
-      CalculateCategorieStats(bookings, _selectedBookingType, _selectedAmountType),
-    );
+    print(_selectedAmountType.name);
+    bool categorieFound = false;
+    double overallAmount = 0.0;
+    _categorieStats = [];
+    for (int i = 0; i < bookings.length; i++) {
+      if (bookings[i].type == BookingType.investment && bookings[i].amountType.name == _selectedAmountType.name) {
+        categorieFound = false;
+        overallAmount += bookings[i].amount;
+        for (int j = 0; j < _categorieStats.length; j++) {
+          if (_categorieStats[j].categorie.contains(bookings[i].categorie)) {
+            _categorieStats[j].amount += bookings[i].amount;
+            categorieFound = true;
+            break;
+          }
+        }
+        if (categorieFound == false) {
+          CategorieStats newCategorieStat = CategorieStats(
+            categorie: bookings[i].categorie,
+            bookingType: bookings[i].type,
+            amount: bookings[i].amount,
+            percentage: 0.0,
+          );
+          _categorieStats.add(newCategorieStat);
+        }
+      } else if (_selectedBookingType == BookingType.expense && _selectedAmountType.name == AmountType.overallExpense.name) {
+        if (bookings[i].type == _selectedBookingType) {
+          categorieFound = false;
+          overallAmount += bookings[i].amount;
+          for (int j = 0; j < _categorieStats.length; j++) {
+            if (_categorieStats[j].categorie.contains(bookings[i].categorie)) {
+              _categorieStats[j].amount += bookings[i].amount;
+              categorieFound = true;
+              break;
+            }
+          }
+          if (categorieFound == false) {
+            CategorieStats newCategorieStat = CategorieStats(
+              categorie: bookings[i].categorie,
+              bookingType: bookings[i].type,
+              amount: bookings[i].amount,
+              percentage: 0.0,
+            );
+            _categorieStats.add(newCategorieStat);
+          }
+        }
+      } else if (_selectedBookingType == BookingType.expense && bookings[i].amountType.name == _selectedAmountType.name) {
+        if (bookings[i].type == _selectedBookingType) {
+          categorieFound = false;
+          overallAmount += bookings[i].amount;
+          for (int j = 0; j < _categorieStats.length; j++) {
+            if (_categorieStats[j].categorie.contains(bookings[i].categorie)) {
+              _categorieStats[j].amount += bookings[i].amount;
+              categorieFound = true;
+              break;
+            }
+          }
+          if (categorieFound == false) {
+            CategorieStats newCategorieStat = CategorieStats(
+              categorie: bookings[i].categorie,
+              bookingType: bookings[i].type,
+              amount: bookings[i].amount,
+              percentage: 0.0,
+            );
+            _categorieStats.add(newCategorieStat);
+          }
+        }
+      } else if (_selectedBookingType == BookingType.income && bookings[i].amountType.name == _selectedAmountType.name) {
+        if (bookings[i].type == _selectedBookingType) {
+          categorieFound = false;
+          overallAmount += bookings[i].amount;
+          for (int j = 0; j < _categorieStats.length; j++) {
+            if (_categorieStats[j].categorie.contains(bookings[i].categorie)) {
+              _categorieStats[j].amount += bookings[i].amount;
+              categorieFound = true;
+              break;
+            }
+          }
+          if (categorieFound == false) {
+            CategorieStats newCategorieStat = CategorieStats(
+              categorie: bookings[i].categorie,
+              bookingType: bookings[i].type,
+              amount: bookings[i].amount,
+              percentage: 0.0,
+            );
+            _categorieStats.add(newCategorieStat);
+          }
+        }
+      } else if (_selectedBookingType == BookingType.income && _selectedAmountType.name == AmountType.overallIncome.name) {
+        if (bookings[i].type == _selectedBookingType) {
+          categorieFound = false;
+          overallAmount += bookings[i].amount;
+          for (int j = 0; j < _categorieStats.length; j++) {
+            if (_categorieStats[j].categorie.contains(bookings[i].categorie)) {
+              _categorieStats[j].amount += bookings[i].amount;
+              categorieFound = true;
+              break;
+            }
+          }
+          if (categorieFound == false) {
+            CategorieStats newCategorieStat = CategorieStats(
+              categorie: bookings[i].categorie,
+              bookingType: bookings[i].type,
+              amount: bookings[i].amount,
+              percentage: 0.0,
+            );
+            _categorieStats.add(newCategorieStat);
+          }
+        }
+      }
+      // Für jede Kategorie Prozentwert berechnen
+      for (int i = 0; i < _categorieStats.length; i++) {
+        _categorieStats[i].percentage = (_categorieStats[i].amount / overallAmount) * 100;
+      }
+    }
+    _categorieStats.sort((first, second) => second.percentage.compareTo(first.percentage));
   }
 
   void _calculateAmountTypeStats(List<Booking> bookings, BookingType bookingType) {
@@ -114,170 +228,159 @@ class _StatisticPageState extends State<StatisticPage> {
     return BlocBuilder<BookingBloc, BookingState>(
       builder: (context, bookingState) {
         if (bookingState is Loaded) {
+          // TODO filter bookingList Funktion implementieren und dann Funktionen zum richtigen Zeitpunkt aufrufen
           _calculateCategoryStats(bookingState.bookings);
           _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
           return BlocBuilder<CategorieStatsBloc, CategorieStatsState>(
             builder: (context, state) {
-              if (state is CalculatedCategorieStats) {
-                if (state.categorieStats.isEmpty) {
-                  return Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: CategoriePieChart(
-                              categorieStats: state.categorieStats,
-                              bookingType: _selectedBookingType,
-                              amountTypes: _amountTypes,
-                              amountType: _selectedAmountType,
-                            ),
+              // TODO kann das if entfernt werden?
+              if (_categorieStats.isEmpty) {
+                return Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: CategoriePieChart(
+                            categorieStats: _categorieStats,
+                            bookingType: _selectedBookingType,
+                            amountTypes: _amountTypes,
+                            amountType: _selectedAmountType,
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 14.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  ..._amountTypes.entries.map((amountType) {
-                                    return Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _selectedAmountType = amountType.key;
-                                              /*for (int i = 0; i < bookingState.bookings.length; i++) {
-                                                if (bookingState.bookings[i].amountType == _selectedAmountType) {
-                                                  _filteredBookings.add(bookingState.bookings[i]);
-                                                }
-                                              }*/
-                                              //_calculateCategoryStats(_filteredBookings);
-                                            });
-                                          },
-                                          child: Indicator(
-                                            color: Colors.white,
-                                            text: amountType.key.name,
-                                            isSquare: false,
-                                            amountType: _selectedAmountType,
-                                            amount: amountType.value,
-                                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 14.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                ..._amountTypes.entries.map((amountType) {
+                                  return Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedAmountType = amountType.key;
+                                            _calculateCategoryStats(bookingState.bookings);
+                                          });
+                                        },
+                                        child: Indicator(
+                                          color: Colors.white,
+                                          text: amountType.key.name,
+                                          isSquare: false,
+                                          amountType: _selectedAmountType,
+                                          amount: amountType.value,
                                         ),
-                                        const SizedBox(height: 4.0),
-                                      ],
-                                    );
-                                  }).toList(),
-                                  const SizedBox(height: 14.0),
-                                ],
-                              ),
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                    ],
+                                  );
+                                }).toList(),
+                                const SizedBox(height: 14.0),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    BookingTypeSegmentedButton(
+                      selectedBookingType: _selectedBookingType,
+                      onBookingTypeChanged: (Set<BookingType> newBookingType) {
+                        setState(() {
+                          _selectedBookingType = newBookingType.first;
+                          _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
+                          _onBookingTypeChanged(_selectedBookingType);
+                        });
+                      },
+                    ),
+                    const Expanded(
+                      child: EmptyList(
+                        text: 'Noch keine Buchungen vorhanden',
+                        icon: Icons.donut_small,
                       ),
-                      BookingTypeSegmentedButton(
-                        selectedBookingType: _selectedBookingType,
-                        onBookingTypeChanged: (Set<BookingType> newBookingType) {
-                          setState(() {
-                            _selectedBookingType = newBookingType.first;
-                            _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
-                            _onBookingTypeChanged(_selectedBookingType);
-                          });
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: CategoriePieChart(
+                            categorieStats: _categorieStats,
+                            bookingType: _selectedBookingType,
+                            amountTypes: _amountTypes,
+                            amountType: _selectedAmountType,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 14.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                ..._amountTypes.entries.map((amountType) {
+                                  return Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedAmountType = amountType.key;
+                                            _calculateCategoryStats(bookingState.bookings);
+                                          });
+                                        },
+                                        child: Indicator(
+                                          color: Colors.white,
+                                          text: amountType.key.name,
+                                          isSquare: false,
+                                          amountType: _selectedAmountType,
+                                          amount: amountType.value,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                    ],
+                                  );
+                                }).toList(),
+                                const SizedBox(height: 14.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    BookingTypeSegmentedButton(
+                      selectedBookingType: _selectedBookingType,
+                      onBookingTypeChanged: (Set<BookingType> newBookingType) {
+                        setState(() {
+                          _selectedBookingType = newBookingType.first;
+                          _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
+                          _onBookingTypeChanged(_selectedBookingType);
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: _categorieStats.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CategoriePercentageCard(
+                            categorieStats: _categorieStats[index],
+                            index: index,
+                            selectedDate: widget.selectedDate,
+                          );
                         },
                       ),
-                      const Expanded(
-                        child: EmptyList(
-                          text: 'Noch keine Buchungen vorhanden',
-                          icon: Icons.donut_small,
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: CategoriePieChart(
-                              categorieStats: state.categorieStats,
-                              bookingType: _selectedBookingType,
-                              amountTypes: _amountTypes,
-                              amountType: _selectedAmountType,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 14.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  ..._amountTypes.entries.map((amountType) {
-                                    return Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _selectedAmountType = amountType.key;
-                                              /*for (int i = 0; i < bookingState.bookings.length; i++) {
-                                                if (bookingState.bookings[i].amountType == _selectedAmountType) {
-                                                  _filteredBookings.add(bookingState.bookings[i]);
-                                                }
-                                              }*/
-                                            });
-                                            //_calculateCategoryStats(_filteredBookings);
-                                          },
-                                          child: Indicator(
-                                            color: Colors.white,
-                                            text: amountType.key.name,
-                                            isSquare: false,
-                                            amountType: _selectedAmountType,
-                                            amount: amountType.value,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4.0),
-                                      ],
-                                    );
-                                  }).toList(),
-                                  const SizedBox(height: 14.0),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      BookingTypeSegmentedButton(
-                        selectedBookingType: _selectedBookingType,
-                        onBookingTypeChanged: (Set<BookingType> newBookingType) {
-                          setState(() {
-                            _selectedBookingType = newBookingType.first;
-                            _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
-                            _onBookingTypeChanged(_selectedBookingType);
-                          });
-                        },
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: state.categorieStats.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return CategoriePercentageCard(
-                              categorieStats: state.categorieStats[index],
-                              index: index,
-                              selectedDate: widget.selectedDate,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }
+                    ),
+                  ],
+                );
               }
-              return const SizedBox();
             },
           );
         }
