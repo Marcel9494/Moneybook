@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:moneybook/core/utils/number_formatter.dart';
 
 import '../../../../bookings/domain/entities/booking.dart';
 import '../../../../bookings/domain/value_objects/amount_type.dart';
@@ -30,6 +31,9 @@ class CategorieBarChart extends StatefulWidget {
 class CategorieBarChartState extends State<CategorieBarChart> {
   final double width = 7.0;
 
+  final Map<String, double> _monthlyAmountSums = {};
+  MapEntry<String, double> _maxAmountEntry = MapEntry("", 0.0);
+
   List<BarChartGroupData> items = [];
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
@@ -41,9 +45,31 @@ class CategorieBarChartState extends State<CategorieBarChart> {
   @override
   void initState() {
     super.initState();
-    items = _calculateDiagramValues();
+    items = _calculateMonthlyAmounts(widget.bookings);
+    _maxAmountEntry = _monthlyAmountSums.entries.reduce((a, b) => a.value > b.value ? a : b);
     rawBarGroups = items;
     showingBarGroups = rawBarGroups;
+  }
+
+  List<BarChartGroupData> _calculateMonthlyAmounts(List<Booking> bookings) {
+    for (int i = 0; i < 7; i++) {
+      DateTime currentMonth = DateTime(widget.selectedDate.year, widget.selectedDate.month - i, 1);
+      String monthKey = "${currentMonth.year}-${currentMonth.month.toString().padLeft(2, '0')}";
+      _monthlyAmountSums[monthKey] = 0.0;
+    }
+    for (Booking booking in bookings) {
+      String monthKey = "${booking.date.year}-${booking.date.month.toString().padLeft(2, '0')}";
+      _monthlyAmountSums.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+    }
+    items = [];
+    List<double> monthlyAmounts = _monthlyAmountSums.values.toList();
+    for (int i = monthlyAmounts.length - 1; i >= 0; i--) {
+      items.add(makeGroupData(i, monthlyAmounts[i], 0));
+    }
+    _monthlyAmountSums.forEach((month, totalAmount) {
+      print("Monat: $month, Gesamtsumme: $totalAmount €");
+    });
+    return items;
   }
 
   // TODO hier weitermachen und bei jedem Datumswechsel neu aufrufen
@@ -117,7 +143,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
             Expanded(
               child: BarChart(
                 BarChartData(
-                  maxY: 20.0,
+                  maxY: _maxAmountEntry.value,
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: ((group) {
@@ -171,61 +197,61 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                       sideTitles: SideTitles(
                         showTitles: true,
                         getTitlesWidget: bottomTitles,
-                        reservedSize: 42,
+                        reservedSize: 36.0,
                       ),
                     ),
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 28,
-                        interval: 1,
+                        reservedSize: 60.0,
+                        interval: 1.0,
                         getTitlesWidget: leftTitles,
                       ),
                     ),
                   ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
+                  borderData: FlBorderData(show: false),
                   barGroups: showingBarGroups,
-                  gridData: const FlGridData(show: false),
+                  gridData: const FlGridData(show: true),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 12.0),
           ],
         ),
       ),
     );
   }
 
+  // TODO hier weitermachen aktuellen Monat farblich (cyanAccent) hervorheben im bottomTitle
+  // TODO Variabel Fix mit Gesamt erweitern + andere Optionen
+  // TODO Angezeigte Werte aufrunden und Anzeige perfektionieren
+  // TODO Chart aktualisieren, wenn Monat gewechselt wird
   Widget leftTitles(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Color(0xff7589a2),
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 14.0,
     );
-    String text;
+    String amountText = '';
     if (value == 0) {
-      text = '1K';
-    } else if (value == 10) {
-      text = '5K';
-    } else if (value == 19) {
-      text = '10K';
+      amountText = '0,00 €';
+    } else if (value == (_maxAmountEntry.value / 2).round()) {
+      amountText = formatToMoneyAmount((_maxAmountEntry.value / 2).toString());
+    } else if (value == (_maxAmountEntry.value).floor()) {
+      amountText = formatToMoneyAmount(_maxAmountEntry.value.toString());
     } else {
       return Container();
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 0,
-      child: Text(text, style: style),
+      child: Text(amountText, style: style),
     );
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
     List<String> months = [];
-    for (int i = 6; i >= 0; i--) {
+    for (int i = 0; i < 7; i++) {
       DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - i);
       String monthName = DateFormat('MMM', 'de-DE').format(monthDate);
       months.add(monthName);

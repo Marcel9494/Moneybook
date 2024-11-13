@@ -227,7 +227,6 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
           ),
         )
         .toList();
-
     return categorieBookingList;
   }
 

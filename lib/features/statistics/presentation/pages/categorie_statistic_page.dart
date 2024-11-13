@@ -126,7 +126,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                         DateTime startDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, 1);
                         DateTime endDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, lastday + 1);
                         DateTime bookingDate = state.bookings[index].date;
-                        if (bookingDate.isAfter(startDate) && bookingDate.isBefore(endDate)) {
+                        if (bookingDate.isAfter(startDate) && bookingDate.isBefore(endDate) || bookingDate.isAtSameMomentAs(startDate)) {
                           _numberOfBookedBookings++;
                           if (index > 0) {
                             _previousBookingDate = state.bookings[index - 1].date;
@@ -148,12 +148,14 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                           }
                         }
                         if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
-                          return SizedBox(
-                            height: MediaQuery.sizeOf(context).height / 1.5,
-                            child: const EmptyList(
-                              text: 'Noch keine Buchungen vorhanden',
-                              icon: Icons.receipt_long_rounded,
-                            ),
+                          return Column(
+                            children: [
+                              const SizedBox(height: 100.0),
+                              const EmptyList(
+                                text: 'Noch keine Buchungen vorhanden',
+                                icon: Icons.receipt_long_rounded,
+                              ),
+                            ],
                           );
                         }
                         return const SizedBox();
