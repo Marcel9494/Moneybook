@@ -144,54 +144,59 @@ class _StatisticPageState extends State<StatisticPage> {
             builder: (context, state) {
               return Column(
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: CategoriePieChart(
-                          categorieStats: _categorieStats,
-                          bookingType: _selectedBookingType,
-                          amountTypes: _amountTypes,
-                          amountType: _selectedAmountType,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 14.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              ..._amountTypes.entries.map((amountType) {
-                                return Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedAmountType = amountType.key;
-                                          _calculateCategoryStats(bookingState.bookings);
-                                        });
-                                      },
-                                      child: Indicator(
-                                        color: Colors.white,
-                                        text: amountType.key.name,
-                                        isSquare: false,
-                                        amountType: _selectedAmountType,
-                                        amount: amountType.value,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4.0),
-                                  ],
-                                );
-                              }).toList(),
-                              const SizedBox(height: 14.0),
-                            ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6.0),
+                    child: Card(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: CategoriePieChart(
+                              categorieStats: _categorieStats,
+                              bookingType: _selectedBookingType,
+                              amountTypes: _amountTypes,
+                              amountType: _selectedAmountType,
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 14.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  ..._amountTypes.entries.map((amountType) {
+                                    return Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _selectedAmountType = amountType.key;
+                                              _calculateCategoryStats(bookingState.bookings);
+                                            });
+                                          },
+                                          child: Indicator(
+                                            color: Colors.white,
+                                            text: amountType.key.name,
+                                            isSquare: false,
+                                            amountType: _selectedAmountType,
+                                            amount: amountType.value,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4.0),
+                                      ],
+                                    );
+                                  }).toList(),
+                                  const SizedBox(height: 14.0),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                   BookingTypeSegmentedButton(
                     selectedBookingType: _selectedBookingType,
@@ -212,6 +217,7 @@ class _StatisticPageState extends State<StatisticPage> {
                                 categorieStats: _categorieStats[index],
                                 index: index,
                                 selectedDate: widget.selectedDate,
+                                amountType: _selectedAmountType,
                               );
                             },
                           ),

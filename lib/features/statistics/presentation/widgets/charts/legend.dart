@@ -36,24 +36,30 @@ class LegendWidget extends StatelessWidget {
 }
 
 class LegendsListWidget extends StatelessWidget {
-  const LegendsListWidget({
+  double leftPadding;
+
+  LegendsListWidget({
     super.key,
     required this.legends,
+    this.leftPadding = 56.0,
   });
   final List<Legend> legends;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 16,
-      children: legends
-          .map(
-            (e) => LegendWidget(
-              name: e.name,
-              color: e.color,
-            ),
-          )
-          .toList(),
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding),
+      child: Wrap(
+        spacing: 16,
+        children: legends
+            .map(
+              (e) => LegendWidget(
+                name: e.name,
+                color: e.color,
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }

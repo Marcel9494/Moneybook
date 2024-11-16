@@ -149,6 +149,7 @@ class MyApp extends StatelessWidget {
                 categorie: args.categorie,
                 bookingType: args.bookingType,
                 selectedDate: args.selectedDate,
+                amountType: args.amountType,
               ),
               settings: settings,
             );

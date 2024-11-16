@@ -4,18 +4,21 @@ import 'package:moneybook/features/statistics/presentation/widgets/page_argument
 
 import '../../../../../core/consts/route_consts.dart';
 import '../../../../../core/theme/colors.dart';
+import '../../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../domain/entities/categorie_stats.dart';
 
 class CategoriePercentageCard extends StatefulWidget {
   final CategorieStats categorieStats;
   final int index;
   final DateTime selectedDate;
+  final AmountType amountType;
 
   const CategoriePercentageCard({
     super.key,
     required this.categorieStats,
     required this.index,
     required this.selectedDate,
+    required this.amountType,
   });
 
   @override
@@ -33,6 +36,7 @@ class _CategoriePercentageCardState extends State<CategoriePercentageCard> {
           widget.categorieStats.categorie,
           widget.categorieStats.bookingType,
           widget.selectedDate,
+          widget.amountType,
         ),
       ),
       child: Card(

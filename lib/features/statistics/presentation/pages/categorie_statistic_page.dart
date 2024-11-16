@@ -15,12 +15,14 @@ class CategorieStatisticPage extends StatefulWidget {
   final String categorie;
   final BookingType bookingType;
   DateTime selectedDate;
+  final AmountType amountType;
 
   CategorieStatisticPage({
     super.key,
     required this.categorie,
     required this.bookingType,
     required this.selectedDate,
+    required this.amountType,
   });
 
   @override
@@ -33,12 +35,6 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
   final Map<DateTime, double> _dailyLeftValuesMap = {};
   final Map<DateTime, double> _dailyRightValuesMap = {};
   int _numberOfBookedBookings = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCategorieBookings(context);
-  }
 
   void _loadCategorieBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(
@@ -82,33 +78,36 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadCategorieBookings(context);
     return PopScope(
       onPopInvoked: (_) => _onBackButtonPressed(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('${widget.categorie}'),
-          actions: [
-            MonthPickerButtons(
-              selectedDate: widget.selectedDate,
-              selectedDateCallback: (DateTime newDate) {
-                setState(() {
-                  widget.selectedDate = newDate;
-                });
-              },
-            )
-          ],
-        ),
-        body: BlocBuilder<BookingBloc, BookingState>(
-          builder: (context, state) {
-            if (state is CategorieBookingsLoaded) {
-              _calculateDailyValues(state.bookings);
-              return Column(
+      child: BlocBuilder<BookingBloc, BookingState>(
+        builder: (context, state) {
+          if (state is CategorieBookingsLoaded) {
+            _calculateDailyValues(state.bookings);
+            //_calculateMonthlyAmounts(state.bookings);
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(widget.categorie),
+                actions: [
+                  MonthPickerButtons(
+                    selectedDate: widget.selectedDate,
+                    selectedDateCallback: (DateTime newDate) {
+                      setState(() {
+                        widget.selectedDate = newDate;
+                      });
+                    },
+                  )
+                ],
+              ),
+              body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CategorieBarChart(
                     bookings: state.bookings,
                     bookingType: widget.bookingType,
                     selectedDate: widget.selectedDate,
+                    amountType: widget.amountType,
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(18.0, 0.0, 12.0, 4.0),
@@ -163,11 +162,14 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                     ),
                   ),
                 ],
-              );
-            }
-            return const SizedBox();
-          },
-        ),
+              ),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }
