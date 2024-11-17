@@ -69,10 +69,9 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     return '';
   }
 
-  // TODO hier weitermachen und bei Datumswechsel Statistik besser aktualisieren
   List<BarChartGroupData> _calculateMonthlyAmounts(List<Booking> bookings) {
     _monthlyAmountSums.clear();
-    for (int i = 0; i < 7; i++) {
+    for (int i = 6; i >= 0; i--) {
       DateTime currentMonth = DateTime(widget.selectedDate.year, widget.selectedDate.month - i, 1);
       String monthKey = "${currentMonth.year}-${currentMonth.month.toString().padLeft(2, '0')}";
       _monthlyAmountSums[monthKey] = 0.0;
@@ -81,12 +80,10 @@ class CategorieBarChartState extends State<CategorieBarChart> {
       String monthKey = "${booking.date.year}-${booking.date.month.toString().padLeft(2, '0')}";
       _monthlyAmountSums.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
     }
+
     _items.clear();
     List<double> monthlyAmounts = _monthlyAmountSums.values.toList();
-    /*for (int i = 0; i < monthlyAmounts.length - 1; i++) {
-      _items.add(makeGroupData(i, monthlyAmounts[i], 0));
-    }*/
-    for (int i = monthlyAmounts.length - 1; i >= 0; i--) {
+    for (int i = 0; i < monthlyAmounts.length; i++) {
       _items.add(makeGroupData(i, monthlyAmounts[i], 0));
     }
     return _items;
@@ -225,23 +222,25 @@ class CategorieBarChartState extends State<CategorieBarChart> {
 
   Widget bottomTitles(double value, TitleMeta meta) {
     List<String> months = [];
-    for (int i = 0; i < 7; i++) {
+    for (int i = 6; i >= 0; i--) {
       DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - i);
       String monthName = DateFormat('MMM', 'de-DE').format(monthDate);
       months.add(monthName);
     }
 
-    if (value.toInt() > 6) {
-      value = 6;
+    if (value.toInt() >= months.length) {
+      return Container(); // Avoid out-of-bound errors
     }
+
     final Widget monthText = Text(
       months[value.toInt()],
       style: TextStyle(
-        color: value.toInt() != 0 ? Color(0xff7589a2) : Colors.cyanAccent,
+        color: value.toInt() != 6 ? Color(0xff7589a2) : Colors.cyanAccent, // Highlight current month
         fontWeight: FontWeight.bold,
         fontSize: 14.0,
       ),
     );
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 16.0,

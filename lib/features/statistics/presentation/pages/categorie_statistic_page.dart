@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
@@ -37,6 +38,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
   int _numberOfBookedBookings = 0;
 
   void _loadCategorieBookings(BuildContext context) {
+    _numberOfBookedBookings = 0;
     BlocProvider.of<BookingBloc>(context).add(
       LoadPastMonthlyCategorieBookings(widget.categorie, widget.selectedDate, 7),
     );
@@ -85,7 +87,6 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
         builder: (context, state) {
           if (state is CategorieBookingsLoaded) {
             _calculateDailyValues(state.bookings);
-            //_calculateMonthlyAmounts(state.bookings);
             return Scaffold(
               appBar: AppBar(
                 title: Text(widget.categorie),
@@ -112,7 +113,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(18.0, 0.0, 12.0, 4.0),
                     child: Text(
-                      'Buchungen',
+                      '${DateFormat('MMMM', 'de-DE').format(DateTime(widget.selectedDate.year, widget.selectedDate.month))} Buchungen',
                       style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
                     ),
                   ),
