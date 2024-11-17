@@ -18,7 +18,9 @@ abstract class BookingLocalDataSource {
   Future<void> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from);
   Future<BookingModel> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
+  Future<List<Booking>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType);
   Future<List<Booking>> loadCategorieBookings(String categorie);
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber);
   Future<List<Booking>> loadNewBookings();
   Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
@@ -138,6 +140,41 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
+  Future<List<Booking>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType) async {
+    db = await openDatabase(localDbName);
+    List<Map> bookingMap;
+    int lastday = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
+    String startDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, 1));
+    String endDate = dateFormatterYYYYMMDD.format(DateTime(selectedDate.year, selectedDate.month, lastday));
+    if (AmountType.overallExpense == amountType || AmountType.overallIncome == amountType) {
+      bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE date BETWEEN ? AND ?', [startDate, endDate]);
+    } else {
+      bookingMap =
+          await db.rawQuery('SELECT * FROM $bookingDbName WHERE date BETWEEN ? AND ? AND amountType = ?', [startDate, endDate, amountType.name]);
+    }
+    List<Booking> bookingList = bookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType']),
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+    return bookingList;
+  }
+
+  @override
   Future<List<Booking>> loadCategorieBookings(String categorie) async {
     db = await openDatabase(localDbName);
     List<Map> categorieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE categorie = ?', [categorie]);
@@ -151,7 +188,37 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             date: DateTime.parse(booking['date']),
             repetition: RepetitionType.fromString(booking['repetition']),
             amount: booking['amount'],
-            amountType: booking['amountType'],
+            amountType: AmountType.fromString(booking['amountType']),
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+    return categorieBookingList;
+  }
+
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber) async {
+    db = await openDatabase(localDbName);
+    int lastday = DateTime(date.year, date.month + 1, 0).day;
+    String startDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month - (monthNumber - 1), 1));
+    String endDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month, lastday));
+    List<Map> categorieBookingMap =
+        await db.rawQuery('SELECT * FROM $bookingDbName WHERE categorie = ? AND date BETWEEN ? AND ?', [categorie, startDate, endDate]);
+
+    List<Booking> categorieBookingList = categorieBookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType']),
             currency: booking['currency'],
             fromAccount: booking['fromAccount'],
             toAccount: booking['toAccount'],

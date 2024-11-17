@@ -115,7 +115,7 @@ class _AccountListPageState extends State<AccountListPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(state.accounts[index].type.name, style: const TextStyle(fontSize: 16.0)),
+                                    Text(state.accounts[index].type.pluralName, style: const TextStyle(fontSize: 16.0)),
                                     Text(formatToMoneyAmount(_accountTypeAmounts[state.accounts[index].type].toString()),
                                         style: const TextStyle(fontWeight: FontWeight.bold)),
                                   ],

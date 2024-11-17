@@ -30,6 +30,7 @@ class CategorieStatsBloc extends Bloc<CategorieStatsEvent, CategorieStatsState> 
             if (categorieFound == false) {
               CategorieStats newCategorieStat = CategorieStats(
                 categorie: event.bookings[i].categorie,
+                bookingType: event.bookings[i].type,
                 amount: event.bookings[i].amount,
                 percentage: 0.0,
               );
@@ -49,6 +50,7 @@ class CategorieStatsBloc extends Bloc<CategorieStatsEvent, CategorieStatsState> 
               if (categorieFound == false) {
                 CategorieStats newCategorieStat = CategorieStats(
                   categorie: event.bookings[i].categorie,
+                  bookingType: event.bookings[i].type,
                   amount: event.bookings[i].amount,
                   percentage: 0.0,
                 );

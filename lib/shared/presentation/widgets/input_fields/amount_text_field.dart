@@ -14,15 +14,16 @@ class AmountTextField extends StatelessWidget {
   final Function onAmountTypeChanged;
   final String amountType;
   final BookingType bookingType;
+  List<AmountType> _amountTypes = [];
 
-  const AmountTextField({
+  AmountTextField({
     super.key,
     required this.amountController,
     this.onAmountTypeChanged = _emptyFunction,
     this.amountType = '',
     this.hintText = 'Betrag...',
     this.showMinus = false,
-    this.bookingType = BookingType.expense,
+    this.bookingType = BookingType.none,
   });
 
   static void _emptyFunction(AmountType amountType) {}
@@ -32,6 +33,21 @@ class AmountTextField extends StatelessWidget {
       return 'Bitte geben Sie einen Betrag ein.';
     }
     return null;
+  }
+
+  List<AmountType> _getAmountTypes() {
+    _amountTypes.clear();
+    if (BookingType.expense.name == bookingType.name) {
+      _amountTypes.add(AmountType.variable);
+      _amountTypes.add(AmountType.fix);
+    } else if (BookingType.income.name == bookingType.name) {
+      _amountTypes.add(AmountType.active);
+      _amountTypes.add(AmountType.passive);
+    } else if (BookingType.investment.name == bookingType.name) {
+      _amountTypes.add(AmountType.buy);
+      _amountTypes.add(AmountType.sale);
+    }
+    return _amountTypes;
   }
 
   openAmountTypeBottomSheet({required BuildContext context, required String amountType}) {
@@ -47,22 +63,18 @@ class AmountTextField extends StatelessWidget {
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 5.0,
                     child: SingleChildScrollView(
-                      child: ListView(
+                      child: ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         padding: const EdgeInsets.all(8),
-                        children: <Widget>[
-                          ListViewButton(
-                            onPressed: () => onAmountTypeChanged(AmountType.buy),
-                            text: AmountType.buy.name,
+                        itemCount: _getAmountTypes().length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListViewButton(
+                            onPressed: () => onAmountTypeChanged(_amountTypes[index]),
+                            text: _amountTypes[index].name,
                             selectedValue: amountType,
-                          ),
-                          ListViewButton(
-                            onPressed: () => onAmountTypeChanged(AmountType.sale),
-                            text: AmountType.sale.name,
-                            selectedValue: amountType,
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -91,7 +103,7 @@ class AmountTextField extends StatelessWidget {
         hintText: hintText,
         counterText: '',
         prefixIcon: const Icon(Icons.money_rounded),
-        suffixIcon: bookingType.name == BookingType.investment.name
+        suffixIcon: bookingType.name != BookingType.transfer.name && bookingType != BookingType.none
             ? Column(
                 children: [
                   IconButton(

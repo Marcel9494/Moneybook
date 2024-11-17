@@ -1,10 +1,12 @@
 enum BookingType {
+  none,
   expense,
   income,
   transfer,
   investment;
 
   static BookingType fromString(String s) => switch (s) {
+        '' => BookingType.none,
         'Ausgabe' => BookingType.expense,
         'Einnahme' => BookingType.income,
         'Übertrag' => BookingType.transfer,
@@ -16,6 +18,8 @@ enum BookingType {
 extension BookingTypeExtension on BookingType {
   String get name {
     switch (this) {
+      case BookingType.none:
+        return '';
       case BookingType.expense:
         return 'Ausgabe';
       case BookingType.income:
@@ -31,6 +35,8 @@ extension BookingTypeExtension on BookingType {
 
   String get pluralName {
     switch (this) {
+      case BookingType.none:
+        return '';
       case BookingType.expense:
         return 'Ausgaben';
       case BookingType.income:

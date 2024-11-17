@@ -43,7 +43,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   final RoundedLoadingButtonController _createBookingBtnController = RoundedLoadingButtonController();
   RepetitionType _repetitionType = RepetitionType.noRepetition;
   BookingType _bookingType = BookingType.expense;
-  AmountType _amountType = AmountType.undefined;
+  AmountType _amountType = AmountType.variable;
 
   @override
   void initState() {
@@ -98,13 +98,16 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       _categorieController.text = '';
       if (_bookingType == BookingType.transfer) {
         _categorieController.text = 'Übertrag';
+        _amountType = AmountType.undefined;
+      }
+      if (_bookingType == BookingType.expense) {
+        _amountType = AmountType.variable;
+      } else if (_bookingType == BookingType.income) {
+        _amountType = AmountType.active;
+      } else if (_bookingType == BookingType.investment) {
+        _amountType = AmountType.buy;
       }
     });
-    if (_bookingType == BookingType.investment) {
-      _amountType = AmountType.buy;
-    } else {
-      _amountType = AmountType.undefined;
-    }
   }
 
   void _changeRepetitionType(RepetitionType newRepetitionType) {

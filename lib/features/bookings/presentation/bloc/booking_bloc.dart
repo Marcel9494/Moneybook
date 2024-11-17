@@ -18,7 +18,9 @@ import '../../domain/usecases/delete_all_bookings_in_serie.dart';
 import '../../domain/usecases/delete_only_future_bookings_in_serie.dart';
 import '../../domain/usecases/get_new_serie_id.dart';
 import '../../domain/usecases/load_categorie_bookings.dart';
+import '../../domain/usecases/load_monthly_amount_type_bookings.dart';
 import '../../domain/usecases/load_new_bookings.dart';
+import '../../domain/usecases/load_past_categorie_bookings.dart';
 import '../../domain/usecases/load_serie_bookings.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
 import '../../domain/usecases/update.dart';
@@ -26,6 +28,7 @@ import '../../domain/usecases/update_all_bookings_in_serie.dart';
 import '../../domain/usecases/update_all_bookings_with_account.dart';
 import '../../domain/usecases/update_all_bookings_with_categorie.dart';
 import '../../domain/usecases/update_only_future_bookings_in_serie.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 
 part 'booking_event.dart';
@@ -48,7 +51,9 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final DeleteAllBookingsInSerie deleteAllSerieBookingsUseCase;
   final DeleteOnlyFutureBookingsInSerie deleteOnlyFutureSerieBookingsUseCase;
   final LoadSortedMonthly loadSortedMonthlyUseCase;
+  final LoadMonthlyAmountTypeBookings loadAmountTypeMonthlyUseCase;
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
+  final LoadPastCategorieBookings loadPastMonthlyCategorieBookingsUseCase;
   final LoadNewBookings loadNewBookingsUseCase;
   final LoadAllSerieBookings loadSerieBookingsUseCase;
   final UpdateAllBookingsWithCategorie updateAllBookingsWithCategorieUseCase;
@@ -65,7 +70,9 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     this.deleteAllSerieBookingsUseCase,
     this.deleteOnlyFutureSerieBookingsUseCase,
     this.loadSortedMonthlyUseCase,
+    this.loadAmountTypeMonthlyUseCase,
     this.loadCategorieBookingsUseCase,
+    this.loadPastMonthlyCategorieBookingsUseCase,
     this.loadSerieBookingsUseCase,
     this.updateAllBookingsWithCategorieUseCase,
     this.updateAllBookingsWithAccountUseCase,
@@ -218,7 +225,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
             overallSerieAmount += event.bookings[i].amount;
           }
         }
-        print(overallSerieAmount);
         event.bookings[0] = event.bookings[0].copyWith(amount: overallSerieAmount);
         if (event.bookings[0].type == BookingType.expense) {
           BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.bookings[0], 0));
@@ -259,12 +265,28 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }, (bookings) {
           emit(Loaded(bookings: bookings));
         });
+      } else if (event is LoadAmountTypeMonthlyBookings) {
+        final loadBookingEither =
+            await loadAmountTypeMonthlyUseCase.bookingRepository.loadMonthlyAmountTypeBookings(event.selectedDate, event.amountType);
+        loadBookingEither.fold((failure) {
+          emit(const Error(message: LOAD_BOOKINGS_FAILURE));
+        }, (bookings) {
+          emit(Loaded(bookings: bookings));
+        });
       } else if (event is LoadCategorieBookings) {
         final loadCategorieBookingEither = await loadCategorieBookingsUseCase.bookingRepository.loadCategorieBookings(event.categorie);
         loadCategorieBookingEither.fold((failure) {
           emit(const Error(message: LOAD_BOOKINGS_FAILURE));
         }, (bookings) {
-          emit(Loaded(bookings: bookings));
+          emit(CategorieBookingsLoaded(bookings: bookings));
+        });
+      } else if (event is LoadPastMonthlyCategorieBookings) {
+        final loadPastMonthlyCategorieBookingEither = await loadPastMonthlyCategorieBookingsUseCase.bookingRepository
+            .loadPastMonthlyCategorieBookings(event.categorie, event.date, event.monthNumber);
+        loadPastMonthlyCategorieBookingEither.fold((failure) {
+          emit(const Error(message: LOAD_BOOKINGS_FAILURE));
+        }, (bookings) {
+          emit(CategorieBookingsLoaded(bookings: bookings));
         });
       } else if (event is LoadSerieBookings) {
         final loadSerieBookingEither = await loadSerieBookingsUseCase.bookingRepository.loadSerieBookings(event.serieId);
