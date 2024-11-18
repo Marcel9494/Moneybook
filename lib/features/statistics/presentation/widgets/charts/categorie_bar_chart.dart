@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/utils/number_formatter.dart';
+import '../../../../../shared/presentation/widgets/deco/half_circle_painter.dart';
 import '../../../../bookings/domain/entities/booking.dart';
 import '../../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../../bookings/domain/value_objects/booking_type.dart';
-import 'legend.dart';
 
 class CategorieBarChart extends StatefulWidget {
   final List<Booking> bookings;
@@ -36,6 +36,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
   late List<BarChartGroupData> _rawBarGroups;
   late List<BarChartGroupData> _showingBarGroups;
   List<BarChartGroupData> _items = [];
+  bool _showSeparatedBars = false;
   int touchedGroupIndex = -1;
 
   String _getFirstAmountType() {
@@ -51,24 +52,16 @@ class CategorieBarChartState extends State<CategorieBarChart> {
 
   String _getSecondAmountType() {
     if (BookingType.expense == widget.bookingType) {
-      return AmountType.variable.name;
+      return '${AmountType.variable.name} / ${AmountType.fix.name}';
     } else if (BookingType.income == widget.bookingType) {
-      return AmountType.active.name;
+      return '${AmountType.active.name} / ${AmountType.passive.name}';
     } else if (BookingType.investment == widget.bookingType) {
       return AmountType.sale.name;
     }
     return '';
   }
 
-  String _getThirdAmountType() {
-    if (BookingType.expense == widget.bookingType) {
-      return AmountType.fix.name;
-    } else if (BookingType.income == widget.bookingType) {
-      return AmountType.passive.name;
-    }
-    return '';
-  }
-
+  // TODO hier weitermachen und anhand von amountType die Listen aufteilen auf 2 Bars
   List<BarChartGroupData> _calculateMonthlyAmounts(List<Booking> bookings) {
     _monthlyAmountSums.clear();
     for (int i = 6; i >= 0; i--) {
@@ -84,9 +77,15 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     _items.clear();
     List<double> monthlyAmounts = _monthlyAmountSums.values.toList();
     for (int i = 0; i < monthlyAmounts.length; i++) {
-      _items.add(makeGroupData(i, monthlyAmounts[i], 0));
+      _items.add(makeGroupData(i, monthlyAmounts[i], monthlyAmounts[i], _showSeparatedBars));
     }
     return _items;
+  }
+
+  void _changeBarChartView(bool showSeparatedBars) {
+    setState(() {
+      _showSeparatedBars = showSeparatedBars;
+    });
   }
 
   @override
@@ -102,17 +101,80 @@ class CategorieBarChartState extends State<CategorieBarChart> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                LegendsListWidget(
-                  legends: [
-                    Legend(_getFirstAmountType(), Colors.cyanAccent),
-                    Legend(_getSecondAmountType(), Colors.redAccent),
-                    BookingType.investment == widget.bookingType ? Legend('', Colors.transparent) : Legend(_getThirdAmountType(), Colors.greenAccent),
-                  ],
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left: 56.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => _changeBarChartView(false),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 12.0,
+                          height: 12.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _showSeparatedBars ? Colors.grey : Colors.cyanAccent,
+                          ),
+                        ),
+                        const SizedBox(width: 6.0),
+                        Text(
+                          _getFirstAmountType(),
+                          style: TextStyle(
+                            color: _showSeparatedBars ? Color(0xff757391) : Colors.white,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: GestureDetector(
+                      onTap: () => _changeBarChartView(true),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 12.0,
+                            height: 12.0,
+                            decoration: _showSeparatedBars
+                                ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey,
+                                  )
+                                : BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey,
+                                  ),
+                            child: _showSeparatedBars
+                                ? CustomPaint(
+                                    painter: HalfCirclePainter(),
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(width: 6.0),
+                          Text(
+                            _getSecondAmountType(),
+                            style: TextStyle(
+                              color: _showSeparatedBars ? Colors.white : Color(0xff757391),
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  /*LegendsListWidget(
+                    legends: [
+                      //Legend(_getFirstAmountType(), Colors.cyanAccent),
+                      Legend(_getSecondAmountType(), Colors.redAccent),
+                    ],
+                  ),*/
+                ],
+              ),
             ),
             const SizedBox(height: 30.0),
             Expanded(
@@ -229,13 +291,13 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     }
 
     if (value.toInt() >= months.length) {
-      return Container(); // Avoid out-of-bound errors
+      return Container();
     }
 
     final Widget monthText = Text(
       months[value.toInt()],
       style: TextStyle(
-        color: value.toInt() != 6 ? Color(0xff7589a2) : Colors.cyanAccent, // Highlight current month
+        color: value.toInt() != 6 ? Color(0xff7589a2) : Colors.cyanAccent,
         fontWeight: FontWeight.bold,
         fontSize: 14.0,
       ),
@@ -248,17 +310,28 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     );
   }
 
-  BarChartGroupData makeGroupData(int x, double y1, double y2) {
+  BarChartGroupData makeGroupData(int x, double y1, double y2, bool showTwo) {
     return BarChartGroupData(
       barsSpace: 4.0,
       x: x,
       barRods: [
         BarChartRodData(
           toY: y1,
-          color: Colors.greenAccent,
+          color: _showSeparatedBars ? Colors.greenAccent : Colors.cyanAccent,
           width: widget.bookingType.name == BookingType.investment.name ? 7.0 : 12.0,
         ),
-        widget.bookingType.name == BookingType.investment.name
+        showTwo
+            ? BarChartRodData(
+                toY: y2,
+                color: Colors.redAccent,
+                width: widget.bookingType.name == BookingType.investment.name ? 7.0 : 12.0,
+              )
+            : BarChartRodData(
+                toY: 0.0,
+                color: Colors.redAccent,
+                width: 0.0,
+              ),
+        /*widget.bookingType.name == BookingType.investment.name
             ? BarChartRodData(
                 toY: y2,
                 color: Colors.redAccent,
@@ -268,7 +341,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                 toY: 0.0,
                 color: Colors.redAccent,
                 width: 0.0,
-              ),
+              ),*/
       ],
     );
   }
