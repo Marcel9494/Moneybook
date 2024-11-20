@@ -28,7 +28,7 @@ class StatisticPage extends StatefulWidget {
 class _StatisticPageState extends State<StatisticPage> {
   BookingType _selectedBookingType = BookingType.expense;
   AmountType _selectedAmountType = AmountType.overallExpense;
-  Map<AmountType, double> _amountTypes = {};
+  Map<AmountType, double /*AmountTypeStats*/ > _amountTypes = {};
   List<CategorieStats> _categorieStats = [];
   bool _categorieFound = false;
   double _overallAmount = 0.0;
@@ -80,9 +80,11 @@ class _StatisticPageState extends State<StatisticPage> {
     _categorieStats.sort((first, second) => second.percentage.compareTo(first.percentage));
   }
 
+  // TODO hier weitermachen ud Map durch List von AmountTypeStats ersetzen?
   void _calculateAmountTypeStats(List<Booking> bookings, BookingType bookingType) {
     _amountTypes.clear();
     if (bookingType.pluralName == BookingType.expense.pluralName) {
+      // TODO _amountTypes[AmountType.overallExpense] = AmountTypeStats(amountType: AmountType.overallExpense, amount: 0.0, percentage: 0.0);
       _amountTypes[AmountType.overallExpense] = 0.0;
       _amountTypes[AmountType.variable] = 0.0;
       _amountTypes[AmountType.fix] = 0.0;
