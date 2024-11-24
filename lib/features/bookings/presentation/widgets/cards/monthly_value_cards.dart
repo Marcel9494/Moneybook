@@ -8,7 +8,8 @@ class MonthlyValueCards extends StatefulWidget {
   final DateTime selectedDate;
   final double monthlyExpense;
   final double monthlyIncome;
-  final double monthlyInvestment;
+  final double monthlyInvestmentBuys;
+  final double monthlyInvestmentSales;
 
   const MonthlyValueCards({
     super.key,
@@ -16,7 +17,8 @@ class MonthlyValueCards extends StatefulWidget {
     required this.selectedDate,
     required this.monthlyExpense,
     required this.monthlyIncome,
-    required this.monthlyInvestment,
+    required this.monthlyInvestmentBuys,
+    required this.monthlyInvestmentSales,
   });
 
   @override
@@ -58,16 +60,22 @@ class _MonthlyValueCardsState extends State<MonthlyValueCards> {
             textColor: widget.monthlyIncome - widget.monthlyExpense >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),
           MonthlyCard(
-            title: 'Investment',
-            monthlyValue: widget.monthlyInvestment,
-            dailyAverageValue: widget.monthlyInvestment / numberOfDays,
+            title: 'Käufe',
+            monthlyValue: widget.monthlyInvestmentBuys,
+            dailyAverageValue: widget.monthlyInvestmentBuys / numberOfDays,
             textColor: Colors.cyanAccent,
           ),
           MonthlyCard(
-            title: 'Verfügbar',
-            monthlyValue: widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment,
-            dailyAverageValue: (widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment) / numberOfDays,
-            textColor: widget.monthlyIncome - widget.monthlyExpense - widget.monthlyInvestment >= 0.0 ? Colors.greenAccent : Colors.redAccent,
+            title: 'Verkäufe',
+            monthlyValue: widget.monthlyInvestmentSales,
+            dailyAverageValue: widget.monthlyInvestmentSales / numberOfDays,
+            textColor: Colors.cyanAccent,
+          ),
+          MonthlyCard(
+            title: 'Differenz',
+            monthlyValue: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales,
+            dailyAverageValue: (widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales) / numberOfDays,
+            textColor: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),
         ],
       ),
