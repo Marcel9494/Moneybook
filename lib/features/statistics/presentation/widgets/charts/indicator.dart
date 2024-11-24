@@ -2,26 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
 
 import '../../../../bookings/domain/value_objects/amount_type.dart';
+import '../../../domain/entities/amount_type_stats.dart';
 
-// TODO AmountTypeStats übergeben?
 class Indicator extends StatelessWidget {
-  final Color color;
+  final AmountTypeStats amountTypeStat;
   final String text;
-  final bool isSquare;
-  final AmountType amountType;
-  final double amount;
-  final double percentage;
-  final double size;
+  final Color color;
 
   const Indicator({
     super.key,
-    required this.color,
+    required this.amountTypeStat,
     required this.text,
-    required this.isSquare,
-    required this.amountType,
-    required this.amount,
-    required this.percentage,
-    this.size = 12.0,
+    required this.color,
   });
 
   @override
@@ -34,7 +26,7 @@ class Indicator extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 4.0),
               child: VerticalDivider(
-                color: text == amountType.name ? Colors.cyanAccent : Colors.grey,
+                color: text == amountTypeStat.amountType.name ? Colors.cyanAccent : Colors.grey,
                 thickness: 2.0,
                 indent: 4.0,
                 endIndent: 4.0,
@@ -46,13 +38,16 @@ class Indicator extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      text,
+                      amountTypeStat.amountType.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: text == amountType.name ? Colors.cyanAccent : Colors.grey,
+                        color: text == amountTypeStat.amountType.name ? Colors.cyanAccent : Colors.grey,
                       ),
                     ),
-                    text != AmountType.overallExpense.name && text != AmountType.overallIncome.name
+                    amountTypeStat.amountType.name != AmountType.overallExpense.name &&
+                            amountTypeStat.amountType.name != AmountType.overallIncome.name &&
+                            amountTypeStat.amountType.name != AmountType.buy.name &&
+                            amountTypeStat.amountType.name != AmountType.sale.name
                         ? Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4.0),
                             child: Container(
@@ -65,10 +60,10 @@ class Indicator extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                ' ${percentage.toStringAsFixed(1).replaceAll('.', ',')} %',
+                                ' ${amountTypeStat.percentage.toStringAsFixed(1).replaceAll('.', ',')} %',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: text == amountType.name ? Colors.white : Colors.grey,
+                                  color: text == amountTypeStat.amountType.name ? Colors.white : Colors.grey,
                                   fontSize: 12.0,
                                 ),
                               ),
@@ -78,9 +73,9 @@ class Indicator extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  formatToMoneyAmount(amount.toString()),
+                  formatToMoneyAmount(amountTypeStat.amount.toString()),
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: text == amountType.name ? Colors.white : Colors.grey),
+                  style: TextStyle(color: text == amountTypeStat.amountType.name ? Colors.white : Colors.grey),
                 ),
               ],
             ),

@@ -120,9 +120,8 @@ class _StatisticPageState extends State<StatisticPage> {
     }
     if (_selectedBookingType != BookingType.investment) {
       // Für jeden AmountType Prozentwert berechnen
-      // TODO darf nicht durch 0 geteilt werden
       for (int i = 0; i < _amountTypeStats.length; i++) {
-        if (_amountTypeStats[0].amount == 0) {
+        if (_amountTypeStats[0].amount == 0.0) {
           _amountTypeStats[i].percentage = 0.0;
         } else {
           _amountTypeStats[i].percentage = (_amountTypeStats[i].amount / _amountTypeStats[0].amount) * 100;
@@ -176,21 +175,18 @@ class _StatisticPageState extends State<StatisticPage> {
                               padding: const EdgeInsets.only(right: 6.0, top: 12.0, bottom: 6.0),
                               child: Column(
                                 children: <Widget>[
-                                  ..._amountTypeStats.map((amountType) {
+                                  ..._amountTypeStats.map((amountTypeStat) {
                                     return GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          _selectedAmountType = amountType.amountType;
+                                          _selectedAmountType = amountTypeStat.amountType;
                                           _calculateCategoryStats(bookingState.bookings);
                                         });
                                       },
                                       child: Indicator(
+                                        amountTypeStat: amountTypeStat,
                                         color: Colors.white,
-                                        text: amountType.amountType.name,
-                                        isSquare: false,
-                                        amountType: _selectedAmountType,
-                                        amount: amountType.amount,
-                                        percentage: amountType.percentage,
+                                        text: _selectedAmountType.name,
                                       ),
                                     );
                                   }),
