@@ -6,6 +6,7 @@ import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_v
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
 import '../../domain/entities/booking.dart';
+import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../bloc/booking_bloc.dart';
 import '../widgets/cards/pending_monthly_value_cards.dart';
@@ -31,10 +32,12 @@ class _BookingListPageState extends State<BookingListPage> {
   final List<Booking> _dependingBookings = [];
   double _monthlyExpense = 0.0;
   double _monthlyIncome = 0.0;
-  double _monthlyInvestment = 0.0;
+  double _monthlyInvestmentBuys = 0.0;
+  double _monthlyInvestmentSales = 0.0;
   double _monthlyDependingExpense = 0.0;
   double _monthlyDependingIncome = 0.0;
-  double _monthlyDependingInvestment = 0.0;
+  double _monthlyDependingInvestmentBuys = 0.0;
+  double _monthlyDependingInvestmentSales = 0.0;
   int _numberOfBookedBookings = 0;
   bool _isExpanded = false;
 
@@ -66,10 +69,12 @@ class _BookingListPageState extends State<BookingListPage> {
   void _calculateMonthlyValues(List<Booking> bookings) {
     _monthlyExpense = 0.0;
     _monthlyIncome = 0.0;
-    _monthlyInvestment = 0.0;
+    _monthlyInvestmentBuys = 0.0;
+    _monthlyInvestmentSales = 0.0;
     _monthlyDependingExpense = 0.0;
     _monthlyDependingIncome = 0.0;
-    _monthlyDependingInvestment = 0.0;
+    _monthlyDependingInvestmentBuys = 0.0;
+    _monthlyDependingInvestmentSales = 0.0;
     _dependingBookings.clear();
     for (int i = 0; i < bookings.length; i++) {
       if (bookings[i].date.isAfter(DateTime.now()) == false) {
@@ -78,7 +83,11 @@ class _BookingListPageState extends State<BookingListPage> {
         } else if (bookings[i].type == BookingType.income) {
           _monthlyIncome += bookings[i].amount;
         } else if (bookings[i].type == BookingType.investment) {
-          _monthlyInvestment += bookings[i].amount;
+          if (bookings[i].amountType == AmountType.buy) {
+            _monthlyInvestmentBuys += bookings[i].amount;
+          } else if (bookings[i].amountType == AmountType.sale) {
+            _monthlyInvestmentSales += bookings[i].amount;
+          }
         }
       } else if (bookings[i].date.isAfter(DateTime.now())) {
         _dependingBookings.add(bookings[i]);
@@ -87,7 +96,11 @@ class _BookingListPageState extends State<BookingListPage> {
         } else if (bookings[i].type == BookingType.income) {
           _monthlyDependingIncome += bookings[i].amount;
         } else if (bookings[i].type == BookingType.investment) {
-          _monthlyDependingInvestment += bookings[i].amount;
+          if (bookings[i].amountType == AmountType.buy) {
+            _monthlyDependingInvestmentBuys += bookings[i].amount;
+          } else if (bookings[i].amountType == AmountType.sale) {
+            _monthlyDependingInvestmentSales += bookings[i].amount;
+          }
         }
       }
       _dependingBookings.sort((first, second) => first.date.compareTo(second.date));
@@ -113,7 +126,8 @@ class _BookingListPageState extends State<BookingListPage> {
                           selectedDate: widget.selectedDate,
                           monthlyExpense: _monthlyExpense,
                           monthlyIncome: _monthlyIncome,
-                          monthlyInvestment: _monthlyInvestment,
+                          monthlyInvestmentBuys: _monthlyInvestmentBuys,
+                          monthlyInvestmentSales: _monthlyInvestmentSales,
                         ),
                         const Expanded(
                           child: EmptyList(
@@ -135,7 +149,8 @@ class _BookingListPageState extends State<BookingListPage> {
                           selectedDate: widget.selectedDate,
                           monthlyExpense: _monthlyExpense,
                           monthlyIncome: _monthlyIncome,
-                          monthlyInvestment: _monthlyInvestment,
+                          monthlyInvestmentBuys: _monthlyInvestmentBuys,
+                          monthlyInvestmentSales: _monthlyInvestmentSales,
                         ),
                         Expanded(
                           child: ListView.builder(
@@ -213,7 +228,8 @@ class _BookingListPageState extends State<BookingListPage> {
                                   PendingMonthlyValueCards(
                                     monthlyDependingExpense: _monthlyDependingExpense,
                                     monthlyDependingIncome: _monthlyDependingIncome,
-                                    monthlyDependingInvestment: _monthlyDependingInvestment,
+                                    monthlyDependingInvestmentBuys: _monthlyDependingInvestmentBuys,
+                                    monthlyDependingInvestmentSales: _monthlyDependingInvestmentSales,
                                   ),
                                   const Padding(
                                     padding: EdgeInsets.only(top: 8.0, bottom: 4.0),

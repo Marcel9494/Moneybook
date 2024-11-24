@@ -15,8 +15,8 @@ class LegendWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: 10.0,
+          height: 10.0,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: color,
@@ -50,7 +50,7 @@ class LegendsListWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: leftPadding),
       child: Wrap(
-        spacing: 16,
+        spacing: 16.0,
         children: legends
             .map(
               (e) => LegendWidget(

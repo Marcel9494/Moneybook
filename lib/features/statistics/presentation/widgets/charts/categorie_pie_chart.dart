@@ -10,14 +10,12 @@ import '../../../domain/entities/categorie_stats.dart';
 class CategoriePieChart extends StatefulWidget {
   final List<CategorieStats> categorieStats;
   final BookingType bookingType;
-  final Map<AmountType, double> amountTypes;
   final AmountType amountType;
 
   const CategoriePieChart({
     super.key,
     required this.categorieStats,
     required this.bookingType,
-    required this.amountTypes,
     required this.amountType,
   });
 
@@ -30,28 +28,31 @@ class CategoriePieChartState extends State<CategoriePieChart> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.15,
-      child: PieChart(
-        PieChartData(
-          pieTouchData: PieTouchData(
-            touchCallback: (FlTouchEvent event, pieTouchResponse) {
-              setState(() {
-                if (!event.isInterestedForInteractions || pieTouchResponse == null || pieTouchResponse.touchedSection == null) {
-                  _touchedPieIndex = -1;
-                  return;
-                }
-                _touchedPieIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
-              });
-            },
+    return ClipRect(
+      clipBehavior: Clip.antiAlias,
+      child: AspectRatio(
+        aspectRatio: 1.2,
+        child: PieChart(
+          PieChartData(
+            pieTouchData: PieTouchData(
+              touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                setState(() {
+                  if (!event.isInterestedForInteractions || pieTouchResponse == null || pieTouchResponse.touchedSection == null) {
+                    _touchedPieIndex = -1;
+                    return;
+                  }
+                  _touchedPieIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                });
+              },
+            ),
+            borderData: FlBorderData(show: false),
+            sectionsSpace: 4.0,
+            centerSpaceRadius: 28.0,
+            sections: widget.categorieStats.isEmpty ? showingEmptySection() : showingSections(widget.categorieStats),
           ),
-          borderData: FlBorderData(show: false),
-          sectionsSpace: 4.0,
-          centerSpaceRadius: 34.0,
-          sections: widget.categorieStats.isEmpty ? showingEmptySection() : showingSections(widget.categorieStats),
+          swapAnimationDuration: const Duration(milliseconds: animationDurationInMs),
+          swapAnimationCurve: Curves.easeOutBack,
         ),
-        swapAnimationDuration: const Duration(milliseconds: animationDurationInMs),
-        swapAnimationCurve: Curves.easeOutBack,
       ),
     );
   }
@@ -65,7 +66,9 @@ class CategoriePieChartState extends State<CategoriePieChart> {
       return PieChartSectionData(
         color: pieChartColors[i % pieChartColors.length].withOpacity(0.75),
         value: categorieStats[i].percentage,
-        title: '${categorieStats[i].percentage.toStringAsFixed(1)}% ${categorieStats[i].categorie}',
+        title: categorieStats.length == 1
+            ? '${categorieStats[i].percentage.toStringAsFixed(1).replaceAll('.', ',')}%\n${categorieStats[i].categorie}'
+            : '${categorieStats[i].percentage.toStringAsFixed(1).replaceAll('.', ',')}% ${categorieStats[i].categorie}',
         radius: radius,
         titleStyle: TextStyle(
           fontSize: fontSize,

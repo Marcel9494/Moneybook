@@ -4,13 +4,15 @@ import 'package:moneybook/features/bookings/presentation/widgets/cards/pending_m
 class PendingMonthlyValueCards extends StatefulWidget {
   final double monthlyDependingExpense;
   final double monthlyDependingIncome;
-  final double monthlyDependingInvestment;
+  final double monthlyDependingInvestmentBuys;
+  final double monthlyDependingInvestmentSales;
 
   const PendingMonthlyValueCards({
     super.key,
     required this.monthlyDependingExpense,
     required this.monthlyDependingIncome,
-    required this.monthlyDependingInvestment,
+    required this.monthlyDependingInvestmentBuys,
+    required this.monthlyDependingInvestmentSales,
   });
 
   @override
@@ -22,31 +24,28 @@ class _PendingMonthlyValueCardsState extends State<PendingMonthlyValueCards> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 70.0,
-      child: Row(
+      child: ListView(
+        scrollDirection: Axis.horizontal,
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: PendingMonthlyCard(
-              title: 'Einnahmen',
-              pendingMonthlyValue: widget.monthlyDependingIncome,
-              textColor: Colors.greenAccent,
-            ),
+          PendingMonthlyCard(
+            title: 'Einnahmen',
+            pendingMonthlyValue: widget.monthlyDependingIncome,
+            textColor: Colors.greenAccent,
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: PendingMonthlyCard(
-              title: 'Ausgaben',
-              pendingMonthlyValue: widget.monthlyDependingExpense,
-              textColor: Colors.redAccent,
-            ),
+          PendingMonthlyCard(
+            title: 'Ausgaben',
+            pendingMonthlyValue: widget.monthlyDependingExpense,
+            textColor: Colors.redAccent,
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: PendingMonthlyCard(
-              title: 'Investment',
-              pendingMonthlyValue: widget.monthlyDependingInvestment,
-              textColor: Colors.cyanAccent,
-            ),
+          PendingMonthlyCard(
+            title: 'Käufe',
+            pendingMonthlyValue: widget.monthlyDependingInvestmentBuys,
+            textColor: Colors.cyanAccent,
+          ),
+          PendingMonthlyCard(
+            title: 'Verkäufe',
+            pendingMonthlyValue: widget.monthlyDependingInvestmentSales,
+            textColor: Colors.cyanAccent,
           ),
         ],
       ),

@@ -6,7 +6,6 @@ import '../../../../../core/utils/number_formatter.dart';
 import '../../../../bookings/domain/entities/booking.dart';
 import '../../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../../bookings/domain/value_objects/booking_type.dart';
-import 'legend.dart';
 
 class CategorieBarChart extends StatefulWidget {
   final List<Booking> bookings;
@@ -33,9 +32,11 @@ class CategorieBarChart extends StatefulWidget {
 class CategorieBarChartState extends State<CategorieBarChart> {
   MapEntry<String, double> _maxAmountEntry = MapEntry("", 0.0);
   Map<String, double> _monthlyAmountSums = {};
+  Map<String, double> _monthlyFirstBarValues = {};
+  Map<String, double> _monthlySecondBarValues = {};
   late List<BarChartGroupData> _rawBarGroups;
   late List<BarChartGroupData> _showingBarGroups;
-  List<BarChartGroupData> _items = [];
+  bool _showSeparatedBars = false;
   int touchedGroupIndex = -1;
 
   String _getFirstAmountType() {
@@ -51,50 +52,74 @@ class CategorieBarChartState extends State<CategorieBarChart> {
 
   String _getSecondAmountType() {
     if (BookingType.expense == widget.bookingType) {
-      return AmountType.variable.name;
+      return '${AmountType.variable.name} / ${AmountType.fix.name}';
     } else if (BookingType.income == widget.bookingType) {
-      return AmountType.active.name;
+      return '${AmountType.active.name} / ${AmountType.passive.name}';
     } else if (BookingType.investment == widget.bookingType) {
       return AmountType.sale.name;
     }
     return '';
   }
 
-  String _getThirdAmountType() {
-    if (BookingType.expense == widget.bookingType) {
-      return AmountType.fix.name;
-    } else if (BookingType.income == widget.bookingType) {
-      return AmountType.passive.name;
-    }
-    return '';
-  }
-
-  List<BarChartGroupData> _calculateMonthlyAmounts(List<Booking> bookings) {
+  void _calculateMonthlyAmounts(List<Booking> bookings) {
+    List<BarChartGroupData> items = [];
     _monthlyAmountSums.clear();
+    _monthlyFirstBarValues.clear();
+    _monthlySecondBarValues.clear();
     for (int i = 6; i >= 0; i--) {
       DateTime currentMonth = DateTime(widget.selectedDate.year, widget.selectedDate.month - i, 1);
       String monthKey = "${currentMonth.year}-${currentMonth.month.toString().padLeft(2, '0')}";
       _monthlyAmountSums[monthKey] = 0.0;
+      _monthlyFirstBarValues[monthKey] = 0.0;
+      _monthlySecondBarValues[monthKey] = 0.0;
     }
+
     for (Booking booking in bookings) {
       String monthKey = "${booking.date.year}-${booking.date.month.toString().padLeft(2, '0')}";
       _monthlyAmountSums.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+      if (booking.amountType == AmountType.variable || booking.amountType == AmountType.active) {
+        _monthlyFirstBarValues.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+      } else if (booking.amountType == AmountType.fix || booking.amountType == AmountType.passive) {
+        _monthlySecondBarValues.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+      }
     }
 
-    _items.clear();
-    List<double> monthlyAmounts = _monthlyAmountSums.values.toList();
-    for (int i = 0; i < monthlyAmounts.length; i++) {
-      _items.add(makeGroupData(i, monthlyAmounts[i], 0));
+    if (_showSeparatedBars == false) {
+      List<double> monthlyAmounts = _monthlyAmountSums.values.toList();
+      for (int i = 0; i < monthlyAmounts.length; i++) {
+        items.add(makeGroupData(i, monthlyAmounts[i], monthlyAmounts[i], _showSeparatedBars));
+      }
+    } else {
+      List<double> firstBarAmounts = _monthlyFirstBarValues.values.toList();
+      List<double> secondBarAmounts = _monthlySecondBarValues.values.toList();
+      for (int i = 0; i < secondBarAmounts.length; i++) {
+        items.add(makeGroupData(i, firstBarAmounts[i], secondBarAmounts[i], _showSeparatedBars));
+      }
     }
-    return _items;
+    _rawBarGroups = items;
+    _showingBarGroups = _rawBarGroups;
+  }
+
+  void _setMaxAmountEntry() {
+    if (_showSeparatedBars == false) {
+      _maxAmountEntry = _monthlyAmountSums.entries.reduce((a, b) => a.value > b.value ? a : b);
+    } else {
+      MapEntry<String, double> maxFirstBarValue = _monthlyFirstBarValues.entries.reduce((a, b) => a.value > b.value ? a : b);
+      MapEntry<String, double> maxSecondBarValue = _monthlySecondBarValues.entries.reduce((a, b) => a.value > b.value ? a : b);
+      maxFirstBarValue.value >= maxSecondBarValue.value ? _maxAmountEntry = maxFirstBarValue : _maxAmountEntry = maxSecondBarValue;
+    }
+  }
+
+  void _changeBarChartView(bool showSeparatedBars) {
+    setState(() {
+      _showSeparatedBars = showSeparatedBars;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    _items = _calculateMonthlyAmounts(widget.bookings);
-    _maxAmountEntry = _monthlyAmountSums.entries.reduce((a, b) => a.value > b.value ? a : b);
-    _rawBarGroups = _items;
-    _showingBarGroups = _rawBarGroups;
+    _calculateMonthlyAmounts(widget.bookings);
+    _setMaxAmountEntry();
     return AspectRatio(
       aspectRatio: 1.2,
       child: Padding(
@@ -102,21 +127,102 @@ class CategorieBarChartState extends State<CategorieBarChart> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                LegendsListWidget(
-                  legends: [
-                    Legend(_getFirstAmountType(), Colors.cyanAccent),
-                    Legend(_getSecondAmountType(), Colors.redAccent),
-                    BookingType.investment == widget.bookingType ? Legend('', Colors.transparent) : Legend(_getThirdAmountType(), Colors.greenAccent),
-                  ],
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(top: 6.0, left: 56.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => _changeBarChartView(false),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 4.0),
+                            child: VerticalDivider(
+                              color: _showSeparatedBars == false ? Colors.cyanAccent : Colors.grey,
+                              thickness: 2.0,
+                              indent: 4.0,
+                              endIndent: 4.0,
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _getFirstAmountType(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: _showSeparatedBars == false ? Colors.white : Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                formatToMoneyAmount(_monthlyAmountSums.values.last.toString()),
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: _showSeparatedBars == false ? Colors.cyanAccent : Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: GestureDetector(
+                      onTap: () => _changeBarChartView(true),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 4.0),
+                              child: VerticalDivider(
+                                color: _showSeparatedBars ? Colors.cyanAccent : Colors.grey,
+                                thickness: 2.0,
+                                indent: 4.0,
+                                endIndent: 4.0,
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _getSecondAmountType(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: _showSeparatedBars ? Colors.white : Colors.grey,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      formatToMoneyAmount(_monthlyFirstBarValues.values.last.toString()),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(color: _showSeparatedBars ? Colors.greenAccent : Colors.grey),
+                                    ),
+                                    Text(' / ', style: TextStyle(color: _showSeparatedBars ? Colors.white : Colors.grey)),
+                                    Text(
+                                      formatToMoneyAmount(_monthlySecondBarValues.values.last.toString()),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(color: _showSeparatedBars ? Colors.redAccent : Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 30.0),
             Expanded(
               child: BarChart(
+                swapAnimationCurve: Curves.fastOutSlowIn,
+                swapAnimationDuration: Duration(milliseconds: 500),
                 BarChartData(
                   maxY: _maxAmountEntry.value,
                   barTouchData: BarTouchData(
@@ -124,41 +230,16 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                       getTooltipColor: ((group) {
                         return Colors.grey;
                       }),
-                      getTooltipItem: (a, b, c, d) => null,
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          '${formatToMoneyAmount(rod.toY.toString())}',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
-                    touchCallback: (FlTouchEvent event, response) {
-                      if (response == null || response.spot == null) {
-                        setState(() {
-                          touchedGroupIndex = -1;
-                          _showingBarGroups = List.of(_rawBarGroups);
-                        });
-                        return;
-                      }
-
-                      touchedGroupIndex = response.spot!.touchedBarGroupIndex;
-
-                      setState(() {
-                        if (!event.isInterestedForInteractions) {
-                          touchedGroupIndex = -1;
-                          _showingBarGroups = List.of(_rawBarGroups);
-                          return;
-                        }
-                        _showingBarGroups = List.of(_rawBarGroups);
-                        if (touchedGroupIndex != -1) {
-                          var sum = 0.0;
-                          for (final rod in _showingBarGroups[touchedGroupIndex].barRods) {
-                            sum += rod.toY;
-                          }
-                          final avg = sum / _showingBarGroups[touchedGroupIndex].barRods.length;
-
-                          _showingBarGroups[touchedGroupIndex] = _showingBarGroups[touchedGroupIndex].copyWith(
-                            barRods: _showingBarGroups[touchedGroupIndex].barRods.map((rod) {
-                              return rod.copyWith(toY: avg, color: widget.avgColor);
-                            }).toList(),
-                          );
-                        }
-                      });
-                    },
                   ),
                   titlesData: FlTitlesData(
                     show: true,
@@ -185,7 +266,15 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                     ),
                   ),
                   borderData: FlBorderData(show: false),
-                  barGroups: _showingBarGroups,
+                  barGroups: _showingBarGroups.map((group) {
+                    return BarChartGroupData(
+                      x: group.x,
+                      barRods: group.barRods.map((rod) {
+                        final adjustedToY = rod.toY > _maxAmountEntry.value ? _maxAmountEntry.value : rod.toY;
+                        return rod.copyWith(toY: adjustedToY);
+                      }).toList(),
+                    );
+                  }).toList(),
                   gridData: const FlGridData(show: true),
                 ),
               ),
@@ -229,13 +318,13 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     }
 
     if (value.toInt() >= months.length) {
-      return Container(); // Avoid out-of-bound errors
+      return Container();
     }
 
     final Widget monthText = Text(
       months[value.toInt()],
       style: TextStyle(
-        color: value.toInt() != 6 ? Color(0xff7589a2) : Colors.cyanAccent, // Highlight current month
+        color: value.toInt() != 6 ? Color(0xff7589a2) : Colors.cyanAccent,
         fontWeight: FontWeight.bold,
         fontSize: 14.0,
       ),
@@ -248,21 +337,21 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     );
   }
 
-  BarChartGroupData makeGroupData(int x, double y1, double y2) {
+  BarChartGroupData makeGroupData(int x, double y1, double y2, bool showTwo) {
     return BarChartGroupData(
       barsSpace: 4.0,
       x: x,
       barRods: [
         BarChartRodData(
           toY: y1,
-          color: Colors.greenAccent,
+          color: _showSeparatedBars ? Colors.greenAccent : Colors.cyanAccent,
           width: widget.bookingType.name == BookingType.investment.name ? 7.0 : 12.0,
         ),
-        widget.bookingType.name == BookingType.investment.name
+        showTwo
             ? BarChartRodData(
                 toY: y2,
                 color: Colors.redAccent,
-                width: 7.0,
+                width: widget.bookingType.name == BookingType.investment.name ? 7.0 : 12.0,
               )
             : BarChartRodData(
                 toY: 0.0,
