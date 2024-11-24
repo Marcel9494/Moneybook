@@ -280,8 +280,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       setState(() {
                         _hasAccountListenerTriggered = true;
                       });
-                      Navigator.pop(context);
-                      Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+                      Navigator.pushNamedAndRemoveUntil(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0), (route) => false);
                     }
                   }
                 },

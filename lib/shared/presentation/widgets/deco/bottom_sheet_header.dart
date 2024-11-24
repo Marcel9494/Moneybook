@@ -5,12 +5,14 @@ import 'bottom_sheet_line.dart';
 class BottomSheetHeader extends StatelessWidget {
   final String title;
   final bool showCloseButton;
+  final Function()? infoButtonFunction;
   final double indent;
 
   const BottomSheetHeader({
     super.key,
     required this.title,
     this.showCloseButton = true,
+    this.infoButtonFunction,
     this.indent = 0.0,
   });
 
@@ -43,11 +45,17 @@ class BottomSheetHeader extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 4.0, left: 28.0, bottom: 8.0),
+          padding: const EdgeInsets.only(top: 4.0, left: 28.0, bottom: 8.0, right: 18.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: const TextStyle(fontSize: 20.0)),
+              infoButtonFunction != null
+                  ? IconButton(
+                      icon: Icon(Icons.help_outline_rounded),
+                      onPressed: infoButtonFunction,
+                    )
+                  : SizedBox(),
             ],
           ),
         ),

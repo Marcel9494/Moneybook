@@ -172,7 +172,7 @@ class _StatisticPageState extends State<StatisticPage> {
                           Expanded(
                             flex: 2,
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 6.0, top: 12.0, bottom: 6.0),
+                              padding: const EdgeInsets.only(right: 6.0, top: 20.0, bottom: 6.0),
                               child: Column(
                                 children: <Widget>[
                                   ..._amountTypeStats.map((amountTypeStat) {
