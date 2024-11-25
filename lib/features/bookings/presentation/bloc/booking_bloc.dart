@@ -174,7 +174,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         editBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_BOOKING_FAILURE));
         }, (_) {
-          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0), (route) => false);
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is UpdateAllSerieBookings) {
         final updateSerieBookingEither =
@@ -214,7 +214,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }, (_) {
           Navigator.pop(event.context);
           Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
         });
       } else if (event is DeleteAllSerieBookings) {
         double overallSerieAmount = 0.0;
@@ -245,7 +245,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           emit(const Error(message: DELETE_BOOKINGS_FAILURE));
         }, (_) {
           Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
         });
       } else if (event is DeleteOnlyFutureSerieBookings) {
         // TODO hier weitermachen Buchungen buchen siehe DeleteAllSerieBookings
@@ -255,7 +255,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }, (_) {
           Navigator.pop(event.context);
           Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
         });
       } else if (event is LoadSortedMonthlyBookings) {
         final loadBookingEither = await loadSortedMonthlyUseCase.bookingRepository.loadSortedMonthly(event.selectedDate);

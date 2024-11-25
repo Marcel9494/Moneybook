@@ -56,7 +56,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
     });
     Navigator.pop(context);
     if (_tabIndex <= 3) {
-      Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(_tabIndex));
+      Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: _tabIndex));
     } else if (_tabIndex == 4) {
       Navigator.popAndPushNamed(context, categorieListRoute);
     } else if (_tabIndex == 5) {

@@ -123,7 +123,7 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
           listener: (BuildContext context, BudgetState state) {
             if (state is Finished) {
               Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 3));
             }
           },
           builder: (BuildContext context, state) {

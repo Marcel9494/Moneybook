@@ -143,7 +143,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           listener: (BuildContext context, BookingState state) {
             if (state is booking_state.Finished) {
               Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
             } else if (state is booking_state.SerieFinished) {
               // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
               // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
@@ -163,7 +163,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                 BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], 0));
               }
               Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
             }
           },
           builder: (BuildContext context, state) {

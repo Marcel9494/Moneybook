@@ -60,7 +60,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
           emit(const Error(message: EDIT_BUDGET_FAILURE));
         }, (_) {
           Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 3));
         });
       } else if (event is DeleteBudget) {
         final deleteBudgetEither = await deleteUseCase.budgetRepository.delete(event.budget, event.serieMode);
@@ -69,7 +69,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
         }, (_) {
           Navigator.pop(event.context);
           Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(3));
+          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 3));
         });
       } else if (event is UpdateBudgetsWithCategorie) {
         final updateAllBudgetsEither =

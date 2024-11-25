@@ -1,5 +1,9 @@
 class BottomNavBarArguments {
   final int tabIndex;
+  final DateTime selectedDate;
 
-  BottomNavBarArguments(this.tabIndex);
+  BottomNavBarArguments({
+    required this.tabIndex,
+    DateTime? selectedDate,
+  }) : selectedDate = selectedDate ?? DateTime.now();
 }
