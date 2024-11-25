@@ -13,10 +13,12 @@ import '../../../domain/value_objects/booking_type.dart';
 
 class BookingCard extends StatelessWidget {
   final Booking booking;
+  final bool activateEditing;
 
   const BookingCard({
     super.key,
     required this.booking,
+    this.activateEditing = true,
   });
 
   Color _getBookingTypeColor() {
@@ -94,9 +96,11 @@ class BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => booking.repetition == RepetitionType.noRepetition
-          ? Navigator.pushNamed(context, editBookingRoute, arguments: EditBookingPageArguments(booking, SerieModeType.one))
-          : _openSerieBookingBottomSheet(context),
+      onTap: activateEditing
+          ? () => booking.repetition == RepetitionType.noRepetition
+              ? Navigator.pushNamed(context, editBookingRoute, arguments: EditBookingPageArguments(booking, SerieModeType.one))
+              : _openSerieBookingBottomSheet(context)
+          : () => {},
       child: Card(
         child: ClipPath(
           clipper: ShapeBorderClipper(
