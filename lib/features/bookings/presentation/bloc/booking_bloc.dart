@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
@@ -174,8 +174,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         editBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_BOOKING_FAILURE));
         }, (_) {
-          Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0), (route) => false);
         });
       } else if (event is UpdateAllSerieBookings) {
         final updateSerieBookingEither =

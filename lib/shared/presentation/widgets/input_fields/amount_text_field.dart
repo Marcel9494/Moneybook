@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -50,7 +51,7 @@ class AmountTextField extends StatelessWidget {
     return _amountTypes;
   }
 
-  openAmountTypeBottomSheet({required BuildContext context, required String amountType}) {
+  void _openAmountTypeBottomSheet({required BuildContext context, required String amountType}) {
     showCupertinoModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
@@ -59,7 +60,10 @@ class AmountTextField extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  const BottomSheetHeader(title: 'Betragstyp auswählen:'),
+                  BottomSheetHeader(
+                    title: 'Betragstyp auswählen:',
+                    infoButtonFunction: () => _showInfoDialog(context),
+                  ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 5.0,
                     child: SingleChildScrollView(
@@ -87,6 +91,37 @@ class AmountTextField extends StatelessWidget {
     );
   }
 
+  void _showInfoDialog(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Betragstypen:'),
+          content: RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: 16),
+              children: [
+                TextSpan(text: '${_amountTypes[0].name}:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: '${_amountTypes[0].description}\n\n'),
+                TextSpan(text: '${_amountTypes[1].name}:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: _amountTypes[1].description),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -108,7 +143,7 @@ class AmountTextField extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () => {
-                      openAmountTypeBottomSheet(
+                      _openAmountTypeBottomSheet(
                         context: context,
                         amountType: amountType,
                       ),

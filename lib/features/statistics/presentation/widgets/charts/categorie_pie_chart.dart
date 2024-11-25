@@ -31,7 +31,7 @@ class CategoriePieChartState extends State<CategoriePieChart> {
     return ClipRect(
       clipBehavior: Clip.antiAlias,
       child: AspectRatio(
-        aspectRatio: 1.2,
+        aspectRatio: 1.05,
         child: PieChart(
           PieChartData(
             pieTouchData: PieTouchData(

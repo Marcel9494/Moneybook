@@ -140,11 +140,11 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                                   leftValue: _dailyLeftValuesMap[state.bookings[index].date],
                                   rightValue: _dailyRightValuesMap[state.bookings[index].date],
                                 ),
-                                BookingCard(booking: state.bookings[index]),
+                                BookingCard(booking: state.bookings[index], activateEditing: false),
                               ],
                             );
                           } else {
-                            return BookingCard(booking: state.bookings[index]);
+                            return BookingCard(booking: state.bookings[index], activateEditing: false);
                           }
                         }
                         if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
