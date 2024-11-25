@@ -105,8 +105,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<String>(
               builder: (BuildContext context) => BottomNavBar(
                 tabIndex: args.tabIndex,
-                selectedMonth: args.selectedMonth,
-                selectedYear: args.selectedYear,
+                selectedDate: args.selectedDate,
               ),
               settings: settings,
             );

@@ -55,7 +55,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
       Navigator.popAndPushNamed(
         context,
         bottomNavBarRoute,
-        arguments: BottomNavBarArguments(tabIndex: 2, selectedMonth: widget.selectedDate.month, selectedYear: widget.selectedDate.year),
+        arguments: BottomNavBarArguments(tabIndex: 2, selectedDate: widget.selectedDate),
       );
     });
     return true;

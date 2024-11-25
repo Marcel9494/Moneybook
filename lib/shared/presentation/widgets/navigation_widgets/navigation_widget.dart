@@ -10,16 +10,13 @@ import '../../../../features/bookings/presentation/widgets/buttons/month_picker_
 
 class BottomNavBar extends StatefulWidget {
   final int tabIndex;
-  final int selectedMonth;
-  final int selectedYear;
+  final DateTime selectedDate;
 
   BottomNavBar({
     super.key,
     required this.tabIndex,
-    int? selectedMonth,
-    int? selectedYear,
-  })  : selectedMonth = selectedMonth ?? DateTime.now().month,
-        selectedYear = selectedYear ?? DateTime.now().year;
+    DateTime? selectedDate,
+  }) : selectedDate = selectedDate ?? DateTime.now();
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -33,7 +30,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime(widget.selectedYear, widget.selectedMonth, 1);
+    _selectedDate = widget.selectedDate;
     _tabIndex = widget.tabIndex;
     _tabController = TabController(length: 4, vsync: this);
     _tabController.animation!.addListener(_tabListener);
