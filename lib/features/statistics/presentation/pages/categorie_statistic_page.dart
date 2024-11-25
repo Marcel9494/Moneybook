@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 
+import '../../../../core/consts/route_consts.dart';
+import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/amount_type.dart';
@@ -48,6 +50,14 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
     BlocProvider.of<BookingBloc>(context).add(
       LoadSortedMonthlyBookings(widget.selectedDate),
     );
+    // Delay navigation to the next event loop tick
+    Future.microtask(() {
+      Navigator.popAndPushNamed(
+        context,
+        bottomNavBarRoute,
+        arguments: BottomNavBarArguments(tabIndex: 2, selectedMonth: widget.selectedDate.month, selectedYear: widget.selectedDate.year),
+      );
+    });
     return true;
   }
 

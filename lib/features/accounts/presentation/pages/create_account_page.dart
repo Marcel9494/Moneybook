@@ -49,7 +49,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           listener: (BuildContext context, AccountState state) {
             if (state is Finished) {
               Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(1));
+              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 1));
             } else if (state is CheckedAccountName) {
               FocusManager.instance.primaryFocus?.unfocus();
               final FormState form = _accountFormKey.currentState!;

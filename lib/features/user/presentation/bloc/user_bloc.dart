@@ -32,7 +32,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           // TODO emit(const Error(message: CREATE_USER_FAILURE));
         }, (isFirstStart) {
           if (isFirstStart == false) {
-            Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+            Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
           }
         });
       }

@@ -96,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           switchDemoMode(demoMode);
                           BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
                           Navigator.pop(context);
-                          Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+                          Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
                         });
                       },
                     ),

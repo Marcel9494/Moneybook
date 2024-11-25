@@ -33,7 +33,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
         ),
       ),
     );
-    Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(0));
+    Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
   }
 
   void _calculateNewBookings() {
