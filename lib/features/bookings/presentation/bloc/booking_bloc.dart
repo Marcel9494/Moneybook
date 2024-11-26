@@ -176,17 +176,17 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }, (_) {
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
-      } else if (event is UpdateAllSerieBookings) {
+      } else if (event is UpdateOnlyFutureSerieBookings) {
         final updateSerieBookingEither =
-            await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
+            await updateOnlyFutureBookingsInSerieUseCase.bookingRepository.updateOnlyFutureBookingsInSerie(event.updatedBooking, event.serieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
         }, (bookings) {
           emit(SerieUpdated(bookings: bookings));
         });
-      } else if (event is UpdateOnlyFutureSerieBookings) {
+      } else if (event is UpdateAllSerieBookings) {
         final updateSerieBookingEither =
-            await updateOnlyFutureBookingsInSerieUseCase.bookingRepository.updateOnlyFutureBookingsInSerie(event.updatedBooking, event.serieBookings);
+            await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
         }, (bookings) {
@@ -216,10 +216,38 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.pop(event.context);
           Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
         });
+      } else if (event is DeleteOnlyFutureSerieBookings) {
+        double overallSerieAmount = 0.0;
+        for (int i = 0; i < event.bookings.length; i++) {
+          if (event.bookings[i].date.isAfter(event.from) && event.bookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.bookings[i].amount;
+          }
+        }
+        event.bookings[0] = event.bookings[0].copyWith(amount: overallSerieAmount);
+        if (event.bookings[0].type == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.bookings[0], 0));
+        } else if (event.bookings[0].type == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.bookings[0], 0));
+        } else if (event.bookings[0].type == BookingType.transfer || event.bookings[0].type == BookingType.investment) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(
+            account.AccountTransfer(
+              event.bookings[0].copyWith(
+                fromAccount: event.bookings[0].toAccount,
+                toAccount: event.bookings[0].fromAccount,
+              ),
+              0,
+            ),
+          );
+        }
+        final deleteBookingEither = await deleteUseCase.bookingRepository.deleteOnlyFutureBookingsInSerie(event.serieId, event.from);
+        deleteBookingEither.fold((failure) {
+          emit(const Error(message: DELETE_BOOKINGS_FAILURE));
+        }, (_) {
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
+        });
       } else if (event is DeleteAllSerieBookings) {
         double overallSerieAmount = 0.0;
         for (int i = 0; i < event.bookings.length; i++) {
-          // TODO DateTime.now() ersetzen
           if (event.bookings[i].date.isBefore(DateTime.now())) {
             overallSerieAmount += event.bookings[i].amount;
           }
@@ -244,18 +272,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKINGS_FAILURE));
         }, (_) {
-          Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
-        });
-      } else if (event is DeleteOnlyFutureSerieBookings) {
-        // TODO hier weitermachen Buchungen buchen siehe DeleteAllSerieBookings
-        final deleteBookingEither = await deleteUseCase.bookingRepository.deleteOnlyFutureBookingsInSerie(event.serieId, event.from);
-        deleteBookingEither.fold((failure) {
-          emit(const Error(message: DELETE_BOOKINGS_FAILURE));
-        }, (_) {
-          Navigator.pop(event.context);
-          Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is LoadSortedMonthlyBookings) {
         final loadBookingEither = await loadSortedMonthlyUseCase.bookingRepository.loadSortedMonthly(event.selectedDate);

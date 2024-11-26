@@ -31,7 +31,7 @@ class _AccountListPageState extends State<AccountListPage> {
 
   void loadAccounts(BuildContext context) {
     BlocProvider.of<AccountBloc>(context).add(
-      LoadAllAccounts(),
+      LoadAccounts(),
     );
   }
 

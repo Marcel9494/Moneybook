@@ -190,7 +190,8 @@ class _EditBookingPageState extends State<EditBookingPage> {
                 if (widget.editMode == SerieModeType.one) {
                   BlocProvider.of<BookingBloc>(context).add(DeleteBooking(widget.booking, context));
                 } else if (widget.editMode == SerieModeType.onlyFuture) {
-                  BlocProvider.of<BookingBloc>(context).add(DeleteOnlyFutureSerieBookings(widget.booking.serieId, widget.booking.date, context));
+                  BlocProvider.of<BookingBloc>(context)
+                      .add(DeleteOnlyFutureSerieBookings(widget.booking.serieId, _oldSerieBookings, widget.booking.date, context));
                 } else if (widget.editMode == SerieModeType.all) {
                   BlocProvider.of<BookingBloc>(context).add(DeleteAllSerieBookings(widget.booking.serieId, _oldSerieBookings, context));
                 }
@@ -311,7 +312,6 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     // muss somit nur einmal aufgerufen werden.
                     double overallSerieAmount = 0.0;
                     for (int i = 0; i < state.bookings.length; i++) {
-                      // TODO DateTime.now() ersetzen
                       if (state.bookings[i].date.isBefore(DateTime.now())) {
                         overallSerieAmount += state.bookings[i].amount;
                       }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 
 import '../../../core/consts/route_consts.dart';
 import '../../../features/accounts/presentation/bloc/account_bloc.dart';
@@ -28,7 +29,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
           id: 0,
           firstStart: false,
           lastStart: DateTime.now(),
-          language: 'De-de',
+          language: locale,
           localDb: true,
         ),
       ),

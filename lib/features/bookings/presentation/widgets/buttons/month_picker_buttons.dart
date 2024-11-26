@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../../../../../core/utils/date_formatter.dart';
@@ -51,7 +52,7 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
                 unselectedMonthTextColor: Colors.white70,
                 confirmWidget: const Text('OK', style: TextStyle(color: Colors.cyanAccent)),
                 cancelWidget: const Text('Abbrechen', style: TextStyle(color: Colors.cyanAccent)),
-                locale: const Locale('DE-de'),
+                locale: const Locale(locale),
                 roundedCornersRadius: 12.0,
                 dismissible: true,
               ).then((date) {

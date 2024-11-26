@@ -47,8 +47,11 @@ class BookingRepositoryImpl implements BookingRepository {
 
   @override
   Future<Either<Failure, Booking>> load(int id) async {
-    // TODO: implement get
-    throw UnimplementedError();
+    try {
+      return Right(await bookingLocalDataSource.load(id));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override

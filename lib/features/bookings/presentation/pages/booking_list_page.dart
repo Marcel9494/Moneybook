@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_value_cards.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
@@ -240,7 +241,7 @@ class _BookingListPageState extends State<BookingListPage> {
                                     child: _dependingBookings.isEmpty
                                         ? EmptyList(
                                             text:
-                                                'Keine ausstehenden Buchungen für\n${DateFormat.MMMM('De-de').format(widget.selectedDate)} vorhanden',
+                                                'Keine ausstehenden Buchungen für\n${DateFormat.MMMM(locale).format(widget.selectedDate)} vorhanden',
                                             icon: Icons.receipt_long_rounded,
                                           )
                                         : ListView.builder(
@@ -280,6 +281,13 @@ class _BookingListPageState extends State<BookingListPage> {
                     ),
                   );
                 }
+              } else if (state is SerieLoaded) {
+                // Der Status SerieLoaded kommt vom edit_booking_page.dart zurück,
+                // wenn eine Serienbuchung bearbeitet werden sollte aber der Benutzer
+                // über den Back Button die Bearbeitung abgebrochen hat. In diesem Fall
+                // muss die Buchungsliste nochmals neu geladen werden, damit auch der Status
+                // auf Loaded gesetzt wird und die Buchungsliste wieder richtig angezeigt wird.
+                _loadBookings(context);
               }
               return const SizedBox();
             },

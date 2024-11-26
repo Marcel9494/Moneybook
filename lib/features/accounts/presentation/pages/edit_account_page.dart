@@ -121,7 +121,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   final FormState form = _deleteAccountFormKey.currentState!;
                   if (form.validate()) {
                     Booking transferBooking = Booking(
-                      id: widget.account.id, // TODO initial auf 0 setzen?
+                      id: 0, // id wird automatisch hochgezählt (SQL: AUTOINCREMENT)
                       serieId: -1,
                       type: BookingType.transfer,
                       title: 'Übertrag',
@@ -254,7 +254,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvoked: (bool didPop) async {
-        BlocProvider.of<AccountBloc>(context).add(LoadAllAccounts());
+        BlocProvider.of<AccountBloc>(context).add(LoadAccounts());
       },
       child: Scaffold(
         appBar: AppBar(
