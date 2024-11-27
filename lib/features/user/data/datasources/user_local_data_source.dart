@@ -29,6 +29,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
     db = await openDatabase(localDbName);
     // TODO Code refactorn, damit Code einfacher zu verstehen ist und shared feature aufräumen (Dead Code entfernen)
     int? userCount = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $userDbName'));
+    print('User Count: $userCount');
     if (userCount == 0) {
       return true;
     }

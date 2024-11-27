@@ -180,42 +180,89 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is UpdateOnlyFutureSerieBookings) {
-        // TODO hier weitermachen und Serienbearbeitung vereinfachen! Alle Werte zusammenzählen und dann 1x berechnen für rückgängig
-        // und neu gebuchte Serienbuchungen
         // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
         // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
         // muss somit nur einmal aufgerufen werden.
         double overallSerieAmount = 0.0;
-        for (int i = 0; i < event.serieBookings.length; i++) {
-          if (event.serieBookings[i].date.isAfter(event.updatedBooking.date) && event.serieBookings[i].date.isBefore(DateTime.now())) {
-            overallSerieAmount += event.serieBookings[i].amount;
+        for (int i = 0; i < event.oldSerieBookings.length; i++) {
+          if (event.oldSerieBookings[i].date.isAfter(event.updatedBooking.date) && event.oldSerieBookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.oldSerieBookings[i].amount;
           }
         }
-        event.serieBookings[0] = event.serieBookings[0].copyWith(amount: overallSerieAmount);
+        event.oldSerieBookings[0] = event.oldSerieBookings[0].copyWith(amount: overallSerieAmount);
         // TODO Random().nextInt(1000000) bessere Lösung finden!
         if (event.bookingType == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.serieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.oldSerieBookings[0], Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.serieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.serieBookings[0], Random().nextInt(1000000)));
+          // TODO muss noch separat getestet werden
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.oldSerieBookings[0], Random().nextInt(1000000)));
         }
-        final updateSerieBookingEither =
-            await updateOnlyFutureBookingsInSerieUseCase.bookingRepository.updateOnlyFutureBookingsInSerie(event.updatedBooking, event.serieBookings);
+        final updateSerieBookingEither = await updateOnlyFutureBookingsInSerieUseCase.bookingRepository
+            .updateOnlyFutureBookingsInSerie(event.updatedBooking, event.oldSerieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
-        }, (bookings) {
+        }, (newSerieBookings) {
+          double overallSerieAmount = 0.0;
+          for (int i = 0; i < newSerieBookings.length; i++) {
+            if (newSerieBookings[i].date.isAfter(event.updatedBooking.date) && newSerieBookings[i].date.isBefore(DateTime.now())) {
+              overallSerieAmount += newSerieBookings[i].amount;
+            }
+          }
+          newSerieBookings[0] = newSerieBookings[0].copyWith(amount: overallSerieAmount);
+          // TODO Random().nextInt(1000000) bessere Lösung finden!
+          if (event.bookingType == BookingType.expense) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.income) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(newSerieBookings[0], Random().nextInt(1000000)));
+          }
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
-          //emit(SerieUpdated(bookings: bookings));
         });
       } else if (event is UpdateAllSerieBookings) {
+        // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+        // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+        // muss somit nur einmal aufgerufen werden.
+        double overallSerieAmount = 0.0;
+        for (int i = 0; i < event.oldSerieBookings.length; i++) {
+          // TODO hier weitermachen und Code verbessern und DateTime auf sameDate zusätzlich prüfen?
+          if (event.oldSerieBookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.oldSerieBookings[i].amount;
+          }
+        }
+        event.oldSerieBookings[0] = event.oldSerieBookings[0].copyWith(amount: overallSerieAmount);
+        // TODO Random().nextInt(1000000) bessere Lösung finden!
+        if (event.bookingType == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+          // TODO muss noch separat getestet werden
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        }
         final updateSerieBookingEither =
-            await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
+            await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.oldSerieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
-        }, (bookings) {
+        }, (newSerieBookings) {
+          double overallSerieAmount = 0.0;
+          for (int i = 0; i < newSerieBookings.length; i++) {
+            if (newSerieBookings[i].date.isBefore(DateTime.now())) {
+              overallSerieAmount += newSerieBookings[i].amount;
+            }
+          }
+          newSerieBookings[0] = newSerieBookings[0].copyWith(amount: overallSerieAmount);
+          // TODO Random().nextInt(1000000) bessere Lösung finden!
+          if (event.bookingType == BookingType.expense) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.income) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(newSerieBookings[0], Random().nextInt(1000000)));
+          }
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
-          //emit(SerieUpdated(bookings: bookings));
         });
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {

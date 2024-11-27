@@ -163,6 +163,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
 
   // ... dann bearbeitete Buchung buchen
   Future<void> _updateBooking(Booking updatedBooking) async {
+    // TODO bessere Lösung für Random().nextInt(1000000) finden!
     if (_bookingType == BookingType.expense) {
       BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(updatedBooking, Random().nextInt(1000000)));
     } else if (_bookingType == BookingType.income) {
@@ -261,7 +262,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                   // Serienbuchungen rückgängig machen...
                   if (state is account.Booked && _hasAccountListenerTriggered == false) {
                     if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
-                      double overallOldSerieAmount = 0.0;
+                      /*double overallOldSerieAmount = 0.0;
                       if (widget.editMode == SerieModeType.onlyFuture) {
                         for (int i = 0; i < _oldSerieBookings.length; i++) {
                           if (_oldSerieBookings[i].date.isAfter(_oldSerieBookings[0].date) && _oldSerieBookings[i].date.isBefore(DateTime.now())) {
@@ -286,7 +287,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       // Account Listener soll nur 1x getriggert werden, weil es sonst zu Mehrfachbuchungen auf Konten kommen kann.
                       setState(() {
                         _hasAccountListenerTriggered = true;
-                      });
+                      });*/
                       //Navigator.pushNamedAndRemoveUntil(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
                     }
                   }
