@@ -19,7 +19,7 @@ abstract class BookingLocalDataSource {
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType);
   Future<List<Booking>> loadCategorieBookings(String categorie);
-  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber);
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, BookingType bookingType, DateTime date, int monthNumber);
   Future<List<Booking>> loadNewBookings();
   Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
@@ -223,14 +223,13 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     return categorieBookingList;
   }
 
-  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber) async {
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, BookingType bookingType, DateTime date, int monthNumber) async {
     db = await openDatabase(localDbName);
     int lastday = DateTime(date.year, date.month + 1, 0).day;
     String startDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month - (monthNumber - 1), 1));
     String endDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month, lastday));
-    List<Map> categorieBookingMap =
-        await db.rawQuery('SELECT * FROM $bookingDbName WHERE categorie = ? AND date BETWEEN ? AND ?', [categorie, startDate, endDate]);
-
+    List<Map> categorieBookingMap = await db.rawQuery(
+        'SELECT * FROM $bookingDbName WHERE categorie = ? AND type = ? AND date BETWEEN ? AND ?', [categorie, bookingType.name, startDate, endDate]);
     List<Booking> categorieBookingList = categorieBookingMap
         .map(
           (booking) => Booking(
@@ -357,7 +356,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                 date: DateTime.parse(booking['date']),
                 repetition: RepetitionType.fromString(booking['repetition']),
                 amount: booking['amount'],
-                amountType: booking['amountType'],
+                amountType: AmountType.fromString(booking['amountType']),
                 currency: booking['currency'],
                 fromAccount: booking['fromAccount'],
                 toAccount: booking['toAccount'],
@@ -411,7 +410,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                   date: DateTime.parse(booking['date']),
                   repetition: RepetitionType.fromString(booking['repetition']),
                   amount: booking['amount'],
-                  amountType: booking['amountType'],
+                  amountType: AmountType.fromString(booking['amountType']),
                   currency: booking['currency'],
                   fromAccount: booking['fromAccount'],
                   toAccount: booking['toAccount'],

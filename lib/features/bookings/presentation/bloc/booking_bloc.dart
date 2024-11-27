@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
+import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/check_for_new_bookings.dart';
@@ -177,12 +180,33 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is UpdateOnlyFutureSerieBookings) {
+        // TODO hier weitermachen und Serienbearbeitung vereinfachen! Alle Werte zusammenzählen und dann 1x berechnen für rückgängig
+        // und neu gebuchte Serienbuchungen
+        // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+        // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+        // muss somit nur einmal aufgerufen werden.
+        double overallSerieAmount = 0.0;
+        for (int i = 0; i < event.serieBookings.length; i++) {
+          if (event.serieBookings[i].date.isAfter(event.updatedBooking.date) && event.serieBookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.serieBookings[i].amount;
+          }
+        }
+        event.serieBookings[0] = event.serieBookings[0].copyWith(amount: overallSerieAmount);
+        // TODO Random().nextInt(1000000) bessere Lösung finden!
+        if (event.bookingType == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.serieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.serieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.serieBookings[0], Random().nextInt(1000000)));
+        }
         final updateSerieBookingEither =
             await updateOnlyFutureBookingsInSerieUseCase.bookingRepository.updateOnlyFutureBookingsInSerie(event.updatedBooking, event.serieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
         }, (bookings) {
-          emit(SerieUpdated(bookings: bookings));
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
+          //emit(SerieUpdated(bookings: bookings));
         });
       } else if (event is UpdateAllSerieBookings) {
         final updateSerieBookingEither =
@@ -190,7 +214,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
         }, (bookings) {
-          emit(SerieUpdated(bookings: bookings));
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
+          //emit(SerieUpdated(bookings: bookings));
         });
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {
@@ -212,9 +237,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKING_FAILURE));
         }, (_) {
-          Navigator.pop(event.context);
-          Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is DeleteOnlyFutureSerieBookings) {
         double overallSerieAmount = 0.0;
@@ -298,7 +321,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         });
       } else if (event is LoadPastMonthlyCategorieBookings) {
         final loadPastMonthlyCategorieBookingEither = await loadPastMonthlyCategorieBookingsUseCase.bookingRepository
-            .loadPastMonthlyCategorieBookings(event.categorie, event.date, event.monthNumber);
+            .loadPastMonthlyCategorieBookings(event.categorie, event.bookingType, event.date, event.monthNumber);
         loadPastMonthlyCategorieBookingEither.fold((failure) {
           emit(const Error(message: LOAD_BOOKINGS_FAILURE));
         }, (bookings) {

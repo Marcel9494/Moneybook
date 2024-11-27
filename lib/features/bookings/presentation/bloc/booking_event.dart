@@ -35,21 +35,25 @@ class UpdateBooking extends BookingEvent {
 class UpdateAllSerieBookings extends BookingEvent {
   final Booking updatedBooking;
   final List<Booking> serieBookings;
+  final BookingType bookingType;
+  final BuildContext context;
 
-  const UpdateAllSerieBookings(this.updatedBooking, this.serieBookings);
+  const UpdateAllSerieBookings(this.updatedBooking, this.serieBookings, this.bookingType, this.context);
 
   @override
-  List<Object?> get props => [updatedBooking, serieBookings];
+  List<Object?> get props => [updatedBooking, serieBookings, bookingType, context];
 }
 
 class UpdateOnlyFutureSerieBookings extends BookingEvent {
   final Booking updatedBooking;
   final List<Booking> serieBookings;
+  final BookingType bookingType;
+  final BuildContext context;
 
-  const UpdateOnlyFutureSerieBookings(this.updatedBooking, this.serieBookings);
+  const UpdateOnlyFutureSerieBookings(this.updatedBooking, this.serieBookings, this.bookingType, this.context);
 
   @override
-  List<Object?> get props => [updatedBooking, serieBookings];
+  List<Object?> get props => [updatedBooking, serieBookings, bookingType, context];
 }
 
 class DeleteBooking extends BookingEvent {
@@ -118,13 +122,14 @@ class LoadCategorieBookings extends BookingEvent {
 
 class LoadPastMonthlyCategorieBookings extends BookingEvent {
   final String categorie;
+  final BookingType bookingType;
   final DateTime date;
   final int monthNumber;
 
-  const LoadPastMonthlyCategorieBookings(this.categorie, this.date, this.monthNumber);
+  const LoadPastMonthlyCategorieBookings(this.categorie, this.bookingType, this.date, this.monthNumber);
 
   @override
-  List<Object?> get props => [categorie, date, monthNumber];
+  List<Object?> get props => [categorie, bookingType, date, monthNumber];
 }
 
 class LoadSerieBookings extends BookingEvent {

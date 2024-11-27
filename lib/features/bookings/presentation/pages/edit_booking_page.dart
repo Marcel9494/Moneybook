@@ -8,10 +8,8 @@ import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
-import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/number_formatter.dart';
-import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
@@ -135,9 +133,9 @@ class _EditBookingPageState extends State<EditBookingPage> {
           await _updateBooking(_updatedBooking!);
           BlocProvider.of<BookingBloc>(context).add(UpdateBooking(_updatedBooking!, context));
         } else if (widget.editMode == SerieModeType.onlyFuture) {
-          BlocProvider.of<BookingBloc>(context).add(UpdateOnlyFutureSerieBookings(_updatedBooking!, _oldSerieBookings));
+          BlocProvider.of<BookingBloc>(context).add(UpdateOnlyFutureSerieBookings(_updatedBooking!, _oldSerieBookings, _bookingType, context));
         } else if (widget.editMode == SerieModeType.all) {
-          BlocProvider.of<BookingBloc>(context).add(UpdateAllSerieBookings(_updatedBooking!, _oldSerieBookings));
+          BlocProvider.of<BookingBloc>(context).add(UpdateAllSerieBookings(_updatedBooking!, _oldSerieBookings, _bookingType, context));
         }
       });
     }
@@ -264,9 +262,17 @@ class _EditBookingPageState extends State<EditBookingPage> {
                   if (state is account.Booked && _hasAccountListenerTriggered == false) {
                     if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
                       double overallOldSerieAmount = 0.0;
-                      for (int i = 0; i < _oldSerieBookings.length; i++) {
-                        if (_oldSerieBookings[i].date.isBefore(DateTime.now())) {
-                          overallOldSerieAmount += _oldSerieBookings[i].amount;
+                      if (widget.editMode == SerieModeType.onlyFuture) {
+                        for (int i = 0; i < _oldSerieBookings.length; i++) {
+                          if (_oldSerieBookings[i].date.isAfter(_oldSerieBookings[0].date) && _oldSerieBookings[i].date.isBefore(DateTime.now())) {
+                            overallOldSerieAmount += _oldSerieBookings[i].amount;
+                          }
+                        }
+                      } else if (widget.editMode == SerieModeType.all) {
+                        for (int i = 0; i < _oldSerieBookings.length; i++) {
+                          if (_oldSerieBookings[i].date.isBefore(DateTime.now())) {
+                            overallOldSerieAmount += _oldSerieBookings[i].amount;
+                          }
                         }
                       }
                       _oldSerieBookings[0] = _oldSerieBookings[0].copyWith(amount: overallOldSerieAmount);
@@ -281,7 +287,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       setState(() {
                         _hasAccountListenerTriggered = true;
                       });
-                      Navigator.pushNamedAndRemoveUntil(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
+                      //Navigator.pushNamedAndRemoveUntil(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
                     }
                   }
                 },

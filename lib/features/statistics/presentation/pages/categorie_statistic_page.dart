@@ -43,7 +43,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
   void _loadCategorieBookings(BuildContext context) {
     _numberOfBookedBookings = 0;
     BlocProvider.of<BookingBloc>(context).add(
-      LoadPastMonthlyCategorieBookings(widget.categorie, widget.selectedDate, 7),
+      LoadPastMonthlyCategorieBookings(widget.categorie, widget.bookingType, widget.selectedDate, 7),
     );
   }
 

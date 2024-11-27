@@ -6,6 +6,7 @@ import 'package:moneybook/features/budgets/presentation/widgets/charts/budget_ov
 
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../bookings/domain/entities/booking.dart';
+import '../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../bookings/presentation/bloc/booking_bloc.dart' as booking;
 import '../../domain/entities/budget.dart';
 import '../bloc/budget_bloc.dart' as budget;
@@ -64,7 +65,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
     }
     for (int i = 0; i < bookings.length; i++) {
       for (int j = 0; j < budgets.length; j++) {
-        if (bookings[i].categorie == budgets[j].categorie) {
+        if (bookings[i].categorie == budgets[j].categorie && bookings[i].type == BookingType.expense) {
           budgets[j].used += bookings[i].amount;
           break;
         }
