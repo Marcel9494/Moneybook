@@ -51,7 +51,7 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
                 selectedMonthBackgroundColor: Colors.cyanAccent,
                 unselectedMonthTextColor: Colors.white70,
                 confirmWidget: const Text('OK', style: TextStyle(color: Colors.cyanAccent)),
-                cancelWidget: const Text('Abbrechen', style: TextStyle(color: Colors.cyanAccent)),
+                cancelWidget: const Text('Abbrechen', style: TextStyle(color: Colors.grey)),
                 locale: const Locale(locale),
                 roundedCornersRadius: 12.0,
                 dismissible: true,

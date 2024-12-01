@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/regex_consts.dart';
 import '../../../../core/utils/number_formatter.dart';
 import '../buttons/square_button.dart';
@@ -69,11 +70,10 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
       );
     },
   ).whenComplete(() {
-    // TODO '€' über Einstellungen setzen können je nach Sprache
     if (amountController.text == '-') {
       amountController.text = '';
-    } else if (amountController.text.isNotEmpty && !amountController.text.contains('€')) {
-      amountController.text = formatToMoneyAmount(amountController.text);
+    } else if (amountController.text.isNotEmpty && !amountController.text.contains(currency)) {
+      amountController.text = formatToMoneyAmount(amountController.text, withoutDecimalPlaces: -1);
     }
   });
 }

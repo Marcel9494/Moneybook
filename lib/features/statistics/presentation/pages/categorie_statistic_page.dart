@@ -162,8 +162,8 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                           return Column(
                             children: [
                               const SizedBox(height: 100.0),
-                              const EmptyList(
-                                text: 'Noch keine Buchungen vorhanden',
+                              EmptyList(
+                                text: 'Noch keine Buchungen\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
                                 icon: Icons.receipt_long_rounded,
                               ),
                             ],

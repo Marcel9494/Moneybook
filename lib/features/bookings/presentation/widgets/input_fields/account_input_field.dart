@@ -6,12 +6,14 @@ class AccountInputField extends StatelessWidget {
   final String hintText;
   final TextEditingController accountController;
   final List<String> accountNameFilter;
+  final String bottomSheetTitle;
 
   const AccountInputField({
     super.key,
     required this.hintText,
     required this.accountController,
     this.accountNameFilter = const [],
+    this.bottomSheetTitle = 'Konto auswählen:',
   });
 
   String? _checkAccountInput() {
@@ -30,7 +32,7 @@ class AccountInputField extends StatelessWidget {
       validator: (input) => _checkAccountInput(),
       onTap: () => openAccountBottomSheet(
         context: context,
-        title: 'Konto auswählen:',
+        title: bottomSheetTitle,
         controller: accountController,
         accountNameFilter: accountNameFilter,
       ),

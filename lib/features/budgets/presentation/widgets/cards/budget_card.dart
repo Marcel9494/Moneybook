@@ -82,14 +82,17 @@ class BudgetCard extends StatelessWidget {
   }
 
   String _calculateBudgetPerDay() {
-    int remainingDaysOfMonth = 0;
+    int numberOfDaysThisMonth = daysInMonth(selectedDate.year, selectedDate.month);
     if (selectedDate.month == DateTime.now().month && selectedDate.year == DateTime.now().year) {
-      int lastDayOfMonth = DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
-      remainingDaysOfMonth = lastDayOfMonth - selectedDate.day + 1;
-    } else {
-      remainingDaysOfMonth = selectedDate.day + 1;
+      numberOfDaysThisMonth -= DateTime.now().day;
     }
-    return formatToMoneyAmount((budget.remaining / remainingDaysOfMonth).toString());
+    return formatToMoneyAmount((budget.remaining / numberOfDaysThisMonth).toString());
+  }
+
+  int daysInMonth(int year, int month) {
+    DateTime firstDayNextMonth = (month < 12) ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
+    DateTime lastDayCurrentMonth = firstDayNextMonth.subtract(Duration(days: 1));
+    return lastDayCurrentMonth.day;
   }
 
   Color _getBudgetColor() {

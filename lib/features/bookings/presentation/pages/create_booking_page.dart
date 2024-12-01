@@ -196,7 +196,12 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                           ),
                           AccountInputField(
                             accountController: _fromAccountController,
-                            hintText: _bookingType.name == BookingType.income.name ? 'Konto...' : 'Abbuchungskonto...',
+                            hintText: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
+                                ? 'Konto...'
+                                : 'Abbuchungskonto...',
+                            bottomSheetTitle: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
+                                ? 'Konto auswählen:'
+                                : 'Abbuchungskonto auswählen:',
                           ),
                           _bookingType.name == BookingType.transfer.name || _bookingType.name == BookingType.investment.name
                               ? AccountInputField(

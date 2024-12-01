@@ -268,13 +268,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
         ),
         body: BlocListener<AccountBloc, AccountState>(
           listener: (BuildContext context, AccountState state) {
-            if (state is Finished) {
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 1));
-            } else if (state is Deleted) {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
+            if (state is Deleted || state is Finished) {
+              Navigator.pushNamedAndRemoveUntil(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 1), (route) => false);
             } else if (state is CheckedAccountName) {
               FocusManager.instance.primaryFocus?.unfocus();
               final FormState form = _accountFormKey.currentState!;

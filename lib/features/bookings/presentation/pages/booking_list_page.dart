@@ -130,10 +130,13 @@ class _BookingListPageState extends State<BookingListPage> {
                           monthlyInvestmentBuys: _monthlyInvestmentBuys,
                           monthlyInvestmentSales: _monthlyInvestmentSales,
                         ),
-                        const Expanded(
-                          child: EmptyList(
-                            text: 'Noch keine Buchungen vorhanden',
-                            icon: Icons.receipt_long_rounded,
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24.0),
+                            child: EmptyList(
+                              text: 'Noch keine Buchungen\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
+                              icon: Icons.receipt_long_rounded,
+                            ),
                           ),
                         ),
                       ],
@@ -182,8 +185,8 @@ class _BookingListPageState extends State<BookingListPage> {
                               if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
                                 return SizedBox(
                                   height: MediaQuery.sizeOf(context).height / 1.5,
-                                  child: const EmptyList(
-                                    text: 'Noch keine Buchungen vorhanden',
+                                  child: EmptyList(
+                                    text: 'Noch keine Buchungen\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
                                     icon: Icons.receipt_long_rounded,
                                   ),
                                 );
@@ -241,7 +244,7 @@ class _BookingListPageState extends State<BookingListPage> {
                                     child: _dependingBookings.isEmpty
                                         ? EmptyList(
                                             text:
-                                                'Keine ausstehenden Buchungen für\n${DateFormat.MMMM(locale).format(widget.selectedDate)} vorhanden',
+                                                'Keine ausstehenden Buchungen\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
                                             icon: Icons.receipt_long_rounded,
                                           )
                                         : ListView.builder(
