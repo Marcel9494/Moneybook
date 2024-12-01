@@ -31,7 +31,7 @@ class DeleteAccount extends AccountEvent {
   List<Object?> get props => [accountId];
 }
 
-class LoadAllAccounts extends AccountEvent {
+class LoadAccounts extends AccountEvent {
   @override
   List<Object?> get props => [];
 }

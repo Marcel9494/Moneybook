@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 
 import '../../../../../core/utils/number_formatter.dart';
 import '../../../../bookings/domain/entities/booking.dart';
@@ -313,7 +314,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     List<String> months = [];
     for (int i = 6; i >= 0; i--) {
       DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - i);
-      String monthName = DateFormat('MMM', 'de-DE').format(monthDate);
+      String monthName = DateFormat('MMM', locale).format(monthDate);
       months.add(monthName);
     }
 

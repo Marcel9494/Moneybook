@@ -36,9 +36,12 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<Either<Failure, Account>> load(int id) {
-    // TODO: implement load
-    throw UnimplementedError();
+  Future<Either<Failure, Account>> load(int id) async {
+    try {
+      return Right(await accountLocalDataSource.load(id));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override

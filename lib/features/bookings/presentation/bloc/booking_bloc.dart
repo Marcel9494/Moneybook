@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
+import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/usecases/check_for_new_bookings.dart';
@@ -176,21 +179,90 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }, (_) {
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
-      } else if (event is UpdateAllSerieBookings) {
-        final updateSerieBookingEither =
-            await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.serieBookings);
-        updateSerieBookingEither.fold((failure) {
-          emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
-        }, (bookings) {
-          emit(SerieUpdated(bookings: bookings));
-        });
       } else if (event is UpdateOnlyFutureSerieBookings) {
-        final updateSerieBookingEither =
-            await updateOnlyFutureBookingsInSerieUseCase.bookingRepository.updateOnlyFutureBookingsInSerie(event.updatedBooking, event.serieBookings);
+        // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+        // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+        // muss somit nur einmal aufgerufen werden.
+        double overallSerieAmount = 0.0;
+        for (int i = 0; i < event.oldSerieBookings.length; i++) {
+          if (event.oldSerieBookings[i].date.isAfter(event.updatedBooking.date) && event.oldSerieBookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.oldSerieBookings[i].amount;
+          }
+        }
+        event.oldSerieBookings[0] = event.oldSerieBookings[0].copyWith(amount: overallSerieAmount);
+        // TODO Random().nextInt(1000000) bessere Lösung finden!
+        if (event.bookingType == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+          // TODO muss noch separat getestet werden
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        }
+        final updateSerieBookingEither = await updateOnlyFutureBookingsInSerieUseCase.bookingRepository
+            .updateOnlyFutureBookingsInSerie(event.updatedBooking, event.oldSerieBookings);
         updateSerieBookingEither.fold((failure) {
           emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
-        }, (bookings) {
-          emit(SerieUpdated(bookings: bookings));
+        }, (newSerieBookings) {
+          double overallSerieAmount = 0.0;
+          for (int i = 0; i < newSerieBookings.length; i++) {
+            if (newSerieBookings[i].date.isAfter(event.updatedBooking.date) && newSerieBookings[i].date.isBefore(DateTime.now())) {
+              overallSerieAmount += newSerieBookings[i].amount;
+            }
+          }
+          newSerieBookings[0] = newSerieBookings[0].copyWith(amount: overallSerieAmount);
+          // TODO Random().nextInt(1000000) bessere Lösung finden!
+          if (event.bookingType == BookingType.expense) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.income) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(newSerieBookings[0], Random().nextInt(1000000)));
+          }
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
+        });
+      } else if (event is UpdateAllSerieBookings) {
+        // Die Beträge der Serienbuchungen die in der Vergangenheit liegen werden zusammengerechnet und
+        // das entsprechende Konto einmal aktualisiert mit dem gesamten Serienbuchungsbetrag. Datenbank
+        // muss somit nur einmal aufgerufen werden.
+        double overallSerieAmount = 0.0;
+        for (int i = 0; i < event.oldSerieBookings.length; i++) {
+          // TODO hier weitermachen und Code verbessern und DateTime auf sameDate zusätzlich prüfen?
+          if (event.oldSerieBookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.oldSerieBookings[i].amount;
+          }
+        }
+        event.oldSerieBookings[0] = event.oldSerieBookings[0].copyWith(amount: overallSerieAmount);
+        // TODO Random().nextInt(1000000) bessere Lösung finden!
+        if (event.bookingType == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+          // TODO muss noch separat getestet werden
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.oldSerieBookings[0], Random().nextInt(1000000)));
+        }
+        final updateSerieBookingEither =
+            await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.oldSerieBookings);
+        updateSerieBookingEither.fold((failure) {
+          emit(const Error(message: UPDATE_SERIE_BOOKINGS_FAILURE));
+        }, (newSerieBookings) {
+          double overallSerieAmount = 0.0;
+          for (int i = 0; i < newSerieBookings.length; i++) {
+            if (newSerieBookings[i].date.isBefore(DateTime.now())) {
+              overallSerieAmount += newSerieBookings[i].amount;
+            }
+          }
+          newSerieBookings[0] = newSerieBookings[0].copyWith(amount: overallSerieAmount);
+          // TODO Random().nextInt(1000000) bessere Lösung finden!
+          if (event.bookingType == BookingType.expense) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.income) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(newSerieBookings[0], Random().nextInt(1000000)));
+          } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
+            BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(newSerieBookings[0], Random().nextInt(1000000)));
+          }
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {
@@ -212,14 +284,40 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKING_FAILURE));
         }, (_) {
-          Navigator.pop(event.context);
-          Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
+        });
+      } else if (event is DeleteOnlyFutureSerieBookings) {
+        double overallSerieAmount = 0.0;
+        for (int i = 0; i < event.bookings.length; i++) {
+          if (event.bookings[i].date.isAfter(event.from) && event.bookings[i].date.isBefore(DateTime.now())) {
+            overallSerieAmount += event.bookings[i].amount;
+          }
+        }
+        event.bookings[0] = event.bookings[0].copyWith(amount: overallSerieAmount);
+        if (event.bookings[0].type == BookingType.expense) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.bookings[0], 0));
+        } else if (event.bookings[0].type == BookingType.income) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.bookings[0], 0));
+        } else if (event.bookings[0].type == BookingType.transfer || event.bookings[0].type == BookingType.investment) {
+          BlocProvider.of<account.AccountBloc>(event.context).add(
+            account.AccountTransfer(
+              event.bookings[0].copyWith(
+                fromAccount: event.bookings[0].toAccount,
+                toAccount: event.bookings[0].fromAccount,
+              ),
+              0,
+            ),
+          );
+        }
+        final deleteBookingEither = await deleteUseCase.bookingRepository.deleteOnlyFutureBookingsInSerie(event.serieId, event.from);
+        deleteBookingEither.fold((failure) {
+          emit(const Error(message: DELETE_BOOKINGS_FAILURE));
+        }, (_) {
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is DeleteAllSerieBookings) {
         double overallSerieAmount = 0.0;
         for (int i = 0; i < event.bookings.length; i++) {
-          // TODO DateTime.now() ersetzen
           if (event.bookings[i].date.isBefore(DateTime.now())) {
             overallSerieAmount += event.bookings[i].amount;
           }
@@ -244,18 +342,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         deleteBookingEither.fold((failure) {
           emit(const Error(message: DELETE_BOOKINGS_FAILURE));
         }, (_) {
-          Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
-        });
-      } else if (event is DeleteOnlyFutureSerieBookings) {
-        // TODO hier weitermachen Buchungen buchen siehe DeleteAllSerieBookings
-        final deleteBookingEither = await deleteUseCase.bookingRepository.deleteOnlyFutureBookingsInSerie(event.serieId, event.from);
-        deleteBookingEither.fold((failure) {
-          emit(const Error(message: DELETE_BOOKINGS_FAILURE));
-        }, (_) {
-          Navigator.pop(event.context);
-          Navigator.pop(event.context);
-          Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
+          Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is LoadSortedMonthlyBookings) {
         final loadBookingEither = await loadSortedMonthlyUseCase.bookingRepository.loadSortedMonthly(event.selectedDate);
@@ -281,7 +368,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         });
       } else if (event is LoadPastMonthlyCategorieBookings) {
         final loadPastMonthlyCategorieBookingEither = await loadPastMonthlyCategorieBookingsUseCase.bookingRepository
-            .loadPastMonthlyCategorieBookings(event.categorie, event.date, event.monthNumber);
+            .loadPastMonthlyCategorieBookings(event.categorie, event.bookingType, event.date, event.monthNumber);
         loadPastMonthlyCategorieBookingEither.fold((failure) {
           emit(const Error(message: LOAD_BOOKINGS_FAILURE));
         }, (bookings) {

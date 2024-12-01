@@ -8,7 +8,6 @@ import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
 import '../../domain/value_objects/repetition_type.dart';
-import '../models/booking_model.dart';
 
 abstract class BookingLocalDataSource {
   Future<void> create(Booking booking);
@@ -16,11 +15,11 @@ abstract class BookingLocalDataSource {
   Future<void> delete(int id);
   Future<void> deleteAllBookingsInSerie(int serieId);
   Future<void> deleteOnlyFutureBookingsInSerie(int serieId, DateTime from);
-  Future<BookingModel> load(int id);
+  Future<Booking> load(int id);
   Future<List<Booking>> loadSortedMonthly(DateTime selectedDate);
   Future<List<Booking>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType);
   Future<List<Booking>> loadCategorieBookings(String categorie);
-  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber);
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, BookingType bookingType, DateTime date, int monthNumber);
   Future<List<Booking>> loadNewBookings();
   Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
@@ -80,8 +79,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         ],
       );
     } catch (e) {
-      // TODO Fehler richtig behandeln
-      print('Error: $e');
+      throw Exception('Booking with title ${booking.title} (id: ${booking.id}) could not updated');
     }
   }
 
@@ -104,9 +102,34 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<BookingModel> load(int id) async {
-    // TODO: implement load
-    throw UnimplementedError();
+  Future<Booking> load(int id) async {
+    db = await openDatabase(localDbName);
+    List<Map> loadedBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE id = ?', [id]);
+    List<Booking> loadedBooking = [];
+    if (loadedBookingMap.isNotEmpty) {
+      loadedBooking = loadedBookingMap
+          .map(
+            (booking) => Booking(
+              id: booking['id'],
+              serieId: booking['serieId'],
+              type: BookingType.fromString(booking['type']),
+              title: booking['title'],
+              date: DateTime.parse(booking['date']),
+              repetition: RepetitionType.fromString(booking['repetition']),
+              amount: booking['amount'],
+              amountType: AmountType.fromString(booking['amountType']),
+              currency: booking['currency'],
+              fromAccount: booking['fromAccount'],
+              toAccount: booking['toAccount'],
+              categorie: booking['categorie'],
+              isBooked: booking['isBooked'] == 0 ? false : true,
+            ),
+          )
+          .toList();
+    } else {
+      throw Exception('Booking with id $id not found');
+    }
+    return loadedBooking[0];
   }
 
   @override
@@ -200,14 +223,13 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     return categorieBookingList;
   }
 
-  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber) async {
+  Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, BookingType bookingType, DateTime date, int monthNumber) async {
     db = await openDatabase(localDbName);
     int lastday = DateTime(date.year, date.month + 1, 0).day;
     String startDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month - (monthNumber - 1), 1));
     String endDate = dateFormatterYYYYMMDD.format(DateTime(date.year, date.month, lastday));
-    List<Map> categorieBookingMap =
-        await db.rawQuery('SELECT * FROM $bookingDbName WHERE categorie = ? AND date BETWEEN ? AND ?', [categorie, startDate, endDate]);
-
+    List<Map> categorieBookingMap = await db.rawQuery(
+        'SELECT * FROM $bookingDbName WHERE categorie = ? AND type = ? AND date BETWEEN ? AND ?', [categorie, bookingType.name, startDate, endDate]);
     List<Booking> categorieBookingList = categorieBookingMap
         .map(
           (booking) => Booking(
@@ -311,8 +333,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             updatedBooking.serieId,
             updatedBooking.type.name,
             updatedBooking.title,
-            DateFormat('yyyy-MM-dd')
-                .format(serieBookings[i].date), // TODO schauen, ob dies immer richtig ist oder repetition beim Bearbeiten deaktivieren
+            DateFormat('yyyy-MM-dd').format(serieBookings[i].date),
             updatedBooking.repetition.name,
             updatedBooking.amount,
             updatedBooking.amountType.name,
@@ -335,7 +356,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                 date: DateTime.parse(booking['date']),
                 repetition: RepetitionType.fromString(booking['repetition']),
                 amount: booking['amount'],
-                amountType: booking['amountType'],
+                amountType: AmountType.fromString(booking['amountType']),
                 currency: booking['currency'],
                 fromAccount: booking['fromAccount'],
                 toAccount: booking['toAccount'],
@@ -347,8 +368,8 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         updatedBookings.add(updatedSerieBooking[0]);
       }
     } catch (e) {
-      // TODO Fehler richtig behandeln
-      print('Error: $e');
+      throw Exception(
+          'Booking serie with title ${updatedBooking.title} (id: ${updatedBooking.id}, serieId: ${updatedBooking.serieId}) could not updated (updateAllBookingsInSerie)');
     }
     return updatedBookings;
   }
@@ -366,8 +387,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
               updatedBooking.serieId,
               updatedBooking.type.name,
               updatedBooking.title,
-              DateFormat('yyyy-MM-dd')
-                  .format(serieBookings[i].date), // TODO schauen, ob dies immer richtig ist oder repetition beim Bearbeiten deaktivieren
+              DateFormat('yyyy-MM-dd').format(serieBookings[i].date),
               updatedBooking.repetition.name,
               updatedBooking.amount,
               updatedBooking.amountType.name,
@@ -390,7 +410,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
                   date: DateTime.parse(booking['date']),
                   repetition: RepetitionType.fromString(booking['repetition']),
                   amount: booking['amount'],
-                  amountType: booking['amountType'],
+                  amountType: AmountType.fromString(booking['amountType']),
                   currency: booking['currency'],
                   fromAccount: booking['fromAccount'],
                   toAccount: booking['toAccount'],
@@ -403,8 +423,8 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
         }
       }
     } catch (e) {
-      // TODO Fehler richtig behandeln
-      print('Error: $e');
+      throw Exception(
+          'Booking serie with title ${updatedBooking.title} (id: ${updatedBooking.id}, serieId: ${updatedBooking.serieId}) could not updated (updateOnlyFutureBookingsInSerie)');
     }
     return updatedBookings;
   }

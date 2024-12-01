@@ -4,13 +4,12 @@ import '../../../../core/consts/database_consts.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../domain/entities/account.dart';
 import '../../domain/value_objects/account_type.dart';
-import '../models/account_model.dart';
 
 abstract class AccountLocalDataSource {
   Future<void> create(Account account);
   Future<void> edit(Account account);
   Future<void> delete(int id);
-  Future<AccountModel> load(int id);
+  Future<Account> load(int id);
   Future<List<Account>> loadAll();
   Future<List<Account>> loadAccountsWithFilter(List<String> accountNameFilter);
   Future<void> deposit(Booking booking);
@@ -40,9 +39,26 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
   }
 
   @override
-  Future<AccountModel> load(int id) {
-    // TODO: implement load
-    throw UnimplementedError();
+  Future<Account> load(int id) async {
+    db = await openDatabase(localDbName);
+    List<Map> loadedAccountMap = await db.rawQuery('SELECT * FROM $accountDbName WHERE id = ?', [id]);
+    List<Account> loadedAccount = [];
+    if (loadedAccountMap.isNotEmpty) {
+      loadedAccount = loadedAccountMap
+          .map(
+            (account) => Account(
+              id: account['id'],
+              type: AccountType.fromString(account['type']),
+              name: account['name'],
+              amount: account['amount'],
+              currency: account['currency'],
+            ),
+          )
+          .toList();
+    } else {
+      throw Exception('Account with id $id not found');
+    }
+    return loadedAccount[0];
   }
 
   @override
@@ -58,8 +74,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
         account.id,
       ]);
     } catch (e) {
-      // TODO Fehler richtig behandeln
-      print('Error: $e');
+      throw Exception('Account with name ${account.name} (id: ${account.id}) could not updated');
     }
   }
 

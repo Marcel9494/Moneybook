@@ -35,7 +35,7 @@ import 'features/accounts/data/datasources/account_remote_data_source.dart';
 import 'features/accounts/data/repositories/account_repository_impl.dart';
 import 'features/accounts/domain/repositories/account_repository.dart';
 import 'features/accounts/domain/usecases/check_account_name.dart';
-import 'features/accounts/domain/usecases/load_all_categories.dart' as load_all_accounts;
+import 'features/accounts/domain/usecases/load_all_accounts.dart' as load_all_accounts;
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'features/bookings/domain/usecases/delete_all_bookings_in_serie.dart';
@@ -118,7 +118,7 @@ void init() {
   sl.registerLazySingleton(() => create_account.Create(sl()));
   sl.registerLazySingleton(() => edit_account.Edit(sl()));
   sl.registerLazySingleton(() => delete_account.Delete(sl()));
-  sl.registerLazySingleton(() => load_all_accounts.LoadAllCategories(sl()));
+  sl.registerLazySingleton(() => load_all_accounts.LoadAllAccounts(sl()));
   sl.registerLazySingleton(() => LoadFilteredAccounts(sl()));
   sl.registerLazySingleton(() => CheckAccountName(sl()));
 

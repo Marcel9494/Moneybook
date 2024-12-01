@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:lottie/lottie.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 
 import '../../../core/consts/route_consts.dart';
 import '../../../features/accounts/presentation/bloc/account_bloc.dart';
@@ -28,7 +30,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
           id: 0,
           firstStart: false,
           lastStart: DateTime.now(),
-          language: 'De-de',
+          language: locale,
           localDb: true,
         ),
       ),
@@ -62,6 +64,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
       },
       builder: (context, state) {
         return IntroductionScreen(
+          safeAreaList: [true, false, true, false],
           pages: [
             PageViewModel(
               titleWidget: const Padding(
@@ -77,7 +80,13 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 style: TextStyle(color: Colors.white, fontSize: 18.0),
                 textAlign: TextAlign.center,
               ),
-              image: Image.asset('assets/animations/introduction_screen_animation_1.gif'),
+              image: Padding(
+                padding: const EdgeInsets.only(top: 40.0),
+                child: Lottie.asset(
+                  'assets/animations/introduction_animation_1.json',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             PageViewModel(
               titleWidget: const Padding(
@@ -93,7 +102,13 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 style: TextStyle(color: Colors.white, fontSize: 18.0),
                 textAlign: TextAlign.center,
               ),
-              image: Image.asset('assets/animations/introduction_screen_animation_1.gif'),
+              image: Padding(
+                padding: const EdgeInsets.only(top: 40.0),
+                child: Lottie.asset(
+                  'assets/animations/introduction_animation_2.json',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             PageViewModel(
               titleWidget: const Padding(
@@ -109,7 +124,13 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 style: TextStyle(color: Colors.white, fontSize: 18.0),
                 textAlign: TextAlign.center,
               ),
-              image: Image.asset('assets/animations/introduction_screen_animation_1.gif'),
+              image: Padding(
+                padding: const EdgeInsets.only(top: 40.0),
+                child: Lottie.asset(
+                  'assets/animations/introduction_animation_3.json',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             PageViewModel(
               titleWidget: const Padding(
@@ -125,7 +146,13 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 style: TextStyle(color: Colors.white, fontSize: 18.0),
                 textAlign: TextAlign.center,
               ),
-              image: Image.asset('assets/animations/introduction_screen_animation_1.gif'),
+              image: Padding(
+                padding: const EdgeInsets.only(top: 40.0),
+                child: Lottie.asset(
+                  'assets/animations/introduction_animation_4.json',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
           ],
           showSkipButton: true,

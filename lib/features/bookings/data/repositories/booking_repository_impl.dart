@@ -7,6 +7,7 @@ import 'package:moneybook/features/bookings/domain/repositories/booking_reposito
 import 'package:moneybook/features/bookings/domain/value_objects/amount_type.dart';
 import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
+import '../../domain/value_objects/booking_type.dart';
 import '../datasources/booking_local_data_source.dart';
 
 class BookingRepositoryImpl implements BookingRepository {
@@ -47,8 +48,11 @@ class BookingRepositoryImpl implements BookingRepository {
 
   @override
   Future<Either<Failure, Booking>> load(int id) async {
-    // TODO: implement get
-    throw UnimplementedError();
+    try {
+      return Right(await bookingLocalDataSource.load(id));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
@@ -160,9 +164,10 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<Either<Failure, List<Booking>>> loadPastMonthlyCategorieBookings(String categorie, DateTime date, int monthNumber) async {
+  Future<Either<Failure, List<Booking>>> loadPastMonthlyCategorieBookings(
+      String categorie, BookingType bookingType, DateTime date, int monthNumber) async {
     try {
-      return Right(await bookingLocalDataSource.loadPastMonthlyCategorieBookings(categorie, date, monthNumber));
+      return Right(await bookingLocalDataSource.loadPastMonthlyCategorieBookings(categorie, bookingType, date, monthNumber));
     } on ServerException {
       return Left(ServerFailure());
     }

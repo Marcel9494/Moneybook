@@ -5,7 +5,7 @@ import 'package:moneybook/features/accounts/domain/usecases/create.dart';
 
 import '../../../accounts/domain/usecases/delete.dart';
 import '../../../accounts/domain/usecases/edit.dart';
-import '../../../accounts/domain/usecases/load_all_categories.dart';
+import '../../../accounts/domain/usecases/load_all_accounts.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../domain/usecases/check_account_name.dart';
 import '../../domain/usecases/load_filtered_accounts.dart';
@@ -26,11 +26,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final Create createUseCase;
   final Edit editUseCase;
   final Delete deleteUseCase;
-  final LoadAllCategories loadAllCategoriesUseCase; // TODO Name in Accounts umändern
+  final LoadAllAccounts loadAllAccountsUseCase;
   final LoadFilteredAccounts loadAccountsWithFilterUseCase;
   final CheckAccountName checkAccountNameUseCase;
 
-  AccountBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadAllCategoriesUseCase, this.loadAccountsWithFilterUseCase,
+  AccountBloc(this.createUseCase, this.editUseCase, this.deleteUseCase, this.loadAllAccountsUseCase, this.loadAccountsWithFilterUseCase,
       this.checkAccountNameUseCase)
       : super(Initial()) {
     on<AccountEvent>((event, emit) async {
@@ -55,8 +55,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         }, (_) {
           emit(Deleted());
         });
-      } else if (event is LoadAllAccounts) {
-        final loadAccountEither = await loadAllCategoriesUseCase.accountRepository.loadAll();
+      } else if (event is LoadAccounts) {
+        final loadAccountEither = await loadAllAccountsUseCase.accountRepository.loadAll();
         loadAccountEither.fold((failure) {
           emit(const Error(message: LOAD_ACCOUNTS_FAILURE));
         }, (accounts) {

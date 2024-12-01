@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 
 import '../../../../core/consts/route_consts.dart';
@@ -42,7 +43,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
   void _loadCategorieBookings(BuildContext context) {
     _numberOfBookedBookings = 0;
     BlocProvider.of<BookingBloc>(context).add(
-      LoadPastMonthlyCategorieBookings(widget.categorie, widget.selectedDate, 7),
+      LoadPastMonthlyCategorieBookings(widget.categorie, widget.bookingType, widget.selectedDate, 7),
     );
   }
 
@@ -123,7 +124,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(18.0, 0.0, 12.0, 4.0),
                     child: Text(
-                      '${DateFormat('MMMM', 'de-DE').format(DateTime(widget.selectedDate.year, widget.selectedDate.month))} Buchungen',
+                      '${DateFormat('MMMM', locale).format(DateTime(widget.selectedDate.year, widget.selectedDate.month))} Buchungen',
                       style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
                     ),
                   ),

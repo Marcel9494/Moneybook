@@ -4,6 +4,7 @@ import 'package:moneybook/features/bookings/domain/repositories/booking_reposito
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
+import '../value_objects/booking_type.dart';
 
 class LoadPastCategorieBookings implements UseCase<void, Params> {
   final BookingRepository bookingRepository;
@@ -12,17 +13,18 @@ class LoadPastCategorieBookings implements UseCase<void, Params> {
 
   @override
   Future<Either<Failure, void>> call(Params params) async {
-    return await bookingRepository.loadPastMonthlyCategorieBookings(params.categorie, params.date, params.monthNumber);
+    return await bookingRepository.loadPastMonthlyCategorieBookings(params.categorie, params.bookingType, params.date, params.monthNumber);
   }
 }
 
 class Params extends Equatable {
   final String categorie;
+  final BookingType bookingType;
   final DateTime date;
   final int monthNumber;
 
-  const Params({required this.categorie, required this.date, required this.monthNumber});
+  const Params({required this.categorie, required this.bookingType, required this.date, required this.monthNumber});
 
   @override
-  List<Object> get props => [categorie, date, monthNumber];
+  List<Object> get props => [categorie, bookingType, date, monthNumber];
 }
