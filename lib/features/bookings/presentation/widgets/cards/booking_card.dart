@@ -161,7 +161,7 @@ class BookingCard extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  formatToMoneyAmount(booking.amount.toString()),
+                                  formatToMoneyAmount(booking.amount.toString(), withoutDecimalPlaces: 9),
                                   style: TextStyle(
                                     color: _getBookingTypeColor(),
                                   ),

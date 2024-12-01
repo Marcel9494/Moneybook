@@ -39,8 +39,8 @@ class _AccountListPageState extends State<AccountListPage> {
     _assets = 0.0;
     _debts = 0.0;
     for (int i = 0; i < accounts.length; i++) {
-      if (accounts[i].type == AccountType.credit) {
-        _debts += accounts[i].amount;
+      if (accounts[i].type == AccountType.credit || accounts[i].amount < 0.0) {
+        _debts += accounts[i].amount.abs();
       } else {
         _assets += accounts[i].amount;
       }

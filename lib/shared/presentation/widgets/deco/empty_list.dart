@@ -15,7 +15,7 @@ class EmptyList extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 46.0),
+        Icon(icon, size: 54.0),
         const SizedBox(height: 12.0),
         Text(text, textAlign: TextAlign.center),
       ],

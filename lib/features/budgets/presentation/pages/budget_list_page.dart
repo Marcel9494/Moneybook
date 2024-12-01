@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/cards/budget_card.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/charts/budget_overview_chart.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
@@ -99,9 +101,9 @@ class _BudgetListPageState extends State<BudgetListPage> {
                         createRoute: createBudgetRoute,
                         leftPadding: 26.0,
                       ),
-                      const Expanded(
+                      Expanded(
                         child: EmptyList(
-                          text: 'Noch keine Budgets vorhanden',
+                          text: 'Noch keine Budgets\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
                           icon: Icons.savings_rounded,
                         ),
                       ),

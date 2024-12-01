@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:moneybook/features/statistics/presentation/widgets/buttons/booking_type_segmented_button.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
@@ -222,9 +224,9 @@ class _StatisticPageState extends State<StatisticPage> {
                             },
                           ),
                         )
-                      : const Expanded(
+                      : Expanded(
                           child: EmptyList(
-                            text: 'Noch keine Buchungen vorhanden',
+                            text: 'Noch keine Buchungen\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
                             icon: Icons.donut_small,
                           ),
                         ),

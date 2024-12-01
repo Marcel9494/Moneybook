@@ -36,21 +36,21 @@ class _AccountCardState extends State<AccountCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    flex: 5,
+                    flex: 2,
                     child: Text(
                       widget.account.name,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 14.0),
                     ),
                   ),
-                  const SizedBox(width: 18.0),
+                  const SizedBox(width: 12.0),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          formatToMoneyAmount(widget.account.amount.toString()),
+                          formatToMoneyAmount(widget.account.amount.toString(), withoutDecimalPlaces: 9),
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 14.0),
                         ),
