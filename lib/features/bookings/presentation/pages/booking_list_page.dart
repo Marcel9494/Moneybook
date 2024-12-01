@@ -213,8 +213,8 @@ class _BookingListPageState extends State<BookingListPage> {
                                 title: Text(
                                   _isExpanded
                                       ? _dependingBookings.length == 1
-                                          ? '1 Ausstehende Buchung'
-                                          : '${_dependingBookings.length} Ausstehende Buchungen'
+                                          ? '1 Ausstehende Buchung:'
+                                          : '${_dependingBookings.length} Ausstehende Buchungen:'
                                       : '${_dependingBookings.length} Ausstehende',
                                   style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 14.5 : 13.0),
                                 ),
