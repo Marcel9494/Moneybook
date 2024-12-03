@@ -51,13 +51,22 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     return '';
   }
 
-  String _getSecondAmountType() {
+  String _getFirstAmountTypeString() {
     if (BookingType.expense == widget.bookingType) {
-      return '${AmountType.variable.name} / ${AmountType.fix.name}';
+      return AmountType.variable.name;
     } else if (BookingType.income == widget.bookingType) {
-      return '${AmountType.active.name} / ${AmountType.passive.name}';
+      return AmountType.active.name;
     } else if (BookingType.investment == widget.bookingType) {
       return AmountType.sale.name;
+    }
+    return '';
+  }
+
+  String _getSecondAmountTypeString() {
+    if (BookingType.expense == widget.bookingType) {
+      return AmountType.fix.name;
+    } else if (BookingType.income == widget.bookingType) {
+      return AmountType.passive.name;
     }
     return '';
   }
@@ -77,11 +86,19 @@ class CategorieBarChartState extends State<CategorieBarChart> {
 
     for (Booking booking in bookings) {
       String monthKey = "${booking.date.year}-${booking.date.month.toString().padLeft(2, '0')}";
-      _monthlyAmountSums.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
-      if (booking.amountType == AmountType.variable || booking.amountType == AmountType.active) {
-        _monthlyFirstBarValues.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
-      } else if (booking.amountType == AmountType.fix || booking.amountType == AmountType.passive) {
-        _monthlySecondBarValues.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+      if (booking.type == BookingType.expense || booking.type == BookingType.income) {
+        _monthlyAmountSums.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+        if (booking.amountType == AmountType.variable || booking.amountType == AmountType.active) {
+          _monthlyFirstBarValues.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+        } else if (booking.amountType == AmountType.fix || booking.amountType == AmountType.passive) {
+          _monthlySecondBarValues.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+        }
+      } else {
+        if (booking.amountType == AmountType.buy) {
+          _monthlyAmountSums.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+        } else if (booking.amountType == AmountType.sale) {
+          _monthlyFirstBarValues.update(monthKey, (value) => value + booking.amount, ifAbsent: () => booking.amount);
+        }
       }
     }
 
@@ -137,14 +154,17 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                     onTap: () => _changeBarChartView(false),
                     child: IntrinsicHeight(
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(right: 4.0),
-                            child: VerticalDivider(
-                              color: _showSeparatedBars == false ? Colors.cyanAccent : Colors.grey,
-                              thickness: 2.0,
-                              indent: 4.0,
-                              endIndent: 4.0,
+                            padding: const EdgeInsets.only(top: 7.0, right: 6.0),
+                            child: Container(
+                              width: 8.0,
+                              height: 8.0,
+                              decoration: BoxDecoration(
+                                color: _showSeparatedBars == false ? Colors.cyanAccent : Colors.grey,
+                                shape: BoxShape.circle,
+                              ),
                             ),
                           ),
                           Column(
@@ -154,13 +174,13 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                                 _getFirstAmountType(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: _showSeparatedBars == false ? Colors.white : Colors.grey,
+                                  color: _showSeparatedBars == false ? Colors.cyanAccent : Colors.grey,
                                 ),
                               ),
                               Text(
                                 formatToMoneyAmount(_monthlyAmountSums.values.last.toString()),
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(color: _showSeparatedBars == false ? Colors.cyanAccent : Colors.grey),
+                                style: TextStyle(color: _showSeparatedBars == false ? Colors.white : Colors.grey),
                               ),
                             ],
                           ),
@@ -174,40 +194,60 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                       onTap: () => _changeBarChartView(true),
                       child: IntrinsicHeight(
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(right: 4.0),
-                              child: VerticalDivider(
-                                color: _showSeparatedBars ? Colors.cyanAccent : Colors.grey,
-                                thickness: 2.0,
-                                indent: 4.0,
-                                endIndent: 4.0,
+                              padding: const EdgeInsets.only(top: 7.0, right: 6.0),
+                              child: Container(
+                                width: 8.0,
+                                height: 8.0,
+                                decoration: BoxDecoration(
+                                  color: _showSeparatedBars
+                                      ? BookingType.investment == widget.bookingType
+                                          ? Colors.greenAccent
+                                          : Colors.cyanAccent
+                                      : Colors.grey,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  _getSecondAmountType(),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: _showSeparatedBars ? Colors.white : Colors.grey,
-                                  ),
-                                ),
                                 Row(
                                   children: [
                                     Text(
-                                      formatToMoneyAmount(_monthlyFirstBarValues.values.last.toString()),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: _showSeparatedBars ? Colors.greenAccent : Colors.grey),
+                                      _getFirstAmountTypeString(),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: _showSeparatedBars ? Colors.greenAccent : Colors.grey,
+                                      ),
                                     ),
-                                    Text(' / ', style: TextStyle(color: _showSeparatedBars ? Colors.white : Colors.grey)),
-                                    Text(
-                                      formatToMoneyAmount(_monthlySecondBarValues.values.last.toString()),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: _showSeparatedBars ? Colors.redAccent : Colors.grey),
-                                    ),
+                                    BookingType.investment != widget.bookingType
+                                        ? Text(
+                                            ' / ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: _showSeparatedBars ? Colors.white : Colors.grey,
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    BookingType.investment != widget.bookingType
+                                        ? Text(
+                                            _getSecondAmountTypeString(),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: _showSeparatedBars ? Colors.redAccent : Colors.grey,
+                                            ),
+                                          )
+                                        : const SizedBox(),
                                   ],
+                                ),
+                                Text(
+                                  '${formatToMoneyAmount(_monthlyFirstBarValues.values.last.toString())}'
+                                  '${BookingType.investment != widget.bookingType ? ' / ${formatToMoneyAmount(_monthlySecondBarValues.values.last.toString())}' : ''}',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(color: _showSeparatedBars ? Colors.white : Colors.grey),
                                 ),
                               ],
                             ),
@@ -223,7 +263,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
             Expanded(
               child: BarChart(
                 swapAnimationCurve: Curves.fastOutSlowIn,
-                swapAnimationDuration: Duration(milliseconds: 500),
+                swapAnimationDuration: Duration(milliseconds: barChartDurationInMs),
                 BarChartData(
                   maxY: _maxAmountEntry.value,
                   barTouchData: BarTouchData(
@@ -233,7 +273,14 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                       }),
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
-                          '${formatToMoneyAmount(rod.toY.toString())}',
+                          _showSeparatedBars == false
+                              ? BookingType.investment == widget.bookingType
+                                  ? 'Kauf:\n${formatToMoneyAmount(rod.toY.toString())}'
+                                  : 'Gesamt:\n${formatToMoneyAmount(rod.toY.toString())}'
+                              : rodIndex == 0
+                                  ? '${_getFirstAmountTypeString()}:\n${formatToMoneyAmount(rod.toY.toString())}'
+                                  : '${_getSecondAmountTypeString()}:\n${formatToMoneyAmount(rod.toY.toString())}',
+                          textAlign: TextAlign.start,
                           const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -346,13 +393,13 @@ class CategorieBarChartState extends State<CategorieBarChart> {
         BarChartRodData(
           toY: y1,
           color: _showSeparatedBars ? Colors.greenAccent : Colors.cyanAccent,
-          width: widget.bookingType.name == BookingType.investment.name ? 7.0 : 12.0,
+          width: 12.0,
         ),
         showTwo
             ? BarChartRodData(
                 toY: y2,
                 color: Colors.redAccent,
-                width: widget.bookingType.name == BookingType.investment.name ? 7.0 : 12.0,
+                width: 12.0,
               )
             : BarChartRodData(
                 toY: 0.0,
