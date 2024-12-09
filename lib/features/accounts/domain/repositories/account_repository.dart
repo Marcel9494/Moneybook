@@ -14,5 +14,6 @@ abstract class AccountRepository {
   Future<Either<Failure, void>> deposit(Booking booking);
   Future<Either<Failure, void>> withdraw(Booking booking);
   Future<Either<Failure, void>> transfer(Booking booking);
+  Future<Either<Failure, void>> transferBack(Booking booking);
   Future<Either<Failure, bool>> checkAccountName(String accountName);
 }

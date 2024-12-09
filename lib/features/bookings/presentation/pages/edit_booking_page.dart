@@ -262,6 +262,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                   // Serienbuchungen rückgängig machen...
                   if (state is account.Booked && _hasAccountListenerTriggered == false) {
                     if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
+                      // TODO kann entfernt werden ifs auch?
                       /*double overallOldSerieAmount = 0.0;
                       if (widget.editMode == SerieModeType.onlyFuture) {
                         for (int i = 0; i < _oldSerieBookings.length; i++) {
@@ -351,6 +352,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       repetitionType: _repetitionType.name,
                       onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                       activateRepetition: false,
+                      activateDatePicker: widget.editMode == SerieModeType.one ? true : false,
                     ),
                     TitleTextField(hintText: 'Titel...', titleController: _titleController),
                     AmountTextField(

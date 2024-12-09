@@ -54,7 +54,7 @@ final darkTheme = ThemeData(
     cancelButtonStyle: ButtonStyle(
       foregroundColor: MaterialStateProperty.resolveWith<Color>(
         (Set<MaterialState> states) {
-          return Colors.cyanAccent;
+          return Colors.grey;
         },
       ),
     ),

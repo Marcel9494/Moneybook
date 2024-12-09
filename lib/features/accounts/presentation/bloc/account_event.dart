@@ -75,6 +75,16 @@ class AccountTransfer extends AccountEvent {
   List<Object?> get props => [booking, bookedId];
 }
 
+class AccountTransferBack extends AccountEvent {
+  final Booking booking;
+  final int bookedId;
+
+  const AccountTransferBack(this.booking, this.bookedId);
+
+  @override
+  List<Object?> get props => [booking, bookedId];
+}
+
 class CheckAccountNameExists extends AccountEvent {
   final String accountName;
   int numberOfEventCalls;

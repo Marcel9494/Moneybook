@@ -15,6 +15,7 @@ abstract class AccountLocalDataSource {
   Future<void> deposit(Booking booking);
   Future<void> withdraw(Booking booking);
   Future<void> transfer(Booking booking);
+  Future<void> transferBack(Booking booking);
   Future<bool> checkAccountName(String accountName);
 }
 
@@ -167,6 +168,31 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
 
         final newFromAmount = fromCurrentAmount - booking.amount;
         final newToAmount = toCurrentAmount + booking.amount;
+
+        await ta.rawUpdate(
+          'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+          [newFromAmount, booking.fromAccount],
+        );
+        await ta.rawUpdate(
+          'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+          [newToAmount, booking.toAccount],
+        );
+      }
+    });
+  }
+
+  @override
+  Future<void> transferBack(Booking booking) async {
+    db = await openDatabase(localDbName);
+    await db.transaction((ta) async {
+      List<Map> fromAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.fromAccount]);
+      List<Map> toAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [booking.toAccount]);
+      if (fromAccountBalance.isNotEmpty && toAccountBalance.isNotEmpty) {
+        final fromCurrentAmount = fromAccountBalance[0]['amount'];
+        final toCurrentAmount = toAccountBalance[0]['amount'];
+
+        final newFromAmount = fromCurrentAmount + booking.amount;
+        final newToAmount = toCurrentAmount - booking.amount;
 
         await ta.rawUpdate(
           'UPDATE $accountDbName SET amount = ? WHERE name = ?',

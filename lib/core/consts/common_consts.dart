@@ -1,5 +1,6 @@
 const bool adminMode = true;
 const String locale = 'de-DE';
+const String singleLocale = 'de';
 const String currency = '€';
 
 const int durationInMs = 800;

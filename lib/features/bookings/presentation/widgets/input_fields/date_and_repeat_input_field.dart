@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
+import '../../../../../core/consts/common_consts.dart';
 import '../../../../../core/utils/date_formatter.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../buttons/list_view_button.dart';
@@ -11,6 +12,7 @@ class DateAndRepeatInputField extends StatefulWidget {
   String repetitionType;
   Function onSelectionChanged;
   bool activateRepetition;
+  bool activateDatePicker;
 
   DateAndRepeatInputField({
     super.key,
@@ -18,6 +20,7 @@ class DateAndRepeatInputField extends StatefulWidget {
     required this.repetitionType,
     required this.onSelectionChanged,
     this.activateRepetition = true,
+    this.activateDatePicker = true,
   });
 
   @override
@@ -108,9 +111,15 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
       showCursor: false,
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
+      style: TextStyle(
+        color: widget.activateDatePicker ? Colors.white : Colors.grey,
+      ),
       decoration: InputDecoration(
         hintText: 'Datum...',
         counterText: '',
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: widget.activateDatePicker ? Colors.cyanAccent : Colors.grey),
+        ),
         prefixIcon: const IconTheme(
           data: IconThemeData(color: Colors.grey),
           child: Icon(Icons.calendar_month_rounded),
@@ -145,19 +154,21 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
           ],
         ),
       ),
-      onTap: () async {
-        final DateTime? parsedDate = await showDatePicker(
-          context: context,
-          locale: const Locale('de', 'DE'),
-          firstDate: DateTime(DateTime.now().year - 10),
-          lastDate: DateTime(DateTime.now().year + 100),
-        );
-        if (parsedDate != null) {
-          setState(() {
-            widget.dateController.text = dateFormatterDDMMYYYYEE.format(parsedDate);
-          });
-        }
-      },
+      onTap: widget.activateDatePicker
+          ? () async {
+              final DateTime? parsedDate = await showDatePicker(
+                context: context,
+                locale: Locale(singleLocale, singleLocale.toUpperCase()),
+                firstDate: DateTime(2014),
+                lastDate: DateTime(DateTime.now().year + 100),
+              );
+              if (parsedDate != null) {
+                setState(() {
+                  widget.dateController.text = dateFormatterDDMMYYYYEE.format(parsedDate);
+                });
+              }
+            }
+          : () => {},
     );
   }
 }
