@@ -24,4 +24,17 @@ extension CategorieTypeExtension on CategorieType {
         throw Exception('$name is not a valid Categorie type.');
     }
   }
+
+  String get pluralName {
+    switch (this) {
+      case CategorieType.expense:
+        return 'Ausgaben';
+      case CategorieType.income:
+        return 'Einnahmen';
+      case CategorieType.investment:
+        return 'Investitionen';
+      default:
+        throw Exception('$name is not a valid Categorie type.');
+    }
+  }
 }

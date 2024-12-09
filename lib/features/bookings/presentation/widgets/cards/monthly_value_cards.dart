@@ -76,6 +76,7 @@ class _MonthlyValueCardsState extends State<MonthlyValueCards> {
             monthlyValue: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales,
             dailyAverageValue: (widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales) / numberOfDays,
             textColor: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales >= 0.0 ? Colors.greenAccent : Colors.redAccent,
+            showInfo: true,
           ),
         ],
       ),

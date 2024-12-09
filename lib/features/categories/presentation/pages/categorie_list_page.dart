@@ -181,6 +181,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       });
       _setTabControllerIndex(_selectedCategorieType);
       Navigator.pop(context);
+      _showFlushbar('Kategorie ${_categorieNameController.text.trim()} wurde erfolgreich erstellt.');
     }
   }
 
@@ -306,6 +307,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       });
       _setTabControllerIndex(_selectedCategorieType);
       Navigator.pop(context);
+      _showFlushbar('Kategorie ${_categorieNameController.text.trim()} wurde erfolgreich bearbeitet.');
     }
   }
 
@@ -351,6 +353,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   DeleteCategorie(categorie.id, context),
                 );
                 Navigator.of(context).pop();
+                _showFlushbar('Kategorie ${_categorieNameController.text.trim()} wurde erfolgreich gelöscht.');
               },
             ),
             TextButton(
@@ -401,6 +404,21 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
     }
   }
 
+  void _showFlushbar(String message) {
+    Flushbar(
+      message: message,
+      icon: Icon(
+        Icons.info_outline,
+        size: 28.0,
+        color: Colors.cyanAccent,
+      ),
+      duration: Duration(seconds: 3),
+      leftBarIndicatorColor: Colors.cyanAccent,
+      flushbarPosition: FlushbarPosition.TOP,
+      shouldIconPulse: false,
+    )..show(context);
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -427,9 +445,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             controller: _tabController,
             splashFactory: NoSplash.splashFactory,
             tabs: [
-              Tab(text: CategorieType.expense.name),
-              Tab(text: CategorieType.income.name),
-              Tab(text: CategorieType.investment.name),
+              Tab(text: CategorieType.expense.pluralName),
+              Tab(text: CategorieType.income.pluralName),
+              Tab(text: CategorieType.investment.pluralName),
             ],
           ),
         ),

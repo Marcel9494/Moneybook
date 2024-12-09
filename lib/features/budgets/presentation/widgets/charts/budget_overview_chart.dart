@@ -101,7 +101,7 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
                 progressColor: _getBudgetColor(),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20.0),
+                padding: const EdgeInsets.only(left: 18.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -112,7 +112,7 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
                     ),
                     TextWithVerticalDivider(
                       verticalDividerColor: Colors.cyanAccent,
-                      description: 'Nicht zugeordnet',
+                      description: 'Buchungen ohne Budget',
                       value: _calculateNotAssigned(),
                     ),
                     TextWithVerticalDivider(

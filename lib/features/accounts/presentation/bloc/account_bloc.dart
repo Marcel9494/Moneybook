@@ -20,6 +20,7 @@ const String LOAD_ACCOUNTS_FAILURE = 'Kontoliste konnte nicht geladen werden.';
 const String ACCOUNT_DEPOSIT_FAILURE = 'Kontoeinzahlung konnte nicht durchgeführt werden.';
 const String ACCOUNT_WITHDRAW_FAILURE = 'Kontoabhebung konnte nicht durchgeführt werden.';
 const String ACCOUNT_TRANSFER_FAILURE = 'Kontotransfer konnte nicht durchgeführt werden.';
+const String ACCOUNT_TRANSFER_BACK_FAILURE = 'Kontorücktransfer konnte nicht durchgeführt werden.';
 const String ACCOUNT_NAME_EXISTS_FAILURE = 'Kontoname konnte nicht geprüft werden.';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
@@ -99,6 +100,17 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking);
         accountTransferEither.fold((failure) {
           emit(const Error(message: ACCOUNT_TRANSFER_FAILURE));
+        }, (_) {
+          emit(Booked(id: event.bookedId));
+        });
+      } else if (event is AccountTransferBack) {
+        if (event.booking.date.isAfter(DateTime.now())) {
+          emit(Booked(id: event.bookedId));
+          return;
+        }
+        final accountTransferBackEither = await createUseCase.accountRepository.transferBack(event.booking);
+        accountTransferBackEither.fold((failure) {
+          emit(const Error(message: ACCOUNT_TRANSFER_BACK_FAILURE));
         }, (_) {
           emit(Booked(id: event.bookedId));
         });

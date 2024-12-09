@@ -196,8 +196,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         } else if (event.bookingType == BookingType.income) {
           BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
-          // TODO muss noch separat getestet werden
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransferBack(event.oldSerieBookings[0], Random().nextInt(1000000)));
         }
         final updateSerieBookingEither = await updateOnlyFutureBookingsInSerieUseCase.bookingRepository
             .updateOnlyFutureBookingsInSerie(event.updatedBooking, event.oldSerieBookings);
@@ -239,8 +238,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         } else if (event.bookingType == BookingType.income) {
           BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
-          // TODO muss noch separat getestet werden
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransferBack(event.oldSerieBookings[0], Random().nextInt(1000000)));
         }
         final updateSerieBookingEither =
             await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.oldSerieBookings);

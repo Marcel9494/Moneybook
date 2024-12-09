@@ -148,8 +148,10 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                               children: [
                                 DailyReportSummary(
                                   date: state.bookings[index].date,
-                                  leftValue: _dailyLeftValuesMap[state.bookings[index].date],
-                                  rightValue: _dailyRightValuesMap[state.bookings[index].date],
+                                  leftValue:
+                                      state.bookings[index].type == BookingType.investment ? 0.0 : _dailyLeftValuesMap[state.bookings[index].date],
+                                  rightValue:
+                                      state.bookings[index].type == BookingType.investment ? 0.0 : _dailyRightValuesMap[state.bookings[index].date],
                                 ),
                                 BookingCard(booking: state.bookings[index], activateEditing: false),
                               ],
