@@ -88,7 +88,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       title: widget.booking.title,
       date: widget.booking.date,
       repetition: widget.booking.repetition,
-      amount: Amount.getValue(widget.booking.amount.toString()),
+      amount: widget.booking.amount,
       amountType: widget.booking.amountType,
       currency: Amount.getCurrency(widget.booking.amount.toString()),
       fromAccount: widget.booking.fromAccount,
@@ -144,7 +144,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
   // Alte Buchung zuerst rückgängig machen...
   Future<void> _reverseBooking() async {
     if (_oldBooking.type == BookingType.expense) {
-      print(_oldBooking.amount);
+      print('Test: ${_oldBooking.amount}');
       BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldBooking, 0));
     } else if (_oldBooking.type == BookingType.income) {
       BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldBooking, 0));
