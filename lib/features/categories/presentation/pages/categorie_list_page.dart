@@ -436,7 +436,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             builder: (context) {
               return IconButton(
                 onPressed: () => Scaffold.of(context).openDrawer(),
-                icon: const Icon(Icons.menu_rounded),
+                icon: const Icon(Icons.notes_rounded),
               );
             },
           ),

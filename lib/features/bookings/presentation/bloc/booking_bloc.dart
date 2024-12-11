@@ -269,7 +269,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.booking, 0));
         } else if (event.booking.type == BookingType.transfer || event.booking.type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
-            account.AccountTransfer(
+            account.AccountTransferBack(
               event.booking.copyWith(
                 fromAccount: event.booking.toAccount,
                 toAccount: event.booking.fromAccount,
@@ -287,7 +287,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       } else if (event is DeleteOnlyFutureSerieBookings) {
         double overallSerieAmount = 0.0;
         for (int i = 0; i < event.bookings.length; i++) {
-          if (event.bookings[i].date.isAfter(event.from) && event.bookings[i].date.isBefore(DateTime.now())) {
+          if ((event.bookings[i].date.isAfter(event.from) && event.bookings[i].date.isBefore(DateTime.now())) ||
+              event.bookings[i].date.isAtSameMomentAs(DateTime.now())) {
             overallSerieAmount += event.bookings[i].amount;
           }
         }
@@ -298,7 +299,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.bookings[0], 0));
         } else if (event.bookings[0].type == BookingType.transfer || event.bookings[0].type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
-            account.AccountTransfer(
+            account.AccountTransferBack(
               event.bookings[0].copyWith(
                 fromAccount: event.bookings[0].toAccount,
                 toAccount: event.bookings[0].fromAccount,
@@ -316,7 +317,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       } else if (event is DeleteAllSerieBookings) {
         double overallSerieAmount = 0.0;
         for (int i = 0; i < event.bookings.length; i++) {
-          if (event.bookings[i].date.isBefore(DateTime.now())) {
+          if (event.bookings[i].date.isBefore(DateTime.now()) || event.bookings[i].date.isAtSameMomentAs(DateTime.now())) {
             overallSerieAmount += event.bookings[i].amount;
           }
         }
@@ -327,7 +328,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.bookings[0], 0));
         } else if (event.bookings[0].type == BookingType.transfer || event.bookings[0].type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
-            account.AccountTransfer(
+            account.AccountTransferBack(
               event.bookings[0].copyWith(
                 fromAccount: event.bookings[0].toAccount,
                 toAccount: event.bookings[0].fromAccount,
