@@ -1,39 +1,94 @@
-Datenschutzerklärung
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzerklärung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 0;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+        }
+        p {
+            margin: 10px 0;
+        }
+        .contact {
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Datenschutzerklärung</h1>
 
-Verantwortliche Stelle
-Die verantwortliche Stelle für die Datenverarbeitung im Zusammenhang mit dieser App ist:
+    <h2>Verantwortliche Stelle</h2>
+    <p>
+        Die verantwortliche Stelle für die Datenverarbeitung im Zusammenhang mit dieser App ist:
+    </p>
+    <p>
+        Marcel Geirhos<br>
+        Gartenstraße 8, 73550 Waldstetten<br>
+        <a href="mailto:Marcel.Geirhos@gmail.com">Marcel.Geirhos@gmail.com</a>
+    </p>
 
-Marcel Geirhos
-Gartenstraße 8, 73550 Waldstetten
-Marcel.Geirhos@gmail.com
+    <h2>Datenschutz auf einen Blick</h2>
+    <p>
+        Diese App speichert sämtliche Daten (Buchungen, Konten, Budgets und Kategorien) ausschließlich lokal auf dem Smartphone des Benutzers. 
+        Die Daten werden ausschließlich für die Anzeige im Benutzerinterface verwendet. Eine Weitergabe an Dritte erfolgt nicht.
+    </p>
 
-Datenschutz auf einen Blick
-Diese App speichert sämtliche Daten (Buchungen, Konten, Budgets und Kategorien) ausschließlich lokal auf dem Smartphone des Benutzers. Die Daten werden ausschließlich für die Anzeige im Benutzerinterface verwendet. Eine Weitergabe an Dritte erfolgt nicht.
+    <h2>Erhebung und Speicherung personenbezogener Daten</h2>
+    <p>
+        In dieser App werden keine personenbezogenen Daten erhoben, verarbeitet oder gespeichert, die über das hinausgehen, was der Benutzer 
+        in der App lokal eingibt. Es erfolgt keine Übermittlung dieser Daten an externe Server oder Dritte.
+    </p>
 
-Erhebung und Speicherung personenbezogener Daten
-In dieser App werden keine personenbezogenen Daten erhoben, verarbeitet oder gespeichert, die über das hinausgehen, was der Benutzer in der App lokal eingibt. Es erfolgt keine Übermittlung dieser Daten an externe Server oder Dritte.
+    <h2>Verwendung von Geräten und Sensoren</h2>
+    <p>
+        Die App nutzt weder Kamera, Mikrofon noch GPS-Funktionalitäten des Geräts. Es werden keine Daten aus diesen Quellen erhoben oder gespeichert.
+    </p>
 
-Verwendung von Geräten und Sensoren
-Die App nutzt weder Kamera, Mikrofon noch GPS-Funktionalitäten des Geräts. Es werden keine Daten aus diesen Quellen erhoben oder gespeichert.
+    <h2>Datenweitergabe an Dritte</h2>
+    <p>
+        Es erfolgt keine Weitergabe der in der App gespeicherten Daten an Dritte. Alle Daten verbleiben lokal auf dem Gerät des Benutzers.
+    </p>
 
-Datenweitergabe an Dritte
-Es erfolgt keine Weitergabe der in der App gespeicherten Daten an Dritte. Alle Daten verbleiben lokal auf dem Gerät des Benutzers.
+    <h2>Datensicherheit</h2>
+    <p>
+        Da alle Daten lokal auf dem Smartphone gespeichert werden, liegt die Verantwortung für den Schutz der Daten bei dem Benutzer. 
+        Wir empfehlen, das Gerät vor unbefugtem Zugriff zu schützen (z. B. durch Passwörter oder biometrische Sperrmechanismen).
+    </p>
 
-Datensicherheit
-Da alle Daten lokal auf dem Smartphone gespeichert werden, liegt die Verantwortung für den Schutz der Daten bei dem Benutzer. Wir empfehlen, das Gerät vor unbefugtem Zugriff zu schützen (z. B. durch Passwörter oder biometrische Sperrmechanismen).
+    <h2>Verfügbarkeit der App</h2>
+    <p>
+        Diese App ist derzeit nur in Deutschland, Österreich und der Schweiz verfügbar und richtet sich ausschließlich an Benutzer in diesen Ländern.
+    </p>
 
-Verfügbarkeit der App
-Diese App ist derzeit nur in Deutschland, Österreich und der Schweiz verfügbar und richtet sich ausschließlich an Benutzer in diesen Ländern.
+    <h2>Rechte der Nutzer</h2>
+    <p>
+        Da keine Daten auf externen Servern gespeichert werden, stehen die typischen Rechte wie Auskunft, Berichtigung oder Löschung 
+        in direktem Zusammenhang mit den lokal gespeicherten Daten. Der Benutzer hat jederzeit die Möglichkeit, sämtliche Daten durch 
+        Deinstallation der App zu löschen.
+    </p>
 
-Rechte der Nutzer
-Da keine Daten auf externen Servern gespeichert werden, stehen die typischen Rechte wie Auskunft, Berichtigung oder Löschung in direktem Zusammenhang mit den lokal gespeicherten Daten. Der Benutzer hat jederzeit die Möglichkeit, sämtliche Daten durch Deinstallation der App zu löschen.
+    <h2>Kontakt</h2>
+    <p class="contact">
+        Bei Fragen zur Datenschutzerklärung oder zu den Funktionen der App können Sie uns unter folgender Adresse kontaktieren:<br>
+        <a href="mailto:Marcel.Geirhos@gmail.com">Marcel.Geirhos@gmail.com</a>
+    </p>
 
-Kontakt
-Bei Fragen zur Datenschutzerklärung oder zu den Funktionen der App können Sie uns unter folgender Adresse kontaktieren:
+    <h2>Änderungen der Datenschutzerklärung</h2>
+    <p>
+        Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf zu aktualisieren, um sie an rechtliche oder technische Änderungen anzupassen. 
+        Die jeweils aktuelle Version ist in der App und über den Google Play Store verfügbar.
+    </p>
 
-Marcel.Geirhos@gmail.com
-
-Änderungen der Datenschutzerklärung
-Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf zu aktualisieren, um sie an rechtliche oder technische Änderungen anzupassen. Die jeweils aktuelle Version ist in der App und über den Google Play Store verfügbar.
-
-Stand: 12.12.2024
+    <p><strong>Stand:</strong> 12.12.2024</p>
+</body>
+</html>
