@@ -2,8 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../../../core/consts/route_consts.dart';
-import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../user/domain/usecases/create.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/usecases/checkFirstStart.dart';
@@ -12,6 +10,7 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 const String CREATE_USER_FAILURE = 'Benutzer konnte nicht erstellt werden.';
+const String CHECK_FIRST_START_FAILURE = 'Erster Aufruf der App konnte nicht abgerufen werden.';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final Create createUseCase;
@@ -29,11 +28,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       } else if (event is CheckFirstStart) {
         final checkFirstStartEither = await checkFirstStartUseCase.userRepository.checkFirstStart();
         checkFirstStartEither.fold((failure) {
-          // TODO emit(const Error(message: CREATE_USER_FAILURE));
+          // TODO emit(const Error(message: CHECK_FIRST_START_FAILURE));
         }, (isFirstStart) {
-          if (isFirstStart == false) {
-            Navigator.popAndPushNamed(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
-          }
+          emit(FirstStartChecked(isFirstStart: isFirstStart));
         });
       }
     });
