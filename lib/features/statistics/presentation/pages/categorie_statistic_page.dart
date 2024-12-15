@@ -53,11 +53,16 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
     );
     // Delay navigation to the next event loop tick
     Future.microtask(() {
-      Navigator.popAndPushNamed(
-        context,
-        bottomNavBarRoute,
-        arguments: BottomNavBarArguments(tabIndex: 2, selectedDate: widget.selectedDate),
-      );
+      Navigator.pushNamedAndRemoveUntil(
+          context,
+          bottomNavBarRoute,
+          arguments: BottomNavBarArguments(
+            tabIndex: 2,
+            selectedDate: widget.selectedDate,
+            bookingType: widget.bookingType,
+            amountType: widget.amountType,
+          ),
+          (route) => false);
     });
     return true;
   }
