@@ -6,17 +6,25 @@ import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.d
 import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/side_menu_drawer_widget.dart';
 
+import '../../../../features/bookings/domain/value_objects/amount_type.dart';
+import '../../../../features/bookings/domain/value_objects/booking_type.dart';
 import '../../../../features/bookings/presentation/widgets/buttons/month_picker_buttons.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int tabIndex;
   final DateTime selectedDate;
+  final BookingType bookingType;
+  final AmountType amountType;
 
   BottomNavBar({
     super.key,
     required this.tabIndex,
     DateTime? selectedDate,
-  }) : selectedDate = selectedDate ?? DateTime.now();
+    BookingType? bookingType,
+    AmountType? amountType,
+  })  : selectedDate = selectedDate ?? DateTime.now(),
+        bookingType = bookingType ?? BookingType.expense,
+        amountType = amountType ?? AmountType.overallExpense;
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -121,7 +129,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         children: [
           BookingListPage(selectedDate: _selectedDate),
           const AccountListPage(),
-          StatisticPage(selectedDate: _selectedDate),
+          StatisticPage(
+            selectedDate: _selectedDate,
+            bookingType: widget.bookingType,
+            amountType: widget.amountType,
+          ),
           BudgetListPage(selectedDate: _selectedDate),
         ],
       ),

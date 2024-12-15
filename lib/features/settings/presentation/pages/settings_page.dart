@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_settings_ui/flutter_settings_ui.dart';
-import 'package:moneybook/core/consts/route_consts.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
+import 'package:moneybook/features/settings/presentation/widgets/cards/setting_card.dart';
+import 'package:moneybook/features/settings/presentation/widgets/deco/setting_title.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/database_consts.dart';
+import '../../../../core/consts/route_consts.dart';
 import '../../../../shared/presentation/bloc/shared_bloc.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 
@@ -17,15 +18,14 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  Future<void> _launchInstagramAppIfInstalled({required String url}) async {
+  Future<void> _launchUrl({required String url}) async {
     try {
-      // Launch the app if installed!
       bool launched = await launchUrl(Uri.parse(url));
       if (launched == false) {
-        launchUrl(Uri.parse(url)); // Launch web view if app is not installed!
+        launchUrl(Uri.parse(url));
       }
     } catch (e) {
-      launchUrl(Uri.parse(url)); // Launch web view if app is not installed!
+      launchUrl(Uri.parse(url));
     }
   }
 
@@ -35,75 +35,62 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: const Text('Einstellungen'),
       ),
-      body: SettingsList(
-        sections: [
-          SettingsSection(
-            title: const Text('Allgemein'),
-            tiles: [
-              SettingsTile(
-                title: const Text('Folge Moneybook'),
-                leading: const Icon(Icons.share_rounded),
-                trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                backgroundColor: const Color(0xFF1E1E1E),
-                onPressed: (BuildContext context) {
-                  _launchInstagramAppIfInstalled(
-                      url: 'https://www.instagram.com/'); // TODO richtigen Link einfügen, sobald Instagram Profil vorhanden ist.
-                },
-              ),
-              SettingsTile(
-                title: const Text('Über Moneybook'),
-                leading: const Icon(Icons.info_outline_rounded),
-                trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                backgroundColor: const Color(0xFF1E1E1E),
-                onPressed: (BuildContext context) {
-                  Navigator.pushNamed(context, aboveRoute);
-                },
-              ),
-            ],
-          ),
-          SettingsSection(
-            title: const Text('Rechtliches'),
-            tiles: [
-              SettingsTile(
-                title: const Text('Impressum'),
-                leading: const Icon(Icons.security_rounded),
-                trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                backgroundColor: const Color(0xFF1E1E1E),
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: const Text('Datenschutzerklärung'),
-                leading: const Icon(Icons.gpp_good_outlined),
-                trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                backgroundColor: const Color(0xFF1E1E1E),
-                onPressed: (BuildContext context) {},
-              ),
-            ],
-          ),
-          SettingsSection(
-            title: adminMode ? const Text('Admin Bereich') : const Text(''),
-            tiles: adminMode
-                ? [
-                    SettingsTile.switchTile(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SettingTitle(
+              title: 'Allgemein',
+              paddingTop: 0.0,
+            ),
+            SettingCard(
+              title: 'Folge Moneybook',
+              icon: Icons.share_rounded,
+              onTap: () => _launchUrl(url: 'https://www.instagram.com/'), // TODO richtigen Link einfügen, sobald Instagram Profil vorhanden ist.
+            ),
+            SettingCard(
+              title: 'Über Moneybook',
+              icon: Icons.info_outline_rounded,
+              onTap: () => Navigator.pushNamed(context, aboveRoute),
+            ),
+            SettingTitle(title: 'Rechtliches'),
+            SettingCard(
+              title: 'Impressum',
+              icon: Icons.security_rounded,
+              onTap: () => Navigator.pushNamed(context, impressumRoute),
+            ),
+            SettingCard(
+              title: 'Datenschutzerklärung',
+              icon: Icons.info_outline_rounded,
+              onTap: () => {
+                _launchUrl(url: 'https://marcel9494.github.io/Moneybook/privacyPolicy.html'),
+              },
+            ),
+            adminMode ? SettingTitle(title: 'Admin Bereich') : const SizedBox(),
+            adminMode
+                ? Card(
+                    child: ListTile(
                       title: const Text('Demo Modus'),
                       leading: const Icon(Icons.admin_panel_settings_rounded),
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      onPressed: (BuildContext context) {},
-                      initialValue: demoMode,
-                      onToggle: (bool value) {
-                        setState(() {
-                          demoMode = value;
-                          switchDemoMode(demoMode);
-                          BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
-                          Navigator.pop(context);
-                          Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
-                        });
-                      },
+                      trailing: Switch(
+                        value: demoMode,
+                        activeColor: Colors.cyanAccent,
+                        onChanged: (bool value) {
+                          setState(() {
+                            demoMode = value;
+                            switchDemoMode(demoMode);
+                            BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
+                            Navigator.pop(context);
+                            Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
+                          });
+                        },
+                      ),
                     ),
-                  ]
-                : [],
-          ),
-        ],
+                  )
+                : const SizedBox(),
+          ],
+        ),
       ),
     );
   }

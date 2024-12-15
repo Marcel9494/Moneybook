@@ -18,10 +18,14 @@ import '../widgets/charts/indicator.dart';
 
 class StatisticPage extends StatefulWidget {
   final DateTime selectedDate;
+  final BookingType bookingType;
+  final AmountType amountType;
 
   const StatisticPage({
     super.key,
     required this.selectedDate,
+    required this.bookingType,
+    required this.amountType,
   });
 
   @override
@@ -35,6 +39,13 @@ class _StatisticPageState extends State<StatisticPage> {
   List<CategorieStats> _categorieStats = [];
   bool _categorieFound = false;
   double _overallAmount = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedBookingType = widget.bookingType;
+    _selectedAmountType = widget.amountType;
+  }
 
   void _loadMonthlyBookings(BuildContext context) {
     BlocProvider.of<BookingBloc>(context).add(

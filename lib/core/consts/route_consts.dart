@@ -12,3 +12,4 @@ const createBudgetRoute = 'createBudget';
 const editBudgetRoute = 'editBudget';
 const settingsRoute = 'settings';
 const aboveRoute = 'above';
+const impressumRoute = 'impressum';
