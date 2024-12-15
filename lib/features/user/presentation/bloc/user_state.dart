@@ -13,3 +13,12 @@ final class Created extends UserState {
   @override
   List<Object> get props => [];
 }
+
+final class FirstStartChecked extends UserState {
+  final bool isFirstStart;
+
+  const FirstStartChecked({required this.isFirstStart});
+
+  @override
+  List<Object> get props => [isFirstStart];
+}

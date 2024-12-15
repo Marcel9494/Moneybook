@@ -269,13 +269,15 @@ class _BookingListPageState extends State<BookingListPage> {
                     ],
                   ),
                 );
-                //}
-              } else if (state is SerieLoaded) {
+              } else if (state is SerieLoaded || state is NewBookingsLoaded) {
                 // Der Status SerieLoaded kommt vom edit_booking_page.dart zurück,
                 // wenn eine Serienbuchung bearbeitet werden sollte aber der Benutzer
                 // über den Back Button die Bearbeitung abgebrochen hat. In diesem Fall
                 // muss die Buchungsliste nochmals neu geladen werden, damit auch der Status
                 // auf Loaded gesetzt wird und die Buchungsliste wieder richtig angezeigt wird.
+                // Das gleiche gilt wenn der Benutzer die App neu startet und auf neue Buchungen
+                // seit dem letzten App Start geprüft wird auch hier muss der Status wieder von
+                // NewBookingsLoaded auf Loaded gesetzt werden.
                 _loadBookings(context);
               }
               return const SizedBox();
