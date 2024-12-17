@@ -48,8 +48,9 @@ class LoadAccountsWithFilter extends AccountEvent {
 class AccountDeposit extends AccountEvent {
   final Booking booking;
   final int bookedId;
+  final bool force;
 
-  const AccountDeposit(this.booking, this.bookedId);
+  const AccountDeposit({required this.booking, required this.bookedId, this.force = false});
 
   @override
   List<Object?> get props => [booking, bookedId];
@@ -58,8 +59,9 @@ class AccountDeposit extends AccountEvent {
 class AccountWithdraw extends AccountEvent {
   final Booking booking;
   final int bookedId;
+  final bool force;
 
-  const AccountWithdraw(this.booking, this.bookedId);
+  const AccountWithdraw({required this.booking, required this.bookedId, this.force = false});
 
   @override
   List<Object?> get props => [booking, bookedId];
@@ -68,8 +70,9 @@ class AccountWithdraw extends AccountEvent {
 class AccountTransfer extends AccountEvent {
   final Booking booking;
   final int bookedId;
+  final bool force;
 
-  const AccountTransfer(this.booking, this.bookedId);
+  const AccountTransfer({required this.booking, required this.bookedId, this.force = false});
 
   @override
   List<Object?> get props => [booking, bookedId];
@@ -78,8 +81,9 @@ class AccountTransfer extends AccountEvent {
 class AccountTransferBack extends AccountEvent {
   final Booking booking;
   final int bookedId;
+  final bool force;
 
-  const AccountTransferBack(this.booking, this.bookedId);
+  const AccountTransferBack({required this.booking, required this.bookedId, this.force = false});
 
   @override
   List<Object?> get props => [booking, bookedId];

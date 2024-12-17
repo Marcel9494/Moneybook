@@ -145,17 +145,17 @@ class _EditBookingPageState extends State<EditBookingPage> {
   Future<void> _reverseBooking() async {
     if (_oldBooking.type == BookingType.expense) {
       print(_oldBooking.amount);
-      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(_oldBooking, 0));
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(booking: _oldBooking, bookedId: 0));
     } else if (_oldBooking.type == BookingType.income) {
-      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(_oldBooking, 0));
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(booking: _oldBooking, bookedId: 0));
     } else if (_oldBooking.type == BookingType.transfer || _oldBooking.type == BookingType.investment) {
       BlocProvider.of<AccountBloc>(context).add(
         AccountTransfer(
-          _oldBooking.copyWith(
+          booking: _oldBooking.copyWith(
             fromAccount: _oldBooking.toAccount,
             toAccount: _oldBooking.fromAccount,
           ),
-          0,
+          bookedId: 0,
         ),
       );
     }
@@ -165,11 +165,11 @@ class _EditBookingPageState extends State<EditBookingPage> {
   Future<void> _updateBooking(Booking updatedBooking) async {
     // TODO bessere Lösung für Random().nextInt(1000000) finden!
     if (_bookingType == BookingType.expense) {
-      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(updatedBooking, Random().nextInt(1000000)));
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(booking: updatedBooking, bookedId: Random().nextInt(1000000)));
     } else if (_bookingType == BookingType.income) {
-      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(updatedBooking, Random().nextInt(1000000)));
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(booking: updatedBooking, bookedId: Random().nextInt(1000000)));
     } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(updatedBooking, Random().nextInt(1000000)));
+      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(booking: updatedBooking, bookedId: Random().nextInt(1000000)));
     }
   }
 
@@ -327,11 +327,11 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
                     // TODO Random().nextInt(1000000) bessere Lösung finden!
                     if (_bookingType == BookingType.expense) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0], Random().nextInt(1000000)));
+                      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(booking: state.bookings[0], bookedId: Random().nextInt(1000000)));
                     } else if (_bookingType == BookingType.income) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0], Random().nextInt(1000000)));
+                      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(booking: state.bookings[0], bookedId: Random().nextInt(1000000)));
                     } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], Random().nextInt(1000000)));
+                      BlocProvider.of<AccountBloc>(context).add(AccountTransfer(booking: state.bookings[0], bookedId: Random().nextInt(1000000)));
                     }
                   }
                 },
