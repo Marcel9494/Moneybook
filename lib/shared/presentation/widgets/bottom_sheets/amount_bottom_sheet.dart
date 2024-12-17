@@ -72,7 +72,7 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
   ).whenComplete(() {
     if (amountController.text == '-') {
       amountController.text = '';
-    } else if (amountController.text.isNotEmpty && !amountController.text.contains(currency)) {
+    } else if (amountController.text.isNotEmpty && !amountController.text.contains(currencyLocale)) {
       amountController.text = formatToMoneyAmount(amountController.text, withoutDecimalPlaces: -1);
     }
   });
