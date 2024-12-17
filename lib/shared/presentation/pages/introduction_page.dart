@@ -63,11 +63,11 @@ class _IntroductionPageState extends State<IntroductionPage> {
             if (state is booking.NewBookingsLoaded) {
               for (int i = 0; i < state.bookings.length; i++) {
                 if (state.bookings[i].type == BookingType.expense) {
-                  BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[i], 0));
+                  BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(booking: state.bookings[i], bookedId: 0, force: true));
                 } else if (state.bookings[i].type == BookingType.income) {
-                  BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[i], 0));
+                  BlocProvider.of<AccountBloc>(context).add(AccountDeposit(booking: state.bookings[i], bookedId: 0, force: true));
                 } else if (state.bookings[i].type == BookingType.transfer || state.bookings[i].type == BookingType.investment) {
-                  BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[i], 0));
+                  BlocProvider.of<AccountBloc>(context).add(AccountTransfer(booking: state.bookings[i], bookedId: 0, force: true));
                 }
               }
             }

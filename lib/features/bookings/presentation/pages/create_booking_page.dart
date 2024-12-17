@@ -79,11 +79,11 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         if (newBooking.repetition == RepetitionType.noRepetition) {
           BlocProvider.of<BookingBloc>(context).add(CreateBooking(newBooking));
           if (_bookingType == BookingType.expense) {
-            BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking, 0));
+            BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(booking: newBooking, bookedId: 0));
           } else if (_bookingType == BookingType.income) {
-            BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking, 0));
+            BlocProvider.of<AccountBloc>(context).add(AccountDeposit(booking: newBooking, bookedId: 0));
           } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-            BlocProvider.of<AccountBloc>(context).add(AccountTransfer(newBooking, 0));
+            BlocProvider.of<AccountBloc>(context).add(AccountTransfer(booking: newBooking, bookedId: 0));
           }
         } else {
           BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
@@ -156,11 +156,11 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
               }
               state.bookings[0] = state.bookings[0].copyWith(amount: overallSerieAmount);
               if (_bookingType == BookingType.expense) {
-                BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(state.bookings[0], 0));
+                BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(booking: state.bookings[0], bookedId: 0));
               } else if (_bookingType == BookingType.income) {
-                BlocProvider.of<AccountBloc>(context).add(AccountDeposit(state.bookings[0], 0));
+                BlocProvider.of<AccountBloc>(context).add(AccountDeposit(booking: state.bookings[0], bookedId: 0));
               } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
-                BlocProvider.of<AccountBloc>(context).add(AccountTransfer(state.bookings[0], 0));
+                BlocProvider.of<AccountBloc>(context).add(AccountTransfer(booking: state.bookings[0], bookedId: 0));
               }
               Navigator.pop(context);
               Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));

@@ -192,11 +192,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         event.oldSerieBookings[0] = event.oldSerieBookings[0].copyWith(amount: overallSerieAmount);
         // TODO Random().nextInt(1000000) bessere Lösung finden!
         if (event.bookingType == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context)
+              .add(AccountDeposit(booking: event.oldSerieBookings[0], bookedId: Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context)
+              .add(AccountWithdraw(booking: event.oldSerieBookings[0], bookedId: Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransferBack(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context)
+              .add(AccountTransferBack(booking: event.oldSerieBookings[0], bookedId: Random().nextInt(1000000)));
         }
         final updateSerieBookingEither = await updateOnlyFutureBookingsInSerieUseCase.bookingRepository
             .updateOnlyFutureBookingsInSerie(event.updatedBooking, event.oldSerieBookings);
@@ -212,11 +215,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           newSerieBookings[0] = newSerieBookings[0].copyWith(amount: overallSerieAmount);
           // TODO Random().nextInt(1000000) bessere Lösung finden!
           if (event.bookingType == BookingType.expense) {
-            BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(newSerieBookings[0], Random().nextInt(1000000)));
+            BlocProvider.of<account.AccountBloc>(event.context)
+                .add(AccountWithdraw(booking: newSerieBookings[0], bookedId: Random().nextInt(1000000)));
           } else if (event.bookingType == BookingType.income) {
-            BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(newSerieBookings[0], Random().nextInt(1000000)));
+            BlocProvider.of<account.AccountBloc>(event.context)
+                .add(AccountDeposit(booking: newSerieBookings[0], bookedId: Random().nextInt(1000000)));
           } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
-            BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(newSerieBookings[0], Random().nextInt(1000000)));
+            BlocProvider.of<account.AccountBloc>(event.context)
+                .add(AccountTransfer(booking: newSerieBookings[0], bookedId: Random().nextInt(1000000)));
           }
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
@@ -234,11 +240,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         event.oldSerieBookings[0] = event.oldSerieBookings[0].copyWith(amount: overallSerieAmount);
         // TODO Random().nextInt(1000000) bessere Lösung finden!
         if (event.bookingType == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context)
+              .add(AccountDeposit(booking: event.oldSerieBookings[0], bookedId: Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context)
+              .add(AccountWithdraw(booking: event.oldSerieBookings[0], bookedId: Random().nextInt(1000000)));
         } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransferBack(event.oldSerieBookings[0], Random().nextInt(1000000)));
+          BlocProvider.of<account.AccountBloc>(event.context)
+              .add(AccountTransferBack(booking: event.oldSerieBookings[0], bookedId: Random().nextInt(1000000)));
         }
         final updateSerieBookingEither =
             await updateAllBookingsInSerieUseCase.bookingRepository.updateAllBookingsInSerie(event.updatedBooking, event.oldSerieBookings);
@@ -254,27 +263,30 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           newSerieBookings[0] = newSerieBookings[0].copyWith(amount: overallSerieAmount);
           // TODO Random().nextInt(1000000) bessere Lösung finden!
           if (event.bookingType == BookingType.expense) {
-            BlocProvider.of<account.AccountBloc>(event.context).add(AccountWithdraw(newSerieBookings[0], Random().nextInt(1000000)));
+            BlocProvider.of<account.AccountBloc>(event.context)
+                .add(AccountWithdraw(booking: newSerieBookings[0], bookedId: Random().nextInt(1000000)));
           } else if (event.bookingType == BookingType.income) {
-            BlocProvider.of<account.AccountBloc>(event.context).add(AccountDeposit(newSerieBookings[0], Random().nextInt(1000000)));
+            BlocProvider.of<account.AccountBloc>(event.context)
+                .add(AccountDeposit(booking: newSerieBookings[0], bookedId: Random().nextInt(1000000)));
           } else if (event.bookingType == BookingType.transfer || event.bookingType == BookingType.investment) {
-            BlocProvider.of<account.AccountBloc>(event.context).add(AccountTransfer(newSerieBookings[0], Random().nextInt(1000000)));
+            BlocProvider.of<account.AccountBloc>(event.context)
+                .add(AccountTransfer(booking: newSerieBookings[0], bookedId: Random().nextInt(1000000)));
           }
           Navigator.pushNamedAndRemoveUntil(event.context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0), (route) => false);
         });
       } else if (event is DeleteBooking) {
         if (event.booking.type == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.booking, 0));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(booking: event.booking, bookedId: 0));
         } else if (event.booking.type == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.booking, 0));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(booking: event.booking, bookedId: 0));
         } else if (event.booking.type == BookingType.transfer || event.booking.type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransferBack(
-              event.booking.copyWith(
+              booking: event.booking.copyWith(
                 fromAccount: event.booking.toAccount,
                 toAccount: event.booking.fromAccount,
               ),
-              0,
+              bookedId: 0,
             ),
           );
         }
@@ -294,17 +306,17 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }
         event.bookings[0] = event.bookings[0].copyWith(amount: overallSerieAmount);
         if (event.bookings[0].type == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.bookings[0], 0));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(booking: event.bookings[0], bookedId: 0));
         } else if (event.bookings[0].type == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.bookings[0], 0));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(booking: event.bookings[0], bookedId: 0));
         } else if (event.bookings[0].type == BookingType.transfer || event.bookings[0].type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransferBack(
-              event.bookings[0].copyWith(
+              booking: event.bookings[0].copyWith(
                 fromAccount: event.bookings[0].toAccount,
                 toAccount: event.bookings[0].fromAccount,
               ),
-              0,
+              bookedId: 0,
             ),
           );
         }
@@ -323,17 +335,17 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         }
         event.bookings[0] = event.bookings[0].copyWith(amount: overallSerieAmount);
         if (event.bookings[0].type == BookingType.expense) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(event.bookings[0], 0));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountDeposit(booking: event.bookings[0], bookedId: 0));
         } else if (event.bookings[0].type == BookingType.income) {
-          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(event.bookings[0], 0));
+          BlocProvider.of<account.AccountBloc>(event.context).add(account.AccountWithdraw(booking: event.bookings[0], bookedId: 0));
         } else if (event.bookings[0].type == BookingType.transfer || event.bookings[0].type == BookingType.investment) {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransferBack(
-              event.bookings[0].copyWith(
+              booking: event.bookings[0].copyWith(
                 fromAccount: event.bookings[0].toAccount,
                 toAccount: event.bookings[0].fromAccount,
               ),
-              0,
+              bookedId: 0,
             ),
           );
         }

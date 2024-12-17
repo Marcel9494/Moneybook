@@ -71,9 +71,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(FilteredLoaded(filteredAccounts: filteredAccounts));
         });
       } else if (event is AccountDeposit) {
-        if (event.booking.date.isAfter(DateTime.now())) {
-          emit(Booked(id: event.bookedId));
-          return;
+        if (event.force == false) {
+          if (event.booking.date.isAfter(DateTime.now())) {
+            emit(Booked(id: event.bookedId));
+            return;
+          }
         }
         final accountDepositEither = await createUseCase.accountRepository.deposit(event.booking);
         accountDepositEither.fold((failure) {
@@ -82,9 +84,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(Booked(id: event.bookedId));
         });
       } else if (event is AccountWithdraw) {
-        if (event.booking.date.isAfter(DateTime.now())) {
-          emit(Booked(id: event.bookedId));
-          return;
+        if (event.force == false) {
+          if (event.booking.date.isAfter(DateTime.now())) {
+            emit(Booked(id: event.bookedId));
+            return;
+          }
         }
         final accountWithdrawEither = await createUseCase.accountRepository.withdraw(event.booking);
         accountWithdrawEither.fold((failure) {
@@ -93,9 +97,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(Booked(id: event.bookedId));
         });
       } else if (event is AccountTransfer) {
-        if (event.booking.date.isAfter(DateTime.now())) {
-          emit(Booked(id: event.bookedId));
-          return;
+        if (event.force == false) {
+          if (event.booking.date.isAfter(DateTime.now())) {
+            emit(Booked(id: event.bookedId));
+            return;
+          }
         }
         final accountTransferEither = await createUseCase.accountRepository.transfer(event.booking);
         accountTransferEither.fold((failure) {
@@ -104,9 +110,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           emit(Booked(id: event.bookedId));
         });
       } else if (event is AccountTransferBack) {
-        if (event.booking.date.isAfter(DateTime.now())) {
-          emit(Booked(id: event.bookedId));
-          return;
+        if (event.force == false) {
+          if (event.booking.date.isAfter(DateTime.now())) {
+            emit(Booked(id: event.bookedId));
+            return;
+          }
         }
         final accountTransferBackEither = await createUseCase.accountRepository.transferBack(event.booking);
         accountTransferBackEither.fold((failure) {

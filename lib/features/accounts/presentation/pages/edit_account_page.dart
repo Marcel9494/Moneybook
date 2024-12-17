@@ -136,7 +136,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       isBooked: true,
                     );
                     BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(transferBooking));
-                    BlocProvider.of<AccountBloc>(context).add(AccountTransfer(transferBooking, 0));
+                    BlocProvider.of<AccountBloc>(context).add(AccountTransfer(booking: transferBooking, bookedId: 0));
                     BlocProvider.of<AccountBloc>(context).add(DeleteAccount(widget.account.id));
                   }
                 },
@@ -223,9 +223,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
       BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(newBooking));
     }
     if (_oldAccountAmount < formatMoneyAmountToDouble(_amountController.text)) {
-      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(newBooking, 0));
+      BlocProvider.of<AccountBloc>(context).add(AccountDeposit(booking: newBooking, bookedId: 0));
     } else if (_oldAccountAmount > formatMoneyAmountToDouble(_amountController.text)) {
-      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(newBooking, 0));
+      BlocProvider.of<AccountBloc>(context).add(AccountWithdraw(booking: newBooking, bookedId: 0));
     }
     Timer(const Duration(milliseconds: durationInMs), () {
       BlocProvider.of<AccountBloc>(context).add(
