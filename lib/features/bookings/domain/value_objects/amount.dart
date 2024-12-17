@@ -1,3 +1,7 @@
+import 'package:moneybook/core/consts/regex_consts.dart';
+
+import '../../../../core/consts/common_consts.dart';
+
 class Amount {
   final double value;
   final String currency;
@@ -7,11 +11,27 @@ class Amount {
     required this.currency,
   });
 
+  // Beispiel:
+  // Input amount: 8,60 €
+  // Es werden alle nicht Zahlen, Kommas und Punkte vom String entfernt.
+  // Anschließend werden Kommas (,) durch Punkte (.) ersetzt.
+  // return 8.6
   static double getValue(String amount) {
-    return double.parse(amount.substring(0, amount.length - 2).replaceAll('.', '').replaceAll(',', '.'));
+    String cleanedAmount = amount.replaceAll(numberRegex, '');
+    cleanedAmount = cleanedAmount.replaceAll('.', '').replaceAll(',', '.');
+    return double.parse(cleanedAmount);
   }
 
+  // Beispiel:
+  // Input amount: 8,60 € oder $8.60
+  // Der String wird nach einem gültigen currencySymbol durchsucht (€, $, etc.) und zurückgegeben
+  // return € oder $
   static String getCurrency(String amount) {
-    return amount.substring(amount.length - 1, amount.length);
+    for (String currencySymbol in currencySymbols) {
+      if (amount.contains(currencySymbol)) {
+        return currencySymbol;
+      }
+    }
+    return currencyLocale;
   }
 }

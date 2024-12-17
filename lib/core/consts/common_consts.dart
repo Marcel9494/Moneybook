@@ -1,7 +1,11 @@
 const bool adminMode = true;
 const String locale = 'de-DE';
 const String singleLocale = 'de';
-const String currency = '€';
+const String currencyLocale = '€';
+
+// Anmerkung: \ bei $ wird benötigt, weil $ ein spezieller Character in Dart ist und
+// normalerweise für String interpolation (z.B.: "$variable") verwendet wird.
+const List<String> currencySymbols = ['€', '\$'];
 
 const int durationInMs = 800;
 const int animationDurationInMs = 650;
