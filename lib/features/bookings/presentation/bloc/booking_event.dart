@@ -162,15 +162,8 @@ class UpdateBookingsWithAccount extends BookingEvent {
   List<Object?> get props => [oldAccount, newAccount];
 }
 
-class CheckNewBookings extends BookingEvent {
-  const CheckNewBookings();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class LoadNewBookingsSinceLastStart extends BookingEvent {
-  const LoadNewBookingsSinceLastStart();
+class HandleAndUpdateNewBookings extends BookingEvent {
+  const HandleAndUpdateNewBookings();
 
   @override
   List<Object?> get props => [];

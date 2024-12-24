@@ -6,7 +6,7 @@ import 'package:moneybook/features/accounts/domain/usecases/load_filtered_accoun
 import 'package:moneybook/features/bookings/data/datasources/booking_local_data_source.dart';
 import 'package:moneybook/features/bookings/data/repositories/booking_repository_impl.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
-import 'package:moneybook/features/bookings/domain/usecases/check_for_new_bookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/calculate_and_update_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart' as create_booking;
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart' as delete_booking;
 import 'package:moneybook/features/bookings/domain/usecases/get_new_serie_id.dart';
@@ -42,7 +42,6 @@ import 'features/bookings/domain/usecases/delete_all_bookings_in_serie.dart';
 import 'features/bookings/domain/usecases/delete_only_future_bookings_in_serie.dart';
 import 'features/bookings/domain/usecases/load_categorie_bookings.dart';
 import 'features/bookings/domain/usecases/load_monthly_amount_type_bookings.dart';
-import 'features/bookings/domain/usecases/load_new_bookings.dart';
 import 'features/bookings/domain/usecases/load_serie_bookings.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_in_serie.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_with_account.dart';
@@ -75,7 +74,7 @@ final sl = GetIt.instance;
 void init() {
   // Features
   // Bloc
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
@@ -97,13 +96,12 @@ void init() {
   sl.registerLazySingleton(() => LoadMonthlyAmountTypeBookings(sl()));
   sl.registerLazySingleton(() => LoadAllCategorieBookings(sl()));
   sl.registerLazySingleton(() => LoadPastCategorieBookings(sl()));
-  sl.registerLazySingleton(() => LoadNewBookings(sl()));
   sl.registerLazySingleton(() => LoadAllSerieBookings(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithCategorie(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsWithAccount(sl()));
   sl.registerLazySingleton(() => UpdateAllBookingsInSerie(sl()));
   sl.registerLazySingleton(() => UpdateOnlyFutureBookingsInSerie(sl()));
-  sl.registerLazySingleton(() => CheckForNewBookings(sl()));
+  sl.registerLazySingleton(() => CalculateAndUpdateNewBookings(sl()));
   sl.registerLazySingleton(() => GetNewSerieId(sl()));
 
   // Categories

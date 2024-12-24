@@ -14,7 +14,7 @@ import '../../../accounts/presentation/bloc/account_bloc.dart' as account;
 import '../../../accounts/presentation/bloc/account_bloc.dart';
 import '../../../categories/domain/value_objects/categorie_type.dart';
 import '../../domain/entities/booking.dart';
-import '../../domain/usecases/check_for_new_bookings.dart';
+import '../../domain/usecases/calculate_and_update_new_bookings.dart';
 import '../../domain/usecases/create.dart';
 import '../../domain/usecases/delete.dart';
 import '../../domain/usecases/delete_all_bookings_in_serie.dart';
@@ -22,7 +22,6 @@ import '../../domain/usecases/delete_only_future_bookings_in_serie.dart';
 import '../../domain/usecases/get_new_serie_id.dart';
 import '../../domain/usecases/load_categorie_bookings.dart';
 import '../../domain/usecases/load_monthly_amount_type_bookings.dart';
-import '../../domain/usecases/load_new_bookings.dart';
 import '../../domain/usecases/load_past_categorie_bookings.dart';
 import '../../domain/usecases/load_serie_bookings.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
@@ -57,13 +56,12 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final LoadMonthlyAmountTypeBookings loadAmountTypeMonthlyUseCase;
   final LoadAllCategorieBookings loadCategorieBookingsUseCase;
   final LoadPastCategorieBookings loadPastMonthlyCategorieBookingsUseCase;
-  final LoadNewBookings loadNewBookingsUseCase;
   final LoadAllSerieBookings loadSerieBookingsUseCase;
   final UpdateAllBookingsWithCategorie updateAllBookingsWithCategorieUseCase;
   final UpdateAllBookingsWithAccount updateAllBookingsWithAccountUseCase;
   final UpdateAllBookingsInSerie updateAllBookingsInSerieUseCase;
   final UpdateOnlyFutureBookingsInSerie updateOnlyFutureBookingsInSerieUseCase;
-  final CheckForNewBookings checkNewBookingsUseCase;
+  final CalculateAndUpdateNewBookings calculateAndUpdateNewBookingsUseCase;
   final GetNewSerieId getNewSerieIdUseCase;
 
   BookingBloc(
@@ -81,8 +79,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     this.updateAllBookingsWithAccountUseCase,
     this.updateAllBookingsInSerieUseCase,
     this.updateOnlyFutureBookingsInSerieUseCase,
-    this.checkNewBookingsUseCase,
-    this.loadNewBookingsUseCase,
+    this.calculateAndUpdateNewBookingsUseCase,
     this.getNewSerieIdUseCase,
   ) : super(Initial()) {
     on<BookingEvent>((event, emit) async {
@@ -404,18 +401,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         updateAllBookingsEither.fold((failure) {
           emit(const Error(message: UPDATE_ALL_BOOKINGS_FAILURE));
         }, (_) {});
-      } else if (event is CheckNewBookings) {
-        final checkNewBookingsEither = await checkNewBookingsUseCase.bookingRepository.checkForNewBookings();
+      } else if (event is HandleAndUpdateNewBookings) {
+        final checkNewBookingsEither = await calculateAndUpdateNewBookingsUseCase.bookingRepository.calculateAndUpdateNewBookings();
         checkNewBookingsEither.fold((failure) {
           emit(const Error(message: NEW_BOOKINGS_FAILURE));
         }, (_) {});
-      } else if (event is LoadNewBookingsSinceLastStart) {
-        final loadNewBookingsEither = await loadNewBookingsUseCase.bookingRepository.loadNewBookings();
-        loadNewBookingsEither.fold((failure) {
-          emit(const Error(message: LOAD_NEW_BOOKINGS_FAILURE));
-        }, (bookings) {
-          emit(NewBookingsLoaded(bookings: bookings));
-        });
       }
     });
   }
