@@ -404,10 +404,8 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     db = await openDatabase(localDbName);
     DateTime today = DateTime.now();
     today = DateTime(today.year, today.month, today.day);
-    // TODO sollte es nun nicht passen ist die SQL falsch
     List<Map> newBookingMap =
         await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [0/*= false*/, today.toIso8601String()]);
-    //List<Map> newBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ?', [0/*= false*/]);
     List<Booking> newBookingList = newBookingMap
         .map(
           (booking) => Booking(
