@@ -20,13 +20,12 @@ abstract class BookingLocalDataSource {
   Future<List<Booking>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType);
   Future<List<Booking>> loadCategorieBookings(String categorie);
   Future<List<Booking>> loadPastMonthlyCategorieBookings(String categorie, BookingType bookingType, DateTime date, int monthNumber);
-  Future<List<Booking>> loadNewBookings();
   Future<List<Booking>> loadSerieBookings(int serieId);
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType);
   Future<void> updateAllBookingsWithAccount(String oldAccount, String newAccount);
   Future<List<Booking>> updateAllBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
   Future<List<Booking>> updateOnlyFutureBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
-  Future<void> checkForNewBookings();
+  Future<void> calculateAndUpdateNewBookings();
   Future<int> getNewSerieId();
 }
 
@@ -253,35 +252,6 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<List<Booking>> loadNewBookings() async {
-    db = await openDatabase(localDbName);
-    DateTime today = DateTime.now();
-    today = DateTime(today.year, today.month, today.day);
-    List<Map> newBookingMap =
-        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [0/*= false*/, today.toIso8601String()]);
-    List<Booking> newBookingList = newBookingMap
-        .map(
-          (booking) => Booking(
-            id: booking['id'],
-            serieId: booking['serieId'],
-            type: BookingType.fromString(booking['type']),
-            title: booking['title'],
-            date: DateTime.parse(booking['date']),
-            repetition: RepetitionType.fromString(booking['repetition']),
-            amount: booking['amount'],
-            amountType: booking['amountType'],
-            currency: booking['currency'],
-            fromAccount: booking['fromAccount'],
-            toAccount: booking['toAccount'],
-            categorie: booking['categorie'],
-            isBooked: booking['isBooked'] == 0 ? false : true,
-          ),
-        )
-        .toList();
-    return newBookingList;
-  }
-
-  @override
   Future<List<Booking>> loadSerieBookings(int serieId) async {
     db = await openDatabase(localDbName);
     List<Map> serieBookingMap = await db.rawQuery('SELECT * FROM $bookingDbName WHERE serieId = ?', [serieId]);
@@ -430,10 +400,79 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   }
 
   @override
-  Future<void> checkForNewBookings() async {
+  Future<void> calculateAndUpdateNewBookings() async {
     db = await openDatabase(localDbName);
     DateTime today = DateTime.now();
     today = DateTime(today.year, today.month, today.day);
+    List<Map> newBookingMap =
+        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [0/*= false*/, today.toIso8601String()]);
+    List<Booking> newBookingList = newBookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType']),
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+    for (int i = 0; i < newBookingList.length; i++) {
+      if (newBookingList[i].type == BookingType.expense) {
+        await db.transaction((ta) async {
+          List<Map> accountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [newBookingList[i].fromAccount]);
+          if (accountBalance.isNotEmpty) {
+            final currentAmount = accountBalance[0]['amount'];
+            final newAmount = currentAmount - newBookingList[i].amount;
+            await ta.rawUpdate(
+              'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+              [newAmount, newBookingList[i].fromAccount],
+            );
+          }
+        });
+      } else if (newBookingList[i].type == BookingType.income) {
+        await db.transaction((ta) async {
+          List<Map> accountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [newBookingList[i].fromAccount]);
+          if (accountBalance.isNotEmpty) {
+            final currentAmount = accountBalance[0]['amount'];
+            final newAmount = currentAmount + newBookingList[i].amount;
+            await ta.rawUpdate(
+              'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+              [newAmount, newBookingList[i].fromAccount],
+            );
+          }
+        });
+      } else if (newBookingList[i].type == BookingType.transfer) {
+        await db.transaction((ta) async {
+          List<Map> fromAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [newBookingList[i].fromAccount]);
+          List<Map> toAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [newBookingList[i].toAccount]);
+          if (fromAccountBalance.isNotEmpty && toAccountBalance.isNotEmpty) {
+            final fromCurrentAmount = fromAccountBalance[0]['amount'];
+            final toCurrentAmount = toAccountBalance[0]['amount'];
+
+            final newFromAmount = fromCurrentAmount - newBookingList[i].amount;
+            final newToAmount = toCurrentAmount + newBookingList[i].amount;
+
+            await ta.rawUpdate(
+              'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+              [newFromAmount, newBookingList[i].fromAccount],
+            );
+            await ta.rawUpdate(
+              'UPDATE $accountDbName SET amount = ? WHERE name = ?',
+              [newToAmount, newBookingList[i].toAccount],
+            );
+          }
+        });
+      }
+    }
     await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [1/*= true*/, today.toIso8601String()]);
   }
 

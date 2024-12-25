@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/bookings/domain/repositories/booking_repository.dart';
-import 'package:moneybook/features/bookings/domain/usecases/check_for_new_bookings.dart';
+import 'package:moneybook/features/bookings/domain/usecases/calculate_and_update_new_bookings.dart';
 import 'package:moneybook/features/bookings/domain/usecases/create.dart';
 import 'package:moneybook/features/bookings/domain/usecases/delete.dart';
 import 'package:moneybook/features/bookings/domain/usecases/load_categorie_bookings.dart';

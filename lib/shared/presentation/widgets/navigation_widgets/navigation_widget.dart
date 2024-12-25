@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/accounts/presentation/pages/account_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
@@ -8,6 +9,7 @@ import 'package:moneybook/shared/presentation/widgets/navigation_widgets/side_me
 
 import '../../../../features/bookings/domain/value_objects/amount_type.dart';
 import '../../../../features/bookings/domain/value_objects/booking_type.dart';
+import '../../../../features/bookings/presentation/bloc/booking_bloc.dart';
 import '../../../../features/bookings/presentation/widgets/buttons/month_picker_buttons.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -30,7 +32,7 @@ class BottomNavBar extends StatefulWidget {
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
+class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin, WidgetsBindingObserver {
   late int _tabIndex;
   late TabController _tabController;
   late DateTime _selectedDate;
@@ -43,6 +45,24 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     _tabController = TabController(length: 4, vsync: this);
     _tabController.animation!.addListener(_tabListener);
     _tabController.index = widget.tabIndex;
+    WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver);
+    super.dispose();
+  }
+
+  void _onAppResumed() {
+    BlocProvider.of<BookingBloc>(context).add(const HandleAndUpdateNewBookings());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _onAppResumed();
+    }
   }
 
   void _tabListener() {
