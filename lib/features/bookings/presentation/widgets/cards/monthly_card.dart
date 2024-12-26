@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moneybook/shared/presentation/widgets/dialogs/info_icon_with_dialog.dart';
 
 import '../../../../../core/utils/number_formatter.dart';
 
@@ -18,27 +18,6 @@ class MonthlyCard extends StatelessWidget {
     required this.textColor,
     this.showInfo = false,
   });
-
-  void _showInfoDialog(BuildContext context) {
-    showCupertinoDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Differenz:'),
-          content: Text('Käufe - Verkäufe = Differenz\n\nEs werden nur Investment Buchungen zu Käufen und Verkäufen mit einberechnet.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +40,9 @@ class MonthlyCard extends StatelessWidget {
                       style: TextStyle(color: Colors.grey.shade400, fontSize: 12.0),
                     ),
                     showInfo
-                        ? GestureDetector(
-                            onTap: () {
-                              _showInfoDialog(context);
-                            },
-                            child: Icon(
-                              Icons.info_outline_rounded,
-                              color: Colors.grey,
-                              size: 17.0,
-                            ),
-                          )
+                        ? InfoIconWithDialog(
+                            title: title,
+                            text: 'Es werden nur Investment Buchungen zu Käufen und Verkäufen mit einberechnet.\n\nKäufe - Verkäufe = Differenz')
                         : const SizedBox(),
                   ],
                 ),

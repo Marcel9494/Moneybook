@@ -30,16 +30,20 @@ class _OverviewCardsState extends State<OverviewCards> {
             title: 'Vermögen',
             value: widget.assets,
             textColor: Colors.greenAccent,
+            infoDialogText:
+                'Konten von folgendem Kontotyp werden als Vermögen klassifiziert:\n- Konto\n- Kapitalanlage\n- Bargeld\n- Karte\n- Versicherung\n- Sonstiges',
           ),
           OverviewCard(
             title: 'Schulden',
             value: widget.debts,
             textColor: Colors.redAccent,
+            infoDialogText: 'Konten die vom Kontotyp Kredit sind oder einen negativen Betrag aufweisen werden als Schulden klassifiziert.',
           ),
           OverviewCard(
             title: 'Saldo',
             value: widget.assets - widget.debts,
             textColor: widget.assets - widget.debts >= 0.0 ? Colors.greenAccent : Colors.redAccent,
+            infoDialogText: 'Der Saldo beschreibt den Vermögensstand abzüglich aller Schulden.\n\nVermögen - Schulden = Saldo',
           ),
         ],
       ),
