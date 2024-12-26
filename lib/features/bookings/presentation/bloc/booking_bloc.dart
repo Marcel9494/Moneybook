@@ -280,8 +280,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransferBack(
               booking: event.booking.copyWith(
-                fromAccount: event.booking.toAccount,
-                toAccount: event.booking.fromAccount,
+                fromAccount: event.booking.fromAccount,
+                toAccount: event.booking.toAccount,
               ),
               bookedId: 0,
             ),
@@ -310,8 +310,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransferBack(
               booking: event.bookings[0].copyWith(
-                fromAccount: event.bookings[0].toAccount,
-                toAccount: event.bookings[0].fromAccount,
+                fromAccount: event.bookings[0].fromAccount,
+                toAccount: event.bookings[0].toAccount,
               ),
               bookedId: 0,
             ),
@@ -339,8 +339,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           BlocProvider.of<account.AccountBloc>(event.context).add(
             account.AccountTransferBack(
               booking: event.bookings[0].copyWith(
-                fromAccount: event.bookings[0].toAccount,
-                toAccount: event.bookings[0].fromAccount,
+                fromAccount: event.bookings[0].fromAccount,
+                toAccount: event.bookings[0].toAccount,
               ),
               bookedId: 0,
             ),
