@@ -3,7 +3,7 @@ Haushaltsbuch zum Verwalten deiner Finanzen.
 
 # App UI
 
-[Kontoliste](https://github.com/user-attachments/assets/169d6f9c-7277-4681-99e8-0f46f36d3389)
+[Kontoliste](https://github.com/Marcel9494/Moneybook/assets/169d6f9c-7277-4681-99e8-0f46f36d3389)
 
 # Design Entscheidungen
 
