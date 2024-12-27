@@ -1,11 +1,33 @@
 # Moneybook
 Haushaltsbuch zum Verwalten deiner Finanzen.
 
-# App UI
+# App GUI
 
-[Kontoliste](https://github.com/Marcel9494/Moneybook/assets/169d6f9c-7277-4681-99e8-0f46f36d3389)
+<img src="https://github.com/user-attachments/assets/060ee81b-9267-4ad4-aa47-0de6614f322c" alt="Buchungsliste" style="width: 30%; height: auto;" />
 
-# Design Entscheidungen
+<img src="https://github.com/user-attachments/assets/169d6f9c-7277-4681-99e8-0f46f36d3389" alt="Kontoliste" style="width: 30%; height: auto;" />
+
+<img src="https://github.com/user-attachments/assets/385cdba9-b2a6-487f-a7ff-de856534797b" alt="Ausgabe Statistiken" style="width: 30%; height: auto;" />
+
+<img src="https://github.com/user-attachments/assets/34cc3aee-cae9-4d15-9a8e-b3fc1e5ac2d6" alt="Ausgabe Kategorien" style="width: 30%; height: auto;" />
+
+<img src="https://github.com/user-attachments/assets/1bed07b9-ae08-41c3-887e-88a7cc5d2357" alt="Ausgabe Kategorien" style="width: 30%; height: auto;" />
+
+# App Features
+
+In der Moneybook App sind folgende Features implementiert:
+- (Serien-)Buchungen erstellen, bearbeiten & löschen (CRUD)
+- Monatliche Einnahmen, Ausgaben & Investitionen anzeigen
+- Monatliche Buchungsliste und Budgetliste einsehen.
+- Konten erstellen und verwalten + Vermögen und Schulden anzeigen (CRUD)
+- (Kategorie-)Statistiken zu Ausgaben, Einnahmen & Investitionen einsehen
+- Statistiken zu Variable / Fixe Ausgaben, Aktive / Passive Einnahmen & Investitionen (Kauf / Verkauf) einsehen
+- Budgets erstellen und verwalten (CRUD)
+- Ausgabe, Einnahme & Investitions Kategorien erstellen und verwalten (CRUD)
+- Kontoliste und Kategorienliste anzeigen.
+- Einstellungen + Rechtliches
+
+# Software Architektur Entscheidungen
 
 Es wurde sich für das Clean Architektur Pattern entschieden, weil diese Software Architektur wartbar, testbar, flexibel und erweiterbar ist.
 Dies ist für diese Software wichtig, weil die App auch nach dem ersten Release stetig weiter entwickelt werden soll und es neue Funktionalitäten geben wird.
