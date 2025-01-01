@@ -120,7 +120,7 @@ class AccountLocalDataSourceImpl implements AccountLocalDataSource {
         )
         .where((account) => !accountNameFilter.contains(account.name))
         .toList();
-    accountList.sort((first, second) => second.type.name.compareTo(first.type.name));
+    accountList.sort((first, second) => first.type.name.compareTo(second.type.name));
     return accountList;
   }
 

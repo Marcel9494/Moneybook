@@ -26,10 +26,10 @@ class _AccountListPageState extends State<AccountListPage> {
   @override
   void initState() {
     super.initState();
-    loadAccounts(context);
+    _loadAccounts(context);
   }
 
-  void loadAccounts(BuildContext context) {
+  void _loadAccounts(BuildContext context) {
     BlocProvider.of<AccountBloc>(context).add(
       LoadAccounts(),
     );
@@ -126,6 +126,84 @@ class _AccountListPageState extends State<AccountListPage> {
                           );
                         } else {
                           return AccountCard(account: state.accounts[index]);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }
+            // Wenn der Benutzer auf der Kontoliste eine Buchung erstellen möchte und
+            // in der Buchung erstellen Seite ein Konto auswählt und dann die Buchung
+            // erstellen abbricht ist der neue Status FilteredLoaded und nicht mehr
+            // Loaded beim AccountBloc.
+            // TODO sollte besser implementiert werden z.B.: Wenn der Benutzer die Buchung
+            // TODO erstellen abbrechen möchte Dialog anzeigen und dann dort Loaded Status
+            // TODO setzen über LoadAccounts Event?
+          } else if (state is FilteredLoaded) {
+            if (state.filteredAccounts.isEmpty) {
+              return Column(
+                children: [
+                  OverviewCards(
+                    accounts: state.filteredAccounts,
+                    assets: 0,
+                    debts: 0,
+                  ),
+                  const CreateRow(
+                    title: 'Konten',
+                    buttonText: 'Konto erstellen',
+                    createRoute: createAccountRoute,
+                    leftPadding: 10.0,
+                  ),
+                  const Expanded(
+                    child: EmptyList(
+                      text: 'Noch keine Konten vorhanden',
+                      icon: Icons.account_balance_outlined,
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              _calculateOverviewValues(state.filteredAccounts);
+              _calculateAccountTypeAmounts(state.filteredAccounts);
+              return Column(
+                children: [
+                  OverviewCards(
+                    accounts: state.filteredAccounts,
+                    assets: _assets,
+                    debts: _debts,
+                  ),
+                  const CreateRow(
+                    title: 'Konten',
+                    buttonText: 'Konto erstellen',
+                    createRoute: createAccountRoute,
+                    leftPadding: 10.0,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.filteredAccounts.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 0 || state.filteredAccounts[index - 1].type != state.filteredAccounts[index].type) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 29.0, 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(state.filteredAccounts[index].type.pluralName,
+                                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                    Text(formatToMoneyAmount(_accountTypeAmounts[state.filteredAccounts[index].type].toString()),
+                                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
+                              AccountCard(account: state.filteredAccounts[index]),
+                            ],
+                          );
+                        } else {
+                          return AccountCard(account: state.filteredAccounts[index]);
                         }
                       },
                     ),
