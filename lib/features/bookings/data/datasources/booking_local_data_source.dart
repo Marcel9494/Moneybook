@@ -450,7 +450,7 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             );
           }
         });
-      } else if (newBookingList[i].type == BookingType.transfer) {
+      } else if (newBookingList[i].type == BookingType.transfer || newBookingList[i].type == BookingType.investment) {
         await db.transaction((ta) async {
           List<Map> fromAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [newBookingList[i].fromAccount]);
           List<Map> toAccountBalance = await ta.rawQuery('SELECT amount FROM $accountDbName WHERE name = ?', [newBookingList[i].toAccount]);

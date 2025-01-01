@@ -32,11 +32,11 @@ class PendingMonthlyCard extends StatelessWidget {
                   style: TextStyle(color: Colors.grey.shade400, fontSize: 12.0),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 2.0, bottom: 3.0),
+                  padding: const EdgeInsets.only(top: 3.0),
                   child: Text(
                     formatToMoneyAmount(pendingMonthlyValue.toString()),
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: textColor, fontSize: 16.0),
+                    style: TextStyle(color: textColor, fontSize: 14.0),
                   ),
                 ),
               ],
