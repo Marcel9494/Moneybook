@@ -27,6 +27,25 @@ In der Moneybook App sind folgende Features implementiert:
 - Kontoliste und Kategorienliste anzeigen.
 - Einstellungen + Rechtliches
 
+Welche Features sind in welcher Sprache vorhanden + Ausblick:
+
+<b>Anmerkung:</b> Bisher ist die App nur in Deutscher Sprache verfügbar. Eine Erweiterung auf mehrere Sprachen ist geplant.
+
+<b>Legende:</b>
+- Vorhanden = +
+- Nicht vorhanden = -
+- Zurzeit in Arbeit = X
+
+Features | Deutsch  | Englisch
+-------- | -------- | --------
+(Serien-)Buchungen   | +   | -
+Monatszusammenfassungen  | +   | -
+Konten   | +   | -
+(Kategorie-)Statistiken   | +   | -
+Budgets   | +   | -
+Kategorien   | +   | -
+
+
 # Software Architektur Entscheidungen
 
 Es wurde sich für das Clean Architektur Pattern entschieden, weil diese Software Architektur wartbar, testbar, flexibel und erweiterbar ist.
