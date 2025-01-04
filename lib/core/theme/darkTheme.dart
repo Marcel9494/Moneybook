@@ -9,14 +9,20 @@ final darkTheme = ThemeData(
   ),
   segmentedButtonTheme: SegmentedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-        (Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
+      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+        (Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
             return Colors.cyanAccent.withOpacity(0.14);
           }
           return Colors.transparent;
         },
       ),
+      iconColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.cyanAccent;
+        }
+        return Colors.white70;
+      }),
     ),
   ),
   datePickerTheme: DatePickerThemeData(

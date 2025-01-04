@@ -128,6 +128,7 @@ class AmountTextField extends StatelessWidget {
       controller: amountController,
       showCursor: false,
       readOnly: true,
+      textAlignVertical: TextAlignVertical.center,
       validator: (input) => _checkAmountInput(),
       onTap: () => openBottomSheetForAmountInput(
         context: context,
