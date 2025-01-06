@@ -21,11 +21,13 @@ openAccountBottomSheet({
   loadAccountsWithFilter(context, accountNameFilter);
   showCupertinoModalBottomSheet<void>(
     context: context,
+    backgroundColor: Color(0xFF1c1b20),
     builder: (BuildContext context) {
       return BlocBuilder<AccountBloc, AccountState>(
         builder: (context, state) {
           if (state is FilteredLoaded) {
             return Material(
+              color: Color(0xFF1c1b20),
               child: Wrap(
                 children: [
                   Column(
@@ -55,38 +57,7 @@ openAccountBottomSheet({
                 ],
               ),
             );
-          } /*else if (state is Loaded) {
-            return Material(
-              child: Wrap(
-                children: [
-                  Column(
-                    children: [
-                      BottomSheetHeader(title: title),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 2,
-                        child: SingleChildScrollView(
-                          physics: const ScrollPhysics(),
-                          child: GridView.count(
-                            primary: false,
-                            padding: const EdgeInsets.all(24.0),
-                            crossAxisCount: 3,
-                            shrinkWrap: true,
-                            childAspectRatio: 1.6,
-                            children: state.accounts.map((account) {
-                              return GridViewButton(
-                                onPressed: () => _setAccount(context, account.name, controller),
-                                text: account.name,
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }*/
+          }
           return const SizedBox();
         },
       );

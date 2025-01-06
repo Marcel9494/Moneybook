@@ -23,8 +23,10 @@ class BudgetCard extends StatelessWidget {
   void _openBudgetBottomSheet(BuildContext context) {
     showCupertinoModalBottomSheet<void>(
       context: context,
+      backgroundColor: Color(0xFF1c1b20),
       builder: (BuildContext context) {
         return Material(
+          color: Color(0xFF1c1b20),
           child: Wrap(
             children: [
               Column(
@@ -96,7 +98,7 @@ class BudgetCard extends StatelessWidget {
   }
 
   Color _getBudgetColor() {
-    if (budget.percentage <= 100.0) {
+    if (budget.remaining >= 0.0) {
       return Colors.green.withOpacity(0.9);
     }
     return Colors.redAccent;
@@ -159,7 +161,7 @@ class BudgetCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              budget.percentage < 100.0 ? 'Noch ${_calculateBudgetPerDay()} p.T. verfügbar' : 'Du hast dein Budgetlimit erreicht',
+                              budget.remaining <= 0.0 ? 'Du hast dein Budgetlimit erreicht' : 'Noch ${_calculateBudgetPerDay()} p.T. verfügbar',
                               style: const TextStyle(fontSize: 12.0, color: Colors.grey),
                               overflow: TextOverflow.ellipsis,
                             ),
