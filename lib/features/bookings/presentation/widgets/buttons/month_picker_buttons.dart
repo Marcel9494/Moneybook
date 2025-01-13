@@ -48,13 +48,41 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
               showMonthPicker(
                 context: context,
                 initialDate: widget.selectedDate,
-                selectedMonthBackgroundColor: Colors.cyanAccent,
-                unselectedMonthTextColor: Colors.white70,
-                confirmWidget: const Text('OK', style: TextStyle(color: Colors.cyanAccent)),
-                cancelWidget: const Text('Abbrechen', style: TextStyle(color: Colors.grey)),
-                locale: const Locale(locale),
-                roundedCornersRadius: 12.0,
-                dismissible: true,
+                monthPickerDialogSettings: MonthPickerDialogSettings(
+                  headerSettings: PickerHeaderSettings(
+                    headerCurrentPageTextStyle: TextStyle(fontSize: 16.0),
+                    headerSelectedIntervalTextStyle: TextStyle(fontSize: 20.0),
+                    headerBackgroundColor: Colors.black26,
+                  ),
+                  dialogSettings: PickerDialogSettings(
+                    dismissible: true,
+                    locale: const Locale(locale),
+                    dialogRoundedCornersRadius: 20.0,
+                    dialogBackgroundColor: Colors.black26,
+                  ),
+                  dateButtonsSettings: PickerDateButtonsSettings(
+                    buttonBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                    ),
+                    selectedMonthBackgroundColor: Colors.cyanAccent,
+                    selectedMonthTextColor: Colors.white,
+                    unselectedMonthsTextColor: Colors.white70,
+                    currentMonthTextColor: Colors.cyanAccent,
+                    yearTextStyle: const TextStyle(
+                      fontSize: 15.0,
+                    ),
+                    monthTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  actionBarSettings: PickerActionBarSettings(
+                    buttonSpacing: 12.0,
+                    customDivider: Divider(height: 1.0),
+                    confirmWidget: const Text('OK', style: TextStyle(color: Colors.cyanAccent)),
+                    cancelWidget: const Text('Abbrechen', style: TextStyle(color: Colors.grey)),
+                  ),
+                ),
               ).then((date) {
                 if (date != null) {
                   setState(() {

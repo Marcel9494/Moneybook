@@ -23,6 +23,7 @@ openCategorieBottomSheet({
   loadCategories(context);
   showCupertinoModalBottomSheet<void>(
     context: context,
+    backgroundColor: Color(0xFF1c1b20),
     builder: (BuildContext context) {
       return BlocBuilder<CategorieBloc, CategorieState>(
         builder: (context, state) {
@@ -38,6 +39,7 @@ openCategorieBottomSheet({
               categories = state.investmentCategories;
             }
             return Material(
+              color: Color(0xFF1c1b20),
               child: Wrap(
                 children: [
                   Column(

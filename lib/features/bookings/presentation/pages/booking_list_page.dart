@@ -209,7 +209,7 @@ class _BookingListPageState extends State<BookingListPage> {
                                 style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 14.5 : 13.0),
                               ),
                               iconColor: _isExpanded ? Colors.white : Colors.grey,
-                              backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+                              backgroundColor: Color(0xFF1c1b20),
                               onExpansionChanged: (bool expanded) {
                                 setState(() {
                                   _isExpanded = expanded;

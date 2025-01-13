@@ -16,8 +16,10 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
   }
   showCupertinoModalBottomSheet<void>(
     context: context,
+    backgroundColor: Color(0xFF1c1b20),
     builder: (BuildContext context) {
       return Material(
+        color: Color(0xFF1c1b20),
         child: Wrap(
           children: [
             Column(
@@ -38,20 +40,21 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
                       SquareButton(onPressed: () => _setAmount('3', amountController), text: '3'),
                       SquareIconButton(
                         onPressed: () => _clearAmount(amountController),
-                        icon: const Icon(Icons.clear_rounded, color: Colors.cyanAccent),
+                        icon: const Icon(Icons.clear_rounded, color: Colors.cyanAccent, size: 24.0),
                       ),
                       SquareButton(onPressed: () => _setAmount('4', amountController), text: '4'),
                       SquareButton(onPressed: () => _setAmount('5', amountController), text: '5'),
                       SquareButton(onPressed: () => _setAmount('6', amountController), text: '6'),
                       SquareIconButton(
                         onPressed: () => _removeLastCharacter(amountController),
-                        icon: const Icon(Icons.backspace_rounded, color: Colors.cyanAccent),
+                        icon: const Icon(Icons.backspace_rounded, color: Colors.cyanAccent, size: 20.0),
                       ),
                       SquareButton(onPressed: () => _setAmount('7', amountController), text: '7'),
                       SquareButton(onPressed: () => _setAmount('8', amountController), text: '8'),
                       SquareButton(onPressed: () => _setAmount('9', amountController), text: '9'),
                       SquareIconButton(
-                          onPressed: () => Navigator.pop(context), icon: const Icon(Icons.check_circle_rounded, color: Colors.greenAccent)),
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.check_circle_rounded, color: Colors.greenAccent, size: 24.0)),
                       showMinus
                           ? SquareButton(onPressed: () => _setAmount('-', amountController), text: '-')
                           : const Visibility(

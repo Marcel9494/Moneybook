@@ -76,10 +76,12 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
     _editMode = false;
     showCupertinoModalBottomSheet(
       context: context,
+      backgroundColor: Color(0xFF1c1b20),
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Material(
+            color: Color(0xFF1c1b20),
             child: Wrap(
               children: [
                 Form(
@@ -192,10 +194,12 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
     _editMode = true;
     showCupertinoModalBottomSheet(
       context: context,
+      backgroundColor: Color(0xFF1c1b20),
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Material(
+            color: Color(0xFF1c1b20),
             child: Wrap(
               children: [
                 Form(

@@ -26,6 +26,7 @@ class CategorieInputField extends StatelessWidget {
       controller: categorieController,
       showCursor: false,
       readOnly: true,
+      textAlignVertical: TextAlignVertical.center,
       validator: (input) => _checkCategorieInput(),
       onTap: () => openCategorieBottomSheet(
         context: context,

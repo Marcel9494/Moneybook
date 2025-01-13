@@ -75,7 +75,11 @@ class _BudgetListPageState extends State<BudgetListPage> {
     }
     for (int i = 0; i < budgets.length; i++) {
       budgets[i].remaining = budgets[i].amount - budgets[i].used;
-      budgets[i].percentage = (budgets[i].used / budgets[i].amount) * 100;
+      if (budgets[i].amount != 0) {
+        budgets[i].percentage = (budgets[i].used / budgets[i].amount) * 100;
+      } else {
+        budgets[i].percentage = 0;
+      }
     }
     budgets.sort((first, second) => second.percentage.compareTo(first.percentage));
   }

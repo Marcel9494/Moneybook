@@ -29,6 +29,7 @@ class TitleTextField extends StatelessWidget {
       maxLength: maxLength,
       autofocus: autofocus,
       focusNode: focusNode,
+      textAlignVertical: TextAlignVertical.center,
       textCapitalization: TextCapitalization.sentences,
       validator: (input) => _checkTextInput(),
       decoration: InputDecoration(

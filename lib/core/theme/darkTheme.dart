@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 
 final darkTheme = ThemeData(
   brightness: Brightness.dark,
+  scaffoldBackgroundColor: Color(0xFF1c1b20),
+  cardTheme: CardTheme(
+    color: Color(0xBB27292f),
+  ),
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.black54,
+    elevation: 4.0,
+  ),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStateProperty.all<Color>(Colors.cyanAccent),
@@ -9,14 +17,20 @@ final darkTheme = ThemeData(
   ),
   segmentedButtonTheme: SegmentedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-        (Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
+      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+        (Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
             return Colors.cyanAccent.withOpacity(0.14);
           }
           return Colors.transparent;
         },
       ),
+      iconColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.cyanAccent;
+        }
+        return Colors.white70;
+      }),
     ),
   ),
   datePickerTheme: DatePickerThemeData(

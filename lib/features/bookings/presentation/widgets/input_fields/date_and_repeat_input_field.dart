@@ -31,8 +31,10 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
   openRepeatBottomSheet({required BuildContext context, required String repetitionType}) {
     showCupertinoModalBottomSheet<void>(
       context: context,
+      backgroundColor: Color(0xFF1c1b20),
       builder: (BuildContext context) {
         return Material(
+          color: Color(0xFF1c1b20),
           child: Wrap(
             children: [
               Column(

@@ -29,6 +29,7 @@ class AccountInputField extends StatelessWidget {
       controller: accountController,
       showCursor: false,
       readOnly: true,
+      textAlignVertical: TextAlignVertical.center,
       validator: (input) => _checkAccountInput(),
       onTap: () => openAccountBottomSheet(
         context: context,

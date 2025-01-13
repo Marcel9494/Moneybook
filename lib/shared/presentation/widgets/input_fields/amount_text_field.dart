@@ -54,8 +54,10 @@ class AmountTextField extends StatelessWidget {
   void _openAmountTypeBottomSheet({required BuildContext context, required String amountType}) {
     showCupertinoModalBottomSheet<void>(
       context: context,
+      backgroundColor: Color(0xFF1c1b20),
       builder: (BuildContext context) {
         return Material(
+          color: Color(0xFF1c1b20),
           child: Wrap(
             children: [
               Column(
@@ -128,6 +130,7 @@ class AmountTextField extends StatelessWidget {
       controller: amountController,
       showCursor: false,
       readOnly: true,
+      textAlignVertical: TextAlignVertical.center,
       validator: (input) => _checkAmountInput(),
       onTap: () => openBottomSheetForAmountInput(
         context: context,

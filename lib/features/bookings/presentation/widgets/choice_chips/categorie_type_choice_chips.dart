@@ -35,18 +35,6 @@ class _CategorieTypeChoiceChipsState extends State<CategorieTypeChoiceChips> {
                 label: Text(widget.categorieTypes[index].name),
                 selected: widget.selectedCategorieValue[index],
                 onSelected: (newSelectedValue) => widget.onSelected(newSelectedValue, index),
-                /*onSelected: (bool selected) {
-                  setState(() {
-                    _value = (selected ? index : null)!;
-                    if (_value == 0) {
-                      widget.selectedCategorieType = CategorieType.expense;
-                    } else if (_value == 1) {
-                      widget.selectedCategorieType = CategorieType.income;
-                    } else if (_value == 2) {
-                      widget.selectedCategorieType = CategorieType.investment;
-                    }
-                  });
-                },*/
               );
             },
           ).toList(),
