@@ -88,7 +88,11 @@ class BudgetCard extends StatelessWidget {
     if (selectedDate.month == DateTime.now().month && selectedDate.year == DateTime.now().year) {
       numberOfDaysThisMonth -= DateTime.now().day;
     }
-    return formatToMoneyAmount((budget.remaining / numberOfDaysThisMonth).toString());
+    if (numberOfDaysThisMonth > 0) {
+      return formatToMoneyAmount((budget.remaining / numberOfDaysThisMonth).toString());
+    }
+    // Beim letzten Tag des Monats wird einfach das restliche Budget ausgegeben
+    return formatToMoneyAmount(budget.remaining.toString());
   }
 
   int daysInMonth(int year, int month) {
