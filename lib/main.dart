@@ -10,6 +10,7 @@ import 'package:moneybook/features/bookings/presentation/pages/create_booking_pa
 import 'package:moneybook/features/bookings/presentation/widgets/page_arguments/edit_booking_page_arguments.dart';
 import 'package:moneybook/features/categories/presentation/pages/categorie_list_page.dart';
 import 'package:moneybook/features/settings/presentation/pages/above_page.dart';
+import 'package:moneybook/features/settings/presentation/pages/credit_page.dart';
 import 'package:moneybook/features/settings/presentation/pages/settings_page.dart';
 import 'package:moneybook/features/statistics/presentation/pages/categorie_statistic_page.dart';
 import 'package:moneybook/features/statistics/presentation/widgets/page_arguments/categorie_statistic_page_arguments.dart';
@@ -96,6 +97,7 @@ class MyApp extends StatelessWidget {
         settingsRoute: (context) => const SettingsPage(),
         aboveRoute: (context) => const AbovePage(),
         impressumRoute: (context) => const ImpressumPage(),
+        creditRoute: (context) => const CreditPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {

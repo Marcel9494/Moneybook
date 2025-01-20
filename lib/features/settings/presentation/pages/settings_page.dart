@@ -67,6 +67,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 _launchUrl(url: 'https://marcel9494.github.io/Moneybook/privacyPolicy.html'),
               },
             ),
+            SettingCard(
+              title: 'Credits',
+              icon: Icons.receipt_long_rounded,
+              onTap: () => Navigator.pushNamed(context, creditRoute),
+            ),
             adminMode ? SettingTitle(title: 'Admin Bereich') : const SizedBox(),
             adminMode
                 ? Card(
