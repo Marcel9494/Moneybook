@@ -47,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
             SettingCard(
               title: 'Folge Moneybook',
               icon: Icons.share_rounded,
-              onTap: () => _launchUrl(url: 'https://www.instagram.com/'), // TODO richtigen Link einfügen, sobald Instagram Profil vorhanden ist.
+              onTap: () => _launchUrl(url: 'https://www.instagram.com/moneybook_app'),
             ),
             SettingCard(
               title: 'Über Moneybook',
