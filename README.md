@@ -1,6 +1,8 @@
 # Moneybook
 Haushaltsbuch zum Verwalten deiner Finanzen.
 
+Available on Google Play Store: https://play.google.com/store/apps/details?id=de.mdm.moneybook
+
 # App GUI
 
 <img src="https://github.com/user-attachments/assets/060ee81b-9267-4ad4-aa47-0de6614f322c" alt="Buchungsliste" style="width: 30%; height: auto;" />
