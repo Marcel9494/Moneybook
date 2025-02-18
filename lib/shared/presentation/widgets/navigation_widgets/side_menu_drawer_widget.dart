@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/consts/route_consts.dart';
+import '../deco/new_label.dart';
 
 class SideMenuDrawer extends StatefulWidget {
   final int tabIndex;
@@ -145,18 +146,65 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
           const Divider(),
           ListTile(
             leading: Icon(
-              Icons.settings_rounded,
+              Icons.rate_review_rounded,
               color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
             ),
-            title: Text(
-              'Einstellungen',
-              style: TextStyle(color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
+            title: Row(
+              children: [
+                Text(
+                  'Feedback',
+                  style: TextStyle(color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
+                ),
+                NewLabel(),
+              ],
             ),
             trailing: Icon(
               Icons.keyboard_arrow_right_rounded,
               color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
             ),
             selected: widget.tabIndex == 5,
+            onTap: () {
+              Navigator.popAndPushNamed(context, feedbackRoute);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.bug_report_rounded,
+              color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            title: Row(
+              children: [
+                Text(
+                  'Fehler melden',
+                  style: TextStyle(color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
+                ),
+                NewLabel(),
+              ],
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right_rounded,
+              color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            selected: widget.tabIndex == 6,
+            onTap: () {
+              Navigator.popAndPushNamed(context, bugReportRoute);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(
+              Icons.settings_rounded,
+              color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            title: Text(
+              'Einstellungen',
+              style: TextStyle(color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right_rounded,
+              color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            selected: widget.tabIndex == 7,
             onTap: () {
               Navigator.popAndPushNamed(context, settingsRoute);
             },

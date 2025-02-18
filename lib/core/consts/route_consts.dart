@@ -14,3 +14,5 @@ const settingsRoute = 'settings';
 const aboveRoute = 'above';
 const impressumRoute = 'impressum';
 const creditRoute = 'credit';
+const feedbackRoute = 'feedback';
+const bugReportRoute = 'bugReport';

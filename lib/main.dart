@@ -30,6 +30,8 @@ import 'features/budgets/presentation/pages/create_budget_page.dart';
 import 'features/budgets/presentation/pages/edit_budget_page.dart';
 import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
+import 'features/settings/presentation/pages/bug_report_page.dart';
+import 'features/settings/presentation/pages/feedback_page.dart';
 import 'features/settings/presentation/pages/impressum_page.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'features/user/presentation/bloc/user_bloc.dart';
@@ -98,6 +100,8 @@ class MyApp extends StatelessWidget {
         aboveRoute: (context) => const AbovePage(),
         impressumRoute: (context) => const ImpressumPage(),
         creditRoute: (context) => const CreditPage(),
+        feedbackRoute: (context) => const FeedbackPage(),
+        bugReportRoute: (context) => const BugReportPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
