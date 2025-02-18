@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/consts/route_consts.dart';
+import '../deco/new_label.dart';
 
 class SideMenuDrawer extends StatefulWidget {
   final int tabIndex;
@@ -148,9 +149,14 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               Icons.rate_review_rounded,
               color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
             ),
-            title: Text(
-              'Feedback geben',
-              style: TextStyle(color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
+            title: Row(
+              children: [
+                Text(
+                  'Feedback',
+                  style: TextStyle(color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
+                ),
+                NewLabel(),
+              ],
             ),
             trailing: Icon(
               Icons.keyboard_arrow_right_rounded,
@@ -166,9 +172,14 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               Icons.bug_report_rounded,
               color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
             ),
-            title: Text(
-              'Fehler melden',
-              style: TextStyle(color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
+            title: Row(
+              children: [
+                Text(
+                  'Fehler melden',
+                  style: TextStyle(color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
+                ),
+                NewLabel(),
+              ],
             ),
             trailing: Icon(
               Icons.keyboard_arrow_right_rounded,

@@ -59,7 +59,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Feedback geben'),
+        title: Text('Feedback einreichen'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -81,7 +81,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(12.0, 16.0, 12.0, 0.0),
                     child: LongDescriptionTextField(
-                      hintText: 'Feedback, Ideen für ein neues Feature, andere Vorschläge, ...',
+                      hintText:
+                          'Teile dein Feedback mit dem Entwickler, um Moneybook zu verbessern. Feedback, Ideen für ein neues Feature, andere Vorschläge, ...',
                       descriptionController: descriptionController,
                     ),
                   ),
