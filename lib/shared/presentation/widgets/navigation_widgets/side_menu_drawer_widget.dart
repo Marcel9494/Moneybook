@@ -145,11 +145,11 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
           const Divider(),
           ListTile(
             leading: Icon(
-              Icons.settings_rounded,
+              Icons.rate_review_rounded,
               color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
             ),
             title: Text(
-              'Einstellungen',
+              'Feedback geben',
               style: TextStyle(color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
@@ -157,6 +157,43 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
             ),
             selected: widget.tabIndex == 5,
+            onTap: () {
+              Navigator.popAndPushNamed(context, feedbackRoute);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.bug_report_rounded,
+              color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            title: Text(
+              'Fehler melden',
+              style: TextStyle(color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right_rounded,
+              color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            selected: widget.tabIndex == 6,
+            onTap: () {
+              Navigator.popAndPushNamed(context, bugReportRoute);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(
+              Icons.settings_rounded,
+              color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            title: Text(
+              'Einstellungen',
+              style: TextStyle(color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right_rounded,
+              color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            selected: widget.tabIndex == 7,
             onTap: () {
               Navigator.popAndPushNamed(context, settingsRoute);
             },

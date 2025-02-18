@@ -10,6 +10,7 @@
 .svn/
 migrate_working_dir/
 private/
+lib/core/github/github_config.dart
 **/build.gradle
 key.jks
 
