@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/pending_monthly_card.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
+
 class PendingMonthlyValueCards extends StatefulWidget {
   final double monthlyDependingExpense;
   final double monthlyDependingIncome;
@@ -28,22 +30,22 @@ class _PendingMonthlyValueCardsState extends State<PendingMonthlyValueCards> {
         scrollDirection: Axis.horizontal,
         children: [
           PendingMonthlyCard(
-            title: 'Einnahmen',
+            title: AppLocalizations.of(context).translate('income'),
             pendingMonthlyValue: widget.monthlyDependingIncome,
             textColor: Colors.greenAccent,
           ),
           PendingMonthlyCard(
-            title: 'Ausgaben',
+            title: AppLocalizations.of(context).translate('expenses'),
             pendingMonthlyValue: widget.monthlyDependingExpense,
             textColor: Colors.redAccent,
           ),
           PendingMonthlyCard(
-            title: 'Käufe',
+            title: AppLocalizations.of(context).translate('purchases'),
             pendingMonthlyValue: widget.monthlyDependingInvestmentBuys,
             textColor: Colors.cyanAccent,
           ),
           PendingMonthlyCard(
-            title: 'Verkäufe',
+            title: AppLocalizations.of(context).translate('sales'),
             pendingMonthlyValue: widget.monthlyDependingInvestmentSales,
             textColor: Colors.cyanAccent,
           ),

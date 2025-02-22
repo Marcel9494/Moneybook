@@ -1,0 +1,18 @@
+{
+  "income": "Income",
+  "expenses": "Expenses",
+  "balance": "Balance",
+  "purchases": "Purchases",
+  "sales": "Sales",
+  "difference": "Difference",
+  "p.d.": "p.d.",
+  "edit Booking": "Edit Booking",
+  "only this booking": "Only this Booking",
+  "all future bookings": "All Future Bookings",
+  "all bookings": "All Bookings",
+  "no bookings yet for": "No bookings yet for",
+  "pending booking": "Pending Booking",
+  "pending bookings": "Pending Bookings",
+  "pending": "Pending",
+  "no pending bookings for": "No pending bookings for"
+}

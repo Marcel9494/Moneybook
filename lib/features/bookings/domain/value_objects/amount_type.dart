@@ -44,8 +44,6 @@ extension AmountTypeExtension on AmountType {
         return 'Gesamt';
       case AmountType.overallIncome:
         return 'Gesamt';
-      default:
-        throw Exception('$name is not a valid Amount type.');
     }
   }
 
@@ -69,8 +67,6 @@ extension AmountTypeExtension on AmountType {
         return '-';
       case AmountType.overallIncome:
         return '-';
-      default:
-        throw Exception('$name is not a valid Amount type.');
     }
   }
 }

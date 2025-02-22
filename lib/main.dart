@@ -21,6 +21,7 @@ import 'package:moneybook/shared/presentation/widgets/navigation_widgets/navigat
 
 import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
+import 'core/utils/app_localizations.dart';
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/accounts/presentation/pages/edit_account_page.dart';
 import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
@@ -31,17 +32,17 @@ import 'features/budgets/presentation/pages/edit_budget_page.dart';
 import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/settings/presentation/pages/bug_report_page.dart';
+import 'features/settings/presentation/pages/currency_converter_page.dart';
 import 'features/settings/presentation/pages/feedback_page.dart';
 import 'features/settings/presentation/pages/impressum_page.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'features/user/presentation/bloc/user_bloc.dart';
-import 'injection_container.dart' as di;
 import 'injection_container.dart';
 import 'shared/presentation/widgets/arguments/selected_date_page_arguments.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  di.init();
+  init();
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
       create: (context) => sl<SharedBloc>(),
@@ -67,8 +68,23 @@ void main() {
   ], child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('de', 'DE');
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   MaterialApp build(BuildContext context) {
@@ -83,12 +99,20 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       theme: ThemeData(useMaterial3: true),
       localizationsDelegates: const [
+        AppLocalizations.delegate, // Eigene Lokalisierung
         GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        // Falls die Systemsprache nicht unterstützt wird, nehme Englisch als Standard
+        return supportedLocales.contains(locale) ? locale : const Locale('en', 'US');
+      },
       supportedLocales: const [
         Locale('de', 'DE'),
+        Locale('en', 'US'),
       ],
+      locale: _locale,
       home: const IntroductionPage(),
       routes: {
         accountListRoute: (context) => const AccountListPage(),
@@ -102,6 +126,7 @@ class MyApp extends StatelessWidget {
         creditRoute: (context) => const CreditPage(),
         feedbackRoute: (context) => const FeedbackPage(),
         bugReportRoute: (context) => const BugReportPage(),
+        currencyConverterRoute: (context) => const CurrencyConverterPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {

@@ -16,3 +16,4 @@ const impressumRoute = 'impressum';
 const creditRoute = 'credit';
 const feedbackRoute = 'feedback';
 const bugReportRoute = 'bugReport';
+const currencyConverterRoute = 'currencyConverter';

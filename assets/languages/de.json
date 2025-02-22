@@ -1,0 +1,18 @@
+{
+  "income": "Einkommen",
+  "expenses": "Ausgaben",
+  "balance": "Saldo",
+  "purchases": "Käufe",
+  "sales": "Verkäufe",
+  "difference": "Differenz",
+  "p.d.": "p.T.",
+  "edit Booking": "Buchung bearbeiten",
+  "only this booking": "Nur diese Buchung",
+  "all future bookings": "Alle zukünftige Buchungen",
+  "all bookings": "Alle Buchungen",
+  "no bookings yet for": "Noch keine Buchungen für",
+  "pending booking": "Ausstehende Buchung",
+  "pending bookings": "Ausstehende Buchungen",
+  "pending": "Ausstehende",
+  "no pending bookings for": "Keine ausstehenden Buchungen für"
+}
