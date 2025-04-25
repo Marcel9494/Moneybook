@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:moneybook/core/consts/database_consts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../core/utils/app_localizations.dart';
+
 class AbovePage extends StatefulWidget {
   const AbovePage({super.key});
 
@@ -10,7 +12,7 @@ class AbovePage extends StatefulWidget {
 }
 
 class _AbovePageState extends State<AbovePage> {
-  String appVersion = 'Lade App Version...';
+  String appVersion = '...';
 
   @override
   void initState() {
@@ -29,7 +31,7 @@ class _AbovePageState extends State<AbovePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Über Moneybook'),
+        title: Text(AppLocalizations.of(context).translate('über') + ' ' + AppLocalizations.of(context).translate('moneybook')),
       ),
       body: ListView(
         children: [
@@ -47,10 +49,10 @@ class _AbovePageState extends State<AbovePage> {
                     ),
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    'Aktuelle App Version',
+                    AppLocalizations.of(context).translate('aktuelle_app_version'),
                     style: TextStyle(fontSize: 18.0),
                   ),
                 ),
@@ -64,14 +66,14 @@ class _AbovePageState extends State<AbovePage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
-                    'DB Version $localDbVersion',
+                    AppLocalizations.of(context).translate('db_version') + ' $localDbVersion',
                     style: const TextStyle(fontSize: 18.0),
                   ),
                 ),
               ],
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 12.0, bottom: 24.0),
             child: Card(
               child: Column(
@@ -79,7 +81,7 @@ class _AbovePageState extends State<AbovePage> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      'App Entwickler',
+                      AppLocalizations.of(context).translate('app_entwickler'),
                       style: TextStyle(fontSize: 18.0),
                     ),
                   ),
@@ -98,14 +100,14 @@ class _AbovePageState extends State<AbovePage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => LicensePage(
-                      applicationName: 'Moneybook',
+                      applicationName: AppLocalizations.of(context).translate('moneybook'),
                       applicationVersion: 'V $appVersion',
                       applicationLegalese: '© ${DateTime.now().year} Marcel',
                     ),
                   ),
                 );
               },
-              child: const Text('Lizenzen anzeigen'),
+              child: Text(AppLocalizations.of(context).translate('lizenzen_anzeigen')),
             ),
           ),
           const Padding(

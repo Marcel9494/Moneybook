@@ -1,8 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:moneybook/core/consts/common_consts.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
+import '../../../../../core/utils/date_formatter.dart';
 import '../../../../../core/utils/number_formatter.dart';
 import '../../../../bookings/domain/entities/booking.dart';
 import '../../../../bookings/domain/value_objects/amount_type.dart';
@@ -42,31 +43,31 @@ class CategorieBarChartState extends State<CategorieBarChart> {
 
   String _getFirstAmountType() {
     if (BookingType.expense == widget.bookingType) {
-      return AmountType.overallExpense.name;
+      return AppLocalizations.of(context).translate(AmountType.overallExpense.name);
     } else if (BookingType.income == widget.bookingType) {
-      return AmountType.overallIncome.name;
+      return AppLocalizations.of(context).translate(AmountType.overallIncome.name);
     } else if (BookingType.investment == widget.bookingType) {
-      return AmountType.buy.name;
+      return AppLocalizations.of(context).translate(AmountType.buy.name);
     }
     return '';
   }
 
   String _getFirstAmountTypeString() {
     if (BookingType.expense == widget.bookingType) {
-      return AmountType.variable.name;
+      return AppLocalizations.of(context).translate(AmountType.variable.name);
     } else if (BookingType.income == widget.bookingType) {
-      return AmountType.active.name;
+      return AppLocalizations.of(context).translate(AmountType.active.name);
     } else if (BookingType.investment == widget.bookingType) {
-      return AmountType.sale.name;
+      return AppLocalizations.of(context).translate(AmountType.sale.name);
     }
     return '';
   }
 
   String _getSecondAmountTypeString() {
     if (BookingType.expense == widget.bookingType) {
-      return AmountType.fix.name;
+      return AppLocalizations.of(context).translate(AmountType.fix.name);
     } else if (BookingType.income == widget.bookingType) {
-      return AmountType.passive.name;
+      return AppLocalizations.of(context).translate(AmountType.passive.name);
     }
     return '';
   }
@@ -275,8 +276,8 @@ class CategorieBarChartState extends State<CategorieBarChart> {
                         return BarTooltipItem(
                           _showSeparatedBars == false
                               ? BookingType.investment == widget.bookingType
-                                  ? 'Kauf:\n${formatToMoneyAmount(rod.toY.toString())}'
-                                  : 'Gesamt:\n${formatToMoneyAmount(rod.toY.toString())}'
+                                  ? AppLocalizations.of(context).translate('kauf') + ':\n' + formatToMoneyAmount(rod.toY.toString())
+                                  : AppLocalizations.of(context).translate('gesamt') + ':\n' + formatToMoneyAmount(rod.toY.toString())
                               : rodIndex == 0
                                   ? '${_getFirstAmountTypeString()}:\n${formatToMoneyAmount(rod.toY.toString())}'
                                   : '${_getSecondAmountTypeString()}:\n${formatToMoneyAmount(rod.toY.toString())}',
@@ -361,7 +362,7 @@ class CategorieBarChartState extends State<CategorieBarChart> {
     List<String> months = [];
     for (int i = 6; i >= 0; i--) {
       DateTime monthDate = DateTime(widget.selectedDate.year, widget.selectedDate.month - i);
-      String monthName = DateFormat('MMM', locale).format(monthDate);
+      String monthName = DateFormatter.dateFormatMMM(monthDate, context);
       months.add(monthName);
     }
 

@@ -35,7 +35,7 @@ class DailyReportSummary extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6.0),
                     ),
                     child: Text(
-                      dateFormatterEEDD.format(date),
+                      DateFormatter.dateFormatEEDD(date, context),
                       style: const TextStyle(fontSize: 16.0),
                     ),
                   ),
@@ -47,7 +47,7 @@ class DailyReportSummary extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.only(bottom: 1.5),
                     child: Text(
-                      dateFormatterMMYYYY.format(date),
+                      DateFormatter.dateFormatMMYYYY(date, context),
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ),

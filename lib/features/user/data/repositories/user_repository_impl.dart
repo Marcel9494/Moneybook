@@ -33,4 +33,31 @@ class UserRepositoryImpl implements UserRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateLanguage(String newLanguageCode) async {
+    try {
+      return Right(await userLocalDataSource.updateLanguage(newLanguageCode));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateCurrency(String newCurrency, bool convertBudgetAmounts) async {
+    try {
+      return Right(await userLocalDataSource.updateCurrency(newCurrency, convertBudgetAmounts));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getLanguage() async {
+    try {
+      return Right(await userLocalDataSource.getLanguage());
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
 }

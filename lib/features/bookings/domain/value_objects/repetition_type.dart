@@ -27,25 +27,23 @@ extension RepetitionTypeExtension on RepetitionType {
   String get name {
     switch (this) {
       case RepetitionType.noRepetition:
-        return 'Keine Wiederholung';
+        return 'keine_wiederholung';
       case RepetitionType.weekly:
-        return 'Jede Woche';
+        return 'jede_woche';
       case RepetitionType.twoWeeks:
-        return 'Alle zwei Wochen';
+        return 'alle_zwei_wochen';
       case RepetitionType.monthly:
-        return 'Jeden Monat';
+        return 'jeden_monat';
       case RepetitionType.monthlyBeginning:
-        return 'Am Monatsanfang';
+        return 'am_monatsanfang';
       case RepetitionType.monthlyEnding:
-        return 'Am Monatsende';
+        return 'am_monatsende';
       case RepetitionType.threeMonths:
-        return 'Alle drei Monate';
+        return 'alle_drei_monate';
       case RepetitionType.sixMonths:
-        return 'Alle sechs Monate';
+        return 'alle_sechs_monate';
       case RepetitionType.yearly:
-        return 'Jedes Jahr';
-      default:
-        throw Exception('$name is not a valid Repetition type.');
+        return 'jedes_jahr';
     }
   }
 }

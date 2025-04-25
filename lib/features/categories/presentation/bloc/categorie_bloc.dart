@@ -4,6 +4,7 @@ import 'package:moneybook/features/categories/domain/usecases/delete.dart';
 import 'package:moneybook/features/categories/domain/usecases/edit.dart';
 import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
+import '../../../../core/utils/app_localizations.dart';
 import '../../../categories/domain/usecases/create.dart';
 import '../../domain/entities/categorie.dart';
 import '../../domain/usecases/check_categorie_name.dart';
@@ -19,6 +20,7 @@ const String DELETE_CATEGORIE_FAILURE = 'Kategorie konnte nicht gelöscht werden
 const String LOAD_CATEGORIES_FAILURE = 'Kategorien konnten nicht geladen werden.';
 const String GET_ID_CATEGORIE_FAILURE = 'Kategorie Id konnte nicht geladen werden.';
 const String CATEGORIE_NAME_EXISTS_FAILURE = 'Kategoriename konnte nicht geprüft werden.';
+const String TRANSLATE_CATEGORIES_FAILURE = 'Kategorien konnten nicht übersetzt werden.';
 
 class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
   final Create createUseCase;
@@ -101,6 +103,28 @@ class CategorieBloc extends Bloc<CategorieEvent, CategorieState> {
             numberOfEventCalls: event.numberOfEventCalls,
           ));
         });
+      } else if (event is ExistsCategorieName) {
+        for (int i = 0; i < event.categories.length; i++) {
+          if (event.newCategorie.name.trim() == AppLocalizations.of(event.context).translate(event.categories[i].name) &&
+              event.newCategorie.type == event.categories[i].type) {
+            emit(CheckedCategorieName(
+              categorieNameExists: true,
+              categorie: event.categories[i],
+              numberOfEventCalls: event.numberOfEventCalls,
+            ));
+            return;
+          }
+        }
+        emit(CheckedCategorieName(
+          categorieNameExists: false,
+          categorie: event.categories[0],
+          numberOfEventCalls: event.numberOfEventCalls,
+        ));
+      } else if (event is TranslateAllCategories) {
+        final translateAllCategoriesExistsEither = await checkCategorieNameUseCase.categorieRepository.translate(event.context);
+        translateAllCategoriesExistsEither.fold((failure) {
+          emit(const Error(message: TRANSLATE_CATEGORIES_FAILURE));
+        }, (_) {});
       }
     });
   }

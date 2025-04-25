@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../bottom_sheets/account_bottom_sheet.dart';
 
 class AccountInputField extends StatelessWidget {
   final String hintText;
   final TextEditingController accountController;
+  final Function(String)? onAccountSelected;
   final List<String> accountNameFilter;
   final String bottomSheetTitle;
 
@@ -12,13 +14,14 @@ class AccountInputField extends StatelessWidget {
     super.key,
     required this.hintText,
     required this.accountController,
+    this.onAccountSelected,
     this.accountNameFilter = const [],
     this.bottomSheetTitle = 'Konto auswählen:',
   });
 
-  String? _checkAccountInput() {
+  String? _checkAccountInput(BuildContext context) {
     if (accountController.text.isEmpty) {
-      return 'Bitte wählen Sie ein Konto aus.';
+      return AppLocalizations.of(context).translate('leeres_konto');
     }
     return null;
   }
@@ -30,11 +33,12 @@ class AccountInputField extends StatelessWidget {
       showCursor: false,
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
-      validator: (input) => _checkAccountInput(),
+      validator: (input) => _checkAccountInput(context),
       onTap: () => openAccountBottomSheet(
         context: context,
         title: bottomSheetTitle,
         controller: accountController,
+        onAccountSelected: onAccountSelected,
         accountNameFilter: accountNameFilter,
       ),
       decoration: InputDecoration(

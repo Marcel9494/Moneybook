@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
+
 class GridViewButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
@@ -21,7 +23,7 @@ class GridViewButton extends StatelessWidget {
         ),
       ),
       child: Text(
-        text,
+        AppLocalizations.of(context).translate(text),
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 14.0),
       ),

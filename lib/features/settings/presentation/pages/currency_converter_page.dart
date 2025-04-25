@@ -48,7 +48,18 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('🇪🇺 Euro: 1,00 €'),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: Text('🇪🇺', style: TextStyle(fontSize: 28.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Text('Euro: 1,00 €', style: TextStyle(fontSize: 15.0)),
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Text(
@@ -60,14 +71,16 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                   children: [
                     CountryFlag.fromCountryCode(
                       'US',
-                      width: 16.0,
-                      height: 16.0,
+                      width: 28.0,
+                      height: 28.0,
                       shape: const Circle(),
                     ),
-                    Text('Dollar: ${exchangeRate?.toStringAsFixed(2)} \$'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+                      child: Text('Dollar: ${exchangeRate?.toStringAsFixed(2)} \$', style: TextStyle(fontSize: 15.0)),
+                    ),
                   ],
                 ),
-                Text('Zuletzt aktualisiert:'),
               ],
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:moneybook/features/statistics/presentation/widgets/page_argument
 
 import '../../../../../core/consts/route_consts.dart';
 import '../../../../../core/theme/colors.dart';
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../domain/entities/categorie_stats.dart';
 
@@ -50,7 +51,7 @@ class _CategoriePercentageCardState extends State<CategoriePercentageCard> {
             ),
             child: ListTile(
               title: Text(
-                '${widget.categorieStats.percentage.toStringAsFixed(1).replaceAll('.', ',')} % ${widget.categorieStats.categorie}',
+                '${widget.categorieStats.percentage.toStringAsFixed(1).replaceAll('.', ',')} % ${AppLocalizations.of(context).translate(widget.categorieStats.categorie)}',
                 style: const TextStyle(fontSize: 14.0),
               ),
               trailing: Text(

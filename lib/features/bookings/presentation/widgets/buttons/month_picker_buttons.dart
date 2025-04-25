@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../../core/utils/date_formatter.dart';
 
 class MonthPickerButtons extends StatefulWidget {
@@ -56,7 +56,6 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
                   ),
                   dialogSettings: PickerDialogSettings(
                     dismissible: true,
-                    locale: const Locale(locale),
                     dialogRoundedCornersRadius: 20.0,
                     dialogBackgroundColor: Colors.black26,
                   ),
@@ -79,8 +78,8 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
                   actionBarSettings: PickerActionBarSettings(
                     buttonSpacing: 12.0,
                     customDivider: Divider(height: 1.0),
-                    confirmWidget: const Text('OK', style: TextStyle(color: Colors.cyanAccent)),
-                    cancelWidget: const Text('Abbrechen', style: TextStyle(color: Colors.grey)),
+                    confirmWidget: Text(AppLocalizations.of(context).translate('ok'), style: TextStyle(color: Colors.cyanAccent)),
+                    cancelWidget: Text(AppLocalizations.of(context).translate('abbrechen'), style: TextStyle(color: Colors.grey)),
                   ),
                 ),
               ).then((date) {
@@ -95,7 +94,7 @@ class _MonthPickerButtonsState extends State<MonthPickerButtons> {
             behavior: HitTestBehavior.translucent,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: Text(dateFormatterMMMYYYY.format(widget.selectedDate), textAlign: TextAlign.center),
+              child: Text(DateFormatter.dateFormatMMMYYYY(widget.selectedDate, context), textAlign: TextAlign.center),
             ),
           ),
         ),

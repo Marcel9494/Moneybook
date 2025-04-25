@@ -8,6 +8,7 @@ import 'package:moneybook/shared/presentation/widgets/buttons/save_button.dart';
 import 'package:moneybook/shared/presentation/widgets/input_fields/long_description_text_field.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 
 class FeedbackPage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
     _sendFeedbackBtnController.success();
     Flushbar(
-      message: "Vielen Dank. Dein Feedback wurde erfolgreich gesendet.",
+      message: AppLocalizations.of(context).translate('feedback_erfolgreich_gesendet'),
       icon: Icon(
         Icons.done_rounded,
         size: 28.0,
@@ -59,7 +60,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Feedback einreichen'),
+        title: Text(AppLocalizations.of(context).translate('feedback_einreichen')),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -74,19 +75,21 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: TitleTextField(
-                      hintText: 'Titel...',
+                      hintText: AppLocalizations.of(context).translate('titel') + '...',
                       titleController: titleController,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(12.0, 16.0, 12.0, 0.0),
                     child: LongDescriptionTextField(
-                      hintText:
-                          'Teile dein Feedback mit dem Entwickler, um Moneybook zu verbessern. Feedback, Ideen für ein neues Feature, andere Vorschläge, ...',
+                      hintText: AppLocalizations.of(context).translate('feedback_beschreibung'),
                       descriptionController: descriptionController,
                     ),
                   ),
-                  SaveButton(text: 'Senden', saveBtnController: _sendFeedbackBtnController, onPressed: () => createFeedbackIssue()),
+                  SaveButton(
+                      text: AppLocalizations.of(context).translate('senden'),
+                      saveBtnController: _sendFeedbackBtnController,
+                      onPressed: () => createFeedbackIssue()),
                 ],
               ),
             ),

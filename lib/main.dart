@@ -16,6 +16,7 @@ import 'package:moneybook/features/statistics/presentation/pages/categorie_stati
 import 'package:moneybook/features/statistics/presentation/widgets/page_arguments/categorie_statistic_page_arguments.dart';
 import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 import 'package:moneybook/shared/presentation/pages/introduction_page.dart';
+import 'package:moneybook/shared/presentation/pages/splash_page.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/navigation_widget.dart';
 
@@ -42,30 +43,21 @@ import 'shared/presentation/widgets/arguments/selected_date_page_arguments.dart'
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   init();
+
   runApp(MultiBlocProvider(providers: [
-    BlocProvider(
-      create: (context) => sl<SharedBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<BookingBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<AccountBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<CategorieBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<CategorieStatsBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<BudgetBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<UserBloc>(),
-    ),
-  ], child: const MyApp()));
+    BlocProvider(create: (context) => sl<SharedBloc>()),
+    BlocProvider(create: (context) => sl<BookingBloc>()),
+    BlocProvider(create: (context) => sl<AccountBloc>()),
+    BlocProvider(create: (context) => sl<CategorieBloc>()),
+    BlocProvider(create: (context) => sl<CategorieStatsBloc>()),
+    BlocProvider(create: (context) => sl<BudgetBloc>()),
+    BlocProvider(create: (context) => sl<UserBloc>()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -78,43 +70,50 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('de', 'DE');
+  Locale? _locale;
 
   void setLocale(Locale locale) {
     setState(() {
-      _locale = locale;
+      _locale = Locale(locale.toString().substring(0, 2));
     });
   }
 
   @override
-  MaterialApp build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Moneybook',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       darkTheme: darkTheme,
       theme: ThemeData(useMaterial3: true),
+      locale: _locale,
       localizationsDelegates: const [
-        AppLocalizations.delegate, // Eigene Lokalisierung
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        // Falls die Systemsprache nicht unterstützt wird, nehme Englisch als Standard
-        return supportedLocales.contains(locale) ? locale : const Locale('en', 'US');
-      },
       supportedLocales: const [
-        Locale('de', 'DE'),
-        Locale('en', 'US'),
+        Locale('de'),
+        Locale('en'),
       ],
-      locale: _locale,
-      home: const IntroductionPage(),
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        if (_locale != null) {
+          return _locale;
+        }
+
+        // Fallback, wenn _locale noch nicht gesetzt ist
+        for (var supported in supportedLocales) {
+          if (supported.languageCode == deviceLocale?.languageCode && supported.countryCode == deviceLocale?.countryCode) {
+            return supported;
+          }
+        }
+        // Fallback auf Deutsch
+        return const Locale('de');
+      },
+      home: SplashPage(),
       routes: {
+        introductionRoute: (context) => const IntroductionPage(),
         accountListRoute: (context) => const AccountListPage(),
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
@@ -133,7 +132,7 @@ class _MyAppState extends State<MyApp> {
           case bottomNavBarRoute:
             final args = settings.arguments as BottomNavBarArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => BottomNavBar(
+              builder: (context) => BottomNavBar(
                 tabIndex: args.tabIndex,
                 selectedDate: args.selectedDate,
                 bookingType: args.bookingType,
@@ -144,7 +143,7 @@ class _MyAppState extends State<MyApp> {
           case bookingListRoute:
             final args = settings.arguments as SelectedDatePageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => BookingListPage(
+              builder: (context) => BookingListPage(
                 selectedDate: args.selectedDate,
               ),
               settings: settings,
@@ -152,7 +151,7 @@ class _MyAppState extends State<MyApp> {
           case editBookingRoute:
             final args = settings.arguments as EditBookingPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => EditBookingPage(
+              builder: (context) => EditBookingPage(
                 booking: args.booking,
                 editMode: args.editMode,
               ),
@@ -161,7 +160,7 @@ class _MyAppState extends State<MyApp> {
           case editAccountRoute:
             final args = settings.arguments as EditAccountPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => EditAccountPage(
+              builder: (context) => EditAccountPage(
                 account: args.account,
               ),
               settings: settings,
@@ -169,7 +168,7 @@ class _MyAppState extends State<MyApp> {
           case editBudgetRoute:
             final args = settings.arguments as EditBudgetPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => EditBudgetPage(
+              builder: (context) => EditBudgetPage(
                 budget: args.budget,
                 serieMode: args.serieMode,
               ),
@@ -178,7 +177,7 @@ class _MyAppState extends State<MyApp> {
           case categorieStatisticRoute:
             final args = settings.arguments as CategorieStatisticPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => CategorieStatisticPage(
+              builder: (context) => CategorieStatisticPage(
                 categorie: args.categorie,
                 bookingType: args.bookingType,
                 selectedDate: args.selectedDate,

@@ -43,37 +43,37 @@ class _MonthlyValueCardsState extends State<MonthlyValueCards> {
         scrollDirection: Axis.horizontal,
         children: [
           MonthlyCard(
-            title: AppLocalizations.of(context).translate('income'),
+            title: AppLocalizations.of(context).translate('einnahmen'),
             monthlyValue: widget.monthlyIncome,
             dailyAverageValue: widget.monthlyIncome / numberOfDays,
             textColor: Colors.greenAccent,
           ),
           MonthlyCard(
-            title: AppLocalizations.of(context).translate('expenses'),
+            title: AppLocalizations.of(context).translate('ausgaben'),
             monthlyValue: widget.monthlyExpense,
             dailyAverageValue: widget.monthlyExpense / numberOfDays,
             textColor: Colors.redAccent,
           ),
           MonthlyCard(
-            title: AppLocalizations.of(context).translate('balance'),
+            title: AppLocalizations.of(context).translate('saldo'),
             monthlyValue: widget.monthlyIncome - widget.monthlyExpense,
             dailyAverageValue: (widget.monthlyIncome - widget.monthlyExpense) / numberOfDays,
             textColor: widget.monthlyIncome - widget.monthlyExpense >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),
           MonthlyCard(
-            title: AppLocalizations.of(context).translate('purchases'),
+            title: AppLocalizations.of(context).translate('käufe'),
             monthlyValue: widget.monthlyInvestmentBuys,
             dailyAverageValue: widget.monthlyInvestmentBuys / numberOfDays,
             textColor: Colors.cyanAccent,
           ),
           MonthlyCard(
-            title: AppLocalizations.of(context).translate('sales'),
+            title: AppLocalizations.of(context).translate('verkäufe'),
             monthlyValue: widget.monthlyInvestmentSales,
             dailyAverageValue: widget.monthlyInvestmentSales / numberOfDays,
             textColor: Colors.cyanAccent,
           ),
           MonthlyCard(
-            title: AppLocalizations.of(context).translate('difference'),
+            title: AppLocalizations.of(context).translate('differenz'),
             monthlyValue: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales,
             dailyAverageValue: (widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales) / numberOfDays,
             textColor: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales >= 0.0 ? Colors.greenAccent : Colors.redAccent,

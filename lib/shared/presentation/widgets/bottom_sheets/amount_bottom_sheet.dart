@@ -3,6 +3,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/regex_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/number_formatter.dart';
 import '../buttons/square_button.dart';
 import '../buttons/square_icon_button.dart';
@@ -25,7 +26,7 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const BottomSheetHeader(title: 'Betrag eingeben:'),
+                BottomSheetHeader(title: AppLocalizations.of(context).translate('betrag_eingeben')),
                 Center(
                   child: GridView.count(
                     primary: false,
@@ -62,7 +63,7 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
                               child: Text(''),
                             ),
                       SquareButton(onPressed: () => _setAmount('0', amountController), text: '0'),
-                      SquareButton(onPressed: () => _setAmount(',', amountController), text: ','),
+                      SquareButton(onPressed: () => _setAmount(locale == 'de-DE' ? ',' : '.', amountController), text: locale == 'de-DE' ? ',' : '.'),
                     ],
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moneybook/shared/presentation/widgets/dialogs/info_icon_with_dialog.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../../core/utils/number_formatter.dart';
 
 class MonthlyCard extends StatelessWidget {
@@ -40,9 +41,7 @@ class MonthlyCard extends StatelessWidget {
                       style: TextStyle(color: Colors.grey.shade400, fontSize: 12.0),
                     ),
                     showInfo
-                        ? InfoIconWithDialog(
-                            title: title,
-                            text: 'Es werden nur Investment Buchungen zu Käufen und Verkäufen mit einberechnet.\n\nKäufe - Verkäufe = Differenz')
+                        ? InfoIconWithDialog(title: title, text: AppLocalizations.of(context).translate('differenz_beschreibung'))
                         : const SizedBox(),
                   ],
                 ),
@@ -55,7 +54,7 @@ class MonthlyCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Ø ${formatToMoneyAmount(dailyAverageValue.toString())} p.T.',
+                  'Ø ${formatToMoneyAmount(dailyAverageValue.toString())} ${AppLocalizations.of(context).translate('p.t.')}',
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 11.0, color: Colors.grey),
                 ),

@@ -28,8 +28,6 @@ extension BookingTypeExtension on BookingType {
         return 'Übertrag';
       case BookingType.investment:
         return 'Investition';
-      default:
-        throw Exception('$name is not a valid Booking type.');
     }
   }
 
@@ -45,8 +43,6 @@ extension BookingTypeExtension on BookingType {
         return 'Übertrag';
       case BookingType.investment:
         return 'Investitionen';
-      default:
-        throw Exception('$name is not a valid Booking type.');
     }
   }
 }

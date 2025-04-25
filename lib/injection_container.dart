@@ -22,6 +22,7 @@ import 'package:moneybook/features/categories/domain/usecases/delete.dart' as de
 import 'package:moneybook/features/categories/domain/usecases/edit.dart' as edit_categorie;
 import 'package:moneybook/features/categories/domain/usecases/get_id.dart' as get_id;
 import 'package:moneybook/features/user/domain/usecases/create.dart' as create_user;
+import 'package:moneybook/features/user/domain/usecases/getLanguageUseCase.dart';
 import 'package:moneybook/shared/data/datasources/shared_local_data_source.dart';
 import 'package:moneybook/shared/data/datasources/shared_remote_data_source.dart';
 import 'package:moneybook/shared/data/repositories/shared_repository_impl.dart';
@@ -43,6 +44,7 @@ import 'features/bookings/domain/usecases/delete_only_future_bookings_in_serie.d
 import 'features/bookings/domain/usecases/load_categorie_bookings.dart';
 import 'features/bookings/domain/usecases/load_monthly_amount_type_bookings.dart';
 import 'features/bookings/domain/usecases/load_serie_bookings.dart';
+import 'features/bookings/domain/usecases/translate_bookings.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_in_serie.dart';
 import 'features/bookings/domain/usecases/update_all_bookings_with_account.dart';
 import 'features/bookings/domain/usecases/update_only_future_bookings_in_serie.dart';
@@ -67,6 +69,8 @@ import 'features/user/data/datasources/user_remote_data_source.dart';
 import 'features/user/data/repositories/user_repository_impl.dart';
 import 'features/user/domain/repositories/user_repository.dart';
 import 'features/user/domain/usecases/checkFirstStart.dart';
+import 'features/user/domain/usecases/updateLanguageUseCase.dart';
+import 'features/user/domain/usecases/update_currency_use_case.dart';
 import 'features/user/presentation/bloc/user_bloc.dart';
 
 final sl = GetIt.instance;
@@ -74,11 +78,11 @@ final sl = GetIt.instance;
 void init() {
   // Features
   // Bloc
-  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => BookingBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => CategorieBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => UserBloc(sl(), sl()));
+  sl.registerFactory(() => UserBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => SharedBloc(sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
   // Use Cases
@@ -103,6 +107,7 @@ void init() {
   sl.registerLazySingleton(() => UpdateOnlyFutureBookingsInSerie(sl()));
   sl.registerLazySingleton(() => CalculateAndUpdateNewBookings(sl()));
   sl.registerLazySingleton(() => GetNewSerieId(sl()));
+  sl.registerLazySingleton(() => TranslateBookings(sl()));
 
   // Categories
   sl.registerLazySingleton(() => create_categorie.Create(sl()));
@@ -130,6 +135,9 @@ void init() {
   // User
   sl.registerLazySingleton(() => create_user.Create(sl()));
   sl.registerLazySingleton(() => FirstStart(sl()));
+  sl.registerLazySingleton(() => UpdateLanguageUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateCurrencyUseCase(sl()));
+  sl.registerLazySingleton(() => GetLanguageUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<SharedRepository>(

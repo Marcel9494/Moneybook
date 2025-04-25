@@ -7,6 +7,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
@@ -29,6 +30,7 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
   final TextEditingController _categorieController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _createBudgetBtnController = RoundedLoadingButtonController();
+  String _categorieNameForDb = '';
 
   void _createBudget(BuildContext context) {
     final FormState form = _budgetFormKey.currentState!;
@@ -43,7 +45,7 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
       var formattedDate = dateFormatter.format(DateTime.now());
       Budget newBudget = Budget(
         id: 0,
-        categorie: _categorieController.text,
+        categorie: _categorieNameForDb,
         date: dateFormatter.parse(formattedDate),
         amount: Amount.getValue(_amountController.text),
         used: 0.0,
@@ -57,11 +59,17 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
     }
   }
 
+  void _setCategorieForDb(String categorieForDb) {
+    setState(() {
+      _categorieNameForDb = categorieForDb;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Budget erstellen'),
+        title: Text(AppLocalizations.of(context).translate('budget_erstellen')),
       ),
       body: MultiBlocProvider(
         providers: [
@@ -89,9 +97,20 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CategorieInputField(categorieController: _categorieController, bookingType: BookingType.expense),
-                            AmountTextField(amountController: _amountController, hintText: 'Budget...'),
-                            SaveButton(text: 'Erstellen', saveBtnController: _createBudgetBtnController, onPressed: () => _createBudget(context)),
+                            CategorieInputField(
+                              categorieController: _categorieController,
+                              onCategorieSelected: (categorieNameForDb) => _setCategorieForDb(categorieNameForDb),
+                              bookingType: BookingType.expense,
+                            ),
+                            AmountTextField(
+                              amountController: _amountController,
+                              hintText: AppLocalizations.of(context).translate('budget') + '...',
+                            ),
+                            SaveButton(
+                              text: AppLocalizations.of(context).translate('erstellen'),
+                              saveBtnController: _createBudgetBtnController,
+                              onPressed: () => _createBudget(context),
+                            ),
                           ],
                         ),
                       ),

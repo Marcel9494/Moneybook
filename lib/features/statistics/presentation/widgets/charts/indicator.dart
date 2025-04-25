@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../domain/entities/amount_type_stats.dart';
 
@@ -38,7 +39,7 @@ class Indicator extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      amountTypeStat.amountType.name,
+                      AppLocalizations.of(context).translate(amountTypeStat.amountType.name),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: text == amountTypeStat.amountType.name ? Colors.cyanAccent : Colors.grey,

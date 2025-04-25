@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_value_cards.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
 import '../../../../core/utils/app_localizations.dart';
+import '../../../../core/utils/date_formatter.dart';
 import '../../domain/entities/booking.dart';
 import '../../domain/value_objects/amount_type.dart';
 import '../../domain/value_objects/booking_type.dart';
@@ -163,9 +162,9 @@ class _BookingListPageState extends State<BookingListPage> {
                                     return SizedBox(
                                       height: MediaQuery.sizeOf(context).height / 1.5,
                                       child: EmptyList(
-                                        text: AppLocalizations.of(context).translate('no bookings yet for') +
+                                        text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
                                             '\n' +
-                                            DateFormat.yMMMM(locale).format(widget.selectedDate),
+                                            DateFormatter.dateFormatYMMMM(widget.selectedDate, context),
                                         icon: Icons.receipt_long_rounded,
                                       ),
                                     );
@@ -179,9 +178,9 @@ class _BookingListPageState extends State<BookingListPage> {
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 24.0),
                                     child: EmptyList(
-                                      text: AppLocalizations.of(context).translate('no bookings yet for') +
+                                      text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
                                           '\n' +
-                                          DateFormat.yMMMM(locale).format(widget.selectedDate),
+                                          DateFormatter.dateFormatYMMMM(widget.selectedDate, context),
                                       icon: Icons.receipt_long_rounded,
                                     ),
                                   ),
@@ -208,9 +207,9 @@ class _BookingListPageState extends State<BookingListPage> {
                               title: Text(
                                 _isExpanded
                                     ? _dependingBookings.length == 1
-                                        ? '1 ' + AppLocalizations.of(context).translate('pending booking') + ':'
-                                        : '${_dependingBookings.length} ' + AppLocalizations.of(context).translate('pending bookings') + ':'
-                                    : '${_dependingBookings.length} ' + AppLocalizations.of(context).translate('pending'),
+                                        ? '1 ' + AppLocalizations.of(context).translate('ausstehende_buchung') + ':'
+                                        : '${_dependingBookings.length} ' + AppLocalizations.of(context).translate('ausstehende_buchungen') + ':'
+                                    : '${_dependingBookings.length} ' + AppLocalizations.of(context).translate('ausstehende'),
                                 style: TextStyle(color: _isExpanded ? Colors.white : Colors.grey, fontSize: _isExpanded ? 14.5 : 13.0),
                               ),
                               iconColor: _isExpanded ? Colors.white : Colors.grey,
@@ -235,9 +234,9 @@ class _BookingListPageState extends State<BookingListPage> {
                                   height: MediaQuery.sizeOf(context).height / 2.3,
                                   child: _dependingBookings.isEmpty
                                       ? EmptyList(
-                                          text: AppLocalizations.of(context).translate('no pending bookings for') +
+                                          text: AppLocalizations.of(context).translate('keine_ausstehenden_buchungen_für') +
                                               '\n' +
-                                              DateFormat.yMMMM(locale).format(widget.selectedDate),
+                                              DateFormatter.dateFormatYMMMM(widget.selectedDate, context),
                                           icon: Icons.receipt_long_rounded,
                                         )
                                       : ListView.builder(

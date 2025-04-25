@@ -24,7 +24,7 @@ class AppLocalizations {
   }
 
   String translate(String key) {
-    return _localizedStrings[key] ?? key;
+    return _localizedStrings[key.toLowerCase()] ?? key;
   }
 }
 

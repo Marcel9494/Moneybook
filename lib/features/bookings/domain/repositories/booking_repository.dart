@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/bookings/domain/entities/booking.dart';
 import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
@@ -24,4 +25,5 @@ abstract class BookingRepository {
   Future<Either<Failure, List<Booking>>> updateOnlyFutureBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
   Future<Either<Failure, void>> calculateAndUpdateNewBookings();
   Future<Either<Failure, int>> getNewSerieId();
+  Future<Either<Failure, void>> translate(BuildContext context);
 }

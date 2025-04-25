@@ -10,6 +10,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
@@ -38,6 +39,8 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   final RoundedLoadingButtonController _categorieBtnController = RoundedLoadingButtonController();
   CategorieType _selectedCategorieType = CategorieType.expense;
   List<bool> _selectedCategorieValue = [true, false, false];
+  List<Categorie> _currentCategorieList = [];
+  String _categorieNameForDb = '';
   String _oldCategorieName = '';
   int _numberOfEventCalls = 0;
   int _tabIndex = 4;
@@ -73,6 +76,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
   void _addCategorie() {
     _changeCategorieType(_tabController.index);
     _categorieNameController.text = '';
+    _categorieNameForDb = '';
     _editMode = false;
     showCupertinoModalBottomSheet(
       context: context,
@@ -89,7 +93,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BottomSheetHeader(title: 'Kategorie erstellen'),
+                      BottomSheetHeader(title: AppLocalizations.of(context).translate('kategorie_erstellen')),
                       StatefulBuilder(builder: (BuildContext context, StateSetter setModalBottomState) {
                         return Row(
                           children: <Widget>[
@@ -101,7 +105,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                   CategorieType.values.length,
                                   (int index) {
                                     return ChoiceChip(
-                                      label: Text(CategorieType.values[index].name),
+                                      label: Text(AppLocalizations.of(context).translate(CategorieType.values[index].name)),
                                       selected: _selectedCategorieValue[index],
                                       onSelected: (_) => setModalBottomState(() {
                                         _changeCategorieType(index);
@@ -115,22 +119,24 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                         );
                       }),
                       TitleTextField(
-                        hintText: 'Kategoriename...',
+                        hintText: AppLocalizations.of(context).translate('kategoriename') + '...',
                         titleController: _categorieNameController,
                         autofocus: true,
                       ),
                       const SizedBox(height: 8.0),
                       SaveButton(
-                        text: 'Erstellen',
+                        text: AppLocalizations.of(context).translate('erstellen'),
                         saveBtnController: _categorieBtnController,
                         onPressed: () {
                           BlocProvider.of<CategorieBloc>(context).add(
-                            CheckCategorieNameExists(
+                            ExistsCategorieName(
                               Categorie(
                                 id: 0,
                                 name: _categorieNameController.text.trim(),
                                 type: _selectedCategorieType,
                               ),
+                              _currentCategorieList,
+                              context,
                               _numberOfEventCalls,
                             ),
                           );
@@ -153,8 +159,8 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       _numberOfEventCalls++;
       _categorieBtnController.error();
       Flushbar(
-        title: 'Kategoriename existiert bereits',
-        message: 'Der Kategoriename ${_categorieNameController.text.trim()} existiert bereits. Bitte benennen Sie den Kategoriename um.',
+        title: AppLocalizations.of(context).translate('kategoriename_existiert_bereits'),
+        message: AppLocalizations.of(context).translate('kategoriename_existiert_bereits_beschreibung'),
         icon: const Icon(Icons.error_outline_rounded, color: Colors.yellowAccent),
         duration: const Duration(milliseconds: flushbarDurationInMs),
         leftBarIndicatorColor: Colors.yellowAccent,
@@ -174,7 +180,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
         BlocProvider.of<CategorieBloc>(context).add(
           CreateCategorie(
             Categorie(
-              id: 0,
+              id: 0, // Wird automatisch hochgezählt (AutoIncrement)
               type: _selectedCategorieType,
               name: _categorieNameController.text.trim(),
             ),
@@ -183,13 +189,14 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       });
       _setTabControllerIndex(_selectedCategorieType);
       Navigator.pop(context);
-      _showFlushbar('Kategorie ${_categorieNameController.text.trim()} wurde erfolgreich erstellt.');
+      _showFlushbar(AppLocalizations.of(context).translate('kategorie_erstellen_benachrichtigung'));
     }
   }
 
   void _showEditCategorieBottomSheet(Categorie categorie) {
     _setSelectedCategorie(categorie.type);
-    _categorieNameController.text = categorie.name;
+    _categorieNameController.text = AppLocalizations.of(context).translate(categorie.name);
+    _categorieNameForDb = categorie.name;
     _oldCategorieName = categorie.name;
     _editMode = true;
     showCupertinoModalBottomSheet(
@@ -207,7 +214,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const BottomSheetHeader(title: 'Kategorie bearbeiten'),
+                      BottomSheetHeader(title: AppLocalizations.of(context).translate('kategorie_bearbeiten')),
                       StatefulBuilder(builder: (BuildContext context, StateSetter setModalBottomState) {
                         return Row(
                           children: <Widget>[
@@ -219,7 +226,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                   CategorieType.values.length,
                                   (int index) {
                                     return ChoiceChip(
-                                      label: Text(CategorieType.values[index].name),
+                                      label: Text(AppLocalizations.of(context).translate(CategorieType.values[index].name)),
                                       selected: _selectedCategorieValue[index],
                                     );
                                   },
@@ -230,20 +237,20 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                         );
                       }),
                       TitleTextField(
-                        hintText: 'Kategoriename...',
+                        hintText: AppLocalizations.of(context).translate('kategoriename') + '...',
                         titleController: _categorieNameController,
                         autofocus: true,
                       ),
                       const SizedBox(height: 8.0),
                       SaveButton(
-                        text: 'Speichern',
+                        text: AppLocalizations.of(context).translate('speichern'),
                         saveBtnController: _categorieBtnController,
                         onPressed: () {
                           BlocProvider.of<CategorieBloc>(context).add(
                             CheckCategorieNameExists(
                               Categorie(
                                 id: categorie.id,
-                                name: _categorieNameController.text,
+                                name: _categorieNameForDb,
                                 type: _selectedCategorieType,
                               ),
                               _numberOfEventCalls,
@@ -268,8 +275,8 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       _numberOfEventCalls++;
       _categorieBtnController.error();
       Flushbar(
-        title: 'Kategoriename existiert bereits',
-        message: 'Der Kategoriename ${_categorieNameController.text.trim()} existiert bereits. Bitte benennen Sie den Kategoriename um.',
+        title: AppLocalizations.of(context).translate('kategoriename_existiert_bereits'),
+        message: AppLocalizations.of(context).translate('kategoriename_existiert_bereits_beschreibung'),
         icon: const Icon(Icons.error_outline_rounded, color: Colors.yellowAccent),
         duration: const Duration(milliseconds: flushbarDurationInMs),
         leftBarIndicatorColor: Colors.yellowAccent,
@@ -291,27 +298,27 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             Categorie(
               id: categorie.id,
               type: _selectedCategorieType,
-              name: _categorieNameController.text.trim(),
+              name: _categorieNameForDb,
             ),
           ),
         );
         BlocProvider.of<budget.BudgetBloc>(context).add(
           budget.UpdateBudgetsWithCategorie(
             _oldCategorieName,
-            _categorieNameController.text,
+            _categorieNameForDb,
           ),
         );
         BlocProvider.of<booking.BookingBloc>(context).add(
           booking.UpdateBookingsWithCategorie(
             _oldCategorieName,
-            _categorieNameController.text,
+            _categorieNameForDb,
             _selectedCategorieType,
           ),
         );
       });
       _setTabControllerIndex(_selectedCategorieType);
       Navigator.pop(context);
-      _showFlushbar('Kategorie ${_categorieNameController.text.trim()} wurde erfolgreich bearbeitet.');
+      _showFlushbar(AppLocalizations.of(context).translate('kategorie_bearbeiten_benachrichtigung'));
     }
   }
 
@@ -321,11 +328,11 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Kategorie löschen?'),
-          content: Text('Wollen Sie die Kategorie ${categorie.name} wirklich löschen?'),
+          title: Text(AppLocalizations.of(context).translate('kategorie_löschen')),
+          content: Text(AppLocalizations.of(context).translate('kategorie_löschen_beschreibung')),
           actions: <Widget>[
             TextButton(
-              child: const Text('Ja'),
+              child: Text(AppLocalizations.of(context).translate('ja')),
               onPressed: () {
                 GlobalKey<AnimatedListState> key = GlobalKey();
                 if (categorie.type == CategorieType.expense) {
@@ -340,13 +347,13 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   (context, animation) {
                     return SizeTransition(
                       sizeFactor: animation,
-                      child: const Card(
-                        shape: RoundedRectangleBorder(
+                      child: Card(
+                        shape: const RoundedRectangleBorder(
                           side: BorderSide(color: Colors.red, width: 1.0),
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                         ),
                         child: ListTile(
-                          title: Text('Gelöscht'),
+                          title: Text(AppLocalizations.of(context).translate('gelöscht')),
                         ),
                       ),
                     );
@@ -357,11 +364,11 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                   DeleteCategorie(categorie.id, context),
                 );
                 Navigator.of(context).pop();
-                _showFlushbar('Kategorie ${_categorieNameController.text.trim()} wurde erfolgreich gelöscht.');
+                _showFlushbar(AppLocalizations.of(context).translate('kategorie_löschen_benachrichtigung'));
               },
             ),
             TextButton(
-              child: const Text('Nein'),
+              child: Text(AppLocalizations.of(context).translate('nein')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -435,7 +442,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       length: CategorieType.values.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Kategorien'),
+          title: Text(AppLocalizations.of(context).translate('categories')),
           leading: Builder(
             builder: (context) {
               return IconButton(
@@ -449,9 +456,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             controller: _tabController,
             splashFactory: NoSplash.splashFactory,
             tabs: [
-              Tab(text: CategorieType.expense.pluralName),
-              Tab(text: CategorieType.income.pluralName),
-              Tab(text: CategorieType.investment.pluralName),
+              Tab(text: AppLocalizations.of(context).translate(CategorieType.expense.pluralName)),
+              Tab(text: AppLocalizations.of(context).translate(CategorieType.income.pluralName)),
+              Tab(text: AppLocalizations.of(context).translate(CategorieType.investment.pluralName)),
             ],
           ),
         ),
@@ -485,6 +492,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     if (state is Loading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
+                      _currentCategorieList = state.expenseCategories;
                       if (state.expenseCategories.isEmpty) {
                         return Column(
                           children: [
@@ -499,9 +507,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                 },
                               ),
                             ),
-                            const Expanded(
+                            Expanded(
                               child: EmptyList(
-                                text: 'Keine Ausgabe Kategorien vorhanden',
+                                text: AppLocalizations.of(context).translate('keine_ausgabe_kategorien'),
                                 icon: Icons.receipt_long_rounded,
                               ),
                             ),
@@ -518,7 +526,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(12.0)),
                                   ),
-                                  title: Text(state.expenseCategories[index].name),
+                                  title: Text(AppLocalizations.of(context).translate(state.expenseCategories[index].name)),
                                   leading: IconButton(
                                     onPressed: () => _deleteCategorie(context, state.expenseCategories[index], index),
                                     icon: const Icon(Icons.remove_circle_outline_rounded),
@@ -561,6 +569,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     if (state is Loading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
+                      _currentCategorieList = state.incomeCategories;
                       if (state.incomeCategories.isEmpty) {
                         return Column(
                           children: [
@@ -575,9 +584,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                 },
                               ),
                             ),
-                            const Expanded(
+                            Expanded(
                               child: EmptyList(
-                                text: 'Keine Einnahme Kategorien vorhanden',
+                                text: AppLocalizations.of(context).translate('keine_einnahme_kategorien'),
                                 icon: Icons.receipt_long_rounded,
                               ),
                             ),
@@ -594,7 +603,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(12.0)),
                                   ),
-                                  title: index < state.incomeCategories.length ? Text(state.incomeCategories[index].name) : null,
+                                  title: index < state.incomeCategories.length
+                                      ? Text(AppLocalizations.of(context).translate(state.incomeCategories[index].name))
+                                      : null,
                                   leading: IconButton(
                                     onPressed: () => _deleteCategorie(context, state.incomeCategories[index], index),
                                     icon: const Icon(Icons.remove_circle_outline_rounded),
@@ -637,6 +648,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                     if (state is Loading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is Loaded) {
+                      _currentCategorieList = state.investmentCategories;
                       if (state.investmentCategories.isEmpty) {
                         return Column(
                           children: [
@@ -651,9 +663,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                 },
                               ),
                             ),
-                            const Expanded(
+                            Expanded(
                               child: EmptyList(
-                                text: 'Keine Investitions Kategorien vorhanden',
+                                text: AppLocalizations.of(context).translate('keine_investitions_kategorien'),
                                 icon: Icons.receipt_long_rounded,
                               ),
                             ),
@@ -670,7 +682,9 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(12.0)),
                                   ),
-                                  title: index < state.investmentCategories.length ? Text(state.investmentCategories[index].name) : null,
+                                  title: index < state.investmentCategories.length
+                                      ? Text(AppLocalizations.of(context).translate(state.investmentCategories[index].name))
+                                      : null,
                                   leading: IconButton(
                                     onPressed: () => _deleteCategorie(context, state.investmentCategories[index], index),
                                     icon: const Icon(Icons.remove_circle_outline_rounded),

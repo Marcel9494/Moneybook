@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moneybook/features/settings/presentation/widgets/cards/credit_card.dart';
 
+import '../../../../core/utils/app_localizations.dart';
+
 class CreditPage extends StatefulWidget {
   const CreditPage({super.key});
 
@@ -13,7 +15,7 @@ class _CreditPageState extends State<CreditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Credits'),
+        title: Text(AppLocalizations.of(context).translate('credits')),
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0),
@@ -22,7 +24,7 @@ class _CreditPageState extends State<CreditPage> {
             Padding(
               padding: const EdgeInsets.only(left: 4.0, bottom: 6.0),
               child: Text(
-                'Lottie Animationen:',
+                AppLocalizations.of(context).translate('lottie_animationen') + ':',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,

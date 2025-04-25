@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/categories/domain/value_objects/categorie_type.dart';
 
@@ -75,6 +76,15 @@ class CategorieRepositoryImpl implements CategorieRepository {
   Future<Either<Failure, bool>> checkCategorieName(Categorie categorie) async {
     try {
       return Right(await categorieLocalDataSource.checkCategorieName(categorie));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> translate(BuildContext context) async {
+    try {
+      return Right(await categorieLocalDataSource.translate(context));
     } on ServerException {
       return Left(ServerFailure());
     }

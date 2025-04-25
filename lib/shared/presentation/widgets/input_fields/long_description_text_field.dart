@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/app_localizations.dart';
+
 class LongDescriptionTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController descriptionController;
@@ -17,9 +19,9 @@ class LongDescriptionTextField extends StatelessWidget {
     this.autofocus = false,
   });
 
-  String? _checkTextInput() {
+  String? _checkTextInput(BuildContext context) {
     if (descriptionController.text.isEmpty) {
-      return 'Bitte geben Sie eine Beschreibung ein.';
+      return AppLocalizations.of(context).translate('leere_beschreibung');
     }
     return null;
   }
@@ -34,7 +36,7 @@ class LongDescriptionTextField extends StatelessWidget {
       focusNode: focusNode,
       textAlignVertical: TextAlignVertical.center,
       textCapitalization: TextCapitalization.sentences,
-      validator: (input) => _checkTextInput(),
+      validator: (input) => _checkTextInput(context),
       decoration: InputDecoration(
         hintText: hintText,
         enabledBorder: OutlineInputBorder(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
+
 class CreditCard extends StatelessWidget {
   final String graphicName;
   final String graphicUrl;
@@ -52,7 +54,7 @@ class CreditCard extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Text(
-                'von $creatorName,',
+                AppLocalizations.of(context).translate('von') + ' $creatorName,',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -64,7 +66,7 @@ class CreditCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'lizenziert unter der ',
+                  AppLocalizations.of(context).translate('lizenziert_unter_der') + ' ',
                 ),
                 GestureDetector(
                   child: Text(

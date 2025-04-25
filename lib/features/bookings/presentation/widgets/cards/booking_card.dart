@@ -45,10 +45,10 @@ class BookingCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BottomSheetHeader(title: AppLocalizations.of(context).translate('edit Booking') + ":", indent: 16.0),
+                  BottomSheetHeader(title: AppLocalizations.of(context).translate('edit booking') + ":", indent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.looks_one_outlined, color: Colors.cyanAccent),
-                    title: Text(AppLocalizations.of(context).translate('Only this Booking')),
+                    title: Text(AppLocalizations.of(context).translate('only this booking')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -62,7 +62,7 @@ class BookingCard extends StatelessWidget {
                   const Divider(indent: 16.0, endIndent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.repeat_one_rounded, color: Colors.cyanAccent),
-                    title: Text(AppLocalizations.of(context).translate('All future Bookings')),
+                    title: Text(AppLocalizations.of(context).translate('all future bookings')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -76,7 +76,7 @@ class BookingCard extends StatelessWidget {
                   const Divider(indent: 16.0, endIndent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.all_inclusive_rounded, color: Colors.cyanAccent),
-                    title: Text(AppLocalizations.of(context).translate('All Bookings')),
+                    title: Text(AppLocalizations.of(context).translate('all bookings')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -126,13 +126,13 @@ class BookingCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            booking.categorie,
+                            AppLocalizations.of(context).translate(booking.categorie),
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4.0),
                           booking.amountType != AmountType.undefined
                               ? Text(
-                                  booking.amountType.name,
+                                  AppLocalizations.of(context).translate(booking.amountType.name),
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(color: Colors.grey),
                                 )
@@ -179,14 +179,14 @@ class BookingCard extends StatelessWidget {
                                 booking.type == BookingType.expense || booking.type == BookingType.income
                                     ? Flexible(
                                         child: Text(
-                                          booking.fromAccount,
+                                          AppLocalizations.of(context).translate(booking.fromAccount),
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(color: Colors.grey),
                                         ),
                                       )
                                     : Flexible(
                                         child: Text(
-                                          '${booking.fromAccount} \u2192 ${booking.toAccount}',
+                                          '${AppLocalizations.of(context).translate(booking.fromAccount)} \u2192 ${AppLocalizations.of(context).translate(booking.toAccount)}',
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(color: Colors.grey),
                                         ),

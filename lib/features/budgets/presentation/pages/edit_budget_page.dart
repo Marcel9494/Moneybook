@@ -10,6 +10,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/number_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
@@ -39,16 +40,19 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _editBudgetBtnController = RoundedLoadingButtonController();
   late Budget _updatedBudget;
+  String _categorieNameForDb = '';
 
   @override
-  void initState() {
-    super.initState();
-    _initializeBudget();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _initializeBudget(); // Wird erst hier aufgerufen, weil ab hier der context verfügbar ist, in initState noch nicht.
   }
 
   void _initializeBudget() {
     _amountController.text = formatToMoneyAmount(widget.budget.amount.toString());
-    _categorieController.text = widget.budget.categorie;
+    _categorieController.text = AppLocalizations.of(context).translate(widget.budget.categorie);
+
+    _categorieNameForDb = widget.budget.categorie;
   }
 
   void _editBudget(BuildContext context) {
@@ -62,7 +66,7 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
       _editBudgetBtnController.success();
       _updatedBudget = Budget(
         id: widget.budget.id,
-        categorie: _categorieController.text,
+        categorie: _categorieNameForDb,
         date: widget.budget.date,
         amount: Amount.getValue(_amountController.text),
         used: 0.0,
@@ -82,11 +86,11 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Budget löschen?'),
-          content: const Text('Wollen Sie das Budget wirklich löschen?'),
+          title: Text(AppLocalizations.of(context).translate('budget_löschen')),
+          content: Text(AppLocalizations.of(context).translate('budget_löschen_beschreibung')),
           actions: <Widget>[
             TextButton(
-              child: const Text('Ja'),
+              child: Text(AppLocalizations.of(context).translate('ja')),
               onPressed: () {
                 BlocProvider.of<BudgetBloc>(context).add(
                   DeleteBudget(widget.budget, widget.serieMode, context),
@@ -94,7 +98,7 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
               },
             ),
             TextButton(
-              child: const Text('Nein'),
+              child: Text(AppLocalizations.of(context).translate('nein')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -105,11 +109,17 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
     );
   }
 
+  void _setCategorieForDb(String categorieForDb) {
+    setState(() {
+      _categorieNameForDb = categorieForDb;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Budget bearbeiten'),
+        title: Text(AppLocalizations.of(context).translate('budget_bearbeiten')),
         actions: [
           IconButton(
             onPressed: () => _deleteBudget(context),
@@ -137,9 +147,19 @@ class _EditBudgetPageState extends State<EditBudgetPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CategorieInputField(categorieController: _categorieController, bookingType: BookingType.expense),
-                          AmountTextField(amountController: _amountController, hintText: 'Budget...'),
-                          SaveButton(text: 'Speichern', saveBtnController: _editBudgetBtnController, onPressed: () => _editBudget(context)),
+                          CategorieInputField(
+                            categorieController: _categorieController,
+                            onCategorieSelected: (categorieNameForDb) => _setCategorieForDb(categorieNameForDb),
+                            bookingType: BookingType.expense,
+                          ),
+                          AmountTextField(
+                            amountController: _amountController,
+                            hintText: AppLocalizations.of(context).translate('budget') + '...',
+                          ),
+                          SaveButton(
+                              text: AppLocalizations.of(context).translate('speichern'),
+                              saveBtnController: _editBudgetBtnController,
+                              onPressed: () => _editBudget(context)),
                         ],
                       ),
                     ),

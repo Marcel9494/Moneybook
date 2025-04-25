@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../domain/entities/account.dart';
 import 'overview_card.dart';
 
@@ -27,23 +28,34 @@ class _OverviewCardsState extends State<OverviewCards> {
       child: Row(
         children: [
           OverviewCard(
-            title: 'Vermögen',
+            title: AppLocalizations.of(context).translate('vermögen'),
             value: widget.assets,
             textColor: Colors.greenAccent,
-            infoDialogText:
-                'Konten von folgendem Kontotyp werden als Vermögen klassifiziert:\n- Konto\n- Kapitalanlage\n- Bargeld\n- Karte\n- Versicherung\n- Sonstiges',
+            infoDialogText: AppLocalizations.of(context).translate('vermögen_beschreibung') +
+                '\n- ' +
+                AppLocalizations.of(context).translate('konto') +
+                '\n- ' +
+                AppLocalizations.of(context).translate('kapitalanlage') +
+                '\n- ' +
+                AppLocalizations.of(context).translate('bargeld') +
+                '\n- ' +
+                AppLocalizations.of(context).translate('karte') +
+                '\n- ' +
+                AppLocalizations.of(context).translate('versicherung') +
+                '\n- ' +
+                AppLocalizations.of(context).translate('sonstiges'),
           ),
           OverviewCard(
-            title: 'Schulden',
+            title: AppLocalizations.of(context).translate('schulden'),
             value: widget.debts,
             textColor: Colors.redAccent,
-            infoDialogText: 'Konten die vom Kontotyp Kredit sind oder einen negativen Betrag aufweisen werden als Schulden klassifiziert.',
+            infoDialogText: AppLocalizations.of(context).translate('schulden_beschreibung'),
           ),
           OverviewCard(
-            title: 'Saldo',
+            title: AppLocalizations.of(context).translate('saldo'),
             value: widget.assets - widget.debts,
             textColor: widget.assets - widget.debts >= 0.0 ? Colors.greenAccent : Colors.redAccent,
-            infoDialogText: 'Der Saldo beschreibt den Vermögensstand abzüglich aller Schulden.\n\nVermögen - Schulden = Saldo',
+            infoDialogText: AppLocalizations.of(context).translate('saldo_beschreibung'),
           ),
         ],
       ),

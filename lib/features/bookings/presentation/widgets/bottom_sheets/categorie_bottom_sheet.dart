@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:moneybook/core/utils/app_localizations.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/booking_type.dart';
 
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
@@ -18,6 +19,7 @@ openCategorieBottomSheet({
   required BuildContext context,
   required String title,
   required TextEditingController controller,
+  required Function(String)? onCategorieSelected,
   required BookingType bookingType,
 }) {
   loadCategories(context);
@@ -57,7 +59,10 @@ openCategorieBottomSheet({
                             childAspectRatio: 1.6,
                             children: categories.map((categorie) {
                               return GridViewButton(
-                                onPressed: () => _setCategorie(context, categorie.name, controller),
+                                onPressed: () => {
+                                  onCategorieSelected!(categorie.name),
+                                  _setCategorie(context, categorie.name, controller),
+                                },
                                 text: categorie.name,
                               );
                             }).toList(),
@@ -78,6 +83,6 @@ openCategorieBottomSheet({
 }
 
 void _setCategorie(BuildContext context, String text, TextEditingController controller) {
-  controller.text = text;
+  controller.text = AppLocalizations.of(context).translate(text);
   Navigator.pop(context);
 }

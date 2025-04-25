@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/utils/app_localizations.dart';
+
 class ImpressumPage extends StatelessWidget {
   const ImpressumPage({super.key});
 
@@ -19,7 +21,7 @@ class ImpressumPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Impressum'),
+        title: Text(AppLocalizations.of(context).translate('impressum')),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -28,35 +30,34 @@ class ImpressumPage extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text('Impressum', style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
+              child: Text(AppLocalizations.of(context).translate('impressum'), style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
             ),
-            Text('Angaben gemäß § 5 TMG'),
+            Text(AppLocalizations.of(context).translate('angaben_gemäß')),
             Text('Marcel Geirhos'),
             Text('Gartenstraße 8, 73550, Waldstetten'),
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-              child: Text('Kontakt:', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+              child: Text(AppLocalizations.of(context).translate('kontakt') + ':', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
             ),
-            Text('Telefon: +49 176 30721919'),
-            Text('E-Mail: Marcel.Geirhos@gmail.com'),
-            Text('Keine USt-IdNr. vorhanden.'),
-            Text('Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:'),
+            Text(AppLocalizations.of(context).translate('telefon') + ':' + ' +49 176 30721919'),
+            Text(AppLocalizations.of(context).translate('e-mail') + ':' + ' Marcel.Geirhos@gmail.com'),
+            Text(AppLocalizations.of(context).translate('ustidnr')),
+            Text(AppLocalizations.of(context).translate('verantwortlich_für_inhalt')),
             Text('Marcel Geirhos'),
             Text('Gartenstraße 8, 73550, Waldstetten'),
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-              child: Text('Streitschlichtung', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+              child: Text(AppLocalizations.of(context).translate('streitschlichtung'), style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
             ),
-            Text('Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:'),
+            Text(AppLocalizations.of(context).translate('eu_kommission')),
             ElevatedButton(
               onPressed: () => _launchEuropeCommissionSite(url: 'https://ec.europa.eu/consumers/odr/'),
-              child: Text('Online Streitbeilegung'),
+              child: Text(AppLocalizations.of(context).translate('online_streitbeilegung')),
             ),
-            Text('Unsere E-Mail-Adresse finden Sie oben im Impressum.'),
-            Text('Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.'),
+            Text(AppLocalizations.of(context).translate('online_streitbeilegung_beschreibung')),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Text('Stand: 11.12.2024'),
+              child: Text(AppLocalizations.of(context).translate('stand') + ':' + ' 11.12.2024'),
             ),
           ],
         ),

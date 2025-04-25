@@ -1,5 +1,3 @@
-import 'package:moneybook/core/consts/regex_consts.dart';
-
 import '../../../../core/consts/common_consts.dart';
 
 class Amount {
@@ -20,14 +18,32 @@ class Amount {
   // Anschließend werden Kommas (,) durch Punkte (.) ersetzt.
   // return 8.6
   static double getValue(String amount) {
-    for (String currencySymbol in currencySymbols) {
-      if (amount.contains(currencySymbol)) {
-        String cleanedAmount = amount.replaceAll(numberRegex, '');
-        cleanedAmount = cleanedAmount.replaceAll('.', '').replaceAll(',', '.');
-        return double.parse(cleanedAmount);
+    final numberRegex = RegExp(r'[^0-9.,-]');
+    bool isEuropean = false;
+    bool isAmerican = false;
+
+    if (amount.contains('€')) {
+      isEuropean = true;
+    }
+
+    if (amount.contains('\$')) {
+      isAmerican = true;
+    }
+
+    String cleanedAmount = amount.replaceAll(numberRegex, '');
+    if (isEuropean) {
+      cleanedAmount = cleanedAmount.replaceAll('.', '');
+      cleanedAmount = cleanedAmount.replaceAll(',', '.');
+    } else if (isAmerican) {
+      cleanedAmount = cleanedAmount.replaceAll(',', '');
+    } else {
+      if (cleanedAmount.contains(',') && !cleanedAmount.contains('.')) {
+        cleanedAmount = cleanedAmount.replaceAll(',', '.');
+      } else if (cleanedAmount.contains(',') && cleanedAmount.contains('.')) {
+        cleanedAmount = cleanedAmount.replaceAll(',', '');
       }
     }
-    return double.parse(amount);
+    return double.parse(cleanedAmount);
   }
 
   // Beispiel:

@@ -8,6 +8,7 @@ import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/number_formatter.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
@@ -56,11 +57,13 @@ class _EditBookingPageState extends State<EditBookingPage> {
   List<Booking> _oldSerieBookings = [];
   Booking? _updatedBooking;
   bool _hasAccountListenerTriggered = false;
+  String _categorieNameForDb = '';
+  String _fromAccountNameForDb = '';
+  String _toAccountNameForDb = '';
 
   @override
   void initState() {
     super.initState();
-    _initializeBooking();
     if (widget.editMode == SerieModeType.one) {
       _backupOldBooking();
     } else if (widget.editMode == SerieModeType.onlyFuture || widget.editMode == SerieModeType.all) {
@@ -68,16 +71,26 @@ class _EditBookingPageState extends State<EditBookingPage> {
     }
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _initializeBooking(); // Wird erst hier aufgerufen, weil ab hier der context verfügbar ist, in initState noch nicht.
+  }
+
   void _initializeBooking() {
-    _dateController.text = dateFormatterDDMMYYYYEE.format(widget.booking.date);
+    _dateController.text = DateFormatter.dateFormatDDMMYYYYEEDateTime(widget.booking.date, context);
     _titleController.text = widget.booking.title.trim();
     _amountController.text = formatToMoneyAmount(widget.booking.amount.toString());
-    _fromAccountController.text = widget.booking.fromAccount;
-    _toAccountController.text = widget.booking.toAccount;
-    _categorieController.text = widget.booking.categorie;
+    _fromAccountController.text = AppLocalizations.of(context).translate(widget.booking.fromAccount);
+    _toAccountController.text = AppLocalizations.of(context).translate(widget.booking.toAccount);
+    _categorieController.text = AppLocalizations.of(context).translate(widget.booking.categorie);
     _repetitionType = widget.booking.repetition;
     _bookingType = widget.booking.type;
     _amountType = widget.booking.amountType;
+
+    _categorieNameForDb = widget.booking.categorie;
+    _fromAccountNameForDb = widget.booking.fromAccount;
+    _toAccountNameForDb = widget.booking.toAccount;
   }
 
   void _backupOldBooking() {
@@ -121,9 +134,9 @@ class _EditBookingPageState extends State<EditBookingPage> {
         amount: Amount.getValue(_amountController.text),
         amountType: _amountType,
         currency: Amount.getCurrency(_amountController.text),
-        fromAccount: _fromAccountController.text,
-        toAccount: _toAccountController.text,
-        categorie: _categorieController.text,
+        fromAccount: _fromAccountNameForDb,
+        toAccount: _toAccountNameForDb,
+        categorie: _categorieNameForDb,
         isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
       );
       Future.delayed(const Duration(milliseconds: durationInMs), () async {
@@ -178,11 +191,11 @@ class _EditBookingPageState extends State<EditBookingPage> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Buchung löschen?'),
-          content: const Text('Wollen Sie die Buchung wirklich löschen?'),
+          title: Text(AppLocalizations.of(context).translate('delete booking')),
+          content: Text(AppLocalizations.of(context).translate('delete booking description')),
           actions: <Widget>[
             TextButton(
-              child: const Text('Ja'),
+              child: Text(AppLocalizations.of(context).translate('yes')),
               onPressed: () {
                 _hasAccountListenerTriggered = true;
                 if (widget.editMode == SerieModeType.one) {
@@ -196,7 +209,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
               },
             ),
             TextButton(
-              child: const Text('Nein'),
+              child: Text(AppLocalizations.of(context).translate('no')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -239,11 +252,29 @@ class _EditBookingPageState extends State<EditBookingPage> {
     Navigator.pop(context);
   }
 
+  void _setCategorieForDb(String categorieForDb) {
+    setState(() {
+      _categorieNameForDb = categorieForDb;
+    });
+  }
+
+  void _setFromAccountNameForDb(String fromAccountNameForDb) {
+    setState(() {
+      _fromAccountNameForDb = fromAccountNameForDb;
+    });
+  }
+
+  void _setToAccountNameForDb(String toAccountNameForDb) {
+    setState(() {
+      _toAccountNameForDb = toAccountNameForDb;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buchung bearbeiten'),
+        title: Text(AppLocalizations.of(context).translate('buchung_bearbeiten')),
         actions: [
           IconButton(
             onPressed: () => _deleteBooking(context),
@@ -353,35 +384,42 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       activateRepetition: false,
                       activateDatePicker: widget.editMode == SerieModeType.one ? true : false,
                     ),
-                    TitleTextField(hintText: 'Titel...', titleController: _titleController),
+                    TitleTextField(hintText: AppLocalizations.of(context).translate('titel') + '...', titleController: _titleController),
                     AmountTextField(
                       amountController: _amountController,
+                      hintText: AppLocalizations.of(context).translate('betrag') + '...',
                       bookingType: _bookingType,
                       amountType: _amountType.name,
                       onAmountTypeChanged: (amountType) => _changeAmountType(amountType),
                     ),
                     AccountInputField(
                       accountController: _fromAccountController,
+                      onAccountSelected: (accountNameForDb) => _setFromAccountNameForDb(accountNameForDb),
                       hintText: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
-                          ? 'Konto...'
-                          : 'Abbuchungskonto...',
+                          ? AppLocalizations.of(context).translate('konto') + '...'
+                          : AppLocalizations.of(context).translate('abbuchungskonto') + '...',
                       bottomSheetTitle: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
-                          ? 'Konto auswählen:'
-                          : 'Abbuchungskonto auswählen:',
+                          ? AppLocalizations.of(context).translate('konto_auswählen') + ':'
+                          : AppLocalizations.of(context).translate('abbuchungskonto_auswählen') + ':',
                     ),
                     _bookingType.name == BookingType.transfer.name || _bookingType.name == BookingType.investment.name
                         ? AccountInputField(
                             accountController: _toAccountController,
-                            hintText: 'Konto...',
+                            onAccountSelected: (accountNameForDb) => _setToAccountNameForDb(accountNameForDb),
+                            hintText: AppLocalizations.of(context).translate('konto') + '...',
                           )
                         : const SizedBox(),
                     _bookingType.name == BookingType.transfer.name
                         ? const SizedBox()
                         : CategorieInputField(
                             categorieController: _categorieController,
+                            onCategorieSelected: (categorieNameForDb) => _setCategorieForDb(categorieNameForDb),
                             bookingType: _bookingType,
                           ),
-                    SaveButton(text: 'Speichern', saveBtnController: _editBookingBtnController, onPressed: () => _editBooking(context)),
+                    SaveButton(
+                        text: AppLocalizations.of(context).translate('speichern'),
+                        saveBtnController: _editBookingBtnController,
+                        onPressed: () => _editBooking(context)),
                   ],
                 ),
               ),

@@ -12,6 +12,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/number_formatter.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
@@ -52,20 +53,31 @@ class _EditAccountPageState extends State<EditAccountPage> {
   // dieser Zähler nicht hochgezählt wird, wird das Event CheckedAccountName nicht erneut emittet, da es der gleiche
   // State wie bei dem ersten Aufruf des Events ist und somit nicht erneut aufgerufen wird. Vielleicht gibt es eine bessere Lösung.
   int _numberOfEventCalls = 0;
+  String _accountTypeForDb = '';
+  String _accountNameForDb = '';
+  String _toAccountNameForDb = '';
 
   @override
   void initState() {
     super.initState();
-    _initializeAccount();
     _oldAccountName = widget.account.name;
     _oldAccountAmount = widget.account.amount;
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _initializeAccount(); // Wird erst hier aufgerufen, weil ab hier der context verfügbar ist, in initState noch nicht.
+  }
+
   void _initializeAccount() {
-    _accountNameController.text = widget.account.name;
+    _accountNameController.text = AppLocalizations.of(context).translate(widget.account.name);
     _amountController.text = formatToMoneyAmount(widget.account.amount.toString());
-    _accountTypeController.text = widget.account.type.name;
+    _accountTypeController.text = AppLocalizations.of(context).translate(widget.account.type.name);
     _accountType = widget.account.type;
+
+    _accountTypeForDb = widget.account.type.name;
+    _accountNameForDb = widget.account.name;
   }
 
   void _deleteAccount(BuildContext context) {
@@ -75,11 +87,11 @@ class _EditAccountPageState extends State<EditAccountPage> {
       builder: (BuildContext context) {
         if (widget.account.amount == 0.0) {
           return AlertDialog(
-            title: const Text('Konto löschen?'),
-            content: const Text('Wollen Sie das Konto wirklich löschen?'),
+            title: Text(AppLocalizations.of(context).translate('buchung_löschen')),
+            content: Text(AppLocalizations.of(context).translate('buchung_löschen_beschreibung')),
             actions: <Widget>[
               TextButton(
-                child: const Text('Ja'),
+                child: Text(AppLocalizations.of(context).translate('ja')),
                 onPressed: () {
                   BlocProvider.of<AccountBloc>(context).add(
                     DeleteAccount(widget.account.id),
@@ -87,7 +99,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                 },
               ),
               TextButton(
-                child: const Text('Nein'),
+                child: Text(AppLocalizations.of(context).translate('nein')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -96,19 +108,20 @@ class _EditAccountPageState extends State<EditAccountPage> {
           );
         } else {
           return AlertDialog(
-            title: const Text('Konto löschen?'),
+            title: Text(AppLocalizations.of(context).translate('konto_löschen')),
             content: Form(
               key: _deleteAccountFormKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Bevor Sie das Konto löschen können müssen Sie den restlichen Betrag von ${formatToMoneyAmount(widget.account.amount.toString())} auf ein anderes Konto übertragen.',
+                    AppLocalizations.of(context).translate('konto_löschen_übertrag_beschreibung'),
                     textAlign: TextAlign.justify,
                   ),
                   AccountInputField(
-                    hintText: 'Konto',
+                    hintText: AppLocalizations.of(context).translate('konto'),
                     accountController: _accountController,
+                    onAccountSelected: (toAccountNameForDb) => _setToAccountNameForDb(toAccountNameForDb),
                     accountNameFilter: [_oldAccountName],
                   ),
                 ],
@@ -116,7 +129,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('Ja'),
+                child: Text(AppLocalizations.of(context).translate('ja')),
                 onPressed: () {
                   final FormState form = _deleteAccountFormKey.currentState!;
                   if (form.validate()) {
@@ -124,15 +137,15 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       id: 0, // id wird automatisch hochgezählt (SQL: AUTOINCREMENT)
                       serieId: -1,
                       type: BookingType.transfer,
-                      title: 'Übertrag',
+                      title: AppLocalizations.of(context).translate('übertrag'),
                       date: DateTime.now(), // parse DateFormat in ISO-8601,
                       repetition: RepetitionType.noRepetition,
                       amount: widget.account.amount,
                       amountType: AmountType.undefined,
                       currency: Amount.getCurrency(formatToMoneyAmount(widget.account.amount.toString())),
-                      fromAccount: widget.account.name,
-                      toAccount: _accountController.text,
-                      categorie: 'Übertrag',
+                      fromAccount: _accountNameForDb, // widget.account.name,
+                      toAccount: _toAccountNameForDb, //_accountController.text,
+                      categorie: AppLocalizations.of(context).translate('übertrag'),
                       isBooked: true,
                     );
                     BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(transferBooking));
@@ -142,7 +155,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                 },
               ),
               TextButton(
-                child: const Text('Nein'),
+                child: Text(AppLocalizations.of(context).translate('nein')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -160,17 +173,17 @@ class _EditAccountPageState extends State<EditAccountPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Neue Buchung?'),
-            content: const Text('Wollen Sie die Kontostandänderung als Buchung erfassen?'),
+            title: Text(AppLocalizations.of(context).translate('neue_buchung')),
+            content: Text(AppLocalizations.of(context).translate('neue_buchung_beschreibung')),
             actions: <Widget>[
               TextButton(
-                child: const Text('Ja'),
+                child: Text(AppLocalizations.of(context).translate('ja')),
                 onPressed: () {
                   _editAccountWithNewAmount(context, true);
                 },
               ),
               TextButton(
-                child: const Text('Nein'),
+                child: Text(AppLocalizations.of(context).translate('nein')),
                 onPressed: () {
                   _editAccountWithNewAmount(context, false);
                 },
@@ -185,7 +198,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
           EditAccount(
             Account(
               id: widget.account.id,
-              type: AccountType.fromString(_accountTypeController.text),
+              type: AccountType.fromString(_accountTypeForDb),
               name: _accountNameController.text.trim(),
               amount: Amount.getValue(_amountController.text),
               currency: Amount.getCurrency(_amountController.text),
@@ -208,7 +221,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
       id: 0,
       serieId: -1,
       type: _oldAccountAmount < formatMoneyAmountToDouble(_amountController.text) ? BookingType.income : BookingType.expense,
-      title: 'Kontoänderung',
+      title: AppLocalizations.of(context).translate('kontoänderung'),
       date: DateTime.now(),
       repetition: RepetitionType.noRepetition,
       amount: (formatMoneyAmountToDouble(_amountController.text) - _oldAccountAmount).abs(),
@@ -216,7 +229,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
       currency: Amount.getCurrency(_amountController.text),
       fromAccount: widget.account.name,
       toAccount: '',
-      categorie: 'Kontoänderung',
+      categorie: AppLocalizations.of(context).translate('kontoänderung'),
       isBooked: true,
     );
     if (createBooking) {
@@ -232,7 +245,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
         EditAccount(
           Account(
             id: widget.account.id,
-            type: AccountType.fromString(_accountTypeController.text),
+            type: AccountType.fromString(_accountTypeForDb),
             name: _accountNameController.text.trim(),
             amount: Amount.getValue(_amountController.text),
             currency: Amount.getCurrency(_amountController.text),
@@ -250,6 +263,18 @@ class _EditAccountPageState extends State<EditAccountPage> {
     });
   }
 
+  void _setAccountTypeForDb(String accountTypeForDb) {
+    setState(() {
+      _accountTypeForDb = accountTypeForDb;
+    });
+  }
+
+  void _setToAccountNameForDb(String toAccountNameForDb) {
+    setState(() {
+      _toAccountNameForDb = toAccountNameForDb;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -258,7 +283,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Konto bearbeiten'),
+          title: Text(AppLocalizations.of(context).translate('konto_bearbeiten')),
           actions: [
             IconButton(
               onPressed: () => _deleteAccount(context),
@@ -277,8 +302,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
               if (state.accountNameExists && _oldAccountName != _accountNameController.text.trim()) {
                 _editAccountBtnController.error();
                 Flushbar(
-                  title: 'Kontoname existiert bereits',
-                  message: 'Der Kontoname ${_accountNameController.text.trim()} existiert bereits. Bitte benennen Sie den Kontoname um.',
+                  title: AppLocalizations.of(context).translate('kontoname_existiert_bereits') + '...',
+                  message: AppLocalizations.of(context).translate('kontoname_existiert_bereits_beschreibung'),
                   icon: const Icon(Icons.error_outline_rounded, color: Colors.yellowAccent),
                   duration: const Duration(milliseconds: flushbarDurationInMs),
                 ).show(context);
@@ -304,11 +329,23 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AccountTypeInputField(accountTypeController: _accountTypeController, accountType: _accountType.name),
-                      TitleTextField(hintText: 'Kontoname...', titleController: _accountNameController, maxLength: 30),
-                      AmountTextField(amountController: _amountController, showMinus: true),
+                      AccountTypeInputField(
+                        accountTypeController: _accountTypeController,
+                        onAccountTypeSelected: (accountTypeForDb) => _setAccountTypeForDb(accountTypeForDb),
+                        accountType: AppLocalizations.of(context).translate(_accountTypeForDb),
+                      ),
+                      TitleTextField(
+                        hintText: AppLocalizations.of(context).translate('kontoname') + '...',
+                        titleController: _accountNameController,
+                        maxLength: 30,
+                      ),
+                      AmountTextField(
+                        amountController: _amountController,
+                        hintText: AppLocalizations.of(context).translate('betrag') + '...',
+                        showMinus: true,
+                      ),
                       SaveButton(
-                        text: 'Speichern',
+                        text: AppLocalizations.of(context).translate('speichern'),
                         saveBtnController: _editAccountBtnController,
                         onPressed: () => BlocProvider.of<AccountBloc>(context).add(
                           CheckAccountNameExists(

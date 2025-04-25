@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../../accounts/presentation/bloc/account_bloc.dart';
 import '../buttons/grid_view_button.dart';
@@ -16,6 +17,7 @@ openAccountBottomSheet({
   required BuildContext context,
   required String title,
   required TextEditingController controller,
+  required Function(String)? onAccountSelected,
   List<String> accountNameFilter = const [],
 }) {
   loadAccountsWithFilter(context, accountNameFilter);
@@ -45,7 +47,10 @@ openAccountBottomSheet({
                             childAspectRatio: 1.6,
                             children: state.filteredAccounts.map((account) {
                               return GridViewButton(
-                                onPressed: () => _setAccount(context, account.name, controller),
+                                onPressed: () => {
+                                  onAccountSelected!(account.name),
+                                  _setAccount(context, account.name, controller),
+                                },
                                 text: account.name,
                               );
                             }).toList(),
@@ -66,6 +71,6 @@ openAccountBottomSheet({
 }
 
 void _setAccount(BuildContext context, String text, TextEditingController controller) {
-  controller.text = text;
+  controller.text = AppLocalizations.of(context).translate(text);
   Navigator.pop(context);
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
+import '../../../../core/utils/date_formatter.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../../bookings/domain/entities/booking.dart';
@@ -105,7 +105,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
             _calculateDailyValues(state.bookings);
             return Scaffold(
               appBar: AppBar(
-                title: Text(widget.categorie),
+                title: Text(AppLocalizations.of(context).translate(widget.categorie)),
                 actions: [
                   MonthPickerButtons(
                     selectedDate: widget.selectedDate,
@@ -129,7 +129,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(18.0, 0.0, 12.0, 4.0),
                     child: Text(
-                      '${DateFormat('MMMM', locale).format(DateTime(widget.selectedDate.year, widget.selectedDate.month))} Buchungen',
+                      '${DateFormatter.dateFormatMMMM(widget.selectedDate, context)} ${AppLocalizations.of(context).translate('buchungen')}',
                       style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -170,7 +170,9 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                             children: [
                               const SizedBox(height: 100.0),
                               EmptyList(
-                                text: 'Noch keine Buchungen\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
+                                text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
+                                    '\n${DateFormatter.dateFormatYMMMM(widget.selectedDate, context)} ' +
+                                    AppLocalizations.of(context).translate('vorhanden'),
                                 icon: Icons.receipt_long_rounded,
                               ),
                             ],
