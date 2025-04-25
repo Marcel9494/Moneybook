@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
+
 class ListViewButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
@@ -14,8 +16,6 @@ class ListViewButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(text);
-    print(selectedValue);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: OutlinedButton(
@@ -24,11 +24,17 @@ class ListViewButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6.0),
           ),
-          side: BorderSide(color: text == selectedValue ? Colors.cyanAccent : Colors.grey),
+          side: BorderSide(
+              color: AppLocalizations.of(context).translate(text) == AppLocalizations.of(context).translate(selectedValue)
+                  ? Colors.cyanAccent
+                  : Colors.grey),
         ),
         child: Text(
-          text,
-          style: TextStyle(color: text == selectedValue ? Colors.cyanAccent : Colors.white),
+          AppLocalizations.of(context).translate(text),
+          style: TextStyle(
+              color: AppLocalizations.of(context).translate(text) == AppLocalizations.of(context).translate(selectedValue)
+                  ? Colors.cyanAccent
+                  : Colors.white),
         ),
       ),
     );

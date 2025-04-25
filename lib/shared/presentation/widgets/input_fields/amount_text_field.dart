@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../features/bookings/domain/value_objects/amount_type.dart';
 import '../../../../features/bookings/domain/value_objects/booking_type.dart';
 import '../../../../features/bookings/presentation/widgets/buttons/list_view_button.dart';
@@ -20,18 +21,18 @@ class AmountTextField extends StatelessWidget {
   AmountTextField({
     super.key,
     required this.amountController,
+    required this.hintText,
     this.onAmountTypeChanged = _emptyFunction,
     this.amountType = '',
-    this.hintText = 'Betrag...',
     this.showMinus = false,
     this.bookingType = BookingType.none,
   });
 
   static void _emptyFunction(AmountType amountType) {}
 
-  String? _checkAmountInput() {
+  String? _checkAmountInput(BuildContext context) {
     if (amountController.text.isEmpty) {
-      return 'Bitte geben Sie einen Betrag ein.';
+      return AppLocalizations.of(context).translate('leerer_betrag');
     }
     return null;
   }
@@ -63,7 +64,7 @@ class AmountTextField extends StatelessWidget {
               Column(
                 children: [
                   BottomSheetHeader(
-                    title: 'Betragstyp auswählen:',
+                    title: AppLocalizations.of(context).translate('betragstyp_auswählen') + ':',
                     infoButtonFunction: () => _showInfoDialog(context),
                   ),
                   SizedBox(
@@ -99,21 +100,21 @@ class AmountTextField extends StatelessWidget {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Betragstypen:'),
+          title: Text(AppLocalizations.of(context).translate('betragstypen') + ':'),
           content: RichText(
             text: TextSpan(
               style: TextStyle(fontSize: 16),
               children: [
-                TextSpan(text: '${_amountTypes[0].name}:\n', style: TextStyle(fontWeight: FontWeight.bold)),
-                TextSpan(text: '${_amountTypes[0].description}\n\n'),
-                TextSpan(text: '${_amountTypes[1].name}:\n', style: TextStyle(fontWeight: FontWeight.bold)),
-                TextSpan(text: _amountTypes[1].description),
+                TextSpan(text: '${AppLocalizations.of(context).translate(_amountTypes[0].name)}:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: '${AppLocalizations.of(context).translate(_amountTypes[0].description)}\n\n'),
+                TextSpan(text: '${AppLocalizations.of(context).translate(_amountTypes[1].name)}:\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: AppLocalizations.of(context).translate(_amountTypes[1].description)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context).translate('ok')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -131,7 +132,7 @@ class AmountTextField extends StatelessWidget {
       showCursor: false,
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
-      validator: (input) => _checkAmountInput(),
+      validator: (input) => _checkAmountInput(context),
       onTap: () => openBottomSheetForAmountInput(
         context: context,
         amountController: amountController,
@@ -163,7 +164,7 @@ class AmountTextField extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 4.0),
                     child: Text(
-                      amountType,
+                      AppLocalizations.of(context).translate(amountType),
                       style: TextStyle(fontSize: 10.0, color: Colors.grey.shade300),
                     ),
                   ),

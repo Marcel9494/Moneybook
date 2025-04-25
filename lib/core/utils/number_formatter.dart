@@ -17,8 +17,18 @@ String formatToMoneyAmount(String moneyAmount, {int withoutDecimalPlaces = 8}) {
 }
 
 // Beispiel:
-// Input amount: 8,60 €
-// return 8.6
+// Input amount: 8,60 € oder $1,345.67
+// return 8.6 oder 1345.67
 double formatMoneyAmountToDouble(String amount) {
-  return double.parse(amount.substring(0, amount.length - 2).replaceAll('.', '').replaceAll(',', '.'));
+  String cleaned = amount.replaceAll(RegExp(r'[^\d.,-]'), '');
+
+  // Deutsches Format (z.B. "1.234,56")
+  if (cleaned.contains(',') && cleaned.indexOf(',') > cleaned.indexOf('.')) {
+    cleaned = cleaned.replaceAll('.', '').replaceAll(',', '.');
+  }
+  // US-Format (z.B. "1,234.56")
+  else if (cleaned.contains(',')) {
+    cleaned = cleaned.replaceAll(',', '');
+  }
+  return double.parse(cleaned);
 }

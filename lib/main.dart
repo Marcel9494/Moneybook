@@ -16,11 +16,13 @@ import 'package:moneybook/features/statistics/presentation/pages/categorie_stati
 import 'package:moneybook/features/statistics/presentation/widgets/page_arguments/categorie_statistic_page_arguments.dart';
 import 'package:moneybook/shared/presentation/bloc/shared_bloc.dart';
 import 'package:moneybook/shared/presentation/pages/introduction_page.dart';
+import 'package:moneybook/shared/presentation/pages/splash_page.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/navigation_widget.dart';
 
 import 'core/consts/route_consts.dart';
 import 'core/theme/darkTheme.dart';
+import 'core/utils/app_localizations.dart';
 import 'features/accounts/presentation/bloc/account_bloc.dart';
 import 'features/accounts/presentation/pages/edit_account_page.dart';
 import 'features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
@@ -31,66 +33,87 @@ import 'features/budgets/presentation/pages/edit_budget_page.dart';
 import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/settings/presentation/pages/bug_report_page.dart';
+import 'features/settings/presentation/pages/currency_converter_page.dart';
 import 'features/settings/presentation/pages/feedback_page.dart';
 import 'features/settings/presentation/pages/impressum_page.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'features/user/presentation/bloc/user_bloc.dart';
-import 'injection_container.dart' as di;
 import 'injection_container.dart';
 import 'shared/presentation/widgets/arguments/selected_date_page_arguments.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  di.init();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  init();
+
   runApp(MultiBlocProvider(providers: [
-    BlocProvider(
-      create: (context) => sl<SharedBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<BookingBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<AccountBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<CategorieBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<CategorieStatsBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<BudgetBloc>(),
-    ),
-    BlocProvider(
-      create: (context) => sl<UserBloc>(),
-    ),
-  ], child: const MyApp()));
+    BlocProvider(create: (context) => sl<SharedBloc>()),
+    BlocProvider(create: (context) => sl<BookingBloc>()),
+    BlocProvider(create: (context) => sl<AccountBloc>()),
+    BlocProvider(create: (context) => sl<CategorieBloc>()),
+    BlocProvider(create: (context) => sl<CategorieStatsBloc>()),
+    BlocProvider(create: (context) => sl<BudgetBloc>()),
+    BlocProvider(create: (context) => sl<UserBloc>()),
+  ], child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  MaterialApp build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+  State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale? _locale;
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = Locale(locale.toString().substring(0, 2));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Moneybook',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       darkTheme: darkTheme,
       theme: ThemeData(useMaterial3: true),
+      locale: _locale,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('de', 'DE'),
+        Locale('de'),
+        Locale('en'),
       ],
-      home: const IntroductionPage(),
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        if (_locale != null) {
+          return _locale;
+        }
+
+        // Fallback, wenn _locale noch nicht gesetzt ist
+        for (var supported in supportedLocales) {
+          if (supported.languageCode == deviceLocale?.languageCode && supported.countryCode == deviceLocale?.countryCode) {
+            return supported;
+          }
+        }
+        // Fallback auf Deutsch
+        return const Locale('de');
+      },
+      home: SplashPage(),
       routes: {
+        introductionRoute: (context) => const IntroductionPage(),
         accountListRoute: (context) => const AccountListPage(),
         categorieListRoute: (context) => const CategorieListPage(),
         createBookingRoute: (context) => const CreateBookingPage(),
@@ -102,13 +125,14 @@ class MyApp extends StatelessWidget {
         creditRoute: (context) => const CreditPage(),
         feedbackRoute: (context) => const FeedbackPage(),
         bugReportRoute: (context) => const BugReportPage(),
+        currencyConverterRoute: (context) => const CurrencyConverterPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case bottomNavBarRoute:
             final args = settings.arguments as BottomNavBarArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => BottomNavBar(
+              builder: (context) => BottomNavBar(
                 tabIndex: args.tabIndex,
                 selectedDate: args.selectedDate,
                 bookingType: args.bookingType,
@@ -119,7 +143,7 @@ class MyApp extends StatelessWidget {
           case bookingListRoute:
             final args = settings.arguments as SelectedDatePageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => BookingListPage(
+              builder: (context) => BookingListPage(
                 selectedDate: args.selectedDate,
               ),
               settings: settings,
@@ -127,7 +151,7 @@ class MyApp extends StatelessWidget {
           case editBookingRoute:
             final args = settings.arguments as EditBookingPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => EditBookingPage(
+              builder: (context) => EditBookingPage(
                 booking: args.booking,
                 editMode: args.editMode,
               ),
@@ -136,7 +160,7 @@ class MyApp extends StatelessWidget {
           case editAccountRoute:
             final args = settings.arguments as EditAccountPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => EditAccountPage(
+              builder: (context) => EditAccountPage(
                 account: args.account,
               ),
               settings: settings,
@@ -144,7 +168,7 @@ class MyApp extends StatelessWidget {
           case editBudgetRoute:
             final args = settings.arguments as EditBudgetPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => EditBudgetPage(
+              builder: (context) => EditBudgetPage(
                 budget: args.budget,
                 serieMode: args.serieMode,
               ),
@@ -153,7 +177,7 @@ class MyApp extends StatelessWidget {
           case categorieStatisticRoute:
             final args = settings.arguments as CategorieStatisticPageArguments;
             return MaterialPageRoute<String>(
-              builder: (BuildContext context) => CategorieStatisticPage(
+              builder: (context) => CategorieStatisticPage(
                 categorie: args.categorie,
                 bookingType: args.bookingType,
                 selectedDate: args.selectedDate,

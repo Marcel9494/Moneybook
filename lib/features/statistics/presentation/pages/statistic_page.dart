@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:moneybook/features/statistics/presentation/widgets/buttons/booking_type_segmented_button.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
-import '../../../../core/consts/common_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
+import '../../../../core/utils/date_formatter.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
@@ -57,7 +57,7 @@ class _StatisticPageState extends State<StatisticPage> {
     _categorieFound = false;
     _overallAmount += booking.amount;
     for (int j = 0; j < _categorieStats.length; j++) {
-      if (_categorieStats[j].categorie.contains(booking.categorie)) {
+      if (AppLocalizations.of(context).translate(_categorieStats[j].categorie).contains(AppLocalizations.of(context).translate(booking.categorie))) {
         _categorieStats[j].amount += booking.amount;
         _categorieFound = true;
         break;
@@ -237,7 +237,8 @@ class _StatisticPageState extends State<StatisticPage> {
                         )
                       : Expanded(
                           child: EmptyList(
-                            text: 'Noch keine Buchungen\nfür ${DateFormat.yMMMM(locale).format(widget.selectedDate)} vorhanden',
+                            text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
+                                '\n${DateFormatter.dateFormatYMMMM(widget.selectedDate, context)}',
                             icon: Icons.donut_small,
                           ),
                         ),

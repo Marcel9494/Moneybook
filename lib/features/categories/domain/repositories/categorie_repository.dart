@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:moneybook/core/error/failures.dart';
 
 import '../entities/categorie.dart';
@@ -12,4 +13,5 @@ abstract class CategorieRepository {
   Future<Either<Failure, Categorie>> getId(String categorieName, CategorieType categorieType);
   Future<Either<Failure, List<Categorie>>> loadAll();
   Future<Either<Failure, bool>> checkCategorieName(Categorie categorie);
+  Future<Either<Failure, void>> translate(BuildContext context);
 }

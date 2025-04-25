@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../../bookings/presentation/widgets/buttons/list_view_button.dart';
 import '../../../domain/value_objects/account_type.dart';
 
 class AccountTypeInputField extends StatefulWidget {
   final TextEditingController accountTypeController;
+  final Function(String)? onAccountTypeSelected;
   String accountType;
 
   AccountTypeInputField({
     super.key,
     required this.accountTypeController,
+    this.onAccountTypeSelected,
     required this.accountType,
   });
 
@@ -20,7 +23,11 @@ class AccountTypeInputField extends StatefulWidget {
 }
 
 class _AccountTypeInputFieldState extends State<AccountTypeInputField> {
-  openAccountTypeBottomSheet({required BuildContext context, required String accountType}) {
+  openAccountTypeBottomSheet({
+    required BuildContext context,
+    required Function(String)? onAccountTypeSelected,
+    required String accountType,
+  }) {
     showCupertinoModalBottomSheet<void>(
       context: context,
       backgroundColor: Color(0xFF1c1b20),
@@ -31,7 +38,7 @@ class _AccountTypeInputFieldState extends State<AccountTypeInputField> {
             children: [
               Column(
                 children: [
-                  const BottomSheetHeader(title: 'Kontotyp auswählen:'),
+                  BottomSheetHeader(title: AppLocalizations.of(context).translate('kontotyp_auswählen') + ':'),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 1.7,
                     child: SingleChildScrollView(
@@ -41,42 +48,66 @@ class _AccountTypeInputFieldState extends State<AccountTypeInputField> {
                         padding: const EdgeInsets.all(8),
                         children: <Widget>[
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.none.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.none.name),
+                              _setAccountType(context, AccountType.none.name),
+                            },
                             text: AccountType.none.name,
                             selectedValue: accountType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.account.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.account.name),
+                              _setAccountType(context, AccountType.account.name),
+                            },
                             text: AccountType.account.name,
                             selectedValue: accountType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.capitalInvestment.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.capitalInvestment.name),
+                              _setAccountType(context, AccountType.capitalInvestment.name),
+                            },
                             text: AccountType.capitalInvestment.name,
                             selectedValue: accountType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.cash.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.cash.name),
+                              _setAccountType(context, AccountType.cash.name),
+                            },
                             text: AccountType.cash.name,
                             selectedValue: accountType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.card.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.card.name),
+                              _setAccountType(context, AccountType.card.name),
+                            },
                             text: AccountType.card.name,
                             selectedValue: accountType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.insurance.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.insurance.name),
+                              _setAccountType(context, AccountType.insurance.name),
+                            },
                             text: AccountType.insurance.name,
                             selectedValue: accountType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.credit.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.credit.name),
+                              _setAccountType(context, AccountType.credit.name),
+                            },
                             text: AccountType.credit.name,
                             selectedValue: accountType,
                           ),
                           ListViewButton(
-                            onPressed: () => _setAccountType(context, AccountType.other.name),
+                            onPressed: () => {
+                              onAccountTypeSelected!(AccountType.other.name),
+                              _setAccountType(context, AccountType.other.name),
+                            },
                             text: AccountType.other.name,
                             selectedValue: accountType,
                           ),
@@ -99,7 +130,7 @@ class _AccountTypeInputFieldState extends State<AccountTypeInputField> {
       if (widget.accountType == AccountType.none.name) {
         widget.accountTypeController.text = '';
       } else {
-        widget.accountTypeController.text = newAccountType;
+        widget.accountTypeController.text = AppLocalizations.of(context).translate(newAccountType);
       }
     });
     Navigator.pop(context);
@@ -114,12 +145,13 @@ class _AccountTypeInputFieldState extends State<AccountTypeInputField> {
       textAlignVertical: TextAlignVertical.center,
       onTap: () => openAccountTypeBottomSheet(
         context: context,
+        onAccountTypeSelected: widget.onAccountTypeSelected,
         accountType: widget.accountType,
       ),
-      decoration: const InputDecoration(
-        hintText: 'Kontotyp...',
+      decoration: InputDecoration(
+        hintText: AppLocalizations.of(context).translate('kontotyp') + '...',
         counterText: '',
-        prefixIcon: IconTheme(
+        prefixIcon: const IconTheme(
           data: IconThemeData(color: Colors.grey),
           child: Icon(Icons.account_balance_outlined),
         ),

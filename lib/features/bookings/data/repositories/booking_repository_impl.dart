@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:moneybook/core/error/exceptions.dart';
 import 'package:moneybook/core/error/failures.dart';
 import 'package:moneybook/features/bookings/data/datasources/booking_remote_data_source.dart';
@@ -168,6 +169,15 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<Either<Failure, List<Booking>>> loadMonthlyAmountTypeBookings(DateTime selectedDate, AmountType amountType) async {
     try {
       return Right(await bookingLocalDataSource.loadMonthlyAmountTypeBookings(selectedDate, amountType));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> translate(BuildContext context) async {
+    try {
+      return Right(await bookingLocalDataSource.translate(context));
     } on ServerException {
       return Left(ServerFailure());
     }

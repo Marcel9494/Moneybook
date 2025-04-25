@@ -5,6 +5,7 @@ import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:moneybook/features/accounts/presentation/widgets/cards/overview_cards.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/deco/create_row.dart';
 
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../domain/entities/account.dart';
 import '../../domain/value_objects/account_type.dart';
@@ -72,15 +73,15 @@ class _AccountListPageState extends State<AccountListPage> {
                     assets: 0,
                     debts: 0,
                   ),
-                  const CreateRow(
-                    title: 'Konten',
-                    buttonText: 'Konto erstellen',
+                  CreateRow(
+                    title: AppLocalizations.of(context).translate('konten'),
+                    buttonText: AppLocalizations.of(context).translate('konto_erstellen'),
                     createRoute: createAccountRoute,
                     leftPadding: 10.0,
                   ),
-                  const Expanded(
+                  Expanded(
                     child: EmptyList(
-                      text: 'Noch keine Konten vorhanden',
+                      text: AppLocalizations.of(context).translate('noch_keine_konten_vorhanden'),
                       icon: Icons.account_balance_outlined,
                     ),
                   ),
@@ -96,9 +97,9 @@ class _AccountListPageState extends State<AccountListPage> {
                     assets: _assets,
                     debts: _debts,
                   ),
-                  const CreateRow(
-                    title: 'Konten',
-                    buttonText: 'Konto erstellen',
+                  CreateRow(
+                    title: AppLocalizations.of(context).translate('konten'),
+                    buttonText: AppLocalizations.of(context).translate('konto_erstellen'),
                     createRoute: createAccountRoute,
                     leftPadding: 10.0,
                   ),
@@ -115,7 +116,8 @@ class _AccountListPageState extends State<AccountListPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(state.accounts[index].type.pluralName, style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                    Text(AppLocalizations.of(context).translate(state.accounts[index].type.pluralName),
+                                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                                     Text(formatToMoneyAmount(_accountTypeAmounts[state.accounts[index].type].toString()),
                                         style: const TextStyle(fontWeight: FontWeight.bold)),
                                   ],
@@ -149,15 +151,15 @@ class _AccountListPageState extends State<AccountListPage> {
                     assets: 0,
                     debts: 0,
                   ),
-                  const CreateRow(
-                    title: 'Konten',
-                    buttonText: 'Konto erstellen',
+                  CreateRow(
+                    title: AppLocalizations.of(context).translate('konten'),
+                    buttonText: AppLocalizations.of(context).translate('konto_erstellen'),
                     createRoute: createAccountRoute,
                     leftPadding: 10.0,
                   ),
-                  const Expanded(
+                  Expanded(
                     child: EmptyList(
-                      text: 'Noch keine Konten vorhanden',
+                      text: AppLocalizations.of(context).translate('noch_keine_konten_vorhanden'),
                       icon: Icons.account_balance_outlined,
                     ),
                   ),
@@ -173,9 +175,9 @@ class _AccountListPageState extends State<AccountListPage> {
                     assets: _assets,
                     debts: _debts,
                   ),
-                  const CreateRow(
-                    title: 'Konten',
-                    buttonText: 'Konto erstellen',
+                  CreateRow(
+                    title: AppLocalizations.of(context).translate('konten'),
+                    buttonText: AppLocalizations.of(context).translate('konto_erstellen'),
                     createRoute: createAccountRoute,
                     leftPadding: 10.0,
                   ),
@@ -192,7 +194,7 @@ class _AccountListPageState extends State<AccountListPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(state.filteredAccounts[index].type.pluralName,
+                                    Text(AppLocalizations.of(context).translate(state.filteredAccounts[index].type.pluralName),
                                         style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                                     Text(formatToMoneyAmount(_accountTypeAmounts[state.filteredAccounts[index].type].toString()),
                                         style: const TextStyle(fontWeight: FontWeight.bold)),

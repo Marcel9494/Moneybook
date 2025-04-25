@@ -4,6 +4,7 @@ import 'package:moneybook/features/budgets/presentation/widgets/text/text_with_v
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../../../../core/consts/common_consts.dart';
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../bookings/domain/entities/booking.dart';
 import '../../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../domain/entities/budget.dart';
@@ -107,22 +108,22 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
                   children: [
                     TextWithVerticalDivider(
                       verticalDividerColor: _getBudgetColor(),
-                      description: 'Gesamtbudget',
+                      description: AppLocalizations.of(context).translate('gesamtbudget'),
                       value: '${formatToMoneyAmount(_overallBudgetUsed.toString())} / ${formatToMoneyAmount(_overallBudgetAmount.toString())}',
                     ),
                     TextWithVerticalDivider(
                       verticalDividerColor: Colors.cyanAccent,
-                      description: 'Buchungen ohne Budget',
+                      description: AppLocalizations.of(context).translate('buchungen_ohne_budget'),
                       value: _calculateNotAssigned(),
                     ),
                     TextWithVerticalDivider(
                       verticalDividerColor: Colors.cyanAccent,
-                      description: 'Einnahmen',
+                      description: AppLocalizations.of(context).translate('einnahmen'),
                       value: _calculateIncome(),
                     ),
                     TextWithVerticalDivider(
                       verticalDividerColor: _calculateAvailable() >= 0.0 ? Colors.green.withOpacity(0.9) : Colors.redAccent,
-                      description: 'Verfügbar',
+                      description: AppLocalizations.of(context).translate('verfügbar'),
                       value: formatToMoneyAmount((_calculateAvailable()).toString()),
                     ),
                   ],

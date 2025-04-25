@@ -25,6 +25,7 @@ import '../../domain/usecases/load_monthly_amount_type_bookings.dart';
 import '../../domain/usecases/load_past_categorie_bookings.dart';
 import '../../domain/usecases/load_serie_bookings.dart';
 import '../../domain/usecases/load_sorted_monthly_bookings.dart';
+import '../../domain/usecases/translate_bookings.dart';
 import '../../domain/usecases/update.dart';
 import '../../domain/usecases/update_all_bookings_in_serie.dart';
 import '../../domain/usecases/update_all_bookings_with_account.dart';
@@ -45,6 +46,7 @@ const String LOAD_BOOKINGS_FAILURE = 'Buchungen konnten nicht geladen werden.';
 const String UPDATE_ALL_BOOKINGS_FAILURE = 'Buchungen konnten nicht aktualisiert werden.';
 const String NEW_BOOKINGS_FAILURE = 'Neue Buchungen konnten nicht abgefragt/aktualisiert werden.';
 const String LOAD_NEW_BOOKINGS_FAILURE = 'Neue Buchungen konnten nicht geladen werden.';
+const String TRANSLATE_BOOKINGS_FAILURE = 'Buchungen konnten nicht übersetzt werden.';
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final Create createUseCase;
@@ -63,6 +65,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final UpdateOnlyFutureBookingsInSerie updateOnlyFutureBookingsInSerieUseCase;
   final CalculateAndUpdateNewBookings calculateAndUpdateNewBookingsUseCase;
   final GetNewSerieId getNewSerieIdUseCase;
+  final TranslateBookings translateAllBookingsUseCase;
 
   BookingBloc(
     this.createUseCase,
@@ -81,6 +84,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     this.updateOnlyFutureBookingsInSerieUseCase,
     this.calculateAndUpdateNewBookingsUseCase,
     this.getNewSerieIdUseCase,
+    this.translateAllBookingsUseCase,
   ) : super(Initial()) {
     on<BookingEvent>((event, emit) async {
       if (event is CreateBooking) {
@@ -405,6 +409,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         final checkNewBookingsEither = await calculateAndUpdateNewBookingsUseCase.bookingRepository.calculateAndUpdateNewBookings();
         checkNewBookingsEither.fold((failure) {
           emit(const Error(message: NEW_BOOKINGS_FAILURE));
+        }, (_) {});
+      } else if (event is TranslateAllBookings) {
+        final translateAllBookingsEither = await translateAllBookingsUseCase.bookingRepository.translate(event.context);
+        translateAllBookingsEither.fold((failure) {
+          emit(const Error(message: TRANSLATE_BOOKINGS_FAILURE));
         }, (_) {});
       }
     });

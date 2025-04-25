@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../bookings/domain/value_objects/booking_type.dart';
 
 class BookingTypeSegmentedButton extends StatefulWidget {
@@ -28,7 +29,7 @@ class _BookingTypeSegmentedButtonState extends State<BookingTypeSegmentedButton>
             ButtonSegment<BookingType>(
               value: BookingType.expense,
               label: Text(
-                BookingType.expense.pluralName,
+                AppLocalizations.of(context).translate(BookingType.expense.pluralName),
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 12.0),
               ),
@@ -36,7 +37,7 @@ class _BookingTypeSegmentedButtonState extends State<BookingTypeSegmentedButton>
             ButtonSegment<BookingType>(
               value: BookingType.income,
               label: Text(
-                BookingType.income.pluralName,
+                AppLocalizations.of(context).translate(BookingType.income.pluralName),
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 12.0),
               ),
@@ -44,7 +45,7 @@ class _BookingTypeSegmentedButtonState extends State<BookingTypeSegmentedButton>
             ButtonSegment<BookingType>(
               value: BookingType.investment,
               label: Text(
-                BookingType.investment.pluralName,
+                AppLocalizations.of(context).translate(BookingType.investment.pluralName),
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 12.0),
               ),

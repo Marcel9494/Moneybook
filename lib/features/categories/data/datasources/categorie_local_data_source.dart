@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../core/consts/database_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../domain/entities/categorie.dart';
 import '../../domain/value_objects/categorie_type.dart';
 
@@ -12,6 +14,7 @@ abstract class CategorieLocalDataSource {
   Future<Categorie> getId(String categorieName, CategorieType categorieType);
   Future<List<Categorie>> loadAll();
   Future<bool> checkCategorieName(Categorie categorie);
+  Future<void> translate(BuildContext context);
 }
 
 class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
@@ -100,12 +103,39 @@ class CategorieLocalDataSourceImpl implements CategorieLocalDataSource {
   @override
   Future<bool> checkCategorieName(Categorie categorie) async {
     db = await openDatabase(localDbName);
-    // TODO hier weitermachen und verhindern das Groß- und Kleinschreibung nicht beachtet wird z.B. Bildung und bildung
-    List<Map> categorieMap = await db
-        .rawQuery('SELECT * FROM $categorieDbName WHERE LOWER(name) = ? AND type = ? LIMIT 1', [categorie.name.toLowerCase(), categorie.type.name]);
+    List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName WHERE LOWER(name) = ? AND LOWER(type) = ? LIMIT 1',
+        [categorie.name.toLowerCase(), categorie.type.name.toLowerCase()]);
     if (categorieMap.isEmpty) {
       return false;
     }
     return true;
+  }
+
+  @override
+  Future<void> translate(BuildContext context) async {
+    final localizations = AppLocalizations.of(context);
+    db = await openDatabase(localDbName);
+    List<Map> categorieMap = await db.rawQuery('SELECT * FROM $categorieDbName');
+    List<Categorie> categorieList = categorieMap
+        .map(
+          (categorie) => Categorie(
+            id: categorie['id'],
+            type: CategorieType.fromString(categorie['type']),
+            name: categorie['name'],
+          ),
+        )
+        .toList();
+    for (int i = 0; i < categorieList.length; i++) {
+      try {
+        await db.rawUpdate('UPDATE $categorieDbName SET id = ?, type = ?, name = ? WHERE id = ?', [
+          categorieList[i].id,
+          categorieList[i].type.name,
+          localizations.translate(categorieList[i].name.toLowerCase()),
+          categorieList[i].id,
+        ]);
+      } catch (e) {
+        throw Exception('Categorie with name ${categorieList[i].name.toLowerCase()} (id: ${categorieList[i].id}) could not translated');
+      }
+    }
   }
 }

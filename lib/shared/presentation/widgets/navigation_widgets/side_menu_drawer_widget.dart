@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../deco/new_label.dart';
 
 class SideMenuDrawer extends StatefulWidget {
@@ -37,8 +38,8 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
                     ),
                   ),
                   const SizedBox(width: 20.0),
-                  const Text(
-                    'Moneybook',
+                  Text(
+                    AppLocalizations.of(context).translate('moneybook'),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 22.0,
@@ -54,7 +55,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 0 ? Colors.cyan.shade400 : Colors.white,
             ),
             title: Text(
-              'Buchungen',
+              AppLocalizations.of(context).translate('buchungen'),
               style: TextStyle(color: widget.tabIndex == 0 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
@@ -73,7 +74,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 1 ? Colors.cyan.shade400 : Colors.white,
             ),
             title: Text(
-              'Konten',
+              AppLocalizations.of(context).translate('konten'),
               style: TextStyle(color: widget.tabIndex == 1 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
@@ -92,7 +93,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 2 ? Colors.cyan.shade400 : Colors.white,
             ),
             title: Text(
-              'Statistiken',
+              AppLocalizations.of(context).translate('statistiken'),
               style: TextStyle(color: widget.tabIndex == 2 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
@@ -111,7 +112,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 3 ? Colors.cyan.shade400 : Colors.white,
             ),
             title: Text(
-              'Budgets',
+              AppLocalizations.of(context).translate('budgets'),
               style: TextStyle(color: widget.tabIndex == 3 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
@@ -130,7 +131,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               color: widget.tabIndex == 4 ? Colors.cyan.shade400 : Colors.white,
             ),
             title: Text(
-              'Kategorien',
+              AppLocalizations.of(context).translate('kategorien'),
               style: TextStyle(color: widget.tabIndex == 4 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
@@ -139,7 +140,6 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
             ),
             selected: widget.tabIndex == 4,
             onTap: () {
-              //Navigator.pop(context);
               Navigator.popAndPushNamed(context, categorieListRoute);
             },
           ),
@@ -149,14 +149,9 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               Icons.rate_review_rounded,
               color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white,
             ),
-            title: Row(
-              children: [
-                Text(
-                  'Feedback',
-                  style: TextStyle(color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
-                ),
-                NewLabel(),
-              ],
+            title: Text(
+              AppLocalizations.of(context).translate('feedback'),
+              style: TextStyle(color: widget.tabIndex == 5 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
               Icons.keyboard_arrow_right_rounded,
@@ -172,14 +167,9 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               Icons.bug_report_rounded,
               color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white,
             ),
-            title: Row(
-              children: [
-                Text(
-                  'Fehler melden',
-                  style: TextStyle(color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
-                ),
-                NewLabel(),
-              ],
+            title: Text(
+              AppLocalizations.of(context).translate('fehler_melden'),
+              style: TextStyle(color: widget.tabIndex == 6 ? Colors.cyan.shade400 : Colors.white),
             ),
             trailing: Icon(
               Icons.keyboard_arrow_right_rounded,
@@ -196,9 +186,14 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               Icons.settings_rounded,
               color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white,
             ),
-            title: Text(
-              'Einstellungen',
-              style: TextStyle(color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white),
+            title: Row(
+              children: [
+                Text(
+                  AppLocalizations.of(context).translate('einstellungen'),
+                  style: TextStyle(color: widget.tabIndex == 7 ? Colors.cyan.shade400 : Colors.white),
+                ),
+                NewLabel(),
+              ],
             ),
             trailing: Icon(
               Icons.keyboard_arrow_right_rounded,

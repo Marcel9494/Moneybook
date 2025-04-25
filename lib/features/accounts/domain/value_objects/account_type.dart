@@ -8,15 +8,15 @@ enum AccountType {
   credit,
   other;
 
-  static AccountType fromString(String s) => switch (s) {
-        'Kein Kontotyp ausgewählt' => AccountType.none,
-        'Konto' => AccountType.account,
-        'Kapitalanlage' => AccountType.capitalInvestment,
-        'Bargeld' => AccountType.cash,
-        'Karte' => AccountType.card,
-        'Versicherung' => AccountType.insurance,
-        'Kredit' => AccountType.credit,
-        'Sonstiges' => AccountType.other,
+  static AccountType fromString(String accountType) => switch (accountType.toLowerCase()) {
+        'kein kontotyp ausgewählt' || 'kein_kontotyp_ausgewählt' => AccountType.none,
+        'konto' => AccountType.account,
+        'kapitalanlage' => AccountType.capitalInvestment,
+        'bargeld' => AccountType.cash,
+        'karte' => AccountType.card,
+        'versicherung' => AccountType.insurance,
+        'kredit' => AccountType.credit,
+        'sonstiges' => AccountType.other,
         _ => AccountType.none
       };
 }
@@ -25,46 +25,42 @@ extension AccountTypeExtension on AccountType {
   String get name {
     switch (this) {
       case AccountType.none:
-        return 'Kein Kontotyp ausgewählt';
+        return 'kein_kontotyp_ausgewählt';
       case AccountType.account:
-        return 'Konto';
+        return 'konto';
       case AccountType.capitalInvestment:
-        return 'Kapitalanlage';
+        return 'kapitalanlage';
       case AccountType.cash:
-        return 'Bargeld';
+        return 'bargeld';
       case AccountType.card:
-        return 'Karte';
+        return 'karte';
       case AccountType.insurance:
-        return 'Versicherung';
+        return 'versicherung';
       case AccountType.credit:
-        return 'Kredit';
+        return 'kredit';
       case AccountType.other:
-        return 'Sonstiges';
-      default:
-        throw Exception('$name is not a valid Account type.');
+        return 'sonstiges';
     }
   }
 
   String get pluralName {
     switch (this) {
       case AccountType.none:
-        return 'Kein Kontotyp ausgewählt';
+        return 'kein_kontotyp_ausgewählt';
       case AccountType.account:
-        return 'Konten';
+        return 'konten';
       case AccountType.capitalInvestment:
-        return 'Kapitalanlagen';
+        return 'kapitalanlagen';
       case AccountType.cash:
-        return 'Bargeld';
+        return 'bargeld';
       case AccountType.card:
-        return 'Karten';
+        return 'karten';
       case AccountType.insurance:
-        return 'Versicherungen';
+        return 'versicherungen';
       case AccountType.credit:
-        return 'Kredite';
+        return 'kredite';
       case AccountType.other:
-        return 'Sonstiges';
-      default:
-        throw Exception('$name is not a valid Account type.');
+        return 'sonstiges';
     }
   }
 }

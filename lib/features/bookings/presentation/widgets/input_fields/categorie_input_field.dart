@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../domain/value_objects/booking_type.dart';
 import '../bottom_sheets/categorie_bottom_sheet.dart';
 
 class CategorieInputField extends StatelessWidget {
   final TextEditingController categorieController;
+  final Function(String)? onCategorieSelected;
   final BookingType bookingType;
 
   const CategorieInputField({
     super.key,
     required this.categorieController,
+    this.onCategorieSelected,
     required this.bookingType,
   });
 
-  String? _checkCategorieInput() {
+  String? _checkCategorieInput(BuildContext context) {
     if (categorieController.text.isEmpty) {
-      return 'Bitte wählen Sie eine Kategorie aus.';
+      return AppLocalizations.of(context).translate('leere_kategorie_beschreibung');
     }
     return null;
   }
@@ -27,15 +30,16 @@ class CategorieInputField extends StatelessWidget {
       showCursor: false,
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
-      validator: (input) => _checkCategorieInput(),
+      validator: (input) => _checkCategorieInput(context),
       onTap: () => openCategorieBottomSheet(
         context: context,
-        title: 'Kategorie auswählen:',
+        title: AppLocalizations.of(context).translate('kategorie_auswählen') + ':',
         controller: categorieController,
+        onCategorieSelected: onCategorieSelected,
         bookingType: bookingType,
       ),
-      decoration: const InputDecoration(
-        hintText: 'Kategorie...',
+      decoration: InputDecoration(
+        hintText: AppLocalizations.of(context).translate('kategorie') + '...',
         counterText: '',
         prefixIcon: Icon(Icons.donut_small),
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/repetition_type.dart';
 
-import '../../../../../core/consts/common_consts.dart';
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../../core/utils/date_formatter.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../buttons/list_view_button.dart';
@@ -39,7 +39,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
             children: [
               Column(
                 children: [
-                  const BottomSheetHeader(title: 'Wiederholung auswählen:'),
+                  BottomSheetHeader(title: AppLocalizations.of(context).translate('wiederholung_auswählen') + ':'),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 1.7,
                     child: SingleChildScrollView(
@@ -117,7 +117,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
         color: widget.activateDatePicker ? Colors.white : Colors.grey,
       ),
       decoration: InputDecoration(
-        hintText: 'Datum...',
+        hintText: AppLocalizations.of(context).translate('datum') + '...',
         counterText: '',
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: widget.activateDatePicker ? Colors.cyanAccent : Colors.grey),
@@ -149,7 +149,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
                 : Padding(
                     padding: const EdgeInsets.only(bottom: 4.0, right: 6.0),
                     child: Text(
-                      widget.repetitionType,
+                      AppLocalizations.of(context).translate(widget.repetitionType),
                       style: TextStyle(fontSize: 10.0, color: widget.activateRepetition ? Colors.grey.shade300 : Colors.grey),
                     ),
                   ),
@@ -160,13 +160,13 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
           ? () async {
               final DateTime? parsedDate = await showDatePicker(
                 context: context,
-                locale: Locale(singleLocale, singleLocale.toUpperCase()),
                 firstDate: DateTime(2014),
                 lastDate: DateTime(DateTime.now().year + 100),
               );
               if (parsedDate != null) {
                 setState(() {
-                  widget.dateController.text = dateFormatterDDMMYYYYEE.format(parsedDate);
+                  widget.dateController.text =
+                      DateFormatter.dateFormatDDMMYYYYEEDateTime(parsedDate, context); // dateFormatterDDMMYYYYEE.format(parsedDate);
                 });
               }
             }

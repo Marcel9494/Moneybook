@@ -9,6 +9,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
@@ -36,12 +37,19 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   // dieser Zähler nicht hochgezählt wird, wird das Event CheckedAccountName nicht erneut emittet, da es der gleiche
   // State wie bei dem ersten Aufruf des Events ist und somit nicht erneut aufgerufen wird. Vielleicht gibt es eine bessere Lösung.
   int _numberOfEventCalls = 0;
+  String _accountTypeForDb = AccountType.none.name;
+
+  void _setAccountTypeForDb(String accountTypeForDb) {
+    setState(() {
+      _accountTypeForDb = accountTypeForDb;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Konto erstellen'),
+        title: Text(AppLocalizations.of(context).translate('konto_erstellen')),
       ),
       body: BlocProvider(
         create: (_) => sl<AccountBloc>(),
@@ -57,8 +65,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               if (state.accountNameExists) {
                 _createAccountBtnController.error();
                 Flushbar(
-                  title: 'Kontoname existiert bereits',
-                  message: 'Der Kontoname ${_accountNameController.text.trim()} existiert bereits. Bitte benennen Sie den Kontoname um.',
+                  title: AppLocalizations.of(context).translate('kontoname_existiert_bereits'),
+                  message: AppLocalizations.of(context).translate('kontoname_existiert_bereits_beschreibung'),
                   icon: const Icon(Icons.error_outline_rounded, color: Colors.yellowAccent),
                   duration: const Duration(milliseconds: flushbarDurationInMs),
                 ).show(context);
@@ -78,7 +86,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       CreateAccount(
                         Account(
                           id: 0,
-                          type: AccountType.fromString(_accountTypeController.text),
+                          type: AccountType.fromString(_accountTypeForDb),
                           name: _accountNameController.text.trim(),
                           amount: Amount.getValue(_amountController.text),
                           currency: Amount.getCurrency(_amountController.text),
@@ -100,11 +108,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        AccountTypeInputField(accountTypeController: _accountTypeController, accountType: _accountType.name),
-                        TitleTextField(hintText: 'Kontoname...', titleController: _accountNameController, maxLength: 30),
-                        AmountTextField(amountController: _amountController, showMinus: true),
+                        AccountTypeInputField(
+                          accountTypeController: _accountTypeController,
+                          onAccountTypeSelected: (accountTypeForDb) => _setAccountTypeForDb(accountTypeForDb),
+                          accountType: AppLocalizations.of(context).translate(_accountTypeForDb),
+                        ),
+                        TitleTextField(
+                            hintText: AppLocalizations.of(context).translate('kontoname') + '...',
+                            titleController: _accountNameController,
+                            maxLength: 30),
+                        AmountTextField(
+                          amountController: _amountController,
+                          hintText: AppLocalizations.of(context).translate('betrag') + '...',
+                          showMinus: true,
+                        ),
                         SaveButton(
-                          text: 'Erstellen',
+                          text: AppLocalizations.of(context).translate('erstellen'),
                           saveBtnController: _createAccountBtnController,
                           onPressed: () => BlocProvider.of<AccountBloc>(context).add(
                             CheckAccountNameExists(

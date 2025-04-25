@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_card.dart';
 
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../domain/entities/booking.dart';
 
 class MonthlyValueCards extends StatefulWidget {
@@ -42,37 +43,37 @@ class _MonthlyValueCardsState extends State<MonthlyValueCards> {
         scrollDirection: Axis.horizontal,
         children: [
           MonthlyCard(
-            title: 'Einnahmen',
+            title: AppLocalizations.of(context).translate('einnahmen'),
             monthlyValue: widget.monthlyIncome,
             dailyAverageValue: widget.monthlyIncome / numberOfDays,
             textColor: Colors.greenAccent,
           ),
           MonthlyCard(
-            title: 'Ausgaben',
+            title: AppLocalizations.of(context).translate('ausgaben'),
             monthlyValue: widget.monthlyExpense,
             dailyAverageValue: widget.monthlyExpense / numberOfDays,
             textColor: Colors.redAccent,
           ),
           MonthlyCard(
-            title: 'Saldo',
+            title: AppLocalizations.of(context).translate('saldo'),
             monthlyValue: widget.monthlyIncome - widget.monthlyExpense,
             dailyAverageValue: (widget.monthlyIncome - widget.monthlyExpense) / numberOfDays,
             textColor: widget.monthlyIncome - widget.monthlyExpense >= 0.0 ? Colors.greenAccent : Colors.redAccent,
           ),
           MonthlyCard(
-            title: 'Käufe',
+            title: AppLocalizations.of(context).translate('käufe'),
             monthlyValue: widget.monthlyInvestmentBuys,
             dailyAverageValue: widget.monthlyInvestmentBuys / numberOfDays,
             textColor: Colors.cyanAccent,
           ),
           MonthlyCard(
-            title: 'Verkäufe',
+            title: AppLocalizations.of(context).translate('verkäufe'),
             monthlyValue: widget.monthlyInvestmentSales,
             dailyAverageValue: widget.monthlyInvestmentSales / numberOfDays,
             textColor: Colors.cyanAccent,
           ),
           MonthlyCard(
-            title: 'Differenz',
+            title: AppLocalizations.of(context).translate('differenz'),
             monthlyValue: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales,
             dailyAverageValue: (widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales) / numberOfDays,
             textColor: widget.monthlyInvestmentBuys - widget.monthlyInvestmentSales >= 0.0 ? Colors.greenAccent : Colors.redAccent,

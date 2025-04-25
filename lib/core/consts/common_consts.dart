@@ -1,5 +1,5 @@
 const bool adminMode = false;
-const String locale = 'de-DE';
+String locale = 'de-DE';
 const String singleLocale = 'de';
 const String currencyLocale = '€';
 

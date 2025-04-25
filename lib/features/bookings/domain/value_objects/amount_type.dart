@@ -9,16 +9,16 @@ enum AmountType {
   overallExpense,
   overallIncome;
 
-  static AmountType fromString(String s) => switch (s) {
-        'Undefiniert' => AmountType.undefined,
-        'Kauf' => AmountType.buy,
-        'Verkauf' => AmountType.sale,
-        'Aktiv' => AmountType.active,
-        'Passiv' => AmountType.passive,
-        'Fix' => AmountType.fix,
-        'Variabel' => AmountType.variable,
-        'Gesamt' => AmountType.overallExpense,
-        'Gesamt' => AmountType.overallIncome,
+  static AmountType fromString(String amountType) => switch (amountType.toLowerCase()) {
+        'undefiniert' => AmountType.undefined,
+        'kauf' => AmountType.buy,
+        'verkauf' => AmountType.sale,
+        'aktiv' => AmountType.active,
+        'passiv' => AmountType.passive,
+        'fix' => AmountType.fix,
+        'variabel' => AmountType.variable,
+        'gesamt' => AmountType.overallExpense,
+        'gesamt' => AmountType.overallIncome,
         _ => AmountType.undefined
       };
 }
@@ -27,25 +27,23 @@ extension AmountTypeExtension on AmountType {
   String get name {
     switch (this) {
       case AmountType.undefined:
-        return 'Undefiniert';
+        return 'undefiniert';
       case AmountType.buy:
-        return 'Kauf';
+        return 'kauf';
       case AmountType.sale:
-        return 'Verkauf';
+        return 'verkauf';
       case AmountType.active:
-        return 'Aktiv';
+        return 'aktiv';
       case AmountType.passive:
-        return 'Passiv';
+        return 'passiv';
       case AmountType.fix:
-        return 'Fix';
+        return 'fix';
       case AmountType.variable:
-        return 'Variabel';
+        return 'variabel';
       case AmountType.overallExpense:
-        return 'Gesamt';
+        return 'gesamt';
       case AmountType.overallIncome:
-        return 'Gesamt';
-      default:
-        throw Exception('$name is not a valid Amount type.');
+        return 'gesamt';
     }
   }
 
@@ -54,23 +52,21 @@ extension AmountTypeExtension on AmountType {
       case AmountType.undefined:
         return '-';
       case AmountType.buy:
-        return 'Wenn ein neues Asset zu deinem Portfolio hinzukommt oder aufgestockt wird.';
+        return 'kauf_beschreibung';
       case AmountType.sale:
-        return 'Wenn ein Asset dein Portfolio verlässt oder reduziert wird.\n\nBeispiele für Assets:\nAktien, ETFs, Anleihen, Immobilien, Kryptowährungen, ...';
+        return 'verkauf_beschreibung';
       case AmountType.active:
-        return 'Aktive Einnahmen sind Einkünfte, die durch den direkten Einsatz von Zeit, Energie und Arbeit erzielt werden. Bei aktiven Einnahmen wird deine Arbeitskraft oder Zeit gegen Geld getauscht.\nBeispiele: Gehalt als Arbeitnehmer, freiberufliche Tätigkeiten, stundenbasierte Tätigkeiten, ...';
+        return 'aktiv_beschreibung';
       case AmountType.passive:
-        return 'Passive Einnahmen sind Einkommensquellen, bei denen nach einer anfänglichen Investition von Zeit, Geld oder Ressourcen kontinuierlich Geld verdient werden kann, ohne dafür regelmäßig aktiv arbeiten gehen zu müssen.\nBeispiele: Dividenden, Zinsen, Mieteinnahmen, ...';
+        return 'passiv_beschreibung';
       case AmountType.fix:
-        return 'Fixe Kosten sind Ausgaben die regelmäßig anfallen und sich in der Regel nur selten ändern.\nBeispiele: Miete, Versicherungen, Abos, Kredite, ...';
+        return 'fix_beschreibung';
       case AmountType.variable:
-        return 'Variable Kosten sind Ausgaben die sich ändern, je nachdem wieviel du konsumierst.\nBeispiele: Lebensmittel, Restaurants, Kino, Energiekosten, ...';
+        return 'variabel_beschreibung';
       case AmountType.overallExpense:
         return '-';
       case AmountType.overallIncome:
         return '-';
-      default:
-        throw Exception('$name is not a valid Amount type.');
     }
   }
 }

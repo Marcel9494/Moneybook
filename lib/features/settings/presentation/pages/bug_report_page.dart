@@ -8,6 +8,7 @@ import 'package:moneybook/shared/presentation/widgets/input_fields/long_descript
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/github/github_functions.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
 
 class BugReportPage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _BugReportPageState extends State<BugReportPage> {
     }
     _sendBugReportBtnController.success();
     Flushbar(
-      message: "Vielen Dank für das Senden deiner Fehlermeldung.",
+      message: AppLocalizations.of(context).translate('fehler_erfolgreich_gesendet'),
       icon: Icon(
         Icons.done_rounded,
         size: 28.0,
@@ -59,7 +60,7 @@ class _BugReportPageState extends State<BugReportPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fehler melden'),
+        title: Text(AppLocalizations.of(context).translate('fehler_melden')),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -74,19 +75,21 @@ class _BugReportPageState extends State<BugReportPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: TitleTextField(
-                      hintText: 'Titel...',
+                      hintText: AppLocalizations.of(context).translate('titel') + '...',
                       titleController: titleController,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(12.0, 16.0, 12.0, 0.0),
                     child: LongDescriptionTextField(
-                      hintText:
-                          'Bitte geben Sie eine detaillierte Fehlerbeschreibung an, damit wir das Problem bestmöglich analysieren und schnellstmöglich beheben können.',
+                      hintText: AppLocalizations.of(context).translate('fehler_beschreibung'),
                       descriptionController: descriptionController,
                     ),
                   ),
-                  SaveButton(text: 'Senden', saveBtnController: _sendBugReportBtnController, onPressed: () => createBugReportIssue()),
+                  SaveButton(
+                      text: AppLocalizations.of(context).translate('senden'),
+                      saveBtnController: _sendBugReportBtnController,
+                      onPressed: () => createBugReportIssue()),
                 ],
               ),
             ),

@@ -64,3 +64,24 @@ class CheckCategorieNameExists extends CategorieEvent {
   @override
   List<Object?> get props => [categorie, numberOfEventCalls];
 }
+
+class ExistsCategorieName extends CategorieEvent {
+  final Categorie newCategorie;
+  final List<Categorie> categories;
+  final BuildContext context;
+  int numberOfEventCalls;
+
+  ExistsCategorieName(this.newCategorie, this.categories, this.context, this.numberOfEventCalls);
+
+  @override
+  List<Object?> get props => [newCategorie, categories];
+}
+
+class TranslateAllCategories extends CategorieEvent {
+  final BuildContext context;
+
+  const TranslateAllCategories(this.context);
+
+  @override
+  List<Object?> get props => [context];
+}

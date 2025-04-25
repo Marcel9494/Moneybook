@@ -15,6 +15,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../injection_container.dart';
 import '../../../../shared/presentation/widgets/input_fields/amount_text_field.dart';
@@ -44,11 +45,14 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   RepetitionType _repetitionType = RepetitionType.noRepetition;
   BookingType _bookingType = BookingType.expense;
   AmountType _amountType = AmountType.variable;
+  String _categorieNameForDb = '';
+  String _fromAccountNameForDb = '';
+  String _toAccountNameForDb = '';
 
   @override
-  void initState() {
-    super.initState();
-    _dateController.text = dateFormatterDDMMYYYYEE.format(DateTime.now());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _dateController.text = DateFormatter.dateFormatDDMMYYYYEEDateTime(DateTime.now(), context);
   }
 
   void _createBooking(BuildContext context) {
@@ -65,15 +69,15 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
         serieId: -1,
         type: _bookingType,
         title: _titleController.text.trim(),
-        date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
+        date: DateFormatter.dateFormatDDMMYYYYEEString(_dateController.text, context), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),
         amountType: _amountType,
         currency: Amount.getCurrency(_amountController.text),
-        fromAccount: _fromAccountController.text,
-        toAccount: _toAccountController.text,
-        categorie: _categorieController.text,
-        isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
+        fromAccount: _fromAccountNameForDb,
+        toAccount: _toAccountNameForDb,
+        categorie: _categorieNameForDb,
+        isBooked: DateFormatter.dateFormatDDMMYYYYEEString(_dateController.text, context).isBefore(DateTime.now()) ? true : false,
       );
       Timer(const Duration(milliseconds: durationInMs), () {
         if (newBooking.repetition == RepetitionType.noRepetition) {
@@ -111,16 +115,19 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
   }
 
   void _changeRepetitionType(RepetitionType newRepetitionType) {
-    setState(() {
-      _repetitionType = newRepetitionType;
-    });
+    _repetitionType = newRepetitionType;
     if (_repetitionType == RepetitionType.monthlyBeginning) {
-      _dateController.text = dateFormatterDDMMYYYYEE
-          .format(DateTime(dateFormatterDDMMYYYYEE.parse(_dateController.text).year, dateFormatterDDMMYYYYEE.parse(_dateController.text).month, 1));
+      final parsedDate = DateFormatter.dateFormatDDMMYYYYEEString(_dateController.text, context);
+      final firstOfMonth = DateTime(parsedDate.year, parsedDate.month, 1);
+      final formattedDate = DateFormatter.dateFormatDDMMYYYYEEDateTime(firstOfMonth, context);
+      _dateController.text = formattedDate;
     } else if (_repetitionType == RepetitionType.monthlyEnding) {
-      _dateController.text = dateFormatterDDMMYYYYEE.format(
-          DateTime(dateFormatterDDMMYYYYEE.parse(_dateController.text).year, dateFormatterDDMMYYYYEE.parse(_dateController.text).month + 1, 0));
+      final parsedDate = DateFormatter.dateFormatDDMMYYYYEEString(_dateController.text, context);
+      final firstOfMonth = DateTime(parsedDate.year, parsedDate.month + 1, 0);
+      final formattedDate = DateFormatter.dateFormatDDMMYYYYEEDateTime(firstOfMonth, context);
+      _dateController.text = formattedDate;
     }
+    setState(() {});
     Navigator.pop(context);
   }
 
@@ -131,11 +138,29 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     Navigator.pop(context);
   }
 
+  void _setCategorieForDb(String categorieForDb) {
+    setState(() {
+      _categorieNameForDb = categorieForDb;
+    });
+  }
+
+  void _setFromAccountNameForDb(String fromAccountNameForDb) {
+    setState(() {
+      _fromAccountNameForDb = fromAccountNameForDb;
+    });
+  }
+
+  void _setToAccountNameForDb(String toAccountNameForDb) {
+    setState(() {
+      _toAccountNameForDb = toAccountNameForDb;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buchung erstellen'),
+        title: Text(AppLocalizations.of(context).translate('buchung_erstellen')),
       ),
       body: BlocProvider(
         create: (_) => sl<BookingBloc>(),
@@ -187,35 +212,41 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             repetitionType: _repetitionType.name,
                             onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                           ),
-                          TitleTextField(hintText: 'Titel...', titleController: _titleController),
+                          TitleTextField(hintText: AppLocalizations.of(context).translate('titel') + '...', titleController: _titleController),
                           AmountTextField(
                             amountController: _amountController,
+                            hintText: AppLocalizations.of(context).translate('betrag') + '...',
                             bookingType: _bookingType,
                             amountType: _amountType.name,
                             onAmountTypeChanged: (amountType) => _changeAmountType(amountType),
                           ),
                           AccountInputField(
-                            accountController: _fromAccountController,
-                            hintText: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
-                                ? 'Konto...'
-                                : 'Abbuchungskonto...',
-                            bottomSheetTitle: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
-                                ? 'Konto auswählen:'
-                                : 'Abbuchungskonto auswählen:',
-                          ),
+                              accountController: _fromAccountController,
+                              onAccountSelected: (accountNameForDb) => _setFromAccountNameForDb(accountNameForDb),
+                              hintText: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
+                                  ? AppLocalizations.of(context).translate('konto') + '...'
+                                  : AppLocalizations.of(context).translate('abbuchungskonto') + '...',
+                              bottomSheetTitle: _bookingType.name == BookingType.expense.name || _bookingType.name == BookingType.income.name
+                                  ? AppLocalizations.of(context).translate('konto_auswählen') + ':'
+                                  : AppLocalizations.of(context).translate('abbuchungskonto_auswählen') + ':'),
                           _bookingType.name == BookingType.transfer.name || _bookingType.name == BookingType.investment.name
                               ? AccountInputField(
                                   accountController: _toAccountController,
-                                  hintText: 'Konto...',
+                                  onAccountSelected: (accountNameForDb) => _setToAccountNameForDb(accountNameForDb),
+                                  hintText: AppLocalizations.of(context).translate('konto') + '...',
                                 )
                               : const SizedBox(),
                           _bookingType.name == BookingType.transfer.name
                               ? const SizedBox()
                               : CategorieInputField(
                                   categorieController: _categorieController,
+                                  onCategorieSelected: (categorieNameForDb) => _setCategorieForDb(categorieNameForDb),
                                   bookingType: _bookingType,
                                 ),
-                          SaveButton(text: 'Erstellen', saveBtnController: _createBookingBtnController, onPressed: () => _createBooking(context)),
+                          SaveButton(
+                              text: AppLocalizations.of(context).translate('erstellen'),
+                              saveBtnController: _createBookingBtnController,
+                              onPressed: () => _createBooking(context)),
                         ],
                       ),
                     ),

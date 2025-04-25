@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/app_localizations.dart';
+
 class TitleTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController titleController;
@@ -15,9 +17,9 @@ class TitleTextField extends StatelessWidget {
     this.autofocus = false,
   });
 
-  String? _checkTextInput() {
+  String? _checkTextInput(BuildContext context) {
     if (titleController.text.isEmpty) {
-      return 'Bitte geben Sie einen Titel ein.';
+      return AppLocalizations.of(context).translate('leerer_titel');
     }
     return null;
   }
@@ -31,7 +33,7 @@ class TitleTextField extends StatelessWidget {
       focusNode: focusNode,
       textAlignVertical: TextAlignVertical.center,
       textCapitalization: TextCapitalization.sentences,
-      validator: (input) => _checkTextInput(),
+      validator: (input) => _checkTextInput(context),
       decoration: InputDecoration(
         hintText: hintText,
         counterText: '',

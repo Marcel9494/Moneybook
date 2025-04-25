@@ -7,6 +7,7 @@ import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.d
 import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/side_menu_drawer_widget.dart';
 
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../features/bookings/domain/value_objects/amount_type.dart';
 import '../../../../features/bookings/domain/value_objects/booking_type.dart';
 import '../../../../features/bookings/presentation/bloc/booking_bloc.dart';
@@ -83,15 +84,15 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   String _setTitle() {
     switch (_tabIndex) {
       case 0:
-        return 'Buchungen';
+        return AppLocalizations.of(context).translate('buchungen');
       case 1:
-        return 'Kontoübersicht';
+        return AppLocalizations.of(context).translate('kontoübersicht');
       case 2:
-        return 'Statistiken';
+        return AppLocalizations.of(context).translate('statistiken');
       case 3:
-        return 'Budgets';
+        return AppLocalizations.of(context).translate('budgets');
       case 4:
-        return 'Kategorien';
+        return AppLocalizations.of(context).translate('kategorien');
       default:
         return '';
     }
@@ -179,7 +180,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                             color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white70,
                           ),
                           Text(
-                            'Buchungen',
+                            AppLocalizations.of(context).translate('buchungen'),
                             style: TextStyle(color: _tabIndex == 0 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
                           ),
                         ],
@@ -195,7 +196,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                             color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white70,
                           ),
                           Text(
-                            'Konten',
+                            AppLocalizations.of(context).translate('konten'),
                             style: TextStyle(color: _tabIndex == 1 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
                           ),
                         ],
@@ -213,7 +214,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                             color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white70,
                           ), // icon
                           Text(
-                            'Statistiken',
+                            AppLocalizations.of(context).translate('statistiken'),
                             style: TextStyle(color: _tabIndex == 2 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
                           ),
                         ],
@@ -229,7 +230,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                             color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white70,
                           ),
                           Text(
-                            'Budgets',
+                            AppLocalizations.of(context).translate('budgets'),
                             style: TextStyle(color: _tabIndex == 3 ? Colors.cyan.shade400 : Colors.white70, fontSize: 12.0),
                           ),
                         ],

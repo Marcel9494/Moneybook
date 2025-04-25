@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:moneybook/core/consts/database_consts.dart';
 import 'package:sqflite/sqflite.dart';
@@ -27,6 +28,7 @@ abstract class BookingLocalDataSource {
   Future<List<Booking>> updateOnlyFutureBookingsInSerie(Booking updatedBooking, List<Booking> serieBookings);
   Future<void> calculateAndUpdateNewBookings();
   Future<int> getNewSerieId();
+  Future<void> translate(BuildContext context);
 }
 
 class BookingLocalDataSourceImpl implements BookingLocalDataSource {
@@ -481,5 +483,55 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
     List<Map<String, dynamic>> result = await db.rawQuery('SELECT MAX(serieId) as newSerieId FROM $bookingDbName');
     int newSerieId = result.first['newSerieId'] != null ? result.first['newSerieId'] as int : 0;
     return newSerieId + 1;
+  }
+
+  @override
+  Future<void> translate(BuildContext context) async {
+    db = await openDatabase(localDbName);
+    List<Map> bookingMap = await db.rawQuery('SELECT * FROM $bookingDbName');
+    List<Booking> bookingList = bookingMap
+        .map(
+          (booking) => Booking(
+            id: booking['id'],
+            serieId: booking['serieId'],
+            type: BookingType.fromString(booking['type']),
+            title: booking['title'],
+            date: DateTime.parse(booking['date']),
+            repetition: RepetitionType.fromString(booking['repetition']),
+            amount: booking['amount'],
+            amountType: AmountType.fromString(booking['amountType']),
+            currency: booking['currency'],
+            fromAccount: booking['fromAccount'],
+            toAccount: booking['toAccount'],
+            categorie: booking['categorie'],
+            isBooked: booking['isBooked'] == 0 ? false : true,
+          ),
+        )
+        .toList();
+    for (int i = 0; i < bookingList.length; i++) {
+      try {
+        await db.rawUpdate(
+          'UPDATE $bookingDbName SET id = ?, serieId = ?, type = ?, title = ?, date = ?, repetition = ?, amount = ?, amountType = ?, currency = ?, fromAccount = ?, toAccount = ?, categorie = ?, isBooked = ? WHERE id = ?',
+          [
+            bookingList[i].id,
+            bookingList[i].serieId,
+            bookingList[i].type.name,
+            bookingList[i].title,
+            DateFormat('yyyy-MM-dd').format(bookingList[i].date),
+            bookingList[i].repetition.name,
+            bookingList[i].amount,
+            bookingList[i].amountType.name,
+            bookingList[i].currency,
+            bookingList[i].fromAccount,
+            bookingList[i].toAccount,
+            bookingList[i].categorie,
+            bookingList[i].isBooked ? 1 : 0,
+            bookingList[i].id,
+          ],
+        );
+      } catch (e) {
+        throw Exception('Booking with title ${bookingList[i].title} (id: ${bookingList[i].id}) could not translated');
+      }
+    }
   }
 }

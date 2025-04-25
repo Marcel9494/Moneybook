@@ -4,6 +4,7 @@ import 'package:moneybook/core/theme/colors.dart';
 import 'package:moneybook/features/bookings/domain/value_objects/amount_type.dart';
 
 import '../../../../../core/consts/common_consts.dart';
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../bookings/domain/value_objects/booking_type.dart';
 import '../../../domain/entities/categorie_stats.dart';
 
@@ -62,19 +63,14 @@ class CategoriePieChartState extends State<CategoriePieChart> {
       final isTouched = i == _touchedPieIndex;
       final fontSize = isTouched ? 18.0 : 13.0;
       final radius = isTouched ? 60.0 : 50.0;
-      const shadows = [Shadow(color: Colors.black, blurRadius: 1)];
       return PieChartSectionData(
         color: pieChartColors[i % pieChartColors.length].withOpacity(0.75),
         value: categorieStats[i].percentage,
         title: categorieStats.length == 1
-            ? '${categorieStats[i].percentage.toStringAsFixed(1).replaceAll('.', ',')}%\n${categorieStats[i].categorie}'
-            : '${categorieStats[i].percentage.toStringAsFixed(1).replaceAll('.', ',')}% ${categorieStats[i].categorie}',
+            ? '${categorieStats[i].percentage.toStringAsFixed(1).replaceAll('.', ',')}%\n${AppLocalizations.of(context).translate(categorieStats[i].categorie)}'
+            : '${categorieStats[i].percentage.toStringAsFixed(1).replaceAll('.', ',')}% ${AppLocalizations.of(context).translate(categorieStats[i].categorie)}',
         radius: radius,
-        titleStyle: TextStyle(
-          fontSize: fontSize,
-          color: Colors.white,
-          shadows: shadows,
-        ),
+        titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
       );
     });
   }

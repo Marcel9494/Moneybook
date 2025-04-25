@@ -5,6 +5,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../../core/consts/common_consts.dart';
 import '../../../../../core/consts/route_consts.dart';
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../../shared/domain/value_objects/serie_mode_type.dart';
 import '../../../../../shared/presentation/widgets/deco/bottom_sheet_header.dart';
 import '../../../domain/entities/budget.dart';
@@ -32,10 +33,10 @@ class BudgetCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const BottomSheetHeader(title: 'Budget bearbeiten:', indent: 16.0),
+                  BottomSheetHeader(title: AppLocalizations.of(context).translate('budget_bearbeiten'), indent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.looks_one_outlined, color: Colors.cyanAccent),
-                    title: const Text('Nur dieses Budget'),
+                    title: Text(AppLocalizations.of(context).translate('nur_dieses_budget')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -49,7 +50,7 @@ class BudgetCard extends StatelessWidget {
                   const Divider(indent: 16.0, endIndent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.repeat_one_rounded, color: Colors.cyanAccent),
-                    title: const Text('Alle zukünftigen Budgets'),
+                    title: Text(AppLocalizations.of(context).translate('alle_zukünftigen_budgets')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -63,7 +64,7 @@ class BudgetCard extends StatelessWidget {
                   const Divider(indent: 16.0, endIndent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.all_inclusive_rounded, color: Colors.cyanAccent),
-                    title: const Text('Alle Budgets'),
+                    title: Text(AppLocalizations.of(context).translate('alle_budgets')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -157,7 +158,7 @@ class BudgetCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              budget.categorie,
+                              AppLocalizations.of(context).translate(budget.categorie),
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
@@ -165,7 +166,13 @@ class BudgetCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              budget.remaining <= 0.0 ? 'Du hast dein Budgetlimit erreicht' : 'Noch ${_calculateBudgetPerDay()} p.T. verfügbar',
+                              budget.remaining <= 0.0
+                                  ? AppLocalizations.of(context).translate('budgetlimit_erreicht')
+                                  : AppLocalizations.of(context).translate('noch') +
+                                      ' ' +
+                                      _calculateBudgetPerDay() +
+                                      ' ' +
+                                      AppLocalizations.of(context).translate('p.t._verfügbar'),
                               style: const TextStyle(fontSize: 12.0, color: Colors.grey),
                               overflow: TextOverflow.ellipsis,
                             ),

@@ -5,6 +5,7 @@ class User extends Equatable {
   final bool firstStart;
   final DateTime lastStart;
   final String language;
+  final String currency;
   final bool localDb;
 
   const User({
@@ -12,9 +13,10 @@ class User extends Equatable {
     required this.firstStart,
     required this.lastStart,
     required this.language,
+    required this.currency,
     required this.localDb,
   });
 
   @override
-  List<Object> get props => [id, firstStart, lastStart, language, localDb];
+  List<Object> get props => [id, firstStart, lastStart, language, currency, localDb];
 }

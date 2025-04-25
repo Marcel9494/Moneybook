@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moneybook/features/accounts/presentation/widgets/page_arguments/edit_account_page_arguments.dart';
 
 import '../../../../../core/consts/route_consts.dart';
+import '../../../../../core/utils/app_localizations.dart';
 import '../../../../../core/utils/number_formatter.dart';
 import '../../../domain/entities/account.dart';
 
@@ -38,7 +39,7 @@ class _AccountCardState extends State<AccountCard> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      widget.account.name,
+                      AppLocalizations.of(context).translate(widget.account.name),
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 14.0),
                     ),

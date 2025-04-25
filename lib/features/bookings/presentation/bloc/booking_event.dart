@@ -168,3 +168,12 @@ class HandleAndUpdateNewBookings extends BookingEvent {
   @override
   List<Object?> get props => [];
 }
+
+class TranslateAllBookings extends BookingEvent {
+  final BuildContext context;
+
+  const TranslateAllBookings(this.context);
+
+  @override
+  List<Object?> get props => [context];
+}

@@ -4,9 +4,9 @@ enum CategorieType {
   investment;
 
   static CategorieType fromString(String s) => switch (s) {
-        'Ausgabe' => CategorieType.expense,
-        'Einnahme' => CategorieType.income,
-        'Investition' => CategorieType.investment,
+        'Ausgabe' || 'ausgabe' => CategorieType.expense,
+        'Einnahme' || 'einnahme' => CategorieType.income,
+        'Investition' || 'investition' => CategorieType.investment,
         _ => CategorieType.expense
       };
 }
@@ -15,26 +15,22 @@ extension CategorieTypeExtension on CategorieType {
   String get name {
     switch (this) {
       case CategorieType.expense:
-        return 'Ausgabe';
+        return 'ausgabe';
       case CategorieType.income:
-        return 'Einnahme';
+        return 'einnahme';
       case CategorieType.investment:
-        return 'Investition';
-      default:
-        throw Exception('$name is not a valid Categorie type.');
+        return 'investition';
     }
   }
 
   String get pluralName {
     switch (this) {
       case CategorieType.expense:
-        return 'Ausgaben';
+        return 'ausgaben';
       case CategorieType.income:
-        return 'Einnahmen';
+        return 'einnahmen';
       case CategorieType.investment:
-        return 'Investitionen';
-      default:
-        throw Exception('$name is not a valid Categorie type.');
+        return 'investitionen';
     }
   }
 }
