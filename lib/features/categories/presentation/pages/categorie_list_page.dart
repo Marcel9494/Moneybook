@@ -442,7 +442,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
       length: CategorieType.values.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).translate('categories')),
+          title: Text(AppLocalizations.of(context).translate('kategorien')),
           leading: Builder(
             builder: (context) {
               return IconButton(

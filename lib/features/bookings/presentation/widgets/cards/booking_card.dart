@@ -45,10 +45,10 @@ class BookingCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BottomSheetHeader(title: AppLocalizations.of(context).translate('edit booking') + ":", indent: 16.0),
+                  BottomSheetHeader(title: AppLocalizations.of(context).translate('buchung_bearbeiten') + ":", indent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.looks_one_outlined, color: Colors.cyanAccent),
-                    title: Text(AppLocalizations.of(context).translate('only this booking')),
+                    title: Text(AppLocalizations.of(context).translate('nur_diese_buchung')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -62,7 +62,7 @@ class BookingCard extends StatelessWidget {
                   const Divider(indent: 16.0, endIndent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.repeat_one_rounded, color: Colors.cyanAccent),
-                    title: Text(AppLocalizations.of(context).translate('all future bookings')),
+                    title: Text(AppLocalizations.of(context).translate('alle_zukünftige_buchungen')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,
@@ -76,7 +76,7 @@ class BookingCard extends StatelessWidget {
                   const Divider(indent: 16.0, endIndent: 16.0),
                   ListTile(
                     leading: const Icon(Icons.all_inclusive_rounded, color: Colors.cyanAccent),
-                    title: Text(AppLocalizations.of(context).translate('all bookings')),
+                    title: Text(AppLocalizations.of(context).translate('alle_buchungen')),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     onTap: () => Navigator.popAndPushNamed(
                       context,

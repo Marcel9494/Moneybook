@@ -143,9 +143,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       amount: widget.account.amount,
                       amountType: AmountType.undefined,
                       currency: Amount.getCurrency(formatToMoneyAmount(widget.account.amount.toString())),
-                      fromAccount: _accountNameForDb, // widget.account.name,
-                      toAccount: _toAccountNameForDb, //_accountController.text,
-                      categorie: AppLocalizations.of(context).translate('übertrag'),
+                      fromAccount: _accountNameForDb,
+                      toAccount: _toAccountNameForDb,
+                      categorie: 'übertrag',
                       isBooked: true,
                     );
                     BlocProvider.of<booking.BookingBloc>(context).add(booking.CreateBooking(transferBooking));

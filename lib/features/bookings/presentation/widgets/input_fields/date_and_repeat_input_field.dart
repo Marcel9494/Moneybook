@@ -165,8 +165,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
               );
               if (parsedDate != null) {
                 setState(() {
-                  widget.dateController.text =
-                      DateFormatter.dateFormatDDMMYYYYEEDateTime(parsedDate, context); // dateFormatterDDMMYYYYEE.format(parsedDate);
+                  widget.dateController.text = DateFormatter.dateFormatDDMMYYYYEEDateTime(parsedDate, context);
                 });
               }
             }

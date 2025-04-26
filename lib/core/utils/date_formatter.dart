@@ -81,6 +81,4 @@ class DateFormatter {
   }
 }
 
-// TODO hier weitermachen und dateFormatter Klasse überall einbinden / verwenden
-final DateFormat dateFormatterDDMMYYYYEE = DateFormat('dd.MM.yyyy (EE)', 'de_DE');
 final DateFormat dateFormatterYYYYMMDD = DateFormat('yyyy-MM-dd'); // Datumsformat für Datenbank Abspeicherung

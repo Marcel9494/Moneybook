@@ -129,7 +129,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
         serieId: widget.booking.serieId,
         type: _bookingType,
         title: _titleController.text,
-        date: dateFormatterDDMMYYYYEE.parse(_dateController.text), // parse DateFormat in ISO-8601
+        date: DateFormatter.dateFormatDDMMYYYYEEString(_dateController.text, context), // parse DateFormat in ISO-8601
         repetition: _repetitionType,
         amount: Amount.getValue(_amountController.text),
         amountType: _amountType,
@@ -137,7 +137,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
         fromAccount: _fromAccountNameForDb,
         toAccount: _toAccountNameForDb,
         categorie: _categorieNameForDb,
-        isBooked: dateFormatterDDMMYYYYEE.parse(_dateController.text).isBefore(DateTime.now()) ? true : false,
+        isBooked: DateFormatter.dateFormatDDMMYYYYEEString(_dateController.text, context).isBefore(DateTime.now()) ? true : false,
       );
       Future.delayed(const Duration(milliseconds: durationInMs), () async {
         // TODO hier weitermachen und async und await entfernen?
@@ -191,11 +191,11 @@ class _EditBookingPageState extends State<EditBookingPage> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context).translate('delete booking')),
-          content: Text(AppLocalizations.of(context).translate('delete booking description')),
+          title: Text(AppLocalizations.of(context).translate('buchung_löschen')),
+          content: Text(AppLocalizations.of(context).translate('buchung_löschen_beschreibung')),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).translate('yes')),
+              child: Text(AppLocalizations.of(context).translate('ja')),
               onPressed: () {
                 _hasAccountListenerTriggered = true;
                 if (widget.editMode == SerieModeType.one) {
@@ -209,7 +209,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).translate('no')),
+              child: Text(AppLocalizations.of(context).translate('nein')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -225,7 +225,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       _bookingType = newBookingType.first;
       _categorieController.text = '';
       if (_bookingType == BookingType.transfer) {
-        _categorieController.text = 'Übertrag';
+        _categorieController.text = AppLocalizations.of(context).translate('übertrag');
         _amountType = AmountType.undefined;
       }
       if (_bookingType == BookingType.expense) {
@@ -407,6 +407,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                             accountController: _toAccountController,
                             onAccountSelected: (accountNameForDb) => _setToAccountNameForDb(accountNameForDb),
                             hintText: AppLocalizations.of(context).translate('konto') + '...',
+                            bottomSheetTitle: AppLocalizations.of(context).translate('konto_auswählen') + ':',
                           )
                         : const SizedBox(),
                     _bookingType.name == BookingType.transfer.name
