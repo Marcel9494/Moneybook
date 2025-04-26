@@ -101,7 +101,8 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       _bookingType = newBookingType.first;
       _categorieController.text = '';
       if (_bookingType == BookingType.transfer) {
-        _categorieController.text = 'Übertrag';
+        _categorieController.text = AppLocalizations.of(context).translate('übertrag');
+        _categorieNameForDb = 'übertrag';
         _amountType = AmountType.undefined;
       }
       if (_bookingType == BookingType.expense) {
@@ -234,6 +235,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                                   accountController: _toAccountController,
                                   onAccountSelected: (accountNameForDb) => _setToAccountNameForDb(accountNameForDb),
                                   hintText: AppLocalizations.of(context).translate('konto') + '...',
+                                  bottomSheetTitle: AppLocalizations.of(context).translate('konto_auswählen') + ':',
                                 )
                               : const SizedBox(),
                           _bookingType.name == BookingType.transfer.name

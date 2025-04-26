@@ -30,22 +30,22 @@ class _PendingMonthlyValueCardsState extends State<PendingMonthlyValueCards> {
         scrollDirection: Axis.horizontal,
         children: [
           PendingMonthlyCard(
-            title: AppLocalizations.of(context).translate('income'),
+            title: AppLocalizations.of(context).translate('einkommen'),
             pendingMonthlyValue: widget.monthlyDependingIncome,
             textColor: Colors.greenAccent,
           ),
           PendingMonthlyCard(
-            title: AppLocalizations.of(context).translate('expenses'),
+            title: AppLocalizations.of(context).translate('ausgaben'),
             pendingMonthlyValue: widget.monthlyDependingExpense,
             textColor: Colors.redAccent,
           ),
           PendingMonthlyCard(
-            title: AppLocalizations.of(context).translate('purchases'),
+            title: AppLocalizations.of(context).translate('käufe'),
             pendingMonthlyValue: widget.monthlyDependingInvestmentBuys,
             textColor: Colors.cyanAccent,
           ),
           PendingMonthlyCard(
-            title: AppLocalizations.of(context).translate('sales'),
+            title: AppLocalizations.of(context).translate('verkäufe'),
             pendingMonthlyValue: widget.monthlyDependingInvestmentSales,
             textColor: Colors.cyanAccent,
           ),

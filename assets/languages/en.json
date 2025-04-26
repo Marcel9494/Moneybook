@@ -49,7 +49,7 @@
   "kontotyp": "Account type",
   "kontoänderung": "Account change",
   "abbuchungskonto": "Debit account",
-  "abbuchungskonto_auswählen": "Select debit account",
+  "abbuchungskonto_auswählen": "Select Debit account",
   "konto_löschen": "Delete Account",
   "konto_löschen_beschreibung": "Do you really want to delete the account?",
   "konto_löschen_übertrag_beschreibung": "Before you can delete the account, you must transfer the remaining amount to another account.",
