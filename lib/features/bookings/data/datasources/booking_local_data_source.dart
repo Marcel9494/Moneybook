@@ -282,8 +282,17 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> updateAllBookingsWithCategorie(String oldCategorie, String newCategorie, CategorieType categorieType) async {
     db = await openDatabase(localDbName);
-    await db.rawUpdate(
-        'UPDATE $bookingDbName SET categorie = ? WHERE categorie = ? AND type = ?', [newCategorie, oldCategorie, categorieType.name.trim()]);
+    BookingType bookingType = BookingType.none;
+    switch (categorieType) {
+      case CategorieType.expense:
+        bookingType = BookingType.expense;
+      case CategorieType.income:
+        bookingType = BookingType.income;
+      case CategorieType.investment:
+        bookingType = BookingType.investment;
+    }
+    await db
+        .rawUpdate('UPDATE $bookingDbName SET categorie = ? WHERE categorie = ? AND type = ?', [newCategorie, oldCategorie, bookingType.name.trim()]);
   }
 
   @override

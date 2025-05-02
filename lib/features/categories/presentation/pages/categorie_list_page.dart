@@ -250,7 +250,7 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
                             CheckCategorieNameExists(
                               Categorie(
                                 id: categorie.id,
-                                name: _categorieNameForDb,
+                                name: _categorieNameController.text,
                                 type: _selectedCategorieType,
                               ),
                               _numberOfEventCalls,
@@ -298,20 +298,20 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
             Categorie(
               id: categorie.id,
               type: _selectedCategorieType,
-              name: _categorieNameForDb,
+              name: _categorieNameController.text.trim(),
             ),
           ),
         );
         BlocProvider.of<budget.BudgetBloc>(context).add(
           budget.UpdateBudgetsWithCategorie(
             _oldCategorieName,
-            _categorieNameForDb,
+            _categorieNameController.text.trim(),
           ),
         );
         BlocProvider.of<booking.BookingBloc>(context).add(
           booking.UpdateBookingsWithCategorie(
             _oldCategorieName,
-            _categorieNameForDb,
+            _categorieNameController.text.trim(),
             _selectedCategorieType,
           ),
         );
