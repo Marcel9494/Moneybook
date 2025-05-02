@@ -7,10 +7,10 @@ enum BookingType {
 
   static BookingType fromString(String s) => switch (s) {
         '' => BookingType.none,
-        'Ausgabe' => BookingType.expense,
-        'Einnahme' => BookingType.income,
-        'Übertrag' => BookingType.transfer,
-        'Investition' => BookingType.investment,
+        'Ausgabe' || 'ausgabe' => BookingType.expense,
+        'Einnahme' || 'einnahme' => BookingType.income,
+        'Übertrag' || 'übertrag' => BookingType.transfer,
+        'Investition' || 'investition' => BookingType.investment,
         _ => BookingType.expense
       };
 }
