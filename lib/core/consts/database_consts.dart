@@ -15,7 +15,7 @@ String budgetDbName = demoMode == false ? 'budgets' : 'budgets_demo';
 String userDbName = demoMode == false ? 'user' : 'user_demo';
 
 // Aktuelle Datenbank Tabellen Version
-int localDbVersion = demoMode == false ? 6 : 6;
+int localDbVersion = demoMode == false ? 7 : 7;
 
 void switchDemoMode(bool demoMode) {
   localDbName = demoMode == false ? 'local_db.db' : 'local_db_demo.db';
@@ -28,5 +28,5 @@ void switchDemoMode(bool demoMode) {
   budgetDbName = demoMode == false ? 'budgets' : 'budgets_demo';
   userDbName = demoMode == false ? 'user' : 'user_demo';
 
-  localDbVersion = demoMode == false ? 6 : 6;
+  localDbVersion = demoMode == false ? 7 : 7;
 }
