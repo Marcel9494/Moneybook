@@ -145,7 +145,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           } else if (event.booking.repetition == RepetitionType.threeMonths) {
             for (int i = 0; i < 4 * serieYears; i++) {
               DateTime originalDate = DateTime.parse(event.booking.date.toString());
-              DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 3), originalDate.day);
+              DateTime nextDate = DateTime(originalDate.year, originalDate.month + ((i + 1) * 3), originalDate.day);
               Booking nextBooking = event.booking.copyWith(date: nextDate);
               createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
               bookings.add(nextBooking);
@@ -153,7 +153,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           } else if (event.booking.repetition == RepetitionType.sixMonths) {
             for (int i = 0; i < 2 * serieYears; i++) {
               DateTime originalDate = DateTime.parse(event.booking.date.toString());
-              DateTime nextDate = DateTime(originalDate.year, originalDate.month + (i + 6), originalDate.day);
+              DateTime nextDate = DateTime(originalDate.year, originalDate.month + ((i + 1) * 6), originalDate.day);
               Booking nextBooking = event.booking.copyWith(date: nextDate);
               createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
               bookings.add(nextBooking);
@@ -161,7 +161,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           } else if (event.booking.repetition == RepetitionType.yearly) {
             for (int i = 0; i < 1 * serieYears; i++) {
               DateTime originalDate = DateTime.parse(event.booking.date.toString());
-              DateTime nextDate = DateTime(originalDate.year + i + 1, originalDate.month, originalDate.day);
+              DateTime nextDate = DateTime(originalDate.year + (i + 1) * 1, originalDate.month, originalDate.day);
               Booking nextBooking = event.booking.copyWith(date: nextDate);
               createSerieBookingEither = await createUseCase.bookingRepository.create(nextBooking);
               bookings.add(nextBooking);
