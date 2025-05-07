@@ -14,6 +14,6 @@ const int flushbarDurationInMs = 4500;
 const int barChartDurationInMs = 500;
 
 // Für wieviele Jahre soll eine Serienbuchung standardmäßig erstellt werden
-const int serieYears = 3;
+const int serieYears = 5;
 // Für wieviele Jahre soll ein Budget standardmäßig erstellt werden
 const int budgetYears = 5;
