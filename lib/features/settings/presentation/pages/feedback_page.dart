@@ -10,6 +10,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/utils/app_localizations.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../widgets/input_fields/email_input_field.dart';
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -21,6 +22,7 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   final GlobalKey<FormState> _feedbackFormKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   final RoundedLoadingButtonController _sendFeedbackBtnController = RoundedLoadingButtonController();
 
@@ -30,6 +32,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         formKey: _feedbackFormKey,
         title: titleController.text,
         description: descriptionController.text,
+        email: emailController.text,
         milestoneTitle: "User: Feedback",
         labels: ["feedback"]);
     if (successful == false) {
@@ -77,6 +80,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     child: TitleTextField(
                       hintText: AppLocalizations.of(context).translate('titel') + '...',
                       titleController: titleController,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: EmailInputField(
+                      hintText: AppLocalizations.of(context).translate('email_optional'),
+                      emailController: emailController,
                     ),
                   ),
                   Padding(
