@@ -7,7 +7,7 @@ const String currencyLocale = '€';
 // normalerweise für String interpolation (z.B.: "$variable") verwendet wird.
 const List<String> currencySymbols = ['€', '\$'];
 
-const int durationInMs = 800;
+const int durationInMs = 750;
 const int animationDurationInMs = 650;
 const int budgetAnimationDurationInMs = 1600;
 const int flushbarDurationInMs = 4500;

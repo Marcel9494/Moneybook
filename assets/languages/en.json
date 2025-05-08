@@ -236,5 +236,7 @@
   "wechselkurs_abfrage": "Exchange rate error",
   "wechselkurs_abfrage_fehlermeldung": "The current exchange rate cannot be retrieved. Please check your internet connection or try again later.",
   "internetverbindung_fehler_titel": "No Internet connection",
-  "internetverbindung_fehler_beschreibung": "Please establish an internet connection so that the current exchange rate can be called up."
+  "internetverbindung_fehler_beschreibung": "Please establish an internet connection so that the current exchange rate can be called up.",
+  "email_optional": "E-Mail... (optional)",
+  "email_ungültig": "Please enter a valid E-Mail address."
 }

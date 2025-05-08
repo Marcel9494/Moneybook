@@ -236,5 +236,7 @@
   "wechselkurs_abfrage": "Wechselkurs Abfragefehler",
   "wechselkurs_abfrage_fehlermeldung": "Der aktuelle Wechselkurs kann nicht abgerufen werden. Bitte versuchen Sie es später erneut.",
   "internetverbindung_fehler_titel": "Keine Internetverbindung",
-  "internetverbindung_fehler_beschreibung": "Bitte stellen Sie eine Internetverbindung her, damit der aktuelle Wechselkurs abgerufen werden kann."
+  "internetverbindung_fehler_beschreibung": "Bitte stellen Sie eine Internetverbindung her, damit der aktuelle Wechselkurs abgerufen werden kann.",
+  "email_optional": "E-Mail... (optional)",
+  "email_ungültig": "Bitte geben Sie eine gültige E-Mail ein."
 }

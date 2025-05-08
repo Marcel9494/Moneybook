@@ -10,6 +10,7 @@ import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../../../../core/github/github_functions.dart';
 import '../../../../core/utils/app_localizations.dart';
 import '../../../../shared/presentation/widgets/input_fields/title_text_field.dart';
+import '../widgets/input_fields/email_input_field.dart';
 
 class BugReportPage extends StatefulWidget {
   const BugReportPage({super.key});
@@ -21,6 +22,7 @@ class BugReportPage extends StatefulWidget {
 class _BugReportPageState extends State<BugReportPage> {
   final GlobalKey<FormState> _bugReportFormKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   final RoundedLoadingButtonController _sendBugReportBtnController = RoundedLoadingButtonController();
 
@@ -30,6 +32,7 @@ class _BugReportPageState extends State<BugReportPage> {
         formKey: _bugReportFormKey,
         title: titleController.text,
         description: descriptionController.text,
+        email: emailController.text,
         milestoneTitle: "User: Bug Report",
         labels: ["bug"]);
     if (successful == false) {
@@ -77,6 +80,13 @@ class _BugReportPageState extends State<BugReportPage> {
                     child: TitleTextField(
                       hintText: AppLocalizations.of(context).translate('titel') + '...',
                       titleController: titleController,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: EmailInputField(
+                      hintText: AppLocalizations.of(context).translate('email_optional'),
+                      emailController: emailController,
                     ),
                   ),
                   Padding(

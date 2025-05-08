@@ -10,6 +10,7 @@ class GithubApi {
       {required GlobalKey<FormState> formKey,
       required String title,
       required String description,
+      required String email,
       required String milestoneTitle,
       List<String> labels = const []}) async {
     final FormState form = formKey.currentState!;
@@ -32,7 +33,7 @@ class GithubApi {
         },
         body: jsonEncode({
           "title": title,
-          "body": description,
+          "body": "$description\n\n-----\nE-Mail: $email",
           "milestone": milestoneId,
           "labels": labels,
         }),
