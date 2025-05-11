@@ -40,12 +40,12 @@ Welche Features sind in welcher Sprache vorhanden + Ausblick:
 
 Features | Deutsch  | Englisch
 -------- | -------- | --------
-(Serien-)Buchungen   | +   | -
-Monatszusammenfassungen  | +   | -
-Konten   | +   | -
-(Kategorie-)Statistiken   | +   | -
-Budgets   | +   | -
-Kategorien   | +   | -
+(Serien-)Buchungen   | +   | +
+Monatszusammenfassungen  | +   | +
+Konten   | +   | +
+(Kategorie-)Statistiken   | +   | +
+Budgets   | +   | +
+Kategorien   | +   | +
 
 
 # Software Architektur Entscheidungen
