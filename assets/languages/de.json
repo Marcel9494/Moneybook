@@ -238,5 +238,8 @@
   "internetverbindung_fehler_titel": "Keine Internetverbindung",
   "internetverbindung_fehler_beschreibung": "Bitte stellen Sie eine Internetverbindung her, damit der aktuelle Wechselkurs abgerufen werden kann.",
   "email_optional": "E-Mail... (optional)",
-  "email_ungültig": "Bitte geben Sie eine gültige E-Mail ein."
+  "email_ungültig": "Bitte geben Sie eine gültige E-Mail ein.",
+  "backup": "Backup",
+  "backup_exportieren": "Backup exportieren",
+  "backup_importieren": "Backup importieren"
 }

@@ -238,5 +238,8 @@
   "internetverbindung_fehler_titel": "No Internet connection",
   "internetverbindung_fehler_beschreibung": "Please establish an internet connection so that the current exchange rate can be called up.",
   "email_optional": "E-Mail... (optional)",
-  "email_ungültig": "Please enter a valid E-Mail address."
+  "email_ungültig": "Please enter a valid E-Mail address.",
+  "backup": "Backup",
+  "backup_exportieren": "Export Backup",
+  "backup_importieren": "Import Backup"
 }

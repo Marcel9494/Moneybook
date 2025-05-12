@@ -342,102 +342,120 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SettingTitle(
-              title: AppLocalizations.of(context).translate('app') + ' ' + AppLocalizations.of(context).translate('einstellungen'),
-              paddingTop: 0.0,
-            ),
-            SettingCard(
-              title: AppLocalizations.of(context).translate('sprache') + ': ' + _getCurrentLanguage(),
-              icon: Icons.language_rounded,
-              onTap: () => _openLanguageBottomSheet(context),
-              isNew: true,
-            ),
-            BlocListener<UserBloc, UserState>(
-              listener: (context, state) {
-                if (state is CurrencyUpdated) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    bottomNavBarRoute,
-                    arguments: BottomNavBarArguments(tabIndex: 0),
-                    (Route<dynamic> route) => false,
-                  );
-                  Navigator.pushNamed(context, settingsRoute);
-                }
-              },
-              child: SettingCard(
-                // locale wird in der Splash Page gesetzt und repräsentiert auch die Währung
-                title: locale == 'de-DE'
-                    ? AppLocalizations.of(context).translate('währung') + ': Euro'
-                    : AppLocalizations.of(context).translate('währung') + ': Dollar',
-                icon: Icons.paid_outlined,
-                onTap: () => _openCurrencyBottomSheet(context),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SettingTitle(
+                title: AppLocalizations.of(context).translate('app') + ' ' + AppLocalizations.of(context).translate('einstellungen'),
+                paddingTop: 6.0,
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('sprache') + ': ' + _getCurrentLanguage(),
+                icon: Icons.language_rounded,
+                onTap: () => _openLanguageBottomSheet(context),
+              ),
+              BlocListener<UserBloc, UserState>(
+                listener: (context, state) {
+                  if (state is CurrencyUpdated) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      bottomNavBarRoute,
+                      arguments: BottomNavBarArguments(tabIndex: 0),
+                      (Route<dynamic> route) => false,
+                    );
+                    Navigator.pushNamed(context, settingsRoute);
+                  }
+                },
+                child: SettingCard(
+                  // locale wird in der Splash Page gesetzt und repräsentiert auch die Währung
+                  title: locale == 'de-DE'
+                      ? AppLocalizations.of(context).translate('währung') + ': Euro'
+                      : AppLocalizations.of(context).translate('währung') + ': Dollar',
+                  icon: Icons.paid_outlined,
+                  onTap: () => _openCurrencyBottomSheet(context),
+                ),
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('wechselkurse'),
+                icon: Icons.currency_exchange_rounded,
+                onTap: () => Navigator.pushNamed(context, currencyConverterRoute),
+              ),
+              SettingTitle(
+                title: AppLocalizations.of(context).translate('backup'),
+                paddingTop: 6.0,
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('backup_exportieren'),
+                icon: Icons.file_download_rounded,
+                onTap: () => {},
                 isNew: true,
               ),
-            ),
-            SettingCard(
-              title: AppLocalizations.of(context).translate('wechselkurse'),
-              icon: Icons.currency_exchange_rounded,
-              onTap: () => Navigator.pushNamed(context, currencyConverterRoute),
-              isNew: true,
-            ),
-            SettingTitle(
-              title: AppLocalizations.of(context).translate('allgemein'),
-              paddingTop: 0.0,
-            ),
-            SettingCard(
-              title: AppLocalizations.of(context).translate('folge') + ' ' + AppLocalizations.of(context).translate('moneybook'),
-              icon: Icons.share_rounded,
-              onTap: () => _launchUrl(url: 'https://www.instagram.com/moneybook_app'),
-            ),
-            SettingCard(
-              title: AppLocalizations.of(context).translate('über') + ' ' + AppLocalizations.of(context).translate('moneybook'),
-              icon: Icons.info_outline_rounded,
-              onTap: () => Navigator.pushNamed(context, aboveRoute),
-            ),
-            SettingTitle(title: AppLocalizations.of(context).translate('rechtliches')),
-            SettingCard(
-              title: AppLocalizations.of(context).translate('impressum'),
-              icon: Icons.security_rounded,
-              onTap: () => Navigator.pushNamed(context, impressumRoute),
-            ),
-            SettingCard(
-              title: AppLocalizations.of(context).translate('datenschutzerklärung'),
-              icon: Icons.info_outline_rounded,
-              onTap: () => {
-                _launchUrl(url: 'https://marcel9494.github.io/Moneybook/privacyPolicy_' + Localizations.localeOf(context).languageCode + '.html'),
-              },
-            ),
-            SettingCard(
-              title: AppLocalizations.of(context).translate('credits'),
-              icon: Icons.receipt_long_rounded,
-              onTap: () => Navigator.pushNamed(context, creditRoute),
-            ),
-            adminMode ? SettingTitle(title: 'Admin Bereich') : const SizedBox(),
-            adminMode
-                ? Card(
-                    child: ListTile(
-                      title: const Text('Demo Modus'),
-                      leading: const Icon(Icons.admin_panel_settings_rounded),
-                      trailing: Switch(
-                        value: demoMode,
-                        activeColor: Colors.cyanAccent,
-                        onChanged: (bool value) {
-                          setState(() {
-                            demoMode = value;
-                            switchDemoMode(demoMode);
-                            BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
-                            Navigator.pop(context);
-                            Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
-                          });
-                        },
+              SettingCard(
+                title: AppLocalizations.of(context).translate('backup_importieren'),
+                icon: Icons.file_upload_rounded,
+                onTap: () => {},
+                isNew: true,
+              ),
+              SettingTitle(
+                title: AppLocalizations.of(context).translate('allgemein'),
+                paddingTop: 6.0,
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('folge') + ' ' + AppLocalizations.of(context).translate('moneybook'),
+                icon: Icons.share_rounded,
+                onTap: () => _launchUrl(url: 'https://www.instagram.com/moneybook_app'),
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('über') + ' ' + AppLocalizations.of(context).translate('moneybook'),
+                icon: Icons.info_outline_rounded,
+                onTap: () => Navigator.pushNamed(context, aboveRoute),
+              ),
+              SettingTitle(
+                title: AppLocalizations.of(context).translate('rechtliches'),
+                paddingTop: 6.0,
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('impressum'),
+                icon: Icons.security_rounded,
+                onTap: () => Navigator.pushNamed(context, impressumRoute),
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('datenschutzerklärung'),
+                icon: Icons.info_outline_rounded,
+                onTap: () => {
+                  _launchUrl(url: 'https://marcel9494.github.io/Moneybook/privacyPolicy_' + Localizations.localeOf(context).languageCode + '.html'),
+                },
+              ),
+              SettingCard(
+                title: AppLocalizations.of(context).translate('credits'),
+                icon: Icons.receipt_long_rounded,
+                onTap: () => Navigator.pushNamed(context, creditRoute),
+              ),
+              adminMode ? SettingTitle(title: 'Admin Bereich') : const SizedBox(),
+              adminMode
+                  ? Card(
+                      child: ListTile(
+                        title: const Text('Demo Modus'),
+                        leading: const Icon(Icons.admin_panel_settings_rounded),
+                        trailing: Switch(
+                          value: demoMode,
+                          activeColor: Colors.cyanAccent,
+                          onChanged: (bool value) {
+                            setState(() {
+                              demoMode = value;
+                              switchDemoMode(demoMode);
+                              BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
+                              Navigator.pop(context);
+                              Navigator.popAndPushNamed(context, bottomNavBarRoute, arguments: BottomNavBarArguments(tabIndex: 0));
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                  )
-                : const SizedBox(),
-          ],
+                    )
+                  : const SizedBox(),
+            ],
+          ),
         ),
       ),
     );
