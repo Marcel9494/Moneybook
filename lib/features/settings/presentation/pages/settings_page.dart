@@ -18,6 +18,7 @@ import '../../../../core/configs/overall_configs.dart';
 import '../../../../core/consts/database_consts.dart';
 import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/app_localizations.dart';
+import '../../../../core/utils/database_backup.dart';
 import '../../../../main.dart';
 import '../../../../shared/presentation/bloc/shared_bloc.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
@@ -388,13 +389,13 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingCard(
                 title: AppLocalizations.of(context).translate('backup_exportieren'),
                 icon: Icons.file_download_rounded,
-                onTap: () => {},
+                onTap: () => exportDatabaseBackup(),
                 isNew: true,
               ),
               SettingCard(
                 title: AppLocalizations.of(context).translate('backup_importieren'),
                 icon: Icons.file_upload_rounded,
-                onTap: () => {},
+                onTap: () => importDatabaseBackup(),
                 isNew: true,
               ),
               SettingTitle(
