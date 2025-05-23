@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:country_flags/country_flags.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -335,6 +336,58 @@ class _SettingsPageState extends State<SettingsPage> {
     return '';
   }
 
+  void _importDatabaseBackup() async {
+    int resultCode = await importDatabaseBackup();
+    if (resultCode == 0) {
+      _showInfoDialog(
+        message: AppLocalizations.of(context).translate('backup_importieren_erfolgreich_beschreibung'),
+        onOkPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            bottomNavBarRoute,
+            arguments: BottomNavBarArguments(tabIndex: 0),
+            (Route<dynamic> route) => false,
+          );
+        },
+      );
+    } else if (resultCode == 1) {
+      _showInfoDialog(
+        message: AppLocalizations.of(context).translate('backup_importieren_falsche_datei_beschreibung'),
+        onOkPressed: () {
+          Navigator.pop(context);
+        },
+      );
+    } else if (resultCode == 2) {
+      _showInfoDialog(
+        message: AppLocalizations.of(context).translate('backup_importieren_fehler_beschreibung'),
+        onOkPressed: () {
+          Navigator.pop(context);
+        },
+      );
+    }
+  }
+
+  void _showInfoDialog({required String message, required VoidCallback? onOkPressed}) {
+    showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context).translate('backup_importieren_titel')),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text(AppLocalizations.of(context).translate('ok')),
+              onPressed: () {
+                onOkPressed!();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -395,7 +448,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingCard(
                 title: AppLocalizations.of(context).translate('backup_importieren'),
                 icon: Icons.file_upload_rounded,
-                onTap: () => importDatabaseBackup(),
+                onTap: () => _importDatabaseBackup(),
                 isNew: true,
               ),
               SettingTitle(

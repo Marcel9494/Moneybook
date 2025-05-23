@@ -241,5 +241,9 @@
   "email_ungültig": "Please enter a valid E-Mail address.",
   "backup": "Backup",
   "backup_exportieren": "Export Backup",
-  "backup_importieren": "Import Backup"
+  "backup_importieren": "Import Backup",
+  "backup_importieren_titel": "Backup Import",
+  "backup_importieren_erfolgreich_beschreibung": "The backup was imported successfully.",
+  "backup_importieren_falsche_datei_beschreibung": "Backup could not be imported. Please select a *.db file.",
+  "backup_importieren_fehler_beschreibung": "Backup could not be imported."
 }

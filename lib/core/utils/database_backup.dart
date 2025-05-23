@@ -24,41 +24,41 @@ Future<void> exportDatabaseBackup() async {
   }
 }
 
-Future<void> importDatabaseBackup() async {
-  print('Test');
-  final result = await FilePicker.platform.pickFiles(
-    type: FileType.any,
-  );
+Future<int> importDatabaseBackup() async {
+  final result = await FilePicker.platform.pickFiles(type: FileType.any);
 
   if (result != null && result.files.single.path != null) {
     final importPath = result.files.single.path!;
-    final importFile = File(importPath);
 
-    final databasesBackupPath = await getDatabasesPath();
-    String dbPath = join(databasesBackupPath, 'database_backup.db');
-
-    // Wichtig: Existierende Datenbank vorher schließen, wenn offen
-    db = await openDatabase(localDbName);
-    await db.close();
-
-    final dbFile = File(dbPath);
-    if (await dbFile.exists()) {
-      await dbFile.delete();
+    if (!importPath.toLowerCase().endsWith('.db')) {
+      return 1;
     }
 
-    dbPath = join(await getDatabasesPath(), 'database_backup.db');
-    db = await openDatabase(dbPath);
+    final importFile = File(importPath);
 
-    await importFile.copy(dbPath);
+    final databasesPath = await getDatabasesPath();
+    final localDbPath = join(databasesPath, localDbName);
 
-    // TODO hier weitermachen warum funktioniert der Import noch nicht?
-    //final test = await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table"');
-    //print('Tabellen: $test');
-    final rows = await db.query('SELECT * FROM $bookingDbName');
-    print('Importierte Daten: $rows');
+    if (await File(localDbPath).exists()) {
+      final oldDb = await openDatabase(localDbPath);
+      await oldDb.close();
+      await File(localDbPath).delete();
+    }
 
-    print('Datenbank Backup importiert von: $importPath');
+    await importFile.copy(localDbPath);
+
+    final db = await openDatabase(localDbPath);
+    try {
+      await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table"');
+    } catch (e) {
+      print('Fehler beim Lesen der importierten DB: $e');
+      return 2;
+    }
+
+    print('Lokale Datenbank erfolgreich ersetzt durch: $importPath');
   } else {
     print('Es wurde keine Datei ausgewählt.');
+    return 3;
   }
+  return 0;
 }
