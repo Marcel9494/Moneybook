@@ -15,7 +15,7 @@ Future<void> exportDatabaseBackup() async {
   final dbFile = File(dbPath);
   if (await dbFile.exists()) {
     final tempDir = await getTemporaryDirectory();
-    final exportFile = await dbFile.copy(join(tempDir.path, 'database_backup.db'));
+    final exportFile = await dbFile.copy(join(tempDir.path, 'Moneybook_Backup.db'));
 
     // Backup Datei teilen (z.B. per E-Mail, WhatsApp etc.)
     await Share.shareXFiles([XFile(exportFile.path)], text: 'Datenbank-Backup Datei von Moneybook');
