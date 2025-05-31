@@ -96,6 +96,7 @@ class _BudgetOverviewChartState extends State<BudgetOverviewChart> {
                 percent: _overallBudgetPercentage / 100 >= 1.0 ? 1.0 : _overallBudgetPercentage / 100,
                 center: Text(
                   '${_overallBudgetPercentage.toStringAsFixed(1).replaceAll('.', ',')} %',
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
                 ),
                 circularStrokeCap: CircularStrokeCap.round,

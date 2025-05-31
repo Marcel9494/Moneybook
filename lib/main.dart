@@ -111,6 +111,12 @@ class _MyAppState extends State<MyApp> {
         // Fallback auf Deutsch
         return const Locale('de');
       },
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.1)),
+          child: child!,
+        );
+      },
       home: SplashPage(),
       routes: {
         introductionRoute: (context) => const IntroductionPage(),
