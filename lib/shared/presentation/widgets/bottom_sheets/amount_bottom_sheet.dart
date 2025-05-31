@@ -11,7 +11,12 @@ import '../deco/bottom_sheet_header.dart';
 
 bool _clearAmountInputField = false;
 
-void openBottomSheetForAmountInput({required BuildContext context, required TextEditingController amountController, bool showMinus = false}) {
+void openBottomSheetForAmountInput({
+  required BuildContext context,
+  required TextEditingController amountController,
+  required int maxAmountLength,
+  bool showMinus = false,
+}) {
   if (amountController.text.isNotEmpty) {
     _clearAmountInputField = true;
   }
@@ -36,34 +41,36 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
                     crossAxisCount: 4,
                     shrinkWrap: true,
                     children: <Widget>[
-                      SquareButton(onPressed: () => _setAmount('1', amountController), text: '1'),
-                      SquareButton(onPressed: () => _setAmount('2', amountController), text: '2'),
-                      SquareButton(onPressed: () => _setAmount('3', amountController), text: '3'),
+                      SquareButton(onPressed: () => _setAmount('1', amountController, maxAmountLength), text: '1'),
+                      SquareButton(onPressed: () => _setAmount('2', amountController, maxAmountLength), text: '2'),
+                      SquareButton(onPressed: () => _setAmount('3', amountController, maxAmountLength), text: '3'),
                       SquareIconButton(
                         onPressed: () => _clearAmount(amountController),
                         icon: const Icon(Icons.clear_rounded, color: Colors.cyanAccent, size: 24.0),
                       ),
-                      SquareButton(onPressed: () => _setAmount('4', amountController), text: '4'),
-                      SquareButton(onPressed: () => _setAmount('5', amountController), text: '5'),
-                      SquareButton(onPressed: () => _setAmount('6', amountController), text: '6'),
+                      SquareButton(onPressed: () => _setAmount('4', amountController, maxAmountLength), text: '4'),
+                      SquareButton(onPressed: () => _setAmount('5', amountController, maxAmountLength), text: '5'),
+                      SquareButton(onPressed: () => _setAmount('6', amountController, maxAmountLength), text: '6'),
                       SquareIconButton(
                         onPressed: () => _removeLastCharacter(amountController),
                         icon: const Icon(Icons.backspace_rounded, color: Colors.cyanAccent, size: 20.0),
                       ),
-                      SquareButton(onPressed: () => _setAmount('7', amountController), text: '7'),
-                      SquareButton(onPressed: () => _setAmount('8', amountController), text: '8'),
-                      SquareButton(onPressed: () => _setAmount('9', amountController), text: '9'),
+                      SquareButton(onPressed: () => _setAmount('7', amountController, maxAmountLength), text: '7'),
+                      SquareButton(onPressed: () => _setAmount('8', amountController, maxAmountLength), text: '8'),
+                      SquareButton(onPressed: () => _setAmount('9', amountController, maxAmountLength), text: '9'),
                       SquareIconButton(
                           onPressed: () => Navigator.pop(context),
                           icon: const Icon(Icons.check_circle_rounded, color: Colors.greenAccent, size: 24.0)),
                       showMinus
-                          ? SquareButton(onPressed: () => _setAmount('-', amountController), text: '-')
+                          ? SquareButton(onPressed: () => _setAmount('-', amountController, maxAmountLength), text: '-')
                           : const Visibility(
                               visible: false,
                               child: Text(''),
                             ),
-                      SquareButton(onPressed: () => _setAmount('0', amountController), text: '0'),
-                      SquareButton(onPressed: () => _setAmount(locale == 'de-DE' ? ',' : '.', amountController), text: locale == 'de-DE' ? ',' : '.'),
+                      SquareButton(onPressed: () => _setAmount('0', amountController, maxAmountLength), text: '0'),
+                      SquareButton(
+                          onPressed: () => _setAmount(locale == 'de-DE' ? ',' : '.', amountController, maxAmountLength),
+                          text: locale == 'de-DE' ? ',' : '.'),
                     ],
                   ),
                 ),
@@ -82,12 +89,15 @@ void openBottomSheetForAmountInput({required BuildContext context, required Text
   });
 }
 
-void _setAmount(String text, TextEditingController amountController) {
+void _setAmount(String text, TextEditingController amountController, int maxAmountLength) {
   // Eingabefeld wird automatisch geleert => Benutzer muss das Eingabefeld nicht mehr manuell mit X löschen, wenn
   // ein neuer Betrag eingegeben wird.
   if (_clearAmountInputField) {
     amountController.text = '';
     _clearAmountInputField = false;
+  }
+  if (amountController.text.length > maxAmountLength) {
+    return;
   }
   if (moneyRegex.hasMatch(amountController.text + text)) {
     amountController.text = '${amountController.text}$text';

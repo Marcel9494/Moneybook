@@ -16,6 +16,7 @@ class AmountTextField extends StatelessWidget {
   final Function onAmountTypeChanged;
   final String amountType;
   final BookingType bookingType;
+  final int maxLength;
   List<AmountType> _amountTypes = [];
 
   AmountTextField({
@@ -26,6 +27,7 @@ class AmountTextField extends StatelessWidget {
     this.amountType = '',
     this.showMinus = false,
     this.bookingType = BookingType.none,
+    this.maxLength = 8,
   });
 
   static void _emptyFunction(AmountType amountType) {}
@@ -137,6 +139,7 @@ class AmountTextField extends StatelessWidget {
         context: context,
         amountController: amountController,
         showMinus: showMinus,
+        maxAmountLength: maxLength,
       ),
       decoration: InputDecoration(
         hintText: hintText,

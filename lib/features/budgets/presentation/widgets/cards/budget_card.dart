@@ -139,6 +139,7 @@ class BudgetCard extends StatelessWidget {
                         percent: budget.percentage / 100 >= 1.0 ? 1.0 : budget.percentage / 100,
                         center: Text(
                           '${budget.percentage.toStringAsFixed(1).replaceAll('.', ',')} %',
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
                         ),
                         circularStrokeCap: CircularStrokeCap.round,
