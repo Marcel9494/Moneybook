@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/app_localizations.dart';
 
-class TitleTextField extends StatelessWidget {
+class TitleTextField extends StatefulWidget {
   final String hintText;
   final TextEditingController titleController;
   final int maxLength;
   final bool autofocus;
-  final FocusNode focusNode = FocusNode();
 
   TitleTextField({
     super.key,
@@ -17,31 +16,56 @@ class TitleTextField extends StatelessWidget {
     this.autofocus = false,
   });
 
+  @override
+  State<TitleTextField> createState() => _TitleTextFieldState();
+}
+
+class _TitleTextFieldState extends State<TitleTextField> {
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    // Tastatur automatisch öffnen, wenn autofocus gesetzt ist
+    if (widget.autofocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FocusScope.of(context).requestFocus(_focusNode);
+      });
+    }
+  }
+
   String? _checkTextInput(BuildContext context) {
-    if (titleController.text.isEmpty) {
+    if (widget.titleController.text.isEmpty) {
       return AppLocalizations.of(context).translate('leerer_titel');
     }
     return null;
   }
 
   @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: titleController,
-      maxLength: maxLength,
-      autofocus: autofocus,
-      focusNode: focusNode,
+      controller: widget.titleController,
+      maxLength: widget.maxLength,
+      autofocus: widget.autofocus,
+      focusNode: _focusNode,
       textAlignVertical: TextAlignVertical.center,
       textCapitalization: TextCapitalization.sentences,
       validator: (input) => _checkTextInput(context),
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: widget.hintText,
         counterText: '',
         prefixIcon: const Icon(Icons.title_rounded),
         suffixIcon: IconButton(
           onPressed: () => {
-            titleController.text = '',
-            FocusScope.of(context).requestFocus(focusNode), // Setzt den Fokus und öffnet die Tastatur
+            widget.titleController.text = '',
+            FocusScope.of(context).requestFocus(_focusNode), // Setzt den Fokus und öffnet die Tastatur
           },
           icon: const Icon(Icons.clear_rounded),
         ),
