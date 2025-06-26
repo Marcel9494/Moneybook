@@ -46,6 +46,9 @@ Konten   | +   | +
 (Kategorie-)Statistiken   | +   | +
 Budgets   | +   | +
 Kategorien   | +   | +
+Wie lange von Kapital leben Rechner   | X   | X
+Finanzielle Freiheit Rechner   | X   | X
+Ziele   | X   | X
 
 
 # Software Architektur Entscheidungen
