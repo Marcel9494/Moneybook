@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class InfoIconWithDialog extends StatelessWidget {
   final String title;
   final String text;
+  final double iconSize;
 
   const InfoIconWithDialog({
     super.key,
     required this.title,
     required this.text,
+    this.iconSize = 17.0,
   });
 
   void _showInfoDialog(BuildContext context) {
@@ -41,7 +43,7 @@ class InfoIconWithDialog extends StatelessWidget {
       child: Icon(
         Icons.info_outline_rounded,
         color: Colors.grey,
-        size: 17.0,
+        size: iconSize,
       ),
     );
   }

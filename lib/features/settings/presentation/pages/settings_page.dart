@@ -195,12 +195,6 @@ class _SettingsPageState extends State<SettingsPage> {
     String fromCurrency = '';
     String toCurrency = '';
     String toCurrencySymbol = '';
-    const WidgetStateProperty<Icon> _thumbIcon = WidgetStateProperty<Icon>.fromMap(
-      <WidgetStatesConstraint, Icon>{
-        WidgetState.selected: Icon(Icons.check),
-        WidgetState.any: Icon(Icons.close),
-      },
-    );
     if (newCurrency == 'Dollar') {
       fromCurrency = 'EUR';
       toCurrency = 'USD';
@@ -264,7 +258,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                       Switch(
-                        thumbIcon: _thumbIcon,
+                        thumbIcon: WidgetStateProperty<Icon>.fromMap(
+                          <WidgetStatesConstraint, Icon>{
+                            WidgetState.selected: Icon(Icons.check),
+                            WidgetState.any: Icon(Icons.close),
+                          },
+                        ),
                         value: _convertBudgetAmounts,
                         onChanged: (newConvertBudgetAmounts) {
                           setState(() {

@@ -31,7 +31,11 @@ import 'features/budgets/presentation/bloc/budget_bloc.dart';
 import 'features/budgets/presentation/pages/create_budget_page.dart';
 import 'features/budgets/presentation/pages/edit_budget_page.dart';
 import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_arguments.dart';
+import 'features/calculators/presentation/pages/calculator_overview_page.dart';
+import 'features/calculators/presentation/pages/financial_freedom_calculator_page.dart';
+import 'features/calculators/presentation/pages/how_long_live_of_capital_calculator_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
+import 'features/goals/presentation/pages/goal_overview_page.dart';
 import 'features/settings/presentation/pages/bug_report_page.dart';
 import 'features/settings/presentation/pages/currency_converter_page.dart';
 import 'features/settings/presentation/pages/feedback_page.dart';
@@ -132,6 +136,10 @@ class _MyAppState extends State<MyApp> {
         feedbackRoute: (context) => const FeedbackPage(),
         bugReportRoute: (context) => const BugReportPage(),
         currencyConverterRoute: (context) => const CurrencyConverterPage(),
+        calculatorOverviewRoute: (context) => const CalculatorOverviewPage(),
+        howLongLiveOfCapitalCalculatorRoute: (context) => const HowLongLiveOfCapitalCalculatorPage(),
+        financialFreedomCalculatorRoute: (context) => const FinancialFreedomCalculatorPage(),
+        goalOverviewRoute: (context) => const GoalOverviewPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {

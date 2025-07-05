@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -16,6 +17,9 @@ void openBottomSheetForAmountInput({
   required TextEditingController amountController,
   required int maxAmountLength,
   bool showMinus = false,
+  bool showSeparator = true,
+  bool isPercentValue = false,
+  bool isAgeValue = false,
 }) {
   if (amountController.text.isNotEmpty) {
     _clearAmountInputField = true;
@@ -68,9 +72,14 @@ void openBottomSheetForAmountInput({
                               child: Text(''),
                             ),
                       SquareButton(onPressed: () => _setAmount('0', amountController, maxAmountLength), text: '0'),
-                      SquareButton(
-                          onPressed: () => _setAmount(locale == 'de-DE' ? ',' : '.', amountController, maxAmountLength),
-                          text: locale == 'de-DE' ? ',' : '.'),
+                      showSeparator
+                          ? SquareButton(
+                              onPressed: () => _setAmount(locale == 'de-DE' ? ',' : '.', amountController, maxAmountLength),
+                              text: locale == 'de-DE' ? ',' : '.')
+                          : const Visibility(
+                              visible: false,
+                              child: Text(''),
+                            ),
                     ],
                   ),
                 ),
@@ -81,7 +90,16 @@ void openBottomSheetForAmountInput({
       );
     },
   ).whenComplete(() {
-    if (amountController.text == '-') {
+    if (isAgeValue == true) {
+      amountController.text = double.parse(amountController.text).toStringAsFixed(0);
+    } else if (isPercentValue == true) {
+      final locale = Localizations.localeOf(context).toString();
+      final numberFormat = NumberFormat.decimalPattern(locale)
+        ..minimumFractionDigits = 1
+        ..maximumFractionDigits = 1;
+      final parsed = double.tryParse(amountController.text.replaceAll(',', '.')) ?? 0;
+      amountController.text = '${numberFormat.format(parsed)}%';
+    } else if (amountController.text == '-') {
       amountController.text = '';
     } else if (amountController.text.isNotEmpty && !amountController.text.contains(currencyLocale)) {
       amountController.text = formatToMoneyAmount(amountController.text, withoutDecimalPlaces: -1);
