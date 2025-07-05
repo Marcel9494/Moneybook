@@ -13,11 +13,15 @@ class AmountTextField extends StatelessWidget {
   final TextEditingController amountController;
   final String hintText;
   final bool showMinus;
+  final bool showSeparator;
+  final bool isPercentValue;
+  final bool isAgeValue;
   final Function onAmountTypeChanged;
   final String amountType;
   final BookingType bookingType;
   final int maxLength;
-  List<AmountType> _amountTypes = [];
+  final Icon prefixIcon;
+  final List<AmountType> _amountTypes = [];
 
   AmountTextField({
     super.key,
@@ -26,7 +30,11 @@ class AmountTextField extends StatelessWidget {
     this.onAmountTypeChanged = _emptyFunction,
     this.amountType = '',
     this.showMinus = false,
+    this.showSeparator = true,
+    this.isPercentValue = false,
+    this.isAgeValue = false,
     this.bookingType = BookingType.none,
+    this.prefixIcon = const Icon(Icons.money_rounded),
     this.maxLength = 8,
   });
 
@@ -139,12 +147,15 @@ class AmountTextField extends StatelessWidget {
         context: context,
         amountController: amountController,
         showMinus: showMinus,
+        showSeparator: showSeparator,
+        isPercentValue: isPercentValue,
+        isAgeValue: isAgeValue,
         maxAmountLength: maxLength,
       ),
       decoration: InputDecoration(
         hintText: hintText,
         counterText: '',
-        prefixIcon: const Icon(Icons.money_rounded),
+        prefixIcon: prefixIcon,
         suffixIcon: bookingType.name != BookingType.transfer.name && bookingType != BookingType.none
             ? Column(
                 children: [

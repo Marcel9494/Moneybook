@@ -204,6 +204,42 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               Navigator.popAndPushNamed(context, settingsRoute);
             },
           ),
+          /*ListTile(
+            leading: Icon(
+              Icons.calculate_rounded,
+              color: widget.tabIndex == 8 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            title: Text(
+              AppLocalizations.of(context).translate('rechner'),
+              style: TextStyle(color: widget.tabIndex == 8 ? Colors.cyan.shade400 : Colors.white),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right_rounded,
+              color: widget.tabIndex == 8 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            selected: widget.tabIndex == 8,
+            onTap: () {
+              Navigator.popAndPushNamed(context, calculatorOverviewRoute);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              HugeIcons.strokeRoundedTarget02,
+              color: widget.tabIndex == 9 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            title: Text(
+              AppLocalizations.of(context).translate('ziele'),
+              style: TextStyle(color: widget.tabIndex == 9 ? Colors.cyan.shade400 : Colors.white),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right_rounded,
+              color: widget.tabIndex == 9 ? Colors.cyan.shade400 : Colors.white,
+            ),
+            selected: widget.tabIndex == 9,
+            onTap: () {
+              Navigator.popAndPushNamed(context, goalOverviewRoute);
+            },
+          ),*/
         ],
       ),
     );

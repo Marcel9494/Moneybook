@@ -17,3 +17,7 @@ const creditRoute = 'credit';
 const feedbackRoute = 'feedback';
 const bugReportRoute = 'bugReport';
 const currencyConverterRoute = 'currencyConverter';
+const calculatorOverviewRoute = 'calculatorOverview';
+const howLongLiveOfCapitalCalculatorRoute = 'howLongLiveOfCapitalCalculator';
+const financialFreedomCalculatorRoute = 'financialFreedomCalculator';
+const goalOverviewRoute = 'goalOverview';

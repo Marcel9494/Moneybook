@@ -246,9 +246,10 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                                   bookingType: _bookingType,
                                 ),
                           SaveButton(
-                              text: AppLocalizations.of(context).translate('erstellen'),
-                              saveBtnController: _createBookingBtnController,
-                              onPressed: () => _createBooking(context)),
+                            text: AppLocalizations.of(context).translate('erstellen'),
+                            saveBtnController: _createBookingBtnController,
+                            onPressed: () => _createBooking(context),
+                          ),
                         ],
                       ),
                     ),
