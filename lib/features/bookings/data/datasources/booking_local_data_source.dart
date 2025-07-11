@@ -413,10 +413,12 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
   @override
   Future<void> calculateAndUpdateNewBookings() async {
     db = await openDatabase(localDbName);
-    DateTime today = DateTime.now();
-    today = DateTime(today.year, today.month, today.day);
+    final DateTime today = DateTime.now();
+    final String todayOnlyDate = "${today.year.toString().padLeft(4, '0')}-"
+        "${today.month.toString().padLeft(2, '0')}-"
+        "${today.day.toString().padLeft(2, '0')}";
     List<Map> newBookingMap =
-        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND date <= ?', [0/*= false*/, today.toIso8601String()]);
+        await db.rawQuery('SELECT * FROM $bookingDbName WHERE isBooked = ? AND substr(date, 1, 10) <= ?', [0/*= false*/, todayOnlyDate]);
     List<Booking> newBookingList = newBookingMap
         .map(
           (booking) => Booking(
@@ -447,6 +449,10 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
               'UPDATE $accountDbName SET amount = ? WHERE name = ?',
               [newAmount, newBookingList[i].fromAccount],
             );
+            await ta.rawUpdate(
+              'UPDATE $bookingDbName SET isBooked = ? WHERE id = ?',
+              [1/*= true*/, newBookingList[i].id],
+            );
           }
         });
       } else if (newBookingList[i].type == BookingType.income) {
@@ -458,6 +464,10 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
             await ta.rawUpdate(
               'UPDATE $accountDbName SET amount = ? WHERE name = ?',
               [newAmount, newBookingList[i].fromAccount],
+            );
+            await ta.rawUpdate(
+              'UPDATE $bookingDbName SET isBooked = ? WHERE id = ?',
+              [1/*= true*/, newBookingList[i].id],
             );
           }
         });
@@ -480,11 +490,14 @@ class BookingLocalDataSourceImpl implements BookingLocalDataSource {
               'UPDATE $accountDbName SET amount = ? WHERE name = ?',
               [newToAmount, newBookingList[i].toAccount],
             );
+            await ta.rawUpdate(
+              'UPDATE $bookingDbName SET isBooked = ? WHERE id = ?',
+              [1/*= true*/, newBookingList[i].id],
+            );
           }
         });
       }
     }
-    await db.rawUpdate('UPDATE $bookingDbName SET isBooked = ? WHERE date <= ?', [1/*= true*/, today.toIso8601String()]);
   }
 
   @override
