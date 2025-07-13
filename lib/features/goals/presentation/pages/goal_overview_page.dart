@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/app_localizations.dart';
+import '../widgets/buttons/add_goal_button.dart';
 import '../widgets/cards/goal_card.dart';
 
 class GoalOverviewPage extends StatefulWidget {
@@ -16,17 +17,23 @@ class _GoalOverviewPageState extends State<GoalOverviewPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).translate("ziele"),
+          AppLocalizations.of(context).translate('ziele'),
         ),
       ),
-      body: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return GoalCard(
-            title: AppLocalizations.of(context).translate("wie_lange_von_kapital_leben"),
-            description: AppLocalizations.of(context).translate("wie_lange_von_kapital_leben_beschreibung"),
-          );
-        },
+      body: Column(
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: 1,
+            itemBuilder: (BuildContext context, int index) {
+              return GoalCard(
+                title: AppLocalizations.of(context).translate('wie_lange_von_kapital_leben'),
+                description: AppLocalizations.of(context).translate('wie_lange_von_kapital_leben_beschreibung'),
+              );
+            },
+          ),
+          AddGoalButton(),
+        ],
       ),
     );
   }

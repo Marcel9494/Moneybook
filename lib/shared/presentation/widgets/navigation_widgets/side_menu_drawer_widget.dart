@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/consts/route_consts.dart';
 import '../../../../core/utils/app_localizations.dart';
@@ -204,7 +205,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
               Navigator.popAndPushNamed(context, settingsRoute);
             },
           ),
-          /*ListTile(
+          ListTile(
             leading: Icon(
               Icons.calculate_rounded,
               color: widget.tabIndex == 8 ? Colors.cyan.shade400 : Colors.white,
@@ -239,7 +240,7 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
             onTap: () {
               Navigator.popAndPushNamed(context, goalOverviewRoute);
             },
-          ),*/
+          ),
         ],
       ),
     );
