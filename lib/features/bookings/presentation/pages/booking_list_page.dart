@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/monthly_value_cards.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../domain/entities/booking.dart';
@@ -133,44 +135,53 @@ class _BookingListPageState extends State<BookingListPage> {
                       ),
                       state.bookings.isNotEmpty
                           ? Expanded(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: state.bookings.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  if (state.bookings[index].date.isBefore(DateTime.now())) {
-                                    _numberOfBookedBookings++;
-                                    if (index > 0) {
-                                      _previousBookingDate = state.bookings[index - 1].date;
-                                      _bookingDate = state.bookings[index].date;
-                                    }
-                                    if (index == 0 || _previousBookingDate != _bookingDate) {
-                                      return Column(
-                                        children: [
-                                          DailyReportSummary(
-                                            date: state.bookings[index].date,
-                                            leftValue: _dailyIncomeMap[state.bookings[index].date],
-                                            rightValue: _dailyExpenseMap[state.bookings[index].date],
+                              child: AnimationLimiter(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: state.bookings.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final booking = state.bookings[index];
+
+                                    if (booking.date.isBefore(DateTime.now())) {
+                                      _numberOfBookedBookings++;
+                                      final bool isNewDateGroup = index == 0 || state.bookings[index - 1].date != booking.date;
+                                      return AnimationConfiguration.staggeredList(
+                                        position: index,
+                                        duration: Duration(milliseconds: staggeredListDurationInMs),
+                                        child: SlideAnimation(
+                                          verticalOffset: 30.0,
+                                          curve: Curves.easeOutCubic,
+                                          child: FadeInAnimation(
+                                            child: Column(
+                                              children: [
+                                                if (isNewDateGroup)
+                                                  DailyReportSummary(
+                                                    date: booking.date,
+                                                    leftValue: _dailyIncomeMap[booking.date],
+                                                    rightValue: _dailyExpenseMap[booking.date],
+                                                  ),
+                                                BookingCard(booking: booking),
+                                              ],
+                                            ),
                                           ),
-                                          BookingCard(booking: state.bookings[index]),
-                                        ],
+                                        ),
                                       );
-                                    } else {
-                                      return BookingCard(booking: state.bookings[index]);
                                     }
-                                  }
-                                  if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
-                                    return SizedBox(
-                                      height: MediaQuery.sizeOf(context).height / 1.5,
-                                      child: EmptyList(
-                                        text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
-                                            '\n' +
-                                            DateFormatter.dateFormatYMMMM(widget.selectedDate, context),
-                                        icon: Icons.receipt_long_rounded,
-                                      ),
-                                    );
-                                  }
-                                  return const SizedBox();
-                                },
+
+                                    if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
+                                      return SizedBox(
+                                        height: MediaQuery.sizeOf(context).height / 1.5,
+                                        child: EmptyList(
+                                          text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
+                                              '\n' +
+                                              DateFormatter.dateFormatYMMMM(widget.selectedDate, context),
+                                          icon: Icons.receipt_long_rounded,
+                                        ),
+                                      );
+                                    }
+                                    return const SizedBox();
+                                  },
+                                ),
                               ),
                             )
                           : _isExpanded == false

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:moneybook/features/accounts/presentation/widgets/cards/overview_cards.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/deco/create_row.dart';
 
+import '../../../../core/consts/common_consts.dart';
 import '../../../../core/utils/app_localizations.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
 import '../../domain/entities/account.dart';
@@ -108,23 +110,33 @@ class _AccountListPageState extends State<AccountListPage> {
                       itemCount: state.accounts.length,
                       itemBuilder: (BuildContext context, int index) {
                         if (index == 0 || state.accounts[index - 1].type != state.accounts[index].type) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 29.0, 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: Duration(milliseconds: staggeredListDurationInMs),
+                            child: SlideAnimation(
+                              verticalOffset: 30.0,
+                              curve: Curves.easeOutCubic,
+                              child: FadeInAnimation(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(AppLocalizations.of(context).translate(state.accounts[index].type.pluralName),
-                                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                                    Text(formatToMoneyAmount(_accountTypeAmounts[state.accounts[index].type].toString()),
-                                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(12.0, 8.0, 29.0, 8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(AppLocalizations.of(context).translate(state.accounts[index].type.pluralName),
+                                              style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                          Text(formatToMoneyAmount(_accountTypeAmounts[state.accounts[index].type].toString()),
+                                              style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                                    ),
+                                    AccountCard(account: state.accounts[index]),
                                   ],
                                 ),
                               ),
-                              AccountCard(account: state.accounts[index]),
-                            ],
+                            ),
                           );
                         } else {
                           return AccountCard(account: state.accounts[index]);
@@ -186,23 +198,33 @@ class _AccountListPageState extends State<AccountListPage> {
                       itemCount: state.filteredAccounts.length,
                       itemBuilder: (BuildContext context, int index) {
                         if (index == 0 || state.filteredAccounts[index - 1].type != state.filteredAccounts[index].type) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 29.0, 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: Duration(milliseconds: staggeredListDurationInMs),
+                            child: SlideAnimation(
+                              verticalOffset: 30.0,
+                              curve: Curves.easeOutCubic,
+                              child: FadeInAnimation(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(AppLocalizations.of(context).translate(state.filteredAccounts[index].type.pluralName),
-                                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                                    Text(formatToMoneyAmount(_accountTypeAmounts[state.filteredAccounts[index].type].toString()),
-                                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(12.0, 8.0, 29.0, 8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(AppLocalizations.of(context).translate(state.filteredAccounts[index].type.pluralName),
+                                              style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                                          Text(formatToMoneyAmount(_accountTypeAmounts[state.filteredAccounts[index].type].toString()),
+                                              style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                                    ),
+                                    AccountCard(account: state.filteredAccounts[index]),
                                   ],
                                 ),
                               ),
-                              AccountCard(account: state.filteredAccounts[index]),
-                            ],
+                            ),
                           );
                         } else {
                           return AccountCard(account: state.filteredAccounts[index]);

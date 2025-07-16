@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/features/statistics/presentation/widgets/buttons/booking_type_segmented_button.dart';
 import 'package:moneybook/shared/presentation/widgets/deco/empty_list.dart';
 
@@ -223,16 +225,28 @@ class _StatisticPageState extends State<StatisticPage> {
                   ),
                   _categorieStats.isNotEmpty
                       ? Expanded(
-                          child: ListView.builder(
-                            itemCount: _categorieStats.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return CategoriePercentageCard(
-                                categorieStats: _categorieStats[index],
-                                index: index,
-                                selectedDate: widget.selectedDate,
-                                amountType: _selectedAmountType,
-                              );
-                            },
+                          child: AnimationLimiter(
+                            child: ListView.builder(
+                              itemCount: _categorieStats.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  duration: const Duration(milliseconds: staggeredListDurationInMs),
+                                  child: SlideAnimation(
+                                    verticalOffset: 30.0,
+                                    curve: Curves.easeOut,
+                                    child: FadeInAnimation(
+                                      child: CategoriePercentageCard(
+                                        categorieStats: _categorieStats[index],
+                                        index: index,
+                                        selectedDate: widget.selectedDate,
+                                        amountType: _selectedAmountType,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         )
                       : Expanded(

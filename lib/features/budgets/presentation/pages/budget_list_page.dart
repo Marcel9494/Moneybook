@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/cards/budget_card.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/charts/budget_overview_chart.dart';
@@ -133,14 +135,26 @@ class _BudgetListPageState extends State<BudgetListPage> {
                         leftPadding: 26.0,
                       ),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: budgetState.budgets.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return BudgetCard(
-                              budget: budgetState.budgets[index],
-                              selectedDate: widget.selectedDate,
-                            );
-                          },
+                        child: AnimationLimiter(
+                          child: ListView.builder(
+                            itemCount: budgetState.budgets.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: const Duration(milliseconds: staggeredListDurationInMs),
+                                child: SlideAnimation(
+                                  verticalOffset: 20.0,
+                                  curve: Curves.easeOut,
+                                  child: FadeInAnimation(
+                                    child: BudgetCard(
+                                      budget: budgetState.budgets[index],
+                                      selectedDate: widget.selectedDate,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       )
                     ],

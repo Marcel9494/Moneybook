@@ -1,8 +1,9 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/accounts/presentation/pages/account_list_page.dart';
 import 'package:moneybook/features/bookings/presentation/pages/booking_list_page.dart';
+import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.dart';
 import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/side_menu_drawer_widget.dart';
@@ -37,6 +38,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   late int _tabIndex;
   late TabController _tabController;
   late DateTime _selectedDate;
+  bool _fabAnimationIsFinished = true;
 
   @override
   void initState() {
@@ -98,6 +100,13 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     }
   }
 
+  void _handleOpen(BuildContext context, VoidCallback openContainer) {
+    setState(() {
+      _fabAnimationIsFinished = false;
+    });
+    Future.microtask(openContainer);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,19 +137,21 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         ],
       ),
       floatingActionButton: _tabIndex <= 3
-          ? FloatingActionButton(
-              onPressed: () => Navigator.pushNamed(context, createBookingRoute),
-              shape: const CircleBorder(),
-              child: Container(
-                width: 60.0,
-                height: 60.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [Colors.cyanAccent, Colors.cyan.shade600],
-                  ),
+          ? OpenContainer(
+              transitionDuration: Duration(milliseconds: 400),
+              closedShape: CircleBorder(),
+              closedColor: Colors.cyanAccent,
+              onClosed: (_) {
+                setState(() => _fabAnimationIsFinished = true);
+              },
+              openBuilder: (context, _) => CreateBookingPage(),
+              closedBuilder: (context, openContainer) => FloatingActionButton(
+                onPressed: () => _handleOpen(context, openContainer),
+                child: AnimatedOpacity(
+                  opacity: _fabAnimationIsFinished ? 1.0 : 0.0,
+                  duration: Duration(milliseconds: 1300),
+                  child: Icon(Icons.add),
                 ),
-                child: const Icon(Icons.add),
               ),
             )
           : const SizedBox(),

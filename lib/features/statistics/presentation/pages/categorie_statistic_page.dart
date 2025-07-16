@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/cards/booking_card.dart';
 
 import '../../../../core/consts/route_consts.dart';
@@ -7,6 +9,7 @@ import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import '../../../../shared/presentation/widgets/deco/empty_list.dart';
+import '../../../../shared/presentation/widgets/navigation_widgets/navigation_widget.dart';
 import '../../../bookings/domain/entities/booking.dart';
 import '../../../bookings/domain/value_objects/amount_type.dart';
 import '../../../bookings/domain/value_objects/booking_type.dart';
@@ -34,8 +37,6 @@ class CategorieStatisticPage extends StatefulWidget {
 }
 
 class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
-  late DateTime _previousBookingDate;
-  late DateTime _bookingDate;
   final Map<DateTime, double> _dailyLeftValuesMap = {};
   final Map<DateTime, double> _dailyRightValuesMap = {};
   int _numberOfBookedBookings = 0;
@@ -51,6 +52,15 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
     BlocProvider.of<BookingBloc>(context).add(
       LoadSortedMonthlyBookings(widget.selectedDate),
     );
+
+    // TODO hier weitermachen
+    /*Future.microtask(() {
+      Navigator.of(context).pushAndRemoveUntil(
+        _createFadeRoute(),
+        (route) => false,
+      );
+    });*/
+
     // Delay navigation to the next event loop tick
     Future.microtask(() {
       Navigator.pushNamedAndRemoveUntil(
@@ -65,6 +75,24 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
           (route) => false);
     });
     return true;
+  }
+
+  Route _createFadeRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => BottomNavBar(
+        tabIndex: 2,
+        selectedDate: widget.selectedDate,
+        bookingType: widget.bookingType,
+        amountType: widget.amountType,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      transitionDuration: Duration(milliseconds: staggeredListDurationInMs),
+    );
   }
 
   void _calculateDailyValues(List<Booking> bookings) {
@@ -134,52 +162,60 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.bookings.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        int lastday = DateTime(widget.selectedDate.year, widget.selectedDate.month + 1, 0).day;
-                        DateTime startDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, 1);
-                        DateTime endDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, lastday + 1);
-                        DateTime bookingDate = state.bookings[index].date;
-                        if (bookingDate.isAfter(startDate) && bookingDate.isBefore(endDate) || bookingDate.isAtSameMomentAs(startDate)) {
-                          _numberOfBookedBookings++;
-                          if (index > 0) {
-                            _previousBookingDate = state.bookings[index - 1].date;
-                            _bookingDate = state.bookings[index].date;
+                    child: AnimationLimiter(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.bookings.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          int lastday = DateTime(widget.selectedDate.year, widget.selectedDate.month + 1, 0).day;
+                          DateTime startDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, 1);
+                          DateTime endDate = DateTime(widget.selectedDate.year, widget.selectedDate.month, lastday + 1);
+                          DateTime bookingDate = state.bookings[index].date;
+                          if (bookingDate.isAfter(startDate) && bookingDate.isBefore(endDate) || bookingDate.isAtSameMomentAs(startDate)) {
+                            _numberOfBookedBookings++;
+                            bool isNewDateGroup = index == 0 || state.bookings[index - 1].date != bookingDate;
+                            return AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: staggeredListDurationInMs),
+                              child: SlideAnimation(
+                                verticalOffset: 30.0,
+                                child: FadeInAnimation(
+                                  child: Column(
+                                    children: [
+                                      if (isNewDateGroup)
+                                        DailyReportSummary(
+                                          date: bookingDate,
+                                          leftValue: state.bookings[index].type == BookingType.investment
+                                              ? 0.0
+                                              : _dailyLeftValuesMap[state.bookings[index].date],
+                                          rightValue: state.bookings[index].type == BookingType.investment
+                                              ? 0.0
+                                              : _dailyRightValuesMap[state.bookings[index].date],
+                                        ),
+                                      BookingCard(booking: state.bookings[index], activateEditing: false),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
                           }
-                          if (index == 0 || _previousBookingDate != _bookingDate) {
+
+                          if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
                             return Column(
                               children: [
-                                DailyReportSummary(
-                                  date: state.bookings[index].date,
-                                  leftValue:
-                                      state.bookings[index].type == BookingType.investment ? 0.0 : _dailyLeftValuesMap[state.bookings[index].date],
-                                  rightValue:
-                                      state.bookings[index].type == BookingType.investment ? 0.0 : _dailyRightValuesMap[state.bookings[index].date],
+                                const SizedBox(height: 100.0),
+                                EmptyList(
+                                  text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
+                                      '\n${DateFormatter.dateFormatYMMMM(widget.selectedDate, context)} ' +
+                                      AppLocalizations.of(context).translate('vorhanden'),
+                                  icon: Icons.receipt_long_rounded,
                                 ),
-                                BookingCard(booking: state.bookings[index], activateEditing: false),
                               ],
                             );
-                          } else {
-                            return BookingCard(booking: state.bookings[index], activateEditing: false);
                           }
-                        }
-                        if (_numberOfBookedBookings == 0 && index == state.bookings.length - 1) {
-                          return Column(
-                            children: [
-                              const SizedBox(height: 100.0),
-                              EmptyList(
-                                text: AppLocalizations.of(context).translate('noch_keine_buchungen_für') +
-                                    '\n${DateFormatter.dateFormatYMMMM(widget.selectedDate, context)} ' +
-                                    AppLocalizations.of(context).translate('vorhanden'),
-                                icon: Icons.receipt_long_rounded,
-                              ),
-                            ],
-                          );
-                        }
-                        return const SizedBox();
-                      },
+                          return const SizedBox();
+                        },
+                      ),
                     ),
                   ),
                 ],
