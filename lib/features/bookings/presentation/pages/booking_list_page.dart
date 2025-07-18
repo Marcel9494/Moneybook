@@ -136,6 +136,7 @@ class _BookingListPageState extends State<BookingListPage> {
                       state.bookings.isNotEmpty
                           ? Expanded(
                               child: AnimationLimiter(
+                                key: ValueKey(state.bookings.length),
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: state.bookings.length,

@@ -53,7 +53,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
       LoadSortedMonthlyBookings(widget.selectedDate),
     );
 
-    // TODO hier weitermachen
+    // TODO hier weitermachen und schöne Seitenübergangsanimation implementieren
     /*Future.microtask(() {
       Navigator.of(context).pushAndRemoveUntil(
         _createFadeRoute(),
@@ -163,6 +163,7 @@ class _CategorieStatisticPageState extends State<CategorieStatisticPage> {
                   ),
                   Expanded(
                     child: AnimationLimiter(
+                      key: ValueKey('${state.bookings.length}_${widget.selectedDate}'),
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: state.bookings.length,

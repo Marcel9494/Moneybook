@@ -136,6 +136,7 @@ class _BudgetListPageState extends State<BudgetListPage> {
                       ),
                       Expanded(
                         child: AnimationLimiter(
+                          key: ValueKey('${budgetState.budgets.length}_${widget.selectedDate}'),
                           child: ListView.builder(
                             itemCount: budgetState.budgets.length,
                             itemBuilder: (BuildContext context, int index) {

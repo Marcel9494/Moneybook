@@ -226,6 +226,7 @@ class _StatisticPageState extends State<StatisticPage> {
                   _categorieStats.isNotEmpty
                       ? Expanded(
                           child: AnimationLimiter(
+                            key: ValueKey('${_selectedAmountType}_${widget.selectedDate}'),
                             child: ListView.builder(
                               itemCount: _categorieStats.length,
                               itemBuilder: (BuildContext context, int index) {
