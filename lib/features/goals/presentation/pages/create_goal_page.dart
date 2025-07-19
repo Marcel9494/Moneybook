@@ -27,7 +27,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
   DateTime _selectedEndDate = DateTime.now().add(Duration(days: 90));
 
   void _createGoal(BuildContext context) {
-    // TODO
+    // TODO hier weitermachen und Create Event aufrufen und Create Methode implementieren.
   }
 
   void _changeGoalType(Set<GoalType> newGoalType) {
