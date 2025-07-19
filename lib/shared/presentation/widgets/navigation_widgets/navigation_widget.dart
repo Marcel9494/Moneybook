@@ -6,6 +6,7 @@ import 'package:moneybook/features/bookings/presentation/pages/booking_list_page
 import 'package:moneybook/features/bookings/presentation/pages/create_booking_page.dart';
 import 'package:moneybook/features/budgets/presentation/pages/budget_list_page.dart';
 import 'package:moneybook/features/statistics/presentation/pages/statistic_page.dart';
+import 'package:moneybook/shared/presentation/widgets/animations/text_line_animation.dart';
 import 'package:moneybook/shared/presentation/widgets/navigation_widgets/side_menu_drawer_widget.dart';
 
 import '../../../../core/utils/app_localizations.dart';
@@ -88,7 +89,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       case 0:
         return AppLocalizations.of(context).translate('buchungen');
       case 1:
-        return AppLocalizations.of(context).translate('kontoübersicht');
+        return AppLocalizations.of(context).translate('konten');
       case 2:
         return AppLocalizations.of(context).translate('statistiken');
       case 3:
@@ -111,8 +112,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _setTitle(),
+        title: TextLineAnimation(
+          key: ValueKey(_setTitle()),
+          text: _setTitle(),
+          letterDelayInMilliseconds: 20,
+          offsetX: 40.0,
           style: const TextStyle(fontSize: 18.0),
         ),
         leading: Builder(

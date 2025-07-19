@@ -34,19 +34,42 @@ class StatisticPage extends StatefulWidget {
   State<StatisticPage> createState() => _StatisticPageState();
 }
 
-class _StatisticPageState extends State<StatisticPage> {
+class _StatisticPageState extends State<StatisticPage> with TickerProviderStateMixin {
   BookingType _selectedBookingType = BookingType.expense;
   AmountType _selectedAmountType = AmountType.overallExpense;
   List<AmountTypeStats> _amountTypeStats = [];
   List<CategorieStats> _categorieStats = [];
   bool _categorieFound = false;
   double _overallAmount = 0.0;
+  late final AnimationController _animationController;
+  late final Animation<Offset> _offsetAnimation;
+  static bool _hasAnimated = false;
 
   @override
   void initState() {
     super.initState();
     _selectedBookingType = widget.bookingType;
     _selectedAmountType = widget.amountType;
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    if (!_hasAnimated) {
+      _animationController.forward();
+      _hasAnimated = true;
+    } else {
+      _animationController.value = 1.0;
+    }
   }
 
   void _loadMonthlyBookings(BuildContext context) {
@@ -159,6 +182,12 @@ class _StatisticPageState extends State<StatisticPage> {
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _loadMonthlyBookings(context);
     return BlocBuilder<BookingBloc, BookingState>(
@@ -170,58 +199,70 @@ class _StatisticPageState extends State<StatisticPage> {
             builder: (context, state) {
               return Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0),
-                    child: Card(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: CategoriePieChart(
-                              categorieStats: _categorieStats,
-                              bookingType: _selectedBookingType,
-                              amountType: _selectedAmountType,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 6.0, top: 20.0, bottom: 6.0),
-                              child: Column(
-                                children: <Widget>[
-                                  ..._amountTypeStats.map((amountTypeStat) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedAmountType = amountTypeStat.amountType;
-                                          _calculateCategoryStats(bookingState.bookings);
-                                        });
-                                      },
-                                      child: Indicator(
-                                        amountTypeStat: amountTypeStat,
-                                        color: Colors.white,
-                                        text: _selectedAmountType.name,
-                                      ),
-                                    );
-                                  }),
-                                ],
+                  SlideTransition(
+                    position: _offsetAnimation,
+                    child: FadeTransition(
+                      opacity: _animationController,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 6.0),
+                        child: Card(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: CategoriePieChart(
+                                  categorieStats: _categorieStats,
+                                  bookingType: _selectedBookingType,
+                                  amountType: _selectedAmountType,
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 6.0, top: 20.0, bottom: 6.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      ..._amountTypeStats.map((amountTypeStat) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _selectedAmountType = amountTypeStat.amountType;
+                                              _calculateCategoryStats(bookingState.bookings);
+                                            });
+                                          },
+                                          child: Indicator(
+                                            amountTypeStat: amountTypeStat,
+                                            color: Colors.white,
+                                            text: _selectedAmountType.name,
+                                          ),
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                  BookingTypeSegmentedButton(
-                    selectedBookingType: _selectedBookingType,
-                    onBookingTypeChanged: (Set<BookingType> newBookingType) {
-                      setState(() {
-                        _selectedBookingType = newBookingType.first;
-                        _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
-                        _onBookingTypeChanged(_selectedBookingType);
-                      });
-                    },
+                  SlideTransition(
+                    position: _offsetAnimation,
+                    child: FadeTransition(
+                      opacity: _animationController,
+                      child: BookingTypeSegmentedButton(
+                        selectedBookingType: _selectedBookingType,
+                        onBookingTypeChanged: (Set<BookingType> newBookingType) {
+                          setState(() {
+                            _selectedBookingType = newBookingType.first;
+                            _calculateAmountTypeStats(bookingState.bookings, _selectedBookingType);
+                            _onBookingTypeChanged(_selectedBookingType);
+                          });
+                        },
+                      ),
+                    ),
                   ),
                   _categorieStats.isNotEmpty
                       ? Expanded(

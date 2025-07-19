@@ -28,11 +28,29 @@ class BudgetListPage extends StatefulWidget {
   State<BudgetListPage> createState() => _BudgetListPageState();
 }
 
-class _BudgetListPageState extends State<BudgetListPage> {
+class _BudgetListPageState extends State<BudgetListPage> with TickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<Offset> _offsetAnimation;
+
   @override
   void initState() {
     super.initState();
     _loadData();
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
   }
 
   // Wird jedesmal aufgerufen, wenn der Benutzer den Monat wechselt
@@ -97,15 +115,27 @@ class _BudgetListPageState extends State<BudgetListPage> {
                 if (budgetState.budgets.isEmpty) {
                   return Column(
                     children: [
-                      BudgetOverviewChart(
-                        budgets: budgetState.budgets,
-                        bookings: bookingState.bookings,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: BudgetOverviewChart(
+                            budgets: budgetState.budgets,
+                            bookings: bookingState.bookings,
+                          ),
+                        ),
                       ),
-                      CreateRow(
-                        title: AppLocalizations.of(context).translate('budgets'),
-                        buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
-                        createRoute: createBudgetRoute,
-                        leftPadding: 26.0,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: CreateRow(
+                            title: AppLocalizations.of(context).translate('budgets'),
+                            buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
+                            createRoute: createBudgetRoute,
+                            leftPadding: 26.0,
+                          ),
+                        ),
                       ),
                       Expanded(
                         child: EmptyList(
@@ -124,15 +154,27 @@ class _BudgetListPageState extends State<BudgetListPage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      BudgetOverviewChart(
-                        budgets: budgetState.budgets,
-                        bookings: bookingState.bookings,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: BudgetOverviewChart(
+                            budgets: budgetState.budgets,
+                            bookings: bookingState.bookings,
+                          ),
+                        ),
                       ),
-                      CreateRow(
-                        title: AppLocalizations.of(context).translate('budgets'),
-                        buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
-                        createRoute: createBudgetRoute,
-                        leftPadding: 26.0,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: CreateRow(
+                            title: AppLocalizations.of(context).translate('budgets'),
+                            buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
+                            createRoute: createBudgetRoute,
+                            leftPadding: 26.0,
+                          ),
+                        ),
                       ),
                       Expanded(
                         child: AnimationLimiter(

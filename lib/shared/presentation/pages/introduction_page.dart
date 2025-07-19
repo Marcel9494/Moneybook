@@ -10,7 +10,9 @@ import '../../../core/utils/currency_helper.dart';
 import '../../../features/user/domain/entities/user.dart';
 import '../../../features/user/presentation/bloc/user_bloc.dart' as user;
 import '../bloc/shared_bloc.dart';
+import '../widgets/animations/text_fade_animation.dart';
 import '../widgets/arguments/bottom_nav_bar_arguments.dart';
+import '../widgets/deco/gradient_line.dart';
 
 class IntroductionPage extends StatefulWidget {
   const IntroductionPage({super.key});
@@ -46,17 +48,29 @@ class _IntroductionPageState extends State<IntroductionPage> {
       pages: [
         PageViewModel(
           titleWidget: Padding(
-            padding: EdgeInsets.only(top: 48.0),
-            child: Text(
-              AppLocalizations.of(context).translate('erste_einführungsseite_titel'),
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24.0),
-              textAlign: TextAlign.center,
+            padding: EdgeInsets.only(top: 40.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const GradientLine(),
+                const SizedBox(height: 24.0),
+                TextFadeAnimation(
+                  text: AppLocalizations.of(context).translate('erste_einführungsseite_titel'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+              ],
             ),
           ),
-          bodyWidget: Text(
-            AppLocalizations.of(context).translate('erste_einführungsseite_text'),
-            style: TextStyle(color: Colors.white, fontSize: 18.0),
-            textAlign: TextAlign.center,
+          bodyWidget: TextFadeAnimation(
+            text: AppLocalizations.of(context).translate('erste_einführungsseite_text'),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
           ),
           image: Padding(
             padding: const EdgeInsets.only(top: 40.0),
@@ -69,16 +83,28 @@ class _IntroductionPageState extends State<IntroductionPage> {
         PageViewModel(
           titleWidget: Padding(
             padding: EdgeInsets.only(top: 48.0),
-            child: Text(
-              AppLocalizations.of(context).translate('zweite_einführungsseite_titel'),
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24.0),
-              textAlign: TextAlign.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const GradientLine(),
+                const SizedBox(height: 24.0),
+                TextFadeAnimation(
+                  text: AppLocalizations.of(context).translate('zweite_einführungsseite_titel'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+              ],
             ),
           ),
-          bodyWidget: Text(
-            AppLocalizations.of(context).translate('zweite_einführungsseite_text'),
-            style: TextStyle(color: Colors.white, fontSize: 18.0),
-            textAlign: TextAlign.center,
+          bodyWidget: TextFadeAnimation(
+            text: AppLocalizations.of(context).translate('zweite_einführungsseite_text'),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
           ),
           image: Padding(
             padding: const EdgeInsets.only(top: 40.0),
@@ -91,16 +117,28 @@ class _IntroductionPageState extends State<IntroductionPage> {
         PageViewModel(
           titleWidget: Padding(
             padding: EdgeInsets.only(top: 48.0),
-            child: Text(
-              AppLocalizations.of(context).translate('dritte_einführungsseite_titel'),
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24.0),
-              textAlign: TextAlign.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const GradientLine(),
+                const SizedBox(height: 24.0),
+                TextFadeAnimation(
+                  text: AppLocalizations.of(context).translate('dritte_einführungsseite_titel'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+              ],
             ),
           ),
-          bodyWidget: Text(
-            AppLocalizations.of(context).translate('dritte_einführungsseite_text'),
-            style: TextStyle(color: Colors.white, fontSize: 18.0),
-            textAlign: TextAlign.center,
+          bodyWidget: TextFadeAnimation(
+            text: AppLocalizations.of(context).translate('dritte_einführungsseite_text'),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
           ),
           image: Padding(
             padding: const EdgeInsets.only(top: 40.0),
@@ -113,16 +151,28 @@ class _IntroductionPageState extends State<IntroductionPage> {
         PageViewModel(
           titleWidget: Padding(
             padding: EdgeInsets.only(top: 48.0),
-            child: Text(
-              AppLocalizations.of(context).translate('vierte_einführungsseite_titel'),
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24.0),
-              textAlign: TextAlign.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const GradientLine(),
+                const SizedBox(height: 24.0),
+                TextFadeAnimation(
+                  text: AppLocalizations.of(context).translate('vierte_einführungsseite_titel'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+              ],
             ),
           ),
-          bodyWidget: Text(
-            AppLocalizations.of(context).translate('vierte_einführungsseite_text'),
-            style: TextStyle(color: Colors.white, fontSize: 18.0),
-            textAlign: TextAlign.center,
+          bodyWidget: TextFadeAnimation(
+            text: AppLocalizations.of(context).translate('vierte_einführungsseite_text'),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
           ),
           image: Padding(
             padding: const EdgeInsets.only(top: 40.0),
