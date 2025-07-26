@@ -1,10 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../../../core/consts/database_consts.dart';
-import '../../../core/utils/date_formatter.dart';
 import '../../../features/accounts/domain/value_objects/account_type.dart';
 import '../../../features/bookings/domain/value_objects/booking_type.dart';
-import '../../../features/user/domain/entities/user.dart';
 
 abstract class SharedLocalDataSource {
   Future<void> createDb();
@@ -87,13 +85,38 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
         localDb INTEGER NOT NULL
       )
       ''');
+      /*await db.execute('''
+      CREATE TABLE IF NOT EXISTS $goalDbName (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        amount DOUBLE NOT NULL,
+        goalAmount DOUBLE NOT NULL,
+        currency TEXT NOT NULL,
+        startDate TEXT NOT NULL,
+        endDate TEXT NOT NULL,
+        type TEXT NOT NULL
+      )
+      ''');*/
     } catch (e) {
       throw Exception('Database tables could not be generated.');
     }
   }
 
   Future<void> _migrateToNewVersion(Database db) async {
-    await db.execute('DROP TABLE IF EXISTS new_$userDbName');
+    /*await db.execute('''
+      CREATE TABLE IF NOT EXISTS $goalDbName (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        amount DOUBLE NOT NULL,
+        goalAmount DOUBLE NOT NULL,
+        currency TEXT NOT NULL,
+        startDate TEXT NOT NULL,
+        endDate TEXT NOT NULL,
+        type TEXT NOT NULL
+      )
+      ''');*/
+
+    /*await db.execute('DROP TABLE IF EXISTS new_$userDbName');
     await db.execute('''
       CREATE TABLE IF NOT EXISTS new_$userDbName (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -132,7 +155,7 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
     }
     await db.execute('DROP TABLE IF EXISTS $userDbName');
     await db.execute('ALTER TABLE new_$userDbName RENAME TO $userDbName');
-    await db.execute('DROP TABLE IF EXISTS new_$userDbName');
+    await db.execute('DROP TABLE IF EXISTS new_$userDbName');*/
   }
 
   // Placeholder for future migrations (e.g., version 3)

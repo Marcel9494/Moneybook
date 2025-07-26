@@ -184,9 +184,18 @@ class _IntroductionPageState extends State<IntroductionPage> {
         ),
       ],
       showSkipButton: true,
-      skip: Text(AppLocalizations.of(context).translate('überspringen'), style: TextStyle(color: Colors.white)),
-      next: Text(AppLocalizations.of(context).translate('weiter')),
-      done: Text(AppLocalizations.of(context).translate('fertig'), style: TextStyle(fontWeight: FontWeight.w700)),
+      skip: Padding(
+        padding: EdgeInsets.only(bottom: 36.0),
+        child: Text(AppLocalizations.of(context).translate('überspringen'), style: TextStyle(color: Colors.white)),
+      ),
+      next: Padding(
+        padding: const EdgeInsets.only(bottom: 36.0),
+        child: Text(AppLocalizations.of(context).translate('weiter')),
+      ),
+      done: Padding(
+        padding: const EdgeInsets.only(bottom: 36.0),
+        child: Text(AppLocalizations.of(context).translate('fertig'), style: TextStyle(fontWeight: FontWeight.w700)),
+      ),
       onDone: () {
         _endOfInstruction();
       },
@@ -198,7 +207,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
         activeSize: const Size(20.0, 10.0),
         activeColor: Colors.cyanAccent,
         color: Colors.white70,
-        spacing: const EdgeInsets.symmetric(horizontal: 3.0),
+        spacing: const EdgeInsets.only(left: 3.0, right: 3.0, bottom: 36.0),
         activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
       ),
     );

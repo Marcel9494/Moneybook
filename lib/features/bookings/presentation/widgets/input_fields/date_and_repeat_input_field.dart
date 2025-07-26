@@ -41,7 +41,7 @@ class _DateAndRepeatInputFieldState extends State<DateAndRepeatInputField> {
                 children: [
                   BottomSheetHeader(title: AppLocalizations.of(context).translate('wiederholung_auswählen') + ':'),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height / 1.7,
+                    height: MediaQuery.of(context).size.height / 1.5,
                     child: SingleChildScrollView(
                       child: ListView(
                         shrinkWrap: true,

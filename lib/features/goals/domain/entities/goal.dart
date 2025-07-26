@@ -5,6 +5,7 @@ class Goal extends Equatable {
   final int id;
   final String name;
   final double amount;
+  final double goalAmount;
   final String currency;
   final DateTime startDate;
   final DateTime endDate;
@@ -14,6 +15,7 @@ class Goal extends Equatable {
     required this.id,
     required this.name,
     required this.amount,
+    required this.goalAmount,
     required this.currency,
     required this.startDate,
     required this.endDate,
@@ -21,5 +23,5 @@ class Goal extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, amount, currency, startDate, endDate, type];
+  List<Object?> get props => [id, name, amount, goalAmount, currency, startDate, endDate, type];
 }

@@ -1,13 +1,21 @@
+import 'dart:async';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/shared/presentation/widgets/input_fields/amount_text_field.dart';
 import 'package:moneybook/shared/presentation/widgets/input_fields/title_text_field.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
 import '../../../../core/utils/app_localizations.dart';
+import '../../../../core/utils/date_helper.dart';
 import '../../../../shared/presentation/widgets/buttons/save_button.dart';
+import '../../../bookings/domain/value_objects/amount.dart';
+import '../../domain/entities/goal.dart';
 import '../../domain/value_objects/goal_type.dart';
+import '../bloc/goal_bloc.dart';
 import '../widgets/buttons/date_button.dart';
 import '../widgets/buttons/goal_type_button.dart';
 
@@ -19,6 +27,7 @@ class CreateGoalPage extends StatefulWidget {
 }
 
 class _CreateGoalPageState extends State<CreateGoalPage> {
+  final GlobalKey<FormState> _goalFormKey = GlobalKey<FormState>();
   final TextEditingController _goalNameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final RoundedLoadingButtonController _createGoalBtnController = RoundedLoadingButtonController();
@@ -27,7 +36,30 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
   DateTime _selectedEndDate = DateTime.now().add(Duration(days: 90));
 
   void _createGoal(BuildContext context) {
-    // TODO hier weitermachen und Create Event aufrufen und Create Methode implementieren.
+    final FormState form = _goalFormKey.currentState!;
+    if (form.validate() == false) {
+      _createGoalBtnController.error();
+      Timer(const Duration(milliseconds: durationInMs), () {
+        _createGoalBtnController.reset();
+      });
+    } else {
+      _createGoalBtnController.success();
+      Goal newGoal = Goal(
+        id: 0, // Id wird von der Datenbank gesetzt
+        name: _goalNameController.text,
+        amount: 0.0,
+        goalAmount: Amount.getValue(_amountController.text),
+        currency: Amount.getCurrency(_amountController.text),
+        startDate: _selectedStartDate,
+        endDate: _selectedEndDate,
+        type: _goalType,
+      );
+      BlocProvider.of<GoalBloc>(context).add(CreateGoal(newGoal));
+      Timer(const Duration(milliseconds: durationInMs), () {
+        Navigator.pop(context);
+        Navigator.popAndPushNamed(context, goalOverviewRoute);
+      });
+    }
   }
 
   void _changeGoalType(Set<GoalType> newGoalType) {
@@ -86,31 +118,6 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
     }
   }
 
-  String _formatPeriodOfTime(DateTime start, DateTime end) {
-    Duration diff = end.difference(start);
-    int totalDays = diff.inDays;
-
-    int years = totalDays ~/ 365;
-    int remainingDays = totalDays % 365;
-
-    int months = remainingDays ~/ 30;
-    remainingDays %= 30;
-
-    int weeks = remainingDays ~/ 7;
-    int days = remainingDays % 7;
-
-    List<String> parts = [];
-
-    if (years > 0) parts.add('$years ${years == 1 ? "Jahr" : "Jahre"}');
-    if (months > 0) parts.add('$months ${months == 1 ? "Monat" : "Monate"}');
-    if (weeks > 0) parts.add('$weeks ${weeks == 1 ? "Woche" : "Wochen"}');
-    if (days > 0) parts.add('$days ${days == 1 ? "Tag" : "Tage"}');
-
-    String formattedPeriodOfTime = parts.join(', ');
-
-    return '$formattedPeriodOfTime\n(${totalDays} Tage)';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,56 +128,59 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GoalTypeButton(
-                  goalType: _goalType,
-                  onSelectionChanged: (goalType) => _changeGoalType(goalType),
-                ),
-                TitleTextField(
-                  titleController: _goalNameController,
-                  hintText: 'Name',
-                ),
-                AmountTextField(
-                  amountController: _amountController,
-                  hintText: 'Betrag',
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    DateButton(
-                      text: 'Startdatum',
-                      selectedDate: _selectedStartDate,
-                      onPressed: () => _selectStartDate(context),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Colors.white,
-                      size: 28.0,
-                    ),
-                    DateButton(
-                      text: 'Zieldatum',
-                      selectedDate: _selectedEndDate,
-                      onPressed: () => _selectEndDate(context),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 18.0),
-                  child: Text(
-                    'Zeitraum:\n${_formatPeriodOfTime(_selectedStartDate, _selectedEndDate)}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16.0, color: Colors.white),
+            child: Form(
+              key: _goalFormKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GoalTypeButton(
+                    goalType: _goalType,
+                    onSelectionChanged: (goalType) => _changeGoalType(goalType),
                   ),
-                ),
-                SaveButton(
-                  text: AppLocalizations.of(context).translate('erstellen'),
-                  saveBtnController: _createGoalBtnController,
-                  onPressed: () => _createGoal(context),
-                ),
-              ],
+                  TitleTextField(
+                    titleController: _goalNameController,
+                    hintText: 'Name',
+                  ),
+                  AmountTextField(
+                    amountController: _amountController,
+                    hintText: 'Betrag',
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      DateButton(
+                        text: 'Startdatum',
+                        selectedDate: _selectedStartDate,
+                        onPressed: () => _selectStartDate(context),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Colors.white,
+                        size: 28.0,
+                      ),
+                      DateButton(
+                        text: 'Zieldatum',
+                        selectedDate: _selectedEndDate,
+                        onPressed: () => _selectEndDate(context),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 18.0),
+                    child: Text(
+                      'Zeitraum:\n${DateHelper.formatPeriodOfTime(_selectedStartDate, _selectedEndDate)}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16.0, color: Colors.white),
+                    ),
+                  ),
+                  SaveButton(
+                    text: AppLocalizations.of(context).translate('erstellen'),
+                    saveBtnController: _createGoalBtnController,
+                    onPressed: () => _createGoal(context),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

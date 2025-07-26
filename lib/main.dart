@@ -35,6 +35,7 @@ import 'features/calculators/presentation/pages/calculator_overview_page.dart';
 import 'features/calculators/presentation/pages/financial_freedom_calculator_page.dart';
 import 'features/calculators/presentation/pages/how_long_live_of_capital_calculator_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
+import 'features/goals/presentation/bloc/goal_bloc.dart';
 import 'features/goals/presentation/pages/create_goal_page.dart';
 import 'features/goals/presentation/pages/goal_overview_page.dart';
 import 'features/settings/presentation/pages/bug_report_page.dart';
@@ -62,6 +63,7 @@ void main() {
     BlocProvider(create: (context) => sl<CategorieStatsBloc>()),
     BlocProvider(create: (context) => sl<BudgetBloc>()),
     BlocProvider(create: (context) => sl<UserBloc>()),
+    BlocProvider(create: (context) => sl<GoalBloc>()),
   ], child: MyApp()));
 }
 

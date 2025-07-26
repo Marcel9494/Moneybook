@@ -34,7 +34,7 @@ dependencies:
   month_picker_dialog: ^6.0.3
   url_launcher: ^6.3.0
   fl_chart: ^0.68.0
-  percent_indicator: ^4.0.1
+  percent_indicator: ^4.2.5
   introduction_screen: ^3.1.14
   flutter_settings_ui: ^3.0.1
   package_info_plus: ^4.0.0

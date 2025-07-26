@@ -21,6 +21,12 @@ import 'package:moneybook/features/categories/domain/usecases/create.dart' as cr
 import 'package:moneybook/features/categories/domain/usecases/delete.dart' as delete_categorie;
 import 'package:moneybook/features/categories/domain/usecases/edit.dart' as edit_categorie;
 import 'package:moneybook/features/categories/domain/usecases/get_id.dart' as get_id;
+import 'package:moneybook/features/goals/domain/usecases/create.dart' as create_goal;
+import 'package:moneybook/features/goals/domain/usecases/delete.dart' as delete_goal;
+import 'package:moneybook/features/goals/domain/usecases/load.dart' as load_goal;
+import 'package:moneybook/features/goals/domain/usecases/loadAll.dart' as load_all_goals;
+import 'package:moneybook/features/goals/domain/usecases/update.dart' as update_goal;
+import 'package:moneybook/features/goals/presentation/bloc/goal_bloc.dart';
 import 'package:moneybook/features/user/domain/usecases/create.dart' as create_user;
 import 'package:moneybook/features/user/domain/usecases/getLanguageUseCase.dart';
 import 'package:moneybook/shared/data/datasources/shared_local_data_source.dart';
@@ -63,6 +69,9 @@ import 'features/categories/domain/repositories/categorie_repository.dart';
 import 'features/categories/domain/usecases/check_categorie_name.dart';
 import 'features/categories/domain/usecases/load_all.dart' as load_all_categories;
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
+import 'features/goals/data/datasources/goal_local_data_source.dart';
+import 'features/goals/data/repositories/goal_repository_impl.dart';
+import 'features/goals/domain/repositories/goal_repository.dart';
 import 'features/statistics/presentation/bloc/categorie_stats_bloc.dart';
 import 'features/user/data/datasources/user_local_data_source.dart';
 import 'features/user/data/datasources/user_remote_data_source.dart';
@@ -83,8 +92,10 @@ void init() {
   sl.registerFactory(() => AccountBloc(sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => BudgetBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => UserBloc(sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => GoalBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => SharedBloc(sl(), sl()));
   sl.registerFactory(() => CategorieStatsBloc());
+
   // Use Cases
   // Shared
   sl.registerLazySingleton(() => CreateDb(sl()));
@@ -139,6 +150,13 @@ void init() {
   sl.registerLazySingleton(() => UpdateCurrencyUseCase(sl()));
   sl.registerLazySingleton(() => GetLanguageUseCase(sl()));
 
+  // Goals
+  sl.registerLazySingleton(() => create_goal.Create(sl()));
+  sl.registerLazySingleton(() => update_goal.Update(sl()));
+  sl.registerLazySingleton(() => delete_goal.Delete(sl()));
+  sl.registerLazySingleton(() => load_goal.Load(sl()));
+  sl.registerLazySingleton(() => load_all_goals.LoadAll(sl()));
+
   // Repository
   sl.registerLazySingleton<SharedRepository>(
     () => SharedRepositoryImpl(
@@ -176,6 +194,12 @@ void init() {
       userLocalDataSource: sl(),
     ),
   );
+  sl.registerLazySingleton<GoalRepository>(
+    () => GoalRepositoryImpl(
+      goalLocalDataSource: sl(),
+    ),
+  );
+
   // Data Sources
   sl.registerLazySingleton<SharedLocalDataSource>(() => SharedLocalDataSourceImpl());
   sl.registerLazySingleton<SharedRemoteDataSource>(() => SharedRemoteDataSourceImpl());
@@ -189,6 +213,7 @@ void init() {
   sl.registerLazySingleton<BudgetRemoteDataSource>(() => BudgetRemoteDataSourceImpl());
   sl.registerLazySingleton<UserLocalDataSource>(() => UserLocalDataSourceImpl());
   sl.registerLazySingleton<UserRemoteDataSource>(() => UserRemoteDataSourceImpl());
+  sl.registerLazySingleton<GoalLocalDataSource>(() => GoalLocalDataSourceImpl());
   //! Core
 
   //! External

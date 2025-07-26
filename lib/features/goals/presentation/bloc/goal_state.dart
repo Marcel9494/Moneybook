@@ -10,22 +10,27 @@ final class GoalInitial extends GoalState {
   List<Object> get props => [];
 }
 
-final class Loaded extends GoalState {
-  Goal goal;
-
-  Loaded({required this.goal});
-
+final class GoalLoading extends GoalState {
   @override
-  List<Object> get props => [goal];
+  List<Object> get props => [];
 }
 
-final class LoadedAll extends GoalState {
-  List<Goal> goals;
+final class AllGoalsLoadedSuccessful extends GoalState {
+  final List<Goal> goals;
 
-  LoadedAll({required this.goals});
+  AllGoalsLoadedSuccessful({required this.goals});
 
   @override
   List<Object> get props => [goals];
+}
+
+final class AllGoalsLoadedFailure extends GoalState {
+  final String message;
+
+  AllGoalsLoadedFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
 }
 
 final class Finished extends GoalState {

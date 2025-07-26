@@ -59,14 +59,14 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
         loadGoalEither.fold((failure) {
           emit(const Error(message: LOAD_GOAL_FAILURE));
         }, (goal) {
-          emit(Loaded(goal: goal));
+          // TODO emit(Loaded(goal: goal));
         });
       } else if (event is LoadAllGoals) {
         final loadAllGoalsEither = await loadAllUseCase.goalRepository.loadAll();
         loadAllGoalsEither.fold((failure) {
           emit(const Error(message: LOAD_ALL_GOALS_FAILURE));
         }, (goals) {
-          emit(LoadedAll(goals: goals));
+          emit(AllGoalsLoadedSuccessful(goals: goals));
         });
       }
     });

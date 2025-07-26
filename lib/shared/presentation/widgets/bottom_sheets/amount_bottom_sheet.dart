@@ -39,7 +39,7 @@ void openBottomSheetForAmountInput({
                 Center(
                   child: GridView.count(
                     primary: false,
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.only(top: 24.0, right: 24.0, left: 24.0, bottom: 56.0),
                     mainAxisSpacing: 8.0,
                     crossAxisSpacing: 8.0,
                     crossAxisCount: 4,

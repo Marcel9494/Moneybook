@@ -65,7 +65,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     } else {
       _createBookingBtnController.success();
       Booking newBooking = Booking(
-        id: 0,
+        id: 0, // Id wird von Datenbank gesetzt
         serieId: -1,
         type: _bookingType,
         title: _titleController.text.trim(),

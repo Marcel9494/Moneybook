@@ -5,6 +5,7 @@ class GoalModel extends Goal {
     required super.id,
     required super.name,
     required super.amount,
+    required super.goalAmount,
     required super.currency,
     required super.startDate,
     required super.endDate,

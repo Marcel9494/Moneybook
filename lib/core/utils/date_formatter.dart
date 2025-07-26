@@ -22,6 +22,7 @@ class DateFormatter {
     return DateFormat(datePattern, currentLocale).format(date);
   }
 
+  /// Format: 22.07.2025 (Di) oder 01/03/2025 (Sat)
   static DateTime dateFormatDDMMYYYYEEString(String date, BuildContext context) {
     final currentLocale = Localizations.localeOf(context).languageCode;
     String datePattern = '';
@@ -36,6 +37,23 @@ class DateFormatter {
         datePattern = 'MM/dd/yyyy (EE)';
     }
     return DateFormat(datePattern, currentLocale).parse(date);
+  }
+
+  /// Format: 22.07.25 oder 07/22/25
+  static String dateFormatDDMMYYDateTime(DateTime date, BuildContext context) {
+    final currentLocale = Localizations.localeOf(context).languageCode;
+    String datePattern = '';
+    switch (currentLocale) {
+      case 'de':
+        datePattern = 'dd.MM.yy';
+        break;
+      case 'en':
+        datePattern = 'MM/dd/yy';
+        break;
+      default:
+        datePattern = 'MM/dd/yy';
+    }
+    return DateFormat(datePattern, currentLocale).format(date);
   }
 
   /// Format: Sa 01.
