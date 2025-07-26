@@ -13,6 +13,7 @@ String accountDbName = demoMode == false ? 'accounts' : 'accounts_demo';
 String categorieDbName = demoMode == false ? 'categories' : 'categories_demo';
 String budgetDbName = demoMode == false ? 'budgets' : 'budgets_demo';
 String userDbName = demoMode == false ? 'user' : 'user_demo';
+String goalDbName = demoMode == false ? 'goals' : 'goals_demo';
 
 // Aktuelle Datenbank Tabellen Version
 int localDbVersion = demoMode == false ? 7 : 7;
@@ -27,6 +28,7 @@ void switchDemoMode(bool demoMode) {
   categorieDbName = demoMode == false ? 'categories' : 'categories_demo';
   budgetDbName = demoMode == false ? 'budgets' : 'budgets_demo';
   userDbName = demoMode == false ? 'user' : 'user_demo';
+  String goalDbName = demoMode == false ? 'goals' : 'goals_demo';
 
   localDbVersion = demoMode == false ? 7 : 7;
 }

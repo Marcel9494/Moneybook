@@ -12,6 +12,7 @@ const int animationDurationInMs = 650;
 const int budgetAnimationDurationInMs = 1600;
 const int flushbarDurationInMs = 4500;
 const int barChartDurationInMs = 500;
+const int staggeredListDurationInMs = 500;
 
 // Für wieviele Jahre soll eine Serienbuchung standardmäßig erstellt werden
 const int serieYears = 5;

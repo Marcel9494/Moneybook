@@ -21,3 +21,4 @@ const calculatorOverviewRoute = 'calculatorOverview';
 const howLongLiveOfCapitalCalculatorRoute = 'howLongLiveOfCapitalCalculator';
 const financialFreedomCalculatorRoute = 'financialFreedomCalculator';
 const goalOverviewRoute = 'goalOverview';
+const createGoalRoute = 'createGoal';

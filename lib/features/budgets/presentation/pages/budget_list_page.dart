@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:moneybook/core/consts/common_consts.dart';
 import 'package:moneybook/core/consts/route_consts.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/cards/budget_card.dart';
 import 'package:moneybook/features/budgets/presentation/widgets/charts/budget_overview_chart.dart';
@@ -26,11 +28,29 @@ class BudgetListPage extends StatefulWidget {
   State<BudgetListPage> createState() => _BudgetListPageState();
 }
 
-class _BudgetListPageState extends State<BudgetListPage> {
+class _BudgetListPageState extends State<BudgetListPage> with TickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<Offset> _offsetAnimation;
+
   @override
   void initState() {
     super.initState();
     _loadData();
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
   }
 
   // Wird jedesmal aufgerufen, wenn der Benutzer den Monat wechselt
@@ -95,15 +115,27 @@ class _BudgetListPageState extends State<BudgetListPage> {
                 if (budgetState.budgets.isEmpty) {
                   return Column(
                     children: [
-                      BudgetOverviewChart(
-                        budgets: budgetState.budgets,
-                        bookings: bookingState.bookings,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: BudgetOverviewChart(
+                            budgets: budgetState.budgets,
+                            bookings: bookingState.bookings,
+                          ),
+                        ),
                       ),
-                      CreateRow(
-                        title: AppLocalizations.of(context).translate('budgets'),
-                        buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
-                        createRoute: createBudgetRoute,
-                        leftPadding: 26.0,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: CreateRow(
+                            title: AppLocalizations.of(context).translate('budgets'),
+                            buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
+                            createRoute: createBudgetRoute,
+                            leftPadding: 26.0,
+                          ),
+                        ),
                       ),
                       Expanded(
                         child: EmptyList(
@@ -122,25 +154,50 @@ class _BudgetListPageState extends State<BudgetListPage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      BudgetOverviewChart(
-                        budgets: budgetState.budgets,
-                        bookings: bookingState.bookings,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: BudgetOverviewChart(
+                            budgets: budgetState.budgets,
+                            bookings: bookingState.bookings,
+                          ),
+                        ),
                       ),
-                      CreateRow(
-                        title: AppLocalizations.of(context).translate('budgets'),
-                        buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
-                        createRoute: createBudgetRoute,
-                        leftPadding: 26.0,
+                      SlideTransition(
+                        position: _offsetAnimation,
+                        child: FadeTransition(
+                          opacity: _animationController,
+                          child: CreateRow(
+                            title: AppLocalizations.of(context).translate('budgets'),
+                            buttonText: AppLocalizations.of(context).translate('budget_erstellen'),
+                            createRoute: createBudgetRoute,
+                            leftPadding: 26.0,
+                          ),
+                        ),
                       ),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: budgetState.budgets.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return BudgetCard(
-                              budget: budgetState.budgets[index],
-                              selectedDate: widget.selectedDate,
-                            );
-                          },
+                        child: AnimationLimiter(
+                          key: ValueKey('${budgetState.budgets.length}_${widget.selectedDate}'),
+                          child: ListView.builder(
+                            itemCount: budgetState.budgets.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: const Duration(milliseconds: staggeredListDurationInMs),
+                                child: SlideAnimation(
+                                  verticalOffset: 20.0,
+                                  curve: Curves.easeOut,
+                                  child: FadeInAnimation(
+                                    child: BudgetCard(
+                                      budget: budgetState.budgets[index],
+                                      selectedDate: widget.selectedDate,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       )
                     ],

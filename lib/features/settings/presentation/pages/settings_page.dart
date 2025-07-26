@@ -42,52 +42,55 @@ class _SettingsPageState extends State<SettingsPage> {
           color: Color(0xFF1c1b20),
           child: Wrap(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BottomSheetHeader(title: AppLocalizations.of(context).translate('sprache_ändern') + ':', indent: 16.0),
-                  GestureDetector(
-                    onTap: () => _getCurrentLanguage() != 'Deutsch' ? _showChangeLanguageInfoDialog(context, 'Deutsch') : {},
-                    child: ListTile(
-                      leading: CountryFlag.fromCountryCode(
-                        'DE',
-                        width: 28.0,
-                        height: 28.0,
-                        shape: const Circle(),
-                      ),
-                      title: Text(
-                        AppLocalizations.of(context).translate('deutsch') +
-                            ' ${_getCurrentLanguage() == 'Deutsch' ? '(' + AppLocalizations.of(context).translate('aktuelle_sprache') + ')' : ''}',
-                        style: TextStyle(color: _getCurrentLanguage() == 'Deutsch' ? Colors.cyanAccent : Colors.white),
-                      ),
-                      trailing: Icon(
-                        Icons.keyboard_arrow_right_rounded,
-                        color: _getCurrentLanguage() == 'Deutsch' ? Colors.cyanAccent : Colors.white,
-                      ),
-                    ),
-                  ),
-                  const Divider(indent: 16.0, endIndent: 16.0),
-                  GestureDetector(
-                    onTap: () => _showChangeLanguageInfoDialog(context, 'Englisch'),
-                    child: ListTile(
-                      leading: CountryFlag.fromCountryCode(
-                        'US',
-                        width: 28.0,
-                        height: 28.0,
-                        shape: const Circle(),
-                      ),
-                      title: Text(
-                        AppLocalizations.of(context).translate('englisch') +
-                            ' ${_getCurrentLanguage() == 'English' ? '(' + AppLocalizations.of(context).translate('aktuelle_sprache') + ')' : ''}',
-                        style: TextStyle(color: _getCurrentLanguage() == 'English' ? Colors.cyanAccent : Colors.white),
-                      ),
-                      trailing: Icon(
-                        Icons.keyboard_arrow_right_rounded,
-                        color: _getCurrentLanguage() == 'English' ? Colors.cyanAccent : Colors.white,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 48.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BottomSheetHeader(title: AppLocalizations.of(context).translate('sprache_ändern') + ':', indent: 16.0),
+                    GestureDetector(
+                      onTap: () => _getCurrentLanguage() != 'Deutsch' ? _showChangeLanguageInfoDialog(context, 'Deutsch') : {},
+                      child: ListTile(
+                        leading: CountryFlag.fromCountryCode(
+                          'DE',
+                          width: 28.0,
+                          height: 28.0,
+                          shape: const Circle(),
+                        ),
+                        title: Text(
+                          AppLocalizations.of(context).translate('deutsch') +
+                              ' ${_getCurrentLanguage() == 'Deutsch' ? '(' + AppLocalizations.of(context).translate('aktuelle_sprache') + ')' : ''}',
+                          style: TextStyle(color: _getCurrentLanguage() == 'Deutsch' ? Colors.cyanAccent : Colors.white),
+                        ),
+                        trailing: Icon(
+                          Icons.keyboard_arrow_right_rounded,
+                          color: _getCurrentLanguage() == 'Deutsch' ? Colors.cyanAccent : Colors.white,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    const Divider(indent: 16.0, endIndent: 16.0),
+                    GestureDetector(
+                      onTap: () => _showChangeLanguageInfoDialog(context, 'Englisch'),
+                      child: ListTile(
+                        leading: CountryFlag.fromCountryCode(
+                          'US',
+                          width: 28.0,
+                          height: 28.0,
+                          shape: const Circle(),
+                        ),
+                        title: Text(
+                          AppLocalizations.of(context).translate('englisch') +
+                              ' ${_getCurrentLanguage() == 'English' ? '(' + AppLocalizations.of(context).translate('aktuelle_sprache') + ')' : ''}',
+                          style: TextStyle(color: _getCurrentLanguage() == 'English' ? Colors.cyanAccent : Colors.white),
+                        ),
+                        trailing: Icon(
+                          Icons.keyboard_arrow_right_rounded,
+                          color: _getCurrentLanguage() == 'English' ? Colors.cyanAccent : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -149,38 +152,41 @@ class _SettingsPageState extends State<SettingsPage> {
           color: Color(0xFF1c1b20),
           child: Wrap(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BottomSheetHeader(title: AppLocalizations.of(context).translate('währung_ändern') + ':', indent: 16.0),
-                  GestureDetector(
-                    onTap: () => locale != 'de-DE' ? _showChangeMainCurrencyInfoDialog(context, 'Euro') : {},
-                    child: ListTile(
-                      leading: const Text('🇪🇺', style: TextStyle(fontSize: 22.0)),
-                      title: Text('Euro ${locale == 'de-DE' ? '(' + AppLocalizations.of(context).translate('aktuelle_währung') + ')' : ''}',
-                          style: TextStyle(color: locale == 'de-DE' ? Colors.cyanAccent : Colors.white)),
-                      trailing: Text('€', style: TextStyle(fontSize: 18.0, color: locale == 'de-DE' ? Colors.cyanAccent : Colors.white)),
-                    ),
-                  ),
-                  const Divider(indent: 16.0, endIndent: 16.0),
-                  GestureDetector(
-                    onTap: () => locale != 'en-US' ? _showChangeMainCurrencyInfoDialog(context, 'Dollar') : {},
-                    child: ListTile(
-                      leading: CountryFlag.fromCountryCode(
-                        'US',
-                        width: 28.0,
-                        height: 28.0,
-                        shape: const Circle(),
-                      ),
-                      title: Text('Dollar ${locale == 'en-US' ? '(' + AppLocalizations.of(context).translate('aktuelle_währung') + ')' : ''}',
-                          style: TextStyle(color: locale == 'en-US' ? Colors.cyanAccent : Colors.white)),
-                      trailing: Text(
-                        '\$',
-                        style: TextStyle(fontSize: 18.0, color: locale == 'en-US' ? Colors.cyanAccent : Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 48.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BottomSheetHeader(title: AppLocalizations.of(context).translate('währung_ändern') + ':', indent: 16.0),
+                    GestureDetector(
+                      onTap: () => locale != 'de-DE' ? _showChangeMainCurrencyInfoDialog(context, 'Euro') : {},
+                      child: ListTile(
+                        leading: const Text('🇪🇺', style: TextStyle(fontSize: 22.0)),
+                        title: Text('Euro ${locale == 'de-DE' ? '(' + AppLocalizations.of(context).translate('aktuelle_währung') + ')' : ''}',
+                            style: TextStyle(color: locale == 'de-DE' ? Colors.cyanAccent : Colors.white)),
+                        trailing: Text('€', style: TextStyle(fontSize: 18.0, color: locale == 'de-DE' ? Colors.cyanAccent : Colors.white)),
                       ),
                     ),
-                  ),
-                ],
+                    const Divider(indent: 16.0, endIndent: 16.0),
+                    GestureDetector(
+                      onTap: () => locale != 'en-US' ? _showChangeMainCurrencyInfoDialog(context, 'Dollar') : {},
+                      child: ListTile(
+                        leading: CountryFlag.fromCountryCode(
+                          'US',
+                          width: 28.0,
+                          height: 28.0,
+                          shape: const Circle(),
+                        ),
+                        title: Text('Dollar ${locale == 'en-US' ? '(' + AppLocalizations.of(context).translate('aktuelle_währung') + ')' : ''}',
+                            style: TextStyle(color: locale == 'en-US' ? Colors.cyanAccent : Colors.white)),
+                        trailing: Text(
+                          '\$',
+                          style: TextStyle(fontSize: 18.0, color: locale == 'en-US' ? Colors.cyanAccent : Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -485,6 +491,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 icon: Icons.receipt_long_rounded,
                 onTap: () => Navigator.pushNamed(context, creditRoute),
               ),
+              SizedBox(height: 32.0),
               adminMode ? SettingTitle(title: 'Admin Bereich') : const SizedBox(),
               adminMode
                   ? Card(

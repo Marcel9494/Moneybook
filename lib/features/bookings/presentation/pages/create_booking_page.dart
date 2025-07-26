@@ -65,7 +65,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
     } else {
       _createBookingBtnController.success();
       Booking newBooking = Booking(
-        id: 0,
+        id: 0, // Id wird von Datenbank gesetzt
         serieId: -1,
         type: _bookingType,
         title: _titleController.text.trim(),
@@ -213,7 +213,10 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                             repetitionType: _repetitionType.name,
                             onSelectionChanged: (repetitionType) => _changeRepetitionType(repetitionType),
                           ),
-                          TitleTextField(hintText: AppLocalizations.of(context).translate('titel') + '...', titleController: _titleController),
+                          TitleTextField(
+                            hintText: AppLocalizations.of(context).translate('titel') + '...',
+                            titleController: _titleController,
+                          ),
                           AmountTextField(
                             amountController: _amountController,
                             hintText: AppLocalizations.of(context).translate('betrag') + '...',
