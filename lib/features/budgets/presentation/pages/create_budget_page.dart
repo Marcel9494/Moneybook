@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/categorie_input_field.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -55,6 +56,12 @@ class _CreateBudgetPageState extends State<CreateBudgetPage> {
       );
       Timer(const Duration(milliseconds: durationInMs), () {
         BlocProvider.of<BudgetBloc>(context).add(CreateBudget(newBudget));
+        Posthog().capture(
+          eventName: 'Budget erstellt',
+          properties: {
+            'Aktion': 'Budget erstellt',
+          },
+        );
       });
     }
   }

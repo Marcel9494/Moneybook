@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/features/accounts/domain/entities/account.dart';
 import 'package:moneybook/features/accounts/presentation/widgets/input_fields/account_type_input_field.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -92,6 +93,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           currency: Amount.getCurrency(_amountController.text),
                         ),
                       ),
+                    );
+                    Posthog().capture(
+                      eventName: 'Konto erstellt',
+                      properties: {
+                        'Aktion': 'Konto erstellt',
+                      },
                     );
                   });
                 }

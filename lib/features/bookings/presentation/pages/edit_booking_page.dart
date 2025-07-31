@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneybook/shared/domain/value_objects/serie_mode_type.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -150,6 +151,12 @@ class _EditBookingPageState extends State<EditBookingPage> {
         } else if (widget.editMode == SerieModeType.all) {
           BlocProvider.of<BookingBloc>(context).add(UpdateAllSerieBookings(_updatedBooking!, _oldSerieBookings, _bookingType, context));
         }
+        Posthog().capture(
+          eventName: 'Buchung bearbeitet',
+          properties: {
+            'Aktion': 'Buchung bearbeitet',
+          },
+        );
       });
     }
   }

@@ -13,6 +13,7 @@ import 'package:moneybook/core/utils/number_formatter.dart';
 import 'package:moneybook/features/settings/presentation/widgets/cards/setting_card.dart';
 import 'package:moneybook/features/settings/presentation/widgets/deco/setting_title.dart';
 import 'package:moneybook/features/user/presentation/bloc/user_bloc.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/configs/overall_configs.dart';
@@ -33,6 +34,17 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+    Posthog().capture(
+      eventName: 'Einstellungen Seite geöffnet',
+      properties: {
+        'Aktion': 'Einstellungen Seite geöffnet',
+      },
+    );
+  }
+
   void _openLanguageBottomSheet(BuildContext context) {
     showCupertinoModalBottomSheet<void>(
       context: context,

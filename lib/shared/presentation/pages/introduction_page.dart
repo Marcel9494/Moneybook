@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:lottie/lottie.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 
 import '../../../core/consts/common_consts.dart';
 import '../../../core/consts/route_consts.dart';
@@ -198,9 +199,21 @@ class _IntroductionPageState extends State<IntroductionPage> {
       ),
       onDone: () {
         _endOfInstruction();
+        Posthog().capture(
+          eventName: 'Einführung beendet',
+          properties: {
+            'Aktion': 'Einführung beendet',
+          },
+        );
       },
       onSkip: () {
         _endOfInstruction();
+        Posthog().capture(
+          eventName: 'Einführung übersprungen',
+          properties: {
+            'Aktion': 'Einführung übersprungen',
+          },
+        );
       },
       dotsDecorator: DotsDecorator(
         size: const Size.square(10.0),

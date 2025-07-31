@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/consts/common_consts.dart';
 import '../../../core/consts/database_consts.dart';
@@ -69,6 +72,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initPostHog();
       _checkStartConditions();
     });
   }
@@ -77,6 +81,18 @@ class _SplashPageState extends State<SplashPage> {
     BlocProvider.of<SharedBloc>(context).add(const CreateDatabase());
     BlocProvider.of<BookingBloc>(context).add(const HandleAndUpdateNewBookings());
     BlocProvider.of<UserBloc>(context).add(CheckFirstStart());
+  }
+
+  Future<void> _initPostHog() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id');
+
+    if (userId == null) {
+      userId = const Uuid().v4();
+      await prefs.setString('user_id', userId);
+    }
+
+    Posthog().identify(userId: userId);
   }
 
   @override
