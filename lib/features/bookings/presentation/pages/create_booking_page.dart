@@ -11,6 +11,7 @@ import 'package:moneybook/features/bookings/presentation/widgets/input_fields/ac
 import 'package:moneybook/features/bookings/presentation/widgets/input_fields/date_and_repeat_input_field.dart';
 import 'package:moneybook/shared/presentation/widgets/arguments/bottom_nav_bar_arguments.dart';
 import 'package:moneybook/shared/presentation/widgets/buttons/save_button.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -62,6 +63,12 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
       Timer(const Duration(milliseconds: durationInMs), () {
         _createBookingBtnController.reset();
       });
+      Posthog().capture(
+        eventName: 'Buchung erstellen Versuch',
+        properties: {
+          'Aktion': 'Buchung erstellen versucht aber aufgrund von fehlenden Eingaben fehlgeschlagen.',
+        },
+      );
     } else {
       _createBookingBtnController.success();
       Booking newBooking = Booking(
@@ -89,8 +96,23 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
           } else if (_bookingType == BookingType.transfer || _bookingType == BookingType.investment) {
             BlocProvider.of<AccountBloc>(context).add(AccountTransfer(booking: newBooking, bookedId: 0));
           }
+          Posthog().capture(
+            eventName: 'Buchung erstellt',
+            properties: {
+              'Aktion': 'Buchung erstellt',
+              'Kategorie': _categorieNameForDb,
+            },
+          );
         } else {
           BlocProvider.of<BookingBloc>(context).add(CreateSerieBooking(newBooking));
+          Posthog().capture(
+            eventName: 'Serienbuchung erstellt',
+            properties: {
+              'Aktion': 'Serienbuchung erstellt',
+              'Wiederholungstyp': _repetitionType.name,
+              'Kategorie': _categorieNameForDb,
+            },
+          );
         }
       });
     }

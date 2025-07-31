@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:moneybook/shared/presentation/widgets/buttons/save_button.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 import '../../../../core/consts/common_consts.dart';
@@ -185,6 +186,12 @@ class _CategorieListPageState extends State<CategorieListPage> with TickerProvid
               name: _categorieNameController.text.trim(),
             ),
           ),
+        );
+        Posthog().capture(
+          eventName: 'Kategorie erstellt',
+          properties: {
+            'Aktion': 'Kategorie erstellt',
+          },
         );
       });
       _setTabControllerIndex(_selectedCategorieType);
