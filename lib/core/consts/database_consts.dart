@@ -16,7 +16,7 @@ String userDbName = demoMode == false ? 'user' : 'user_demo';
 String goalDbName = demoMode == false ? 'goals' : 'goals_demo';
 
 // Aktuelle Datenbank Tabellen Version
-int localDbVersion = demoMode == false ? 7 : 7;
+int localDbVersion = demoMode == false ? 8 : 8;
 
 void switchDemoMode(bool demoMode) {
   localDbName = demoMode == false ? 'local_db.db' : 'local_db_demo.db';
@@ -30,5 +30,5 @@ void switchDemoMode(bool demoMode) {
   userDbName = demoMode == false ? 'user' : 'user_demo';
   String goalDbName = demoMode == false ? 'goals' : 'goals_demo';
 
-  localDbVersion = demoMode == false ? 7 : 7;
+  localDbVersion = demoMode == false ? 8 : 8;
 }

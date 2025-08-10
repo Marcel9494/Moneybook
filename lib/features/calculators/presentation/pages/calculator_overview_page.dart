@@ -40,6 +40,13 @@ class _CalculatorOverviewPageState extends State<CalculatorOverviewPage> {
         route: financialFreedomCalculatorRoute,
       ),
     );
+    _calculators.add(
+      Calculator(
+        title: AppLocalizations.of(context).translate("rentenlücke_rechner"),
+        description: AppLocalizations.of(context).translate("rentenlücke_rechner_beschreibung"),
+        route: pensionGapCalculatorRoute,
+      ),
+    );
   }
 
   @override

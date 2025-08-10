@@ -285,5 +285,18 @@
   "lebenserwartung": "Lebenserwartung",
   "lebenserwartung_beschreibung": "Bis zu welchem Alter soll das Kapital reichen?",
   "in_jahren": "in Jahren",
-  "steuersatz": "Steuersatz"
+  "steuersatz": "Steuersatz",
+  "rentenlücke_rechner": "Rentenlücke Rechner",
+  "rentenlücke_rechner_beschreibung": "TODO",
+  "staatliche_rentenversicherung": "Staatliche Rentenversicherung",
+  "staatliche_rentenversicherung_beschreibung": "TODO",
+  "betriebliche_altersvorsorge": "Betriebliche Altersvorsorge",
+  "betriebliche_altersvorsorge_beschreibung": "TODO",
+  "geschätzter_steuerabzug": "Geschätzter Steuerabzug",
+  "geschätzter_steuerabzug_beschreibung": "TODO",
+  "jährlicher_grundfreibetrag": "Jährlicher Grundfreibetrag",
+  "jährlicher_grundfreibetrag_beschreibung": "TODO",
+  "monatliche_wunschrente": "Monatliche Wunschrente",
+  "monatliche_wunschrente_beschreibung": "Die monatliche Rente, die du dir wünschst. Diese wird monatlich aus deinem Kapital entnommen.",
+  "rentenlücke_schließen": "Rentenlücke schließen"
 }

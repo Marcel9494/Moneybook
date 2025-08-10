@@ -34,6 +34,7 @@ import 'features/budgets/presentation/widgets/page_arguments/edit_budget_page_ar
 import 'features/calculators/presentation/pages/calculator_overview_page.dart';
 import 'features/calculators/presentation/pages/financial_freedom_calculator_page.dart';
 import 'features/calculators/presentation/pages/how_long_live_of_capital_calculator_page.dart';
+import 'features/calculators/presentation/pages/pension_gap_calculator_page.dart';
 import 'features/categories/presentation/bloc/categorie_bloc.dart';
 import 'features/goals/presentation/bloc/goal_bloc.dart';
 import 'features/goals/presentation/pages/create_goal_page.dart';
@@ -143,6 +144,7 @@ class _MyAppState extends State<MyApp> {
         calculatorOverviewRoute: (context) => const CalculatorOverviewPage(),
         howLongLiveOfCapitalCalculatorRoute: (context) => const HowLongLiveOfCapitalCalculatorPage(),
         financialFreedomCalculatorRoute: (context) => const FinancialFreedomCalculatorPage(),
+        pensionGapCalculatorRoute: (context) => const PensionGapCalculatorPage(),
         goalOverviewRoute: (context) => const GoalOverviewPage(),
       },
       onGenerateRoute: (RouteSettings settings) {

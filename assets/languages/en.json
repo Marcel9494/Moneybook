@@ -280,5 +280,18 @@
   "lebenserwartung": "Life Expectancy",
   "lebenserwartung_beschreibung": "Until what age should the capital last?",
   "in_jahren": "in years",
-  "steuersatz": "Tax Rate"
+  "steuersatz": "Tax Rate",
+  "rentenlücke_rechner": "TODO",
+  "rentenlücke_rechner_beschreibung": "TODO",
+  "staatliche_rentenversicherung": "TODO",
+  "staatliche_rentenversicherung_beschreibung": "TODO",
+  "betriebliche_altersvorsorge": "TODO",
+  "betriebliche_altersvorsorge_beschreibung": "TODO",
+  "geschätzter_steuerabzug": "TODO",
+  "geschätzter_steuerabzug_beschreibung": "TODO",
+  "jährlicher_grundfreibetrag": "TODO",
+  "jährlicher_grundfreibetrag_beschreibung": "TODO",
+  "monatliche_wunschrente": "TODO",
+  "monatliche_wunschrente_beschreibung": "TODO",
+  "rentenlücke_schließen": "TODO"
 }

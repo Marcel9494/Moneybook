@@ -20,5 +20,6 @@ const currencyConverterRoute = 'currencyConverter';
 const calculatorOverviewRoute = 'calculatorOverview';
 const howLongLiveOfCapitalCalculatorRoute = 'howLongLiveOfCapitalCalculator';
 const financialFreedomCalculatorRoute = 'financialFreedomCalculator';
+const pensionGapCalculatorRoute = 'pensionGapCalculator';
 const goalOverviewRoute = 'goalOverview';
 const createGoalRoute = 'createGoal';

@@ -85,7 +85,7 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
         localDb INTEGER NOT NULL
       )
       ''');
-      /*await db.execute('''
+      await db.execute('''
       CREATE TABLE IF NOT EXISTS $goalDbName (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -96,14 +96,14 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
         endDate TEXT NOT NULL,
         type TEXT NOT NULL
       )
-      ''');*/
+      ''');
     } catch (e) {
       throw Exception('Database tables could not be generated.');
     }
   }
 
   Future<void> _migrateToNewVersion(Database db) async {
-    /*await db.execute('''
+    await db.execute('''
       CREATE TABLE IF NOT EXISTS $goalDbName (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -114,7 +114,7 @@ class SharedLocalDataSourceImpl implements SharedLocalDataSource {
         endDate TEXT NOT NULL,
         type TEXT NOT NULL
       )
-      ''');*/
+      ''');
 
     /*await db.execute('DROP TABLE IF EXISTS new_$userDbName');
     await db.execute('''
