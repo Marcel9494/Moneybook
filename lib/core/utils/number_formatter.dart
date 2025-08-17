@@ -32,3 +32,33 @@ double formatMoneyAmountToDouble(String amount) {
   }
   return double.parse(cleaned);
 }
+
+double formatPercentToDouble(String percentString) {
+  // Entfernt das %-Zeichen und trimmt Leerzeichen
+  String cleaned = percentString.replaceAll('%', '').trim();
+
+  // Deutsches Format (z.B. "5,0")
+  if (cleaned.contains('.')) {
+    cleaned = cleaned.replaceAll('.', ',');
+  }
+  // US-Format (z.B. "5.0")
+  else if (cleaned.contains(',')) {
+    cleaned = cleaned.replaceAll(',', '.');
+  }
+  return double.parse(cleaned);
+}
+
+String formatDoubleToPercent(double number) {
+  // Entfernt das %-Zeichen und trimmt Leerzeichen
+  String percentString = number.toString() + '%';
+
+  // Deutsches Format (z.B. "5,0%")
+  if (percentString.contains('.')) {
+    percentString = percentString.replaceAll('.', ',');
+  }
+  // US-Format (z.B. "5.0%")
+  else if (percentString.contains(',')) {
+    percentString = percentString.replaceAll(',', '.');
+  }
+  return percentString;
+}

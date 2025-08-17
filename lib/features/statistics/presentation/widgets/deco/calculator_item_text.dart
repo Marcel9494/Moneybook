@@ -9,6 +9,7 @@ class CalculatorItemText extends StatelessWidget {
   final FontWeight fontWeight;
   final double topPadding;
   final double leftPadding;
+  final double rightPadding;
   final bool showInfoIcon;
 
   const CalculatorItemText({
@@ -19,13 +20,14 @@ class CalculatorItemText extends StatelessWidget {
     this.fontWeight = FontWeight.bold,
     this.topPadding = 12.0,
     this.leftPadding = 12.0,
+    this.rightPadding = 16.0,
     this.showInfoIcon = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: topPadding, left: leftPadding, right: 16.0),
+      padding: EdgeInsets.only(top: topPadding, left: leftPadding, right: rightPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

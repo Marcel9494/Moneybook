@@ -20,6 +20,7 @@ class AmountTextField extends StatelessWidget {
   final String amountType;
   final BookingType bookingType;
   final int maxLength;
+  final int maximumFractionDigits;
   final Icon prefixIcon;
   final List<AmountType> _amountTypes = [];
 
@@ -36,6 +37,7 @@ class AmountTextField extends StatelessWidget {
     this.bookingType = BookingType.none,
     this.prefixIcon = const Icon(Icons.money_rounded),
     this.maxLength = 8,
+    this.maximumFractionDigits = 1,
   });
 
   static void _emptyFunction(AmountType amountType) {}
@@ -151,6 +153,7 @@ class AmountTextField extends StatelessWidget {
         isPercentValue: isPercentValue,
         isAgeValue: isAgeValue,
         maxAmountLength: maxLength,
+        maximumFractionDigits: maximumFractionDigits,
       ),
       decoration: InputDecoration(
         hintText: hintText,

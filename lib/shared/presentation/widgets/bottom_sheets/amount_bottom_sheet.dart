@@ -16,6 +16,7 @@ void openBottomSheetForAmountInput({
   required BuildContext context,
   required TextEditingController amountController,
   required int maxAmountLength,
+  int maximumFractionDigits = 1,
   bool showMinus = false,
   bool showSeparator = true,
   bool isPercentValue = false,
@@ -45,36 +46,36 @@ void openBottomSheetForAmountInput({
                     crossAxisCount: 4,
                     shrinkWrap: true,
                     children: <Widget>[
-                      SquareButton(onPressed: () => _setAmount('1', amountController, maxAmountLength), text: '1'),
-                      SquareButton(onPressed: () => _setAmount('2', amountController, maxAmountLength), text: '2'),
-                      SquareButton(onPressed: () => _setAmount('3', amountController, maxAmountLength), text: '3'),
+                      SquareButton(onPressed: () => _setAmount('1', amountController, maxAmountLength, isPercentValue), text: '1'),
+                      SquareButton(onPressed: () => _setAmount('2', amountController, maxAmountLength, isPercentValue), text: '2'),
+                      SquareButton(onPressed: () => _setAmount('3', amountController, maxAmountLength, isPercentValue), text: '3'),
                       SquareIconButton(
                         onPressed: () => _clearAmount(amountController),
                         icon: const Icon(Icons.clear_rounded, color: Colors.cyanAccent, size: 24.0),
                       ),
-                      SquareButton(onPressed: () => _setAmount('4', amountController, maxAmountLength), text: '4'),
-                      SquareButton(onPressed: () => _setAmount('5', amountController, maxAmountLength), text: '5'),
-                      SquareButton(onPressed: () => _setAmount('6', amountController, maxAmountLength), text: '6'),
+                      SquareButton(onPressed: () => _setAmount('4', amountController, maxAmountLength, isPercentValue), text: '4'),
+                      SquareButton(onPressed: () => _setAmount('5', amountController, maxAmountLength, isPercentValue), text: '5'),
+                      SquareButton(onPressed: () => _setAmount('6', amountController, maxAmountLength, isPercentValue), text: '6'),
                       SquareIconButton(
                         onPressed: () => _removeLastCharacter(amountController),
                         icon: const Icon(Icons.backspace_rounded, color: Colors.cyanAccent, size: 20.0),
                       ),
-                      SquareButton(onPressed: () => _setAmount('7', amountController, maxAmountLength), text: '7'),
-                      SquareButton(onPressed: () => _setAmount('8', amountController, maxAmountLength), text: '8'),
-                      SquareButton(onPressed: () => _setAmount('9', amountController, maxAmountLength), text: '9'),
+                      SquareButton(onPressed: () => _setAmount('7', amountController, maxAmountLength, isPercentValue), text: '7'),
+                      SquareButton(onPressed: () => _setAmount('8', amountController, maxAmountLength, isPercentValue), text: '8'),
+                      SquareButton(onPressed: () => _setAmount('9', amountController, maxAmountLength, isPercentValue), text: '9'),
                       SquareIconButton(
                           onPressed: () => Navigator.pop(context),
                           icon: const Icon(Icons.check_circle_rounded, color: Colors.greenAccent, size: 24.0)),
                       showMinus
-                          ? SquareButton(onPressed: () => _setAmount('-', amountController, maxAmountLength), text: '-')
+                          ? SquareButton(onPressed: () => _setAmount('-', amountController, maxAmountLength, isPercentValue), text: '-')
                           : const Visibility(
                               visible: false,
                               child: Text(''),
                             ),
-                      SquareButton(onPressed: () => _setAmount('0', amountController, maxAmountLength), text: '0'),
+                      SquareButton(onPressed: () => _setAmount('0', amountController, maxAmountLength, isPercentValue), text: '0'),
                       showSeparator
                           ? SquareButton(
-                              onPressed: () => _setAmount(locale == 'de-DE' ? ',' : '.', amountController, maxAmountLength),
+                              onPressed: () => _setAmount(locale == 'de-DE' ? ',' : '.', amountController, maxAmountLength, isPercentValue),
                               text: locale == 'de-DE' ? ',' : '.')
                           : const Visibility(
                               visible: false,
@@ -96,8 +97,8 @@ void openBottomSheetForAmountInput({
       final locale = Localizations.localeOf(context).toString();
       final numberFormat = NumberFormat.decimalPattern(locale)
         ..minimumFractionDigits = 1
-        ..maximumFractionDigits = 1;
-      final parsed = double.tryParse(amountController.text.replaceAll(',', '.')) ?? 0;
+        ..maximumFractionDigits = maximumFractionDigits;
+      final parsed = formatPercentToDouble(amountController.text);
       amountController.text = '${numberFormat.format(parsed)}%';
     } else if (amountController.text == '-') {
       amountController.text = '';
@@ -107,7 +108,7 @@ void openBottomSheetForAmountInput({
   });
 }
 
-void _setAmount(String text, TextEditingController amountController, int maxAmountLength) {
+void _setAmount(String text, TextEditingController amountController, int maxAmountLength, bool isPercentValue) {
   // Eingabefeld wird automatisch geleert => Benutzer muss das Eingabefeld nicht mehr manuell mit X löschen, wenn
   // ein neuer Betrag eingegeben wird.
   if (_clearAmountInputField) {
@@ -117,7 +118,7 @@ void _setAmount(String text, TextEditingController amountController, int maxAmou
   if (amountController.text.length > maxAmountLength) {
     return;
   }
-  if (moneyRegex.hasMatch(amountController.text + text)) {
+  if (moneyRegex.hasMatch(amountController.text + text) || isPercentValue) {
     amountController.text = '${amountController.text}$text';
   }
 }

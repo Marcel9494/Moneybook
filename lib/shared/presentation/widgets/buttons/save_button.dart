@@ -5,12 +5,14 @@ class SaveButton extends StatelessWidget {
   final String text;
   final RoundedLoadingButtonController saveBtnController;
   final VoidCallback onPressed;
+  final bool isButtonEnabled;
 
   const SaveButton({
     super.key,
     required this.text,
     required this.saveBtnController,
     required this.onPressed,
+    this.isButtonEnabled = true,
   });
 
   @override
@@ -23,7 +25,7 @@ class SaveButton extends StatelessWidget {
         successColor: Colors.green,
         height: 40.0,
         borderRadius: 12.0,
-        onPressed: onPressed,
+        onPressed: isButtonEnabled ? onPressed : null,
         child: Text(
           text,
           style: const TextStyle(color: Colors.black87),
